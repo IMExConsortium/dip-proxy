@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+ !===========================================================================
+ ! $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-api-ws/src/jax#$
+ ! $Id:: dipws.jxb 145 2009-06-22 15:26:40Z lukasz                          $
+ ! Version: $Rev:: 145                                                      $
+ !===========================================================================
+ !
+ ! Dip Web Services:  dxf service
+ !
+ !======================================================================= -->
+
+<bindings wsdlLocation="../wsdl/DipLegacyService.wsdl"
+    xmlns="http://java.sun.com/xml/ns/jaxws"
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" >
+
+ <package name="edu.ucla.mbi.legacy.dip"/>
+
+ <bindings node="wsdl:definitions/wsdl:service[@name='DipLegacyService']">
+  <class name="DipLegacyService"/>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipLegacyPortType']">
+  <class name="DipLegacyPort"/>
+ </bindings>
+
+</bindings>
+
+

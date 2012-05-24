@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+ !===========================================================================
+ ! $HeadURL::                                                               $
+ ! $Id::                                                                    $
+ ! Version: $Rev::                                                          $
+ !===========================================================================
+ !
+ ! Dip Web Services:  keyassigner service
+ !
+ !======================================================================= -->
+
+<bindings wsdlLocation="../wsdl/dipreg.wsdl"
+    xmlns="http://java.sun.com/xml/ns/jaxws"
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" >
+
+ <package name="edu.ucla.mbi.services.dip.registry"/>
+
+ <bindings node="wsdl:definitions/wsdl:service[@name='keyassigner']">
+  <class name="DipKeyassignerService"/>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipRegPortType']">
+  <class name="DipKeyassignerPort"/>
+ </bindings>
+
+</bindings>
+
+

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- #==================================================================
+     # $Id::                                                           $
+     # Version: $Rev::                                                 $
+     #==================================================================
+     # MBI Web Services: DIP access
+     #
+     #================================================================== -->
+
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             targetNamespace="http://mbi.ucla.edu/proxy/dip"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+             xmlns:dpp="http://mbi.ucla.edu/proxy/dip"
+             xmlns:dsv="http://dip.doe-mbi.ucla.edu/services"
+             xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" >
+ <types>
+  <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+             targetNamespace="http://mbi.ucla.edu/proxy/dip">
+
+   <xs:import namespace="http://dip.doe-mbi.ucla.edu/services"
+              schemaLocation="services.xsd"/>
+
+   <xs:import namespace="http://dip.doe-mbi.ucla.edu/services/dxf14"
+              schemaLocation="DXF1.4.xsd"/>
+
+   <xs:element name="getDipRecord">
+    <xs:annotation>
+     <xs:documentation>Get Dip record</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="ns"  type="xs:string" default="uniprot" />
+      <xs:element name="ac"  type="xs:string"/>
+      <xs:element name="match"  type="xs:string" default="exact"/>
+      <xs:element name="detail" type="xs:string" default="stub" />
+      <xs:element name="format" type="xs:string" default="dxf"  />
+      <xs:element name="client" type="xs:string" default=""  />
+      <xs:element name="depth" type="xs:int" default="0" minOccurs="0" />
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="result">
+    <xs:annotation>
+     <xs:documentation>proxy response</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="timestamp" type="xs:dateTime" />
+      <xs:element ref="dxf:dataset"  minOccurs="0" maxOccurs="1"/>
+      <xs:element name="nativerecord" type="xs:string" minOccurs="0" maxOccurs="1"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+  </xs:schema>
+ </types>
+
+ <message name="getDipRecordReq">
+  <part element="dpp:getDipRecord" name="request"/>
+ </message>
+
+ <message name="getDipRecordRes">
+  <part element="dpp:result" name="response"/>
+ </message>
+
+ <message name="dipFault">
+  <part element="dsv:serviceFault" name="fault"/>
+ </message>
+
+ <portType name="DipProxyPortType">
+
+  <operation name="getDipRecord">
+   <input  message="dpp:getDipRecordReq"/>
+   <output message="dpp:getDipRecordRes"/>
+   <fault name="getDipRecordFault" message="dpp:dipFault"/>
+  </operation>
+
+ </portType>
+
+ <binding name="DipProxyBinding" type="dpp:DipProxyPortType">
+  
+  <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  
+  <operation name="getDipRecord">
+   <soap:operation
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/getDip"/>
+   <input><soap:body use="literal"/></input>
+   <output><soap:body use="literal"/></output>
+   <fault name="getDipRecordFault">
+    <soap:fault name="getDipRecordFault" use="literal"/>
+   </fault>
+  </operation>
+  
+ </binding>
+ 
+ <service name="DipProxyService">
+  <port binding="dpp:DipProxyBinding" name="proxyPort">
+   <soap:address location=""/>
+  </port>
+ </service>
+
+</definitions>

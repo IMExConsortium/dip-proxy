@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+ !===========================================================================
+ ! $HeadURL::                                                               $
+ ! $Id::                                                                    $
+ ! Version: $Rev::                                                          $
+ !===========================================================================
+ !
+ ! MBI Web Services:   Dht services
+ !
+ !======================================================================= -->
+
+<bindings wsdlLocation="../wsdl/DhtService14.wsdl"
+    xmlns="http://java.sun.com/xml/ns/jaxws"
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" >
+
+ <package name="edu.ucla.mbi.proxy.dht"/>
+
+ <bindings node="wsdl:definitions/wsdl:service[@name='DhtProxyService']">
+  <class name="DhtProxyService"/>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DhtProxyPortType']">
+  <class name="DhtProxyPort"/>
+ </bindings>
+
+</bindings>

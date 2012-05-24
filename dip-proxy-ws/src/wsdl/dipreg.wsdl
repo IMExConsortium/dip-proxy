@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<definitions targetNamespace="http://dip.doe-mbi.ucla.edu/services/dipreg" 
+             xmlns="http://schemas.xmlsoap.org/wsdl/" 
+             xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+             xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" 
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+             xmlns:tns="http://dip.doe-mbi.ucla.edu/services/dipreg" 
+             xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ <types>
+
+  <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
+             targetNamespace="http://dip.doe-mbi.ucla.edu/services/dipreg" 
+             xmlns:tns="http://dip.doe-mbi.ucla.edu/services/dipreg" 
+             xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+   <xs:element name="getNewKey">
+    <xs:annotation>
+     <xs:documentation>get unique key</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence> 
+      <xs:element name="keyspace"  type="xs:string"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="key" type="xs:string" />
+
+   <xs:element name="ServiceFailedException">
+    <xs:annotation>
+     <xs:documentation>Exception if something goes wrong</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="messageType" type="xs:string"/>
+      <xs:element name="message"     type="xs:string"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+  </xs:schema>
+
+ </types>
+
+ <message name="getNewKeyReq">
+  <part element="tns:getNewKey" name="request"/>
+ </message>
+
+ <message name="getNewKeyRes">
+  <part element="tns:key" name="response"/>
+ </message>
+
+ <portType name="DipRegPortType">
+
+ <operation name="getNewKey">
+   <input  message="tns:getNewKeyReq"/>
+   <output message="tns:getNewKeyRes"/>
+  </operation>
+ </portType>
+
+ <binding name="DipRegBinding" type="tns:DipRegPortType">
+  <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="getNewKey">
+   <soap:operation soapAction="http://dip.doe-mbi.ucla.edu/services/dipreg/getNewKey"/>
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+ </binding>
+
+ <service name="keyassigner">
+  <port binding="tns:DipRegBinding" name="public">
+    <soap:address location="http://dip.doe-mbi.ucla.edu:50608/DipRegWS/services/keyassigner"/>
+    <!-- <soap:address location="http://elion.mbi.ucla.edu:5000/axis2/services/keyassigner"/>  -->
+  </port>
+ </service>
+
+</definitions>
+
