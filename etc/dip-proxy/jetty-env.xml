@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+
+ <New class="org.mortbay.jetty.plus.naming.Resource">
+  <Arg>jdbc/dip20</Arg>
+  <Arg>
+   <New class="org.postgresql.ds.PGSimpleDataSource">
+    <Set name="User">dip</Set>
+    <Set name="Password">444dip444</Set>
+    <Set name="DatabaseName">dip20</Set>
+    <Set name="ServerName">10.1.1.15</Set>
+    <Set name="PortNumber">5432</Set>
+   </New>
+  </Arg>
+ </New>
+
+ <New class="org.mortbay.jetty.plus.naming.Resource">
+  <Arg>jdbc/dip20tst</Arg>
+  <Arg>
+   <New class="org.postgresql.ds.PGSimpleDataSource">
+    <Set name="User">wyu</Set>
+    <Set name="Password">444wyu444</Set>
+    <Set name="DatabaseName">dip20</Set>
+    <Set name="ServerName">elion.mbi.ucla.edu</Set>
+    <Set name="PortNumber">5432</Set>
+   </New>
+  </Arg>
+ </New>
+
+ <New class="org.mortbay.jetty.plus.naming.Resource">
+  <Arg>jdbc/proxyws</Arg>
+  <Arg>
+   <New class="org.postgresql.ds.PGSimpleDataSource">
+    <Set name="User">test</Set>
+    <Set name="Password">444test444</Set>
+    <Set name="DatabaseName">proxyws201</Set>
+    <Set name="ServerName">10.1.1.114</Set>
+    <Set name="PortNumber">5432</Set>
+   </New>
+  </Arg>
+ </New>
+<!--
+ <New class="org.mortbay.jetty.plus.naming.Resource">
+  <Arg>jdbc/proxyws</Arg>
+  <Arg>
+   <New class="org.postgresql.ds.PGSimpleDataSource">
+    <Set name="User">test</Set>
+    <Set name="Password">444test444</Set>
+    <Set name="DatabaseName">proxyws202</Set>
+    <Set name="ServerName">10.1.1.114</Set>
+    <Set name="PortNumber">5432</Set>
+   </New>
+  </Arg>
+ </New>
+-->
+</Configure>
+
