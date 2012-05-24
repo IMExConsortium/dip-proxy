@@ -1,0 +1,40 @@
+{upanel:true,
+ spanel:true,
+ menu:[
+    {label:"TOP",
+     link:"/",
+     active:true,
+     menu:[
+        {label:"HOME",
+         link:"index.jsp",
+         "disabled":"false",
+         menu:[
+            {label:"Status",
+             link:"page?id=status",
+             "disabled":"false",
+             menu:[
+                {label:"Local cache",
+                 link:"cache-status?id=cache",
+                 "disabled":"false",
+                 menu:[]
+                },
+                {label:"DHT node",
+                 link:"node-status?id=node",
+                 "disabled":"false",
+                 menu:[]
+                },
+                {label:"Native servers",
+                 link:"native-status?id=native",
+                 "disabled":"false",
+                 menu:[]
+                }]
+            },
+            {label:"Configure",
+             link:"page?id=configure",
+             "disabled":"false",
+             menu:[]
+            }]
+        }]
+    }]
+}
+

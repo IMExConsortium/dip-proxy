@@ -1,0 +1,25 @@
+/* 
+   dip2struts.css
+   styles for the DIP web site: struts xhtml elements
+    
+   Color scheme:
+    - blue for table borders (and IMEx): #5375a8
+    - top menu (menu1) dark blue: #446099
+    - mid menu (menu2) med blue: #99bbee
+    - bottom menu (menu3) lt blue: #e3edff
+*/
+
+
+.tdLabel{
+  text-align: right;
+}
+
+.errorMessage{
+  color: red;
+  font-weight: bold;
+}
+
+
+.wwFormTable{
+ width: 100%;
+}

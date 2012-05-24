@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<wsdl:definitions 
+    xmlns:s="http://www.w3.org/2001/XMLSchema" 
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:s0="http://www.ncbi.nlm.nih.gov/soap/eutils/" 
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" 
+    targetNamespace="http://www.ncbi.nlm.nih.gov/soap/eutils/"
+    xmlns:nsef="http://www.ncbi.nlm.nih.gov/soap/eutils/efetch" 
+>
+<!--    version="1.5" -->
+
+ <types>
+  <s:schema>
+   <s:import namespace="http://www.ncbi.nlm.nih.gov/soap/eutils/efetch"  schemaLocation="efetch_lit.xsd"/>
+  </s:schema>
+ </types>
+
+ <message name="eFetchRequest_m">
+  <part name="parameters" element="nsef:eFetchRequest"/>
+ </message>
+ <message name="eFetchResponse_m">
+  <part name="parameters" element="nsef:eFetchResult"/>
+ </message>
+
+ <message name="eFetchRequestMS_m">
+  <part name="parameters" element="nsef:eFetchRequestMS"/>
+ </message>
+ <message name="eFetchResponseMS_m">
+  <part name="parameters" element="nsef:eFetchResultMS"/>
+ </message>
+
+ <portType name="eUtilsServiceSoap">
+  <operation name="run_eFetch">
+   <input message="s0:eFetchRequest_m"/>
+   <output message="s0:eFetchResponse_m"/>
+  </operation>
+  <operation name="run_eFetch_MS">
+   <input message="s0:eFetchRequestMS_m"/>
+   <output message="s0:eFetchResponseMS_m"/>
+  </operation>
+ </portType>
+
+ <binding name="eUtilsServiceSoap" type="s0:eUtilsServiceSoap">
+  <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="run_eFetch">
+   <soap:operation soapAction="efetch" style="document"/>
+   <input>
+    <soap:body use="literal"  />
+   </input>
+   <output>
+    <soap:body use="literal" />
+   </output>
+  </operation>
+  <operation name="run_eFetch_MS">
+   <soap:operation soapAction="efetchms" style="document"/>
+   <input>
+    <soap:body use="literal"  />
+   </input>
+   <output>
+    <soap:body use="literal" />
+   </output>
+  </operation>
+ </binding>
+
+ <service name="eUtilsService">
+  <port name="eUtilsServiceSoap" binding="s0:eUtilsServiceSoap">
+   <soap:address location="http://www.ncbi.nlm.nih.gov/entrez/eutils/soap/soap_adapter_1_5.cgi"/>
+  </port>
+ </service>
+    
+</wsdl:definitions>

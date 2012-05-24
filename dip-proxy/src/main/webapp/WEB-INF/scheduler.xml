@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- =======================================================================
+ ! $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/mai#$
+ ! $Id:: applicationContext.xml 53 2009-05-17 21:02:06Z dip                $
+ ! Version: $Rev:: 53                                                      $
+ !==========================================================================
+ !
+ ! tdip-proxy: agent scheduler configuration
+ !
+ !====================================================================== -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+
+ <bean id="scheduler" init-method="start" destroy-method="shutdown"
+       class="edu.ucla.mbi.monitor.Scheduler" >
+
+  <property name="context">
+   <ref bean="wsContext"/>
+  </property>
+  
+  <property name="threadCount" value="5" />
+
+  <property name="agents">
+   <map>
+    <entry key="native-agent">
+     <map>
+      <entry key="interval" value="60" />
+      <entry key="agent-instance">
+       <bean class="edu.ucla.mbi.monitor.NativeAgent"/>
+      </entry>
+     </map>
+    </entry>       
+   </map>
+  </property>
+ </bean>
+
+</beans>

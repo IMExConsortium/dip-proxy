@@ -1,0 +1,50 @@
+{
+  pageConfig:{
+    pathregex:"^/pages/[a-zA-Z0-9_\\-\\.]+$",
+    idregex:"^[a-zA-Z0-9_\\-]+$",
+    pages:{
+      cover:{
+        active:true,
+        title:"dip-proxy Administration",
+        menudef:"0:0",
+        menusel:"1",
+        viewtype:"file-html",
+        viewpath:"/pages/cover.html"
+      },
+      status:{
+        active:true,
+        title:"dip-proxy Status",
+        menudef:"0:0",
+        menusel:"1:1",
+        viewtype:"file-html",
+        viewpath:"/pages/status.html"
+      },
+      configure:{
+        active:true,
+        title:"dip-proxy configure",
+        menudef:"0:1",
+        menusel:"1:2",
+        viewtype:"file-html",
+        viewpath:"/pages/configure.html"
+      },
+      cache:{
+        active:true,
+        title:"dip-proxy Status",
+        menudef:"0:0",
+        menusel:"1:1:1"
+      },
+      node:{
+        active:true,
+        title:"dip-proxy Status",
+        menudef:"0:0",
+        menusel:"1:1:2"
+      },
+      native:{
+        active:true,
+        title:"dip-proxy Status",
+        menudef:"0:0",
+        menusel:"1:1:3"
+      } 
+    }
+  }
+}

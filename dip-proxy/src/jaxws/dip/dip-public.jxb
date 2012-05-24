@@ -1,0 +1,12 @@
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1">
+  <bindings scd="x-schema::tns" xmlns:tns="http://www.ebi.ac.uk/picr/AccessionMappingService">
+    <schemaBindings>
+      <package name="uk.ac.ebi.picr" />
+    </schemaBindings>
+  </bindings>
+  <bindings scd="x-schema::tns1" xmlns:tns1="http://model.picr.ebi.ac.uk">
+    <schemaBindings>
+      <package name="uk.ac.ebi.picr.model" />
+    </schemaBindings>
+  </bindings>
+</bindings>

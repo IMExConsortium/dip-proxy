@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+      http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    
+      http://www.springframework.org/schema/tx 
+      http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+      
+      http://www.springframework.org/schema/aop 
+      http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+    <!-- Context: Configuration files -->
+    <bean id="portalContext" class="edu.ucla.mbi.util.PortalContext">
+
+        <property name="portal">
+            <map>
+                <entry key="skin-path" value="/skin" />
+                <entry key="image-path" value="/images" />
+            </map>
+        </property>
+
+        <property name="site">
+            <map>
+                <entry key="icentral">
+                    <map>
+                        <entry key="name" value="icentral" />
+                        <entry key="skin" value="icentral" />
+                        <entry key="menu-config"><ref bean="menuContext"/></entry>
+                        <entry key="page-config"><ref bean="pageContext"/></entry>
+                        <!--           
+                        <entry key="news-config"><ref bean="newsContext"/></entry>  
+                        -->
+                    </map>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="pageContext" class="edu.ucla.mbi.util.JsonContext">
+        <property name="config">
+            <map>
+                <entry key="json-config" value="/etc/pages.json"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="menuContext" class="edu.ucla.mbi.util.JsonContext">
+        <property name="config">
+            <map>
+                <entry key="json-config" value="/etc/menu.json"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="aclContext" class="edu.ucla.mbi.util.JsonContext">
+        <property name="config">
+            <map>
+                <entry key="json-config" value="/etc/acl.json"/>
+                <entry key="json-source">
+                    <bean class="edu.ucla.mbi.util.SpringFileResource">
+                        <property name="file" value="etc/acl.json"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

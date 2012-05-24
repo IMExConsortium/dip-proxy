@@ -1,0 +1,7 @@
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1">
+  <bindings scd="x-schema::tns" xmlns:tns="http://www.ncbi.nlm.nih.gov/soap/eutils/efetch">
+    <schemaBindings>
+      <package name="gov.nih.nlm.ncbi.soap.eutils.efetch" />
+    </schemaBindings>
+  </bindings>
+</bindings>

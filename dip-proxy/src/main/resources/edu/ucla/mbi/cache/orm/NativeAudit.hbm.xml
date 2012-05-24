@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class name="edu.ucla.mbi.cache.NativeAudit" table="native_audit" lazy="false">
+    <id name="id" column="pk">
+      <generator class="sequence">
+        <param name="sequence">native_audit_pk_seq</param>
+      </generator>
+    </id>
+
+    <property name="provider" column="provider" />
+    <property name="service" column="service" />
+    <property name="ns"  column="ns"/>
+    <property name="ac"  column="ac"/>
+    <property name="time" column="time"/>
+    <property name="responseTime" column="delay"/>
+  </class>
+</hibernate-mapping>
+
+

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+      http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    
+      http://www.springframework.org/schema/tx 
+      http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+      
+      http://www.springframework.org/schema/aop 
+      http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+ <!-- struts2 actions -->
+
+ <bean id="cacheStatusAction" scope="prototype"
+       class="edu.ucla.mbi.proxy.actions.CacheStatus">
+  <property name="wsContext">
+    <ref bean="wsContext"/>
+  </property>
+  <property name="pageContext" ref="pageContext"/>
+  <property name="menuContext" ref="menuContext"/>
+ </bean>
+
+ <bean id="nativeSparkline" class="edu.ucla.mbi.util.Sparkline">
+  <property name="width" value="240"/>
+  <property name="height" value="20"/>
+  <property name="XRange" value="240.0"/>
+  <property name="YRange" value="30000.0"/>
+ </bean>
+
+ <bean id="nativeSparkAction" scope="prototype"
+       class="edu.ucla.mbi.proxy.actions.NativeSparkline">
+  <property name="wsContext">
+   <ref bean="wsContext"/>
+  </property>
+  <property name="sparkline">
+   <ref bean="nativeSparkline"/>
+  </property>
+ </bean>
+
+ <bean id="dhtStatusAction" scope="prototype"
+       class="edu.ucla.mbi.proxy.actions.DhtNodeStatus">
+  <property name="dht" ref="dht"/>
+  <property name="pageContext" ref="pageContext"/>
+  <property name="menuContext" ref="menuContext"/>
+ </bean>
+
+ <bean id="nativeStatusAction" scope="prototype"
+       class="edu.ucla.mbi.proxy.actions.NativeStatus">
+  <property name="wsContext">
+    <ref bean="wsContext"/>
+  </property>
+  <property name="pageContext" ref="pageContext"/>
+  <property name="menuContext" ref="menuContext"/>
+ </bean>
+
+ <bean id="pageAction" scope="prototype"
+       class="edu.ucla.mbi.proxy.actions.PageAction">
+
+    <property name="pageContext" ref="pageContext"/>
+    <property name="menuContext" ref="menuContext"/>
+ </bean>
+
+ <!-- access control list/interceptor -->
+
+ <bean id="aclInterceptor"
+       class="edu.ucla.mbi.util.struts2.interceptor.AclInterceptor">
+
+    <property name="aclContext" ref="aclContext"/>
+ </bean>
+
+</beans>

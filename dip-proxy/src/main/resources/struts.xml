@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+          "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<!-- =======================================================================
+ ! $HeadURL::                                                              $
+ ! $Id::                                                                   $
+ ! Version: $Rev::                                                         $
+ !==========================================================================
+ !
+ ! struts2: global configuration
+ !
+ !====================================================================== -->
+
+<struts>
+ <constant name="struts.objectFactory" value="spring" />   
+ <constant name="struts.devMode" value="false" />
+
+ <include file="struts-proxy.xml"/>
+
+ <!-- effective 2.1.7 only -->
+ <!--
+ <constant name="struts.action.excludePattern" value="*service*" /> 
+ --> 
+</struts>

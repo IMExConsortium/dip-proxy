@@ -1,0 +1,41 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<!-- ===========================================================================
+ ! $HeadURL::                                                                  $
+ ! $Id::                                                                       $
+ ! Version: $Rev::                                                             $
+ !==============================================================================
+ !
+ ! Hibernate ORM configuration
+ !
+ !========================================================================== -->
+
+<hibernate-configuration>
+ <session-factory>
+	   
+  <!-- JNDI-style connection: set up by tomcat -->
+    
+  <property name="connection.datasource">
+      ${dip-proxy.jdbc}
+  </property>
+  <property name="hibernate.current_session_context_class">
+    thread
+  </property>
+  <property name="hibernate.query.factory_class">
+   org.hibernate.hql.classic.ClassicQueryTranslatorFactory
+  </property>
+
+  <!-- SQL dialect -->
+  <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+  <!-- Echo (or not) all executed SQL to stdout -->
+  <property name="show_sql">false</property>
+
+  <mapping resource="edu/ucla/mbi/cache/orm/DxfRecord.hbm.xml"/>
+  <mapping resource="edu/ucla/mbi/cache/orm/NativeRecord.hbm.xml"/>
+  <mapping resource="edu/ucla/mbi/cache/orm/NativeAudit.hbm.xml"/>
+
+ </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,121 @@
+/*----------------------------------------------------------------
+ * $Id:: dip2tab.css 174 2008-06-13 00:59:43Z rebecca            $
+ * Version: $Rev:: 174                                           $
+ *--------------------------------------------------------------
+ * CSS TAB styles
+ *
+ *---------------------------------------------------------------*/
+
+.t0tab {
+  border-bottom: 1px solid #5375a8;
+  padding: 3pt 6pt;
+  font-size: small;
+  color: #777777;
+}
+
+.t0tabon {
+  border-right: 1px solid #5375a8;
+  border-left:  1px solid #5375a8;
+  border-top:   1px solid #5375a8;
+  padding: 3pt 6pt;
+  background-color: white;
+  font-size: small; 
+}
+
+.t0cont {
+  background-color: white;
+  border-left:   1px solid #5375a8;
+  border-right:  1px solid #5375a8;
+  border-bottom: 1px solid #5375a8;
+  padding: 10px;
+}
+
+.recordtab {
+  border-bottom: 2px solid #5375a8;
+  padding: 3pt 6pt;
+  font-size: 0.8em;
+  color: #777777;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.recordtabon {
+  border-right: 2px solid #5375a8;
+  border-left:  2px solid #5375a8;
+  border-top:   2px solid #5375a8;
+  padding: 3pt 6pt;
+  background-color: white;
+  font-size: 0.8em; 
+  text-align: center;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.recordcont {
+  background-color: white;
+  border-bottom: 1px solid #5375a8;
+  padding: 15px 15px 40px 15px;
+}
+
+.recordtab {
+/*-----------------------------------
+ *
+ * DATASET STYLES
+ *
+ *-----------------------------------*/
+
+table.dstable {
+  background-color:     white;
+  margin: 5px;
+  margin-top: 15px;
+}
+
+td.dsheader {
+  background-color:     #e3edff;
+  text-align:center;
+  font-family:sans-serif;
+  white-space: nowrap; 
+}
+
+td.dsheaderA {
+  background-color:     #ffffff;
+  text-align:center;
+  font-family:sans-serif;
+  white-space: nowrap; 
+}
+
+td.dsheaderB {
+  background-color:     #f0f0f0;
+  text-align:center;
+  font-family:sans-serif;
+  white-space: nowrap; 
+}
+
+td.dscellB {
+  background-color:     #f0f0f0;
+  text-align:center;
+  font-family:sans-serif;
+  white-space: nowrap; 
+}
+
+td.dscell {
+  background-color:     #ffffff;
+  text-align:center;
+  font-family:sans-serif;
+  white-space: nowrap; 
+}
+
+td.dsfile {
+  background-color:     #ffffff;
+  text-align:center;
+  font-family: monospace;
+  white-space: nowrap; 
+}
+
+td.dsfileB {
+  background-color:     #f0f0f0;
+  text-align:center;
+  font-family: monospace;
+  white-space: nowrap; 
+}
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<!-- ========================================================================
+ ! $HeadURL::                                                               $
+ ! $Id::                                                                    $
+ ! Version: $Rev::                                                          $
+ !===========================================================================
+ !
+ ! struts2: main tiles configuration
+ !
+ !======================================================================= -->
+
+<tiles-definitions>
+
+ <definition name="yui-js" template="/tiles/yui-js.jsp" />
+ <definition name="yui-css" template="/tiles/yui-css.jsp" />
+
+ <definition name="icentral-js" template="/tiles/icentral-js.jsp" />
+ <definition name="icentral-css" template="/tiles/icentral-css.jsp" />
+
+ <definition name="htmlhead" template="/tiles/htmlhead.jsp">
+    <put-attribute name="yui-css" type="definition" value="yui-css"/>
+    <put-attribute name="icentral-css" type="definition" value="icentral-css"/>
+    <put-attribute name="yui-js" type="definition" value="yui-js"/>
+    <put-attribute name="icentral-js" type="definition" value="icentral-js"/>
+ </definition>
+
+ <definition name="header" template="/tiles/header.jsp"/>
+
+ <definition name="footer" template="/tiles/footer.jsp"/>
+
+ <definition name="footer-edit" template="/tiles/footer.jsp">
+    <put-attribute name="edit" value="/tiles/pageedit-yui.jsp"/>
+ </definition>
+
+ <definition name="footer.small" template="/tiles/footer.jsp"/>
+
+ <definition name="page" template="/tiles/page.jsp"/>
+
+ <definition name="fault" template="/tiles/fault.jsp"/>
+
+ <definition name="main" template="/tiles/main.jsp"/>
+
+ <definition name="node" template="/tiles/node.jsp"/>
+
+ <definition name="native" template="/tiles/native.jsp"/>
+
+ <definition name="cache" template="/tiles/cache.jsp"/>
+
+ <definition name="status" template="/tiles/status.jsp"/>
+
+ <definition name="nodestatus" extends="status">
+   <put-attribute name="body" value="node" />
+ </definition>
+
+ <definition name="nativestatus" extends="status">
+   <put-attribute name="body" value="native" />
+ </definition>
+
+ <definition name="cachestatus" extends="status">
+   <put-attribute name="body" value="cache" />
+ </definition>
+
+</tiles-definitions>

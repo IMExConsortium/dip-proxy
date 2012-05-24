@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<definitions targetNamespace="http://dip.doe-mbi.ucla.edu/services/dip" 
+             xmlns="http://schemas.xmlsoap.org/wsdl/" 
+             xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+             xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" 
+             xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" 
+             xmlns:ns1="http://dip.doe-mbi.ucla.edu/services/dip" 
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+             xmlns:tns="http://dip.doe-mbi.ucla.edu/services/dip" 
+             xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ <types>
+
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
+             targetNamespace="http://dip.doe-mbi.ucla.edu/services/dip" 
+             xmlns:ns1="http://dip.doe-mbi.ucla.edu/services/dip" 
+             xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+ <xs:import namespace="http://dip.doe-mbi.ucla.edu/services/dxf14"
+            schemaLocation="DXF1.4.xsd"/>
+
+   <xs:element name="getNodeBounds">
+    <xs:annotation>
+     <xs:documentation>Get Node Bounds</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence> 
+      <xs:element name="return" type="xs:string" default="stub"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="getNodeRange">
+    <xs:annotation>
+     <xs:documentation>Get Nodes within ID range</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence> 
+      <xs:element name="fr"     type="xs:long"   default="-1"/>
+      <xs:element name="to"     type="xs:long"   default="-1"/>
+      <xs:element name="return" type="xs:string" default="stub"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="getNode">
+    <xs:annotation>
+     <xs:documentation>Get Node</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="ns"     type="xs:string" default="dip"/>
+      <xs:element name="ac"     type="xs:string"/>
+      <xs:element name="match"  type="xs:string" default="exact"/>
+      <xs:element name="return" type="xs:string" default="stub"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="matchNode">
+    <xs:annotation>
+     <xs:documentation>Match Node</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="dataset" type="dxf:datasetType" />
+      <xs:element name="match"   type="xs:string"  default="exact"/>
+      <xs:element name="return"  type="xs:string"  default="stub"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="argType">
+    <xs:annotation>
+     <xs:documentation></xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="name"  type="xs:string" />
+      <xs:element name="value" type="xs:string" />
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="operationType">
+    <xs:annotation>
+     <xs:documentation>Operation description</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="opName" type="xs:string" />
+      <xs:element name="opArg"  type="ns1:argType" minOccurs="0"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="transform">
+    <xs:annotation>
+     <xs:documentation>Transform a Dataset</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="dataset"    type="dxf:datasetType" />
+      <xs:element name="return"     type="xs:string"  default="stub"/>
+      <xs:element name="expand"     type="xs:string"  default="0"/>
+      <xs:element name="operation"  type="ns1:operationType" minOccurs="0"/>
+      <xs:element name="limit"      type="xs:string" minOccurs="0"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="getLinkBounds">
+    <xs:annotation>
+     <xs:documentation>Get Link Bounds</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="return" type="xs:string" default="stub"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="getLinkRange">
+    <xs:annotation>
+     <xs:documentation>Get Links within ID range</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="fr"     type="xs:long"   default="-1"/>
+      <xs:element name="to"     type="xs:long"   default="-1"/>
+      <xs:element name="return" type="xs:string" default="stub"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="getLink">
+    <xs:annotation>
+     <xs:documentation>Get Link</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="ns"     type="xs:string" default="dip"/>
+      <xs:element name="ac"     type="xs:string"/>
+      <xs:element name="match"  type="xs:string" default="exact"/>
+      <xs:element name="return" type="xs:string" default="stub"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+  <xs:element name="getEvidence">
+   <xs:annotation>
+     <xs:documentation>Get Evidence</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="ns"     type="xs:string" default="dip"/>
+      <xs:element name="ac"     type="xs:string"/>
+      <xs:element name="match"  type="xs:string" default="exact"/>
+      <xs:element name="return" type="xs:string" default="stub"/>
+     </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="getImexSRec">
+    <xs:annotation>
+     <xs:documentation>Get Imex Source Record</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="ns"     type="xs:string" default="dip"/>
+      <xs:element name="ac"     type="xs:string"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+  <xs:element name="getDipSRec">
+    <xs:annotation>
+     <xs:documentation>Get Dip Source Record</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="ns"     type="xs:string" default="dip"/>
+      <xs:element name="ac"     type="xs:string"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="mifStrRep" type="xs:string" />
+
+<!--
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="mif" type="xs:string" minOccurs="0"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+-->
+
+   <xs:element name="getLinksByNodeSet">
+    <xs:annotation>
+     <xs:documentation>Get Link By Node Set </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="dataset" type="dxf:datasetType"/> 
+      <xs:element name="match"   type="xs:string" default="exact"/>
+      <xs:element name="return"  type="xs:string" default="stub"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+
+   <xs:element name="ServiceFailedException">
+    <xs:annotation>
+     <xs:documentation>Exception if something goes wrong</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+     <xs:sequence>
+      <xs:element name="messageType" type="xs:string"/>
+      <xs:element name="message"     type="xs:string"/>
+     </xs:sequence>
+    </xs:complexType>
+   </xs:element>
+  </xs:schema>
+
+ </types>
+
+ <message name="getNodeBoundsReq">
+  <part element="ns1:getNodeBounds" name="request"/>
+ </message>
+
+ <message name="getNodeRangeReq">
+  <part element="ns1:getNodeRange" name="request"/>
+ </message>
+
+ <message name="getNodeReq">
+  <part element="ns1:getNode" name="request"/>
+ </message>
+
+ <message name="matchNodeReq">
+  <part element="ns1:matchNode" name="request"/>
+ </message>
+
+ <message name="getLinkBoundsReq">
+  <part element="ns1:getLinkBounds" name="request"/>
+ </message>
+
+ <message name="getLinkRangeReq">
+  <part element="ns1:getLinkRange" name="request"/>
+ </message>
+
+ <message name="getLinkReq">
+  <part element="ns1:getLink" name="request"/>
+ </message>
+ 
+ <message name="getEvidenceReq">
+  <part element="ns1:getEvidence" name="request"/>
+ </message>
+
+ <message name="getImexSRecReq">
+  <part element="ns1:getImexSRecReq" name="request"/>
+ </message>
+
+ <message name="getDipSRecReq">
+  <part element="ns1:getDipSRecReq" name="request"/>
+ </message>
+
+ <message name="getLinksByNodeSetReq">
+  <part element="ns1:getLinksByNodeSet" name="request"/>
+ </message>
+
+ <message name="getNodeRes">
+  <part element="dxf:dataset" name="response"/>
+ </message>
+
+ <message name="matchNodeRes">
+  <part element="dxf:dataset" name="response"/>
+ </message>
+
+ <message name="getLinkRes">
+  <part element="dxf:dataset" name="response"/>
+ </message>
+
+ <message name="getEvidenceRes">
+  <part element="dxf:dataset" name="response"/>
+ </message>
+
+ <message name="getImexSRecRes">
+  <part element="ns1:mifStrRep" name="response"/>
+ </message>
+
+ <message name="getDipSRecRes">
+  <part element="ns1:mifStrRep" name="response"/>
+ </message>
+
+ <message name="transformReq">
+  <part element="ns1:transform" name="request"/>
+ </message>
+
+ <message name="transformRes">
+  <part element="dxf:dataset" name="response"/>
+ </message>
+
+ <portType name="DipSOAPPortType">
+
+  <operation name="getNode">
+   <input  message="tns:getNodeReq"/>
+   <output message="tns:getNodeRes"/>
+  </operation>
+
+  <operation name="matchNode">
+   <input  message="tns:matchNodeReq"/>
+   <output message="tns:matchNodeRes"/>
+  </operation>
+
+  <operation name="getNodeBounds">
+   <input  message="tns:getNodeBoundsReq"/>
+   <output message="tns:getNodeRes"/>
+  </operation>
+
+  <operation name="getNodeRange">
+   <input  message="tns:getNodeRangeReq"/>
+   <output message="tns:getNodeRes"/>
+  </operation>
+
+  <operation name="getLinkBounds">
+   <input  message="tns:getLinkBoundsReq"/>
+   <output message="tns:getLinkRes"/>
+  </operation>
+
+  <operation name="getLinkRange">
+   <input  message="tns:getLinkRangeReq"/>
+   <output message="tns:getLinkRes"/>
+  </operation>
+
+  <operation name="getLink">
+   <input  message="tns:getLinkReq"/>
+   <output message="tns:getLinkRes"/>
+  </operation>
+
+  <operation name="getEvidence">
+   <input  message="tns:getEvidenceReq"/>
+   <output message="tns:getEvidenceRes"/>
+  </operation>
+
+  <operation name="getImexSRec">
+   <input  message="tns:getImexSRecReq"/>
+   <output message="tns:getImexSRecRes"/>
+  </operation>
+
+  <operation name="getDipSRec">
+   <input  message="tns:getDipSRecReq"/>
+   <output message="tns:getDipSRecRes"/>
+  </operation>
+
+  <operation name="getLinksByNodeSet">
+   <input  message="tns:getLinksByNodeSetReq"/>
+   <output message="tns:getLinkRes"/>
+  </operation>
+
+  <operation name="transform">
+   <input  message="tns:transformReq"/>
+   <output message="tns:transformRes"/>
+  </operation>
+
+ </portType>
+
+ <binding name="DipSOAPBinding" type="tns:DipSOAPPortType">
+
+  <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+  <operation name="getNodeBounds">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="getNodeRange">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="getNode">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="matchNode">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="getLinkBounds">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="getLinkRange">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="getLink">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="getEvidence">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="getImexSRec">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="getDipSRec">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="getLinksByNodeSet">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+  <operation name="transform">
+   <input>
+    <soap:body use="literal"/>
+   </input>
+   <output>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+
+ </binding>
+
+ <service name="serviceName">
+  <port binding="tns:DipSOAPBinding" name="public">
+  <soap:address location="http://dip.doe-mbi.ucla.edu:50606/dipsoap/services/public"/> 
+  </port>
+ </service>
+
+</definitions>
+
