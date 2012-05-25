@@ -1,13 +1,13 @@
 package edu.ucla.mbi.proxy.ebi;
 
 /*==============================================================================
- * $HeadURL$
- * $Id$
- * Version: $Rev$
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
  *==============================================================================
  *
  * PicrClient:
- *    services provided by EBI PICR web services
+ *    services provided by EBI PICR web services and create a jar file
  *
  *=========================================================================== */
 
