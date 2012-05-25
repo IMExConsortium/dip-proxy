@@ -42,7 +42,7 @@
 
   <modules>
     <module>dip-proxy-ws</module>
-    <module>ebi-client</module>
+    <module>picr-client</module>
     <module>dip-proxy-server</module>
   </modules>
 

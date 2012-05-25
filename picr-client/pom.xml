@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>edu.ucla.mbi.dip</groupId>
+  <artifactId>ebi-client</artifactId>
+  <packaging>jar</packaging>
+  <version>0.01</version>
+  <name>picr-client</name>
+  <url>http://dip.mbi.ucla.edu</url>
+
+  <parent>
+    <groupId>edu.ucla.mbi.dip</groupId>
+    <artifactId>dip-proxy</artifactId>
+    <version>0.01</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <version>2.1.3</version>
+     </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>picr-client</finalName>
+
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <executions>
+
+          <execution>
+            <id>picr</id>
+            <goals>
+              <goal>wsimport</goal>
+            </goals>
+            <configuration>
+              <verbose>false</verbose>
+              <bindingFiles>
+                <bindingFile>picr.jxb</bindingFile>
+              </bindingFiles>
+              <wsdlFiles>
+                <wsdlFile>EBI-PICR-service.wsdl</wsdlFile>
+              </wsdlFiles>
+              <staleFile>${basedir}/target/.picr.staleFlag</staleFile>
+              <keep>true</keep>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <verbose>true</verbose>
+          <fork>true</fork>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/*.class</include> 
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    
+    </plugins>
+  
+  </build>
+
+</project>
+
