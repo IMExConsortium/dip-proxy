@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.ucla.mbi.dip</groupId>
-  <artifactId>dip-proxy</artifactId>
+  <artifactId>dip-proxy-server</artifactId>
   <packaging>war</packaging>
   <version>0.01</version>
-  <name>dip-proxy</name>
+  <name>dip-proxy-server</name>
   <url>http://dip.mbi.ucla.edu</url>
 
   <properties>
@@ -80,7 +80,7 @@
 
   <parent>
    <groupId>edu.ucla.mbi.dip</groupId>
-   <artifactId>dip-ws</artifactId>
+   <artifactId>dip-proxy</artifactId>
    <version>0.01</version>
   </parent>
 
@@ -147,7 +147,7 @@
      <groupId>org.codehaus.mojo</groupId>
      <artifactId>jaxws-maven-plugin</artifactId>
      <executions>
-
+         
       <execution>
        <id>picr</id>
        <goals>
@@ -165,6 +165,7 @@
         <keep>true</keep>
        </configuration>
       </execution>
+     
 <!--
       <execution>
        <id>dip-public</id>
@@ -207,13 +208,13 @@
           <webResources>
 
             <resource>
-              <directory>${basedir}/../dip-api-ws/src/wsdl</directory>
+              <directory>${basedir}/../dip-proxy-ws/src/wsdl</directory>
               <targetPath>WEB-INF/wsdl</targetPath>
               <filtering>true</filtering>
               <includes>   
                 <include>services.xsd</include>
                 <include>DhtService14.wsdl</include>
-                <include>DipService14.wsdl</include>
+                <include>DipService14.wsdl</include> 
                 <include>EbiService14.wsdl</include>
                 <include>NcbiService14.wsdl</include>
                 <include>ProlinksService14.wsdl</include>
