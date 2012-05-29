@@ -94,7 +94,7 @@
 
    <dependency>
      <groupId>edu.ucla.mbi.dip</groupId>
-     <artifactId>dip-api-ws</artifactId>
+     <artifactId>dip-proxy-api</artifactId>
      <version>0.01</version>
    </dependency>
 

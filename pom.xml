@@ -41,7 +41,7 @@
   </developers>
 
   <modules>
-    <module>dip-proxy-ws</module>
+    <module>dip-proxy-api</module>
     <module>picr-client</module>
     <module>dip-proxy-server</module>
   </modules>
