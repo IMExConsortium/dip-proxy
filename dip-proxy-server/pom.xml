@@ -139,7 +139,7 @@
   </dependencies>
 
   <build>
-   <finalName>dip-proxy</finalName>
+   <finalName>dip-proxy-server</finalName>
 
    <plugins>
     <plugin>
@@ -162,7 +162,7 @@
           <webResources>
 
             <resource>
-              <directory>${basedir}/../dip-proxy-ws/src/wsdl</directory>
+              <directory>${basedir}/../dip-proxy-api/src/wsdl</directory>
               <targetPath>WEB-INF/wsdl</targetPath>
               <filtering>true</filtering>
               <includes>   

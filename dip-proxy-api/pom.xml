@@ -38,7 +38,7 @@
   </dependencies>
 
  <build>
-   <finalName>dip-proxy-ws</finalName>
+   <finalName>dip-proxy-api</finalName>
 
    <plugins>
     <plugin>

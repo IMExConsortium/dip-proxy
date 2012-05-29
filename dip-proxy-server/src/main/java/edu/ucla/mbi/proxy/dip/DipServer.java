@@ -29,8 +29,8 @@ import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
 import edu.ucla.mbi.services.*;
-import edu.ucla.mbi.services.dip.*;
-import edu.ucla.mbi.services.dip.direct.*;
+//import edu.ucla.mbi.services.dip.*;
+//import edu.ucla.mbi.services.dip.direct.*;
 
 import edu.ucla.mbi.legacy.dip.*;
 import edu.ucla.mbi.services.legacy.dip.*;
