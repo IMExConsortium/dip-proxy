@@ -1,0 +1,2 @@
+command example:
+perl proxyClient.pl EBI getPicrList NP_500606 refseq stub dxf 6239
