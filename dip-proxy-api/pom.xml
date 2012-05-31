@@ -47,7 +47,7 @@
      <executions>
       
       <execution>
-       <id>dip-proxy-api</id>
+       <id>dip-proxy</id>
        <goals>
         <goal>wsimport</goal>
        </goals>
@@ -81,7 +81,6 @@
         <wsdlFiles>
           <wsdlFile>NcbiService14.wsdl</wsdlFile> 
         </wsdlFiles>
-        <wsdlLocation>NcbiService14.wsdl</wsdlLocation>
         <staleFile>${basedir}/target/.ncbi-proxy.staleFlag</staleFile>
         <keep>true</keep>
        </configuration>

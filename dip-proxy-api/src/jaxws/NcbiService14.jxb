@@ -17,14 +17,8 @@
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
     xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" >
 
- <package name="edu.ucla.mbi.proxy"/>
-
- <bindings node="wsdl:definitions/wsdl:service[@name='NcbiProxyService']">
-  <class name="NcbiProxyService"/>
- </bindings>
-
- <bindings node="wsdl:definitions/wsdl:portType[@name='NcbiProxyPortType']">
-  <class name="NcbiProxyPort"/>
+ <bindings node="wsdl:definitions">
+    <package name="edu.ucla.mbi.proxy"/>
  </bindings>
 
  <bindings node="wsdl:definitions/wsdl:portType[@name='NcbiProxyPortType']/wsdl:operation[@name='getRefseq']/wsdl:fault">
@@ -56,6 +50,13 @@
   </class>
  </bindings>
 
+ <bindings node="wsdl:definitions/wsdl:service[@name='NcbiProxyService']">
+  <class name="NcbiProxyService"/>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='NcbiProxyPortType']">
+  <class name="NcbiProxyPort"/>
+ </bindings>
 
 </bindings>
 

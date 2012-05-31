@@ -15,7 +15,7 @@
              targetNamespace="http://mbi.ucla.edu/proxy/ncbi" 
     	     xmlns:ncbi="http://mbi.ucla.edu/proxy/ncbi" 
              xmlns:dsv="http://dip.doe-mbi.ucla.edu/services"
-	     xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" > 
+	         xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" > 
  <types>
 
   <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 

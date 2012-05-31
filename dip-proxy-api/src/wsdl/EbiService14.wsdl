@@ -14,7 +14,7 @@
              xmlns:xs="http://www.w3.org/2001/XMLSchema"
              targetNamespace="http://mbi.ucla.edu/proxy/ebi" 
              xmlns:ebi="http://mbi.ucla.edu/proxy/ebi"
-	     xmlns:dsv="http://dip.doe-mbi.ucla.edu/services"
+	         xmlns:dsv="http://dip.doe-mbi.ucla.edu/services"
              xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" >
  <types>
   <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
