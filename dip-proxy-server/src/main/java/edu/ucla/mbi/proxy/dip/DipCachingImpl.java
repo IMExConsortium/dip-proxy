@@ -1,16 +1,16 @@
 package edu.ucla.mbi.proxy.dip;
 
-/*=========================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/#$
- * $Id$
- * Version: $Rev$
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * DipCachingImpl - Dip Database access implemented 
  * through SOAP service
  *
  *
- *======================================================================== */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,8 +49,8 @@ public class DipCachingImpl implements DipProxyPort {
         String service = "dip";
 
         Log log = LogFactory.getLog( DipCachingImpl.class );
-        log.info( "getPubmedArticle " + " NS=" + ns + " AC=" + ac + " DT="
-                + detail );
+        log.info( "DipCachingImpl getDipRecord: " + " NS=" + ns 
+                  + " AC=" + ac + " DT=" + detail );
 
         if ( !ns.equalsIgnoreCase( "dip" ) ) {
             log.info( " forcing pubmed as ns" );
@@ -58,7 +58,7 @@ public class DipCachingImpl implements DipProxyPort {
         }
 
         if ( ac == null || ac.equals( "" ) ) {
-            log.info( "DipCaching: missing accession" );
+            log.info( "DipCachingImpl: missing accession" );
             throw FaultFactory.newInstance( Fault.MISSING_ID );            
         }
 
@@ -113,7 +113,7 @@ public class DipCachingImpl implements DipProxyPort {
             }
 
         } catch ( ServiceException se ) {
-            log.info( "ServiceFault: " + se.toString() );
+            log.info( "DipCachingImpl ServiceFault: " + se.toString() );
             throw  FaultFactory.newInstance( se.getServiceFault() );
         } catch ( Exception e ) {
             log.info( "DipCachingImpl: " + e.toString() );

@@ -62,20 +62,22 @@ public class ProxyPortImpl implements ProxyPort {
 
         //validation of ns undone here ??????????
         if ( provider.equals( "NCBI" ) ) {
-            if( service.equals( "nlm" ) ) {
-                if ( !ns.equalsIgnoreCase( "nlmid" ) ) {
-                    log.info( " forcing nlm as ns" );
-                    ns = "nlmid";
-                }
-            } else if ( service.equals( "taxon" ) ) {
-                if ( !ns.equalsIgnoreCase( "ncbitaxid" ) ) {
-                    log.info( "forcing ncbitaxid as ns" );
-                    ns = "ncbitaxid";
-                }
+            if( service.equals( "nlm" ) && !ns.equalsIgnoreCase( "nlmid" ) ) {
+                log.info( " forcing nlm as ns" );
+                ns = "nlmid";
+            } else if ( service.equals( "taxon" ) 
+                            && !ns.equalsIgnoreCase( "ncbitaxid" ) ) 
+            {
+                log.info( "forcing ncbitaxid as ns" );
+                ns = "ncbitaxid";
             }  
-            
         } else if ( provider.equals( "EBI" ) ) {
-            
+            if( service.equals( "uniprot" ) 
+                    && !ns.equalsIgnoreCase( "uniprot" ) ) 
+            {
+                log.info( "EbiCaching: forcing uniprot as ns" );
+                ns = "uniprot";
+            }
         } else if ( provider.equals( "DIP" ) ) {
 
         } else {
@@ -86,6 +88,7 @@ public class ProxyPortImpl implements ProxyPort {
         try {
             Router router =
                 WSContext.getServerContext( provider ).createRouter() ;
+
             CachingService cachingSrv =
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
@@ -125,13 +128,13 @@ public class ProxyPortImpl implements ProxyPort {
 
         }catch ( ServiceException se ) {
             String message = se.getServiceFault().getMessage();
-            log.warn( "NcbiCachingImpl: ServiceException: message= " + message);
+            log.warn( "ProxyPortImpl: ServiceException: message= " + message);
 
             ProxyFault fault = new ProxyFault(message, se.getServiceFault());
             throw fault;
 
         } catch ( Exception e ) {
-            log.warn( "NcbiCachingImpl: " + e.toString() );
+            log.warn( "ProxyPortImpl: " + e.toString() );
             ServiceFault fault = new ServiceFault();
             fault.setMessage(e.toString());
             fault.setFaultCode(99);

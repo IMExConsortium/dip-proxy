@@ -1,10 +1,10 @@
 package edu.ucla.mbi.proxy.ebi;
 
-/*=======================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/#$
- * $Id$
- * Version: $Rev$
- *=========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * EbiCachingImpl - EBI Database access implemented 
  * through efetch SOAP
@@ -12,7 +12,7 @@ package edu.ucla.mbi.proxy.ebi;
  *  NOTE: Modify gen-src/axis2/ebi/resources/services.xml to use
  *  this instead of default EbiPublicSkeleton.
  *
- *====================================================================== */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
