@@ -1,14 +1,14 @@
 package edu.ucla.mbi.proxy;
 
-/*===========================================================================
- * $HeadURL::                                                               $
- * $Id::                                                                    $
- * Version: $Rev::                                                          $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * RemoteServerContext:
  *
- *========================================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +42,7 @@ public class RemoteServerContext {
     private Router router = null;
     
     public int getTimeout(){
-	return timeout;
+	    return timeout;
     }
     
     public int getTtl(){
@@ -86,74 +86,62 @@ public class RemoteServerContext {
     }
 
     public ProxyTransformer getTransformer(){
-	return transformer;
+	    return transformer;
     }
 
     public void setProperty(String name, Object value){
-	properties.put(name,value);
+	    properties.put(name,value);
     }
     
     public Object getProperty(String name){
-	return properties.get(name);
+	    return properties.get(name);
     }
     
     public void init( String provider ) {
        	Log log = LogFactory.getLog( RemoteServerContext.class );
 
-	log.info( "rsc=" + this );
+	    log.info( "rsc=" + this );
         log.info( "configure(" + provider + ")" );
 
-
-	this.provider = provider;
+	    this.provider = provider;
 	
-	Map context = WSContext.getService( provider );
+	    Map context = WSContext.getService( provider );
                                                                            	
-	log.info( "  timeout=" + 
-                  context.get( "timeout" ) );
-	timeout = (Integer) context.get( "timeout" );
+	    log.info( "  timeout=" + context.get( "timeout" ) );
+	    timeout = (Integer) context.get( "timeout" );
 	
-	log.info( "  ttl=" + 
-                  context.get( "ttl" ) );
-	ttl = (Integer) context.get( "ttl" );
+	    log.info( "  ttl=" + context.get( "ttl" ) );
+	    ttl = (Integer) context.get( "ttl" );
 
-
-	log.info( "  cacheOn=" +
-                  context.get( "cacheOn" ) );
-	cacheOn = (Boolean) context.get( "cacheOn" );
+	    log.info( "  cacheOn=" + context.get( "cacheOn" ) );
+	    cacheOn = (Boolean) context.get( "cacheOn" );
                 
-	log.info( "  remoteProxyOn=" + 
-                  context.get( "remoteProxyOn" ) );
-	remoteProxyOn = (Boolean) context.get( "remoteProxyOn" );
+	    log.info( "  remoteProxyOn=" + context.get( "remoteProxyOn" ) );
+	    remoteProxyOn = (Boolean) context.get( "remoteProxyOn" );
         
-	log.info( "  monitorOn=" +
-                  context.get( "monitorOn" ) );
-	monitorOn = (Boolean) context.get( "monitorOn" );
+	    log.info( "  monitorOn=" + context.get( "monitorOn" ) );
+	    monitorOn = (Boolean) context.get( "monitorOn" );
 
-	log.info( "  debug=" +
-                  context.get( "debug" ) );
-	debug = (Integer) context.get( "debug" );
+	    log.info( "  debug=" + context.get( "debug" ) );
+	    debug = (Integer) context.get( "debug" );
         
-	log.info( "  transformer=" +
-                  context.get( "transformer" ) );
-	transformer = (ProxyTransformer) context.get( "transformer" );
+	    log.info( "  transformer=" + context.get( "transformer" ) );
+	    transformer = (ProxyTransformer) context.get( "transformer" );
         
         log.info( "  servers:" );
 
-        log.info( "   nativeServer=" +
-                  context.get( "nativeServer" ) );
+        log.info( "   nativeServer=" + context.get( "nativeServer" ) );
         nativeServer = (RemoteServer) context.get( "nativeServer" );
 
-        log.info( "   proxyProto=" +
-                  context.get( "proxyProto" ) );
+        log.info( "   proxyProto=" + context.get( "proxyProto" ) );
         proxyServer = (RemoteProxyServer) context.get( "proxyProto" );
         
-	log.info( "   router=" + 
-		  context.get( "router" ) );
-	router = (Router) context.get( "router" );
-	router.setRemoteServerContext( this );
+	    log.info( "   router=" + context.get( "router" ) );
+	    router = (Router) context.get( "router" );
+	    router.setRemoteServerContext( this );
         
-	initialized=true;
-	log.info("configure(" +  provider+ "): DONE");    
+	    initialized=true;
+	    log.info("configure(" +  provider+ "): DONE");    
     }
     
 }  
