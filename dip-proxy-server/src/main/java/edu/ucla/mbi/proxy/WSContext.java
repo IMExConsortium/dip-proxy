@@ -1,14 +1,14 @@
 package edu.ucla.mbi.proxy;
                                                                            
-/*==========================================================================
- * $HeadURL::                                                              $ 
- * $Id::                                                                   $
- * Version: $Rev::                                                         $
- *==========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $ 
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * WSContext - global configuration of the dip-proxy server
  *
- *==========================================================================
+ *==============================================================================
  */
 
 import java.util.*;
@@ -28,7 +28,7 @@ public class WSContext{
     
     private static Map<String,Map> services;
     private static Map<String, RemoteServerContext> 
-	serverContexts = new HashMap<String, RemoteServerContext>();
+	            serverContexts = new HashMap<String, RemoteServerContext>();
     
     private static Dht proxyDht;
 
@@ -39,24 +39,6 @@ public class WSContext{
     private static long waitMillis = 5000;
     
     private static int threadRunMinutes = 10; // 10 minutes
-
-    /*
-    private static NativeRecordDAO nativeRecordDAO;
-    private static DxfRecordDAO dxfRecordDAO;
-    private static NativeAuditDAO nativeAuditDAO;
-
-    public void setNativeRecordDAO ( NativeRecordDAO dao ) {
-        this.nativeRecordDAO = dao;
-    }
-    
-    public void setDxfRecordDAO ( DxfRecordDAO dao ) {
-        this.dxfRecordDAO = dao;
-    }
-
-    public void setNativeAuditDAO ( NativeAuditDAO dao ) {
-        this.nativeAuditDAO = dao;
-    }
-    */
 
     public void setPort( int port ) {
         this.port = port;
@@ -90,19 +72,6 @@ public class WSContext{
 	    this.services = services;
     }
    
-    /* 
-    public static NativeRecordDAO getNativeRecordDAO () {
-        return nativeRecordDAO;
-    }
-
-    public static DxfRecordDAO getDxfRecordDAO () {
-        return dxfRecordDAO;
-    }
-
-    public static NativeAuditDAO getNativeAuditDAO () {
-        return nativeAuditDAO;
-    }
-    */
     public Map<String,Map> getServices() {
 	    return services;
     }
@@ -125,76 +94,74 @@ public class WSContext{
 
     //---------------------------------------------------------------------
 
+    public static RemoteServerContext getServerContext( String provider ) {
+	    Log log = LogFactory.getLog( WSContext.class );
+	    //log.info( "ProxyWS: WSContext.getServerContext(" + provider + ")" );
 
-    public static RemoteServerContext 
-	getServerContext( String provider ) {
-	Log log = LogFactory.getLog( WSContext.class );
-	//log.info( "ProxyWS: WSContext.getServerContext(" + provider + ")" );
-
-	if( serverContexts.get( provider ) == null ) {
-	    RemoteServerContext rsc = new RemoteServerContext();
-	    rsc.init( provider );
-	    serverContexts.put( provider, rsc );
-	}
-	return serverContexts.get( provider );
+	    if( serverContexts.get( provider ) == null ) {
+	        RemoteServerContext rsc = new RemoteServerContext();
+	        rsc.init( provider );
+	        serverContexts.put( provider, rsc );
+	    }
+	    return serverContexts.get( provider );
     }
 
     public void initialize() {
         Log log = LogFactory.getLog( WSContext.class );
         log.info( "ProxyWS: WSContext initializing..." );
         log.info( "ProxyWS: Known remote services:" );
-	for( Iterator<String> 
-		 i = services.keySet().iterator(); i.hasNext(); ) {
+	    for( Iterator<String> 
+		        i = services.keySet().iterator(); i.hasNext(); ) {
 
-	    String service = i.next();
+	        String service = i.next();
 	    
-	    // Time To Live
-	    //-------------
+	        // Time To Live
+	        //-------------
 	    
-	    String ttl = 
-		(String) ( (Map) services.get( service ) ).get( "ttl" );
-	    int intTtl = DEFAULT_TTL*60*60*24;
-	    if ( ttl != null ) {
-		if (ttl.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
-		    try {
-			// detault units: days
-			intTtl = Integer.parseInt( ttl );
-			// convert to seconds
-			intTtl = intTtl*60*60*24;
-		    } catch ( NumberFormatException nfe ) {
-			log.info( "ProxyWS: ttl=" + ttl +
-				  " :format error. Using default." );
+	        String ttl = 
+		        (String) ( (Map) services.get( service ) ).get( "ttl" );
+	        int intTtl = DEFAULT_TTL*60*60*24;
+	        if ( ttl != null ) {
+		        if (ttl.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
+		            try {
+			            // detault units: days
+			            intTtl = Integer.parseInt( ttl );
+			            // convert to seconds
+			            intTtl = intTtl*60*60*24;
+		            } catch ( NumberFormatException nfe ) {
+			            log.info( "ProxyWS: ttl=" + ttl +
+				                  " :format error. Using default." );
 		            }
 		        } else {
-		            log.info("ProxyWS: ttl="+ttl+
-				     " :unknown units/format. Using default.");
+		            log.info( "ProxyWS: ttl="+ttl+
+				              " :unknown units/format. Using default.");
 		            ttl = String.valueOf( DEFAULT_TTL );
-		}
-	    } else {
-		log.info( "ProxyWS: ttl not specified: Using default." );
-		ttl = String.valueOf( DEFAULT_TTL );
-	    }
+		        }
+	        } else {
+		        log.info( "ProxyWS: ttl not specified: Using default." );
+		        ttl = String.valueOf( DEFAULT_TTL );
+	        }
 	         
             ( (Map) services.get( service ) ).put( "ttl", intTtl );
 	    
 
-	    // Remote Service Timeout
-	    //-----------------------
+	        // Remote Service Timeout
+	        //-----------------------
 
-	    String timeout =
-		(String) ( (Map) services.get( service ) ).get( "timeout" );
+	        String timeout =
+		        (String) ( (Map) services.get( service ) ).get( "timeout" );
 	    
-	    int intTimeout = DEFAULT_TIMEOUT;
-	    if( timeout != null ) {
+	        int intTimeout = DEFAULT_TIMEOUT;
+	        if( timeout != null ) {
                 if ( timeout.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
-		    try {
+		            try {
                         // detault units: seconds
-			intTimeout = Integer.parseInt( timeout );
-			// convert to miliseconds
+			            intTimeout = Integer.parseInt( timeout );
+			            // convert to miliseconds
                         intTimeout = intTimeout*1000; 
                     } catch( NumberFormatException nfe ) {
                         log.info( "ProxyWS: timeout=" + timeout +
-				  " :format error. Using default." );
+				                  " :format error. Using default." );
                     }
                 } else {
                     log.info("ProxyWS: timeout="+timeout+
@@ -203,16 +170,16 @@ public class WSContext{
                 }
             } else {
                 log.info( "ProxyWS: ttl not specified: Using default." );
-		timeout=String.valueOf( DEFAULT_TIMEOUT );
+		        timeout=String.valueOf( DEFAULT_TIMEOUT );
             }
 	    
-	    ( (Map) services.get( service ) ).put( "timeout", intTimeout );
+	        ( (Map) services.get( service ) ).put( "timeout", intTimeout );
 	    
-	    log.info( "ProxyWS:  " + service + " (ttl: " + ttl + " days; " +
-		      "timeout=" + timeout + " s)" );
+	        log.info( "ProxyWS:  " + service + " (ttl: " + ttl + " days; " +
+		              "timeout=" + timeout + " s)" );
 	    
 
-	    // Cache flag
+	        // Cache flag
             //------------
 
             String cacheOn =
@@ -269,17 +236,12 @@ public class WSContext{
             ( (Map) services.get( service ) ).put( "monitorOn", isMonitorOn );
 	    
 	    
-	    // Monitor Interval
-	    //-----------------
+	        // Monitor Interval
+	        //-----------------
  
 
-	    // Monitor query
-	    //--------------
-
-
-
-
-
+	        // Monitor query
+	        //--------------
 
             // Remote Proxy flag
             //------------------
@@ -309,63 +271,58 @@ public class WSContext{
 
             ( (Map) services.get( service ) ).put( "remoteProxyOn", isRemoteProxyOn );
             
-	    // proxy prototype
-	    //----------------
+	        // proxy prototype
+	        //----------------
 
             RemoteProxyServer proxyProto = 
                 (RemoteProxyServer) ( (Map) services.get( service ) ).get( "proxyProto" );
             
             ( (Map) services.get( service ) ).put( "proxyProto", proxyProto );
 
-	    // router
-	    //-------
+	        // router
+	        //-------
 
             Router router = 
                 (Router) ( (Map) services.get( service ) ).get( "router" );
             
             ( (Map) services.get( service ) ).put( "router", router );
             
-	    // debug level
-	    //------------
+	        // debug level
+	        //------------
 	    
-	    String debug = 
-		(String) ( (Map) services.get( service ) ).get( "debug" );
-	    int intDebug = DEFAULT_DEBUG;
-	    if ( debug != null ) {
-		if (debug.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
-		    try {
-			// detault units: days
-			intDebug = Integer.parseInt( debug );
-		    } catch ( NumberFormatException nfe ) {
-			log.info( "ProxyWS: debug=" + debug +
-				  " :format error. Using default." );
+	        String debug = 
+		        (String) ( (Map) services.get( service ) ).get( "debug" );
+	        int intDebug = DEFAULT_DEBUG;
+	        if ( debug != null ) {
+		        if (debug.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
+		            try {
+			            // detault units: days
+			            intDebug = Integer.parseInt( debug );
+		            } catch ( NumberFormatException nfe ) {
+			            log.info( "ProxyWS: debug=" + debug +
+				                  " :format error. Using default." );
                     }
                 } else {
                     log.info("ProxyWS: debug="+ debug +
                              " :unknown units/format. Using default.");
                 }
-	    } else {
-		log.info( "ProxyWS: debug level not specified: Using default." );
+	        } else {
+		        log.info( "ProxyWS: debug level not specified: Using default." );
             }
 	         
             ( (Map) services.get( service ) ).put( "debug", intDebug );
 
-	}
-	log.info( "ProxyWS: WSContext initializing... DONE" );
+	    }
+	    log.info( "ProxyWS: WSContext initializing... DONE" );
     }
 
     public void cleanup() {
 
         Log log = LogFactory.getLog( WSContext.class );
         log.info( "cleanup called" );
-        
-
-
-
-
     }
 
     public static String info() {
-	return "WSContext: info";
+	    return "WSContext: info";
     }
 }
