@@ -1,10 +1,10 @@
 package edu.ucla.mbi.proxy.ncbi;
 
-/*================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/#$
- * $Id$
- * Version: $Rev$
- *================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * NcbiCachingImpl - NCBI Database access implemented 
  * through efetch SOAP
@@ -12,7 +12,7 @@ package edu.ucla.mbi.proxy.ncbi;
  *  NOTE: Modify gen-src/axis2/ncbi/resources/services.xml to use
  *  this instead of default NcbiPublicSkeleton.
  *
- *============================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

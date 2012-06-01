@@ -1,10 +1,10 @@
 package edu.ucla.mbi.proxy.prolinks;
 
-/* =======================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/#$
- * $Id$
- * Version: $Rev$
- *=========================================================================
+/* =============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *                                                                        
  * ProlinksCachingImpl - Prolinks Database access implemented             
  * through ....                                                           
@@ -12,7 +12,7 @@ package edu.ucla.mbi.proxy.prolinks;
  *  NOTE: Modify gen-src/axis2/prolinks/resources/services.xml to use     
  *  this instead of default ProlinksPublicSkeleton.                       
  *                                                                        
- *====================================================================== */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

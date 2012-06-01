@@ -1,14 +1,15 @@
 package edu.ucla.mbi.proxy;
 
 /*==============================================================================
- * $HeadURL$
- * $Id$
- * Version: $Rev$
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
  *==============================================================================
  *
  * ProxyPortImpl - dip-proxy services implemented 
  *                                  
- *============================================================= */
+ *=========================================================================== */
+
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.services.Fault;
