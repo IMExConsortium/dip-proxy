@@ -160,7 +160,6 @@
         <wsdlFiles>
           <wsdlFile>DipLegacyService.wsdl</wsdlFile>
         </wsdlFiles>
-        <wsdlLocation>WEB-INF/wsdl/DipLegacyService.wsdl</wsdlLocation>
         <staleFile>${basedir}/target/.dip-legacy.staleFlag</staleFile>
         <keep>true</keep>
        </configuration>

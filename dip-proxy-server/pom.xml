@@ -173,8 +173,8 @@
                 <include>EbiService14.wsdl</include>
                 <include>NcbiService14.wsdl</include>
                 <include>ProlinksService14.wsdl</include>
-                <!--<include>DipDirect14.wsdl</include> -->
                 <include>DipLegacyService.wsdl</include>
+                <!--<include>DipDirect14.wsdl</include> -->
               </includes>
             </resource>
 
