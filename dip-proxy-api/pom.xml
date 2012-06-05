@@ -9,11 +9,13 @@
 
   <url>http://imex.mbi.ucla.edu/trac/dip</url>
 
- <parent>
+  
+  <parent>
    <groupId>edu.ucla.mbi.dip</groupId>
    <artifactId>dip-proxy</artifactId>
    <version>0.01</version>
   </parent>
+  
 
   <dependencies>
 

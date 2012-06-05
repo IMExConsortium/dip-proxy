@@ -76,7 +76,7 @@ public class ProxyPortImpl implements ProxyPort {
             if( service.equals( "uniprot" ) 
                     && !ns.equalsIgnoreCase( "uniprot" ) ) 
             {
-                log.info( "EbiCaching: forcing uniprot as ns" );
+                log.info( "getRecord: forcing uniprot as ns" );
                 ns = "uniprot";
             }
         } else if ( provider.equals( "DIP" ) ) {
@@ -85,6 +85,9 @@ public class ProxyPortImpl implements ProxyPort {
             throw FaultFactory.newInstance( 8 ); // invalid query type
         }
 
+        log.info( "getRecord: provider=" + provider 
+                  + " and service=" + service + " ac=" + ac 
+                  + " and detail=" + detail + " format=" + format );
         
         try {
             Router router =
@@ -98,12 +101,14 @@ public class ProxyPortImpl implements ProxyPort {
                  format.equalsIgnoreCase( "dxf" ) ||
                  format.equalsIgnoreCase( "both" ) ) {
 
+                log.info( "getRecord: before cachingService getDxf. " );
                 DatasetType result =
                     cachingSrv.getDxf( provider, service, ns, ac, detail );
+
                 if ( result != null ) {
                     dataset.value = result ;
                 } else {
-                    log.info("return dataset is null ");
+                    log.info("getRecord: return dataset is null ");
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
                 }
             }
@@ -113,6 +118,7 @@ public class ProxyPortImpl implements ProxyPort {
                    format.equalsIgnoreCase( "both" ) )
                  ) {
 
+                log.info( "getRecord: before cachingService getNative. " );
                 NativeRecord natRec =
                     cachingSrv.getNative( provider, service, ns, ac );
 

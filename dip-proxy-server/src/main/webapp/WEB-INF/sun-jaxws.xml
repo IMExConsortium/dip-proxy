@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <endpoints xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime" version="2.0">
 
+ <endpoint name="proxy-service"
+  interface="edu.ucla.mbi.proxy.ProxyPort"
+  implementation="edu.ucla.mbi.proxy.ProxyPortImpl"
+  service="{http://mbi.ucla.edu/proxy}ProxyService"
+  port="{http://mbi.ucla.edu/proxy}proxyPort"
+  wsdl="WEB-INF/wsdl/ProxyService14.wsdl"
+  url-pattern="/proxy-service"/>
+
  <endpoint name="dht-proxy"
   interface="edu.ucla.mbi.proxy.DhtProxyPort"
   implementation="edu.ucla.mbi.proxy.dht.DhtProxyImpl"

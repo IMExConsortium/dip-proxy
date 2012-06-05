@@ -1,0 +1,2 @@
+testing case:
+./dipProxyClient.sh proxyM EBI getPicrList AC=NP_500606 NS=refseq DETAIL=base FORMAT=dxf

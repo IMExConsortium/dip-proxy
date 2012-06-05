@@ -297,6 +297,8 @@ public class CachingService extends Observable {
                                       "dxf record is empty or there is no ac.");
                         }
                     }
+                } else {
+                    log.info( "getDxf: dxfRecord==null. " );
                 }
                 
             } catch ( Exception e ) {
@@ -316,6 +318,7 @@ public class CachingService extends Observable {
         long startTime = System.currentTimeMillis();
         long waitMillis = WSContext.getWaitMillis();
 
+        log.info( "getDxf: nativeRecordN nrN=" + nrN );
         while( nrN == null && 
                (System.currentTimeMillis() - startTime < waitMillis )){
             nrN = DipProxyDAO.getNativeRecordDAO().find(nr.getId());

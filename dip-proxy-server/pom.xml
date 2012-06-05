@@ -174,7 +174,7 @@
                 <include>NcbiService14.wsdl</include>
                 <include>ProlinksService14.wsdl</include>
                 <include>DipLegacyService.wsdl</include>
-                <!--<include>DipDirect14.wsdl</include> -->
+                <include>ProxyService14.wsdl</include> 
               </includes>
             </resource>
 
@@ -258,6 +258,7 @@
             <configuration>
               <classifier>client</classifier>
               <includes>
+                <include>**/proxy/*</include>
                 <include>**/proxy/*/*</include>
                 <include>**/util/*</include>
               </includes>
