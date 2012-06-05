@@ -1,9 +1,9 @@
 package edu.ucla.mbi.proxy;
 
 /*==============================================================================
- * $HeadURL$
- * $Id$
- * Version: $Rev$
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
  *==============================================================================
  *
  * ProxyServiceClient:
@@ -92,26 +92,36 @@ public class ProxyServiceClient {
             Holder<XMLGregorianCalendar> timestamp = 
                                 new Holder<XMLGregorianCalendar>();
 
+            String resultStr;
+
             port.getRecord( provider, service, ns, ac, "", detail, format, "", 0,
                             timestamp, resDataset, resNative );
 
             edu.ucla.mbi.dxf14.ObjectFactory dof = 
                                 new edu.ucla.mbi.dxf14.ObjectFactory();
 
-            DatasetType dataset = resDataset.value;
+            if( format.equals( "dxf" ) ) {
+                DatasetType dataset = resDataset.value;
 
-            JAXBContext jc = DxfJAXBContext.getDxfContext();
+                JAXBContext jc = DxfJAXBContext.getDxfContext();
 
-            Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT,
+                Marshaller marshaller = jc.createMarshaller();
+                marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT,
                                     new Boolean( true ) );
 
-            java.io.StringWriter sw = new StringWriter();
-            marshaller.setProperty( Marshaller.JAXB_ENCODING, "UTF-8" );
+                java.io.StringWriter sw = new StringWriter();
+                marshaller.setProperty( Marshaller.JAXB_ENCODING, "UTF-8" );
 
-            marshaller.marshal( dof.createDataset( dataset ), sw );
+                marshaller.marshal( dof.createDataset( dataset ), sw );
 
-            String resultStr = sw.toString();
+                resultStr = sw.toString();
+            } else if ( format.equals( "native" ) ) {
+                resultStr = resNative.value;
+            } else {
+                System.out.println( "Invalid format. " 
+                                    + "format have to be 'native' or 'dxf'. " );
+                return;                
+            }
 
             System.out.println( "Result:" );
             System.out.println( resultStr );
