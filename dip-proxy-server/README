@@ -1,2 +1,4 @@
 testing case:
-./dipProxyClient.sh proxyM EBI getPicrList AC=NP_500606 NS=refseq DETAIL=base FORMAT=dxf
+./dipProxyClient.sh proxyM EBI getPicrList AC=NP_500606 NS=refseq FORMAT=dxf DETAIL=full
+./dipProxyClient.sh proxyM EBI picr AC=NP_500606 NS=refseq FORMAT=both DETAIL=base
+./dipProxyClient.sh proxyM EBI picr AC=NP_500606 NS=refseq FORMAT=native 

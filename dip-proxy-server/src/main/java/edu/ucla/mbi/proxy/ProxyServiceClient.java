@@ -100,7 +100,9 @@ public class ProxyServiceClient {
             edu.ucla.mbi.dxf14.ObjectFactory dof = 
                                 new edu.ucla.mbi.dxf14.ObjectFactory();
 
-            if( format.equals( "dxf" ) ) {
+            if( format.equalsIgnoreCase( "dxf" ) 
+                    || format.equalsIgnoreCase( "both" ) ) 
+            {
                 DatasetType dataset = resDataset.value;
 
                 JAXBContext jc = DxfJAXBContext.getDxfContext();
@@ -115,16 +117,18 @@ public class ProxyServiceClient {
                 marshaller.marshal( dof.createDataset( dataset ), sw );
 
                 resultStr = sw.toString();
-            } else if ( format.equals( "native" ) ) {
-                resultStr = resNative.value;
-            } else {
-                System.out.println( "Invalid format. " 
-                                    + "format have to be 'native' or 'dxf'. " );
-                return;                
-            }
+                
+                System.out.println( "DXF Result:" );
+                System.out.println( resultStr );
+            } 
 
-            System.out.println( "Result:" );
-            System.out.println( resultStr );
+            if ( format.equalsIgnoreCase( "native" ) 
+                    || format.equalsIgnoreCase( "both" ) ) 
+            {
+                resultStr = resNative.value;
+                System.out.println( "NATIVE Result:" );
+                System.out.println( resultStr );
+            } 
 
         } catch ( Exception e ) {
             System.out.println( e.toString() );

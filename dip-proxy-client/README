@@ -1,2 +1,5 @@
 command example:
 perl proxyClient.pl EBI getPicrList NP_500606 refseq stub dxf 6239
+perl proxyServiceClient.pl PROVIDER=EBI SERVICE=picr AC=NP_500606 NS=refseq DETAIL=full FORMAT=dxf TESTNUM=0 TAXID=6239
+perl proxyServiceClient.pl PROVIDER=EBI SERVICE=picr AC=NP_500606 NS=refseq FORMAT=native
+

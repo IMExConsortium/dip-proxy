@@ -41,48 +41,80 @@ public class ProxyPortImpl implements ProxyPort {
                            Holder<DatasetType> dataset,
                            Holder<String> nativerecord
                            ) throws ProxyFault {
-   
+  
+        //*** validation of ac 
         if ( ac == null || ac.equals( "" ) ) {
             log.info( "missing accession" );
             throw FaultFactory.newInstance( Fault.MISSING_ID );
         }
 
-        if ( detail == null ) {
+        //*** validation of detail
+        if ( detail == null || detail.equals("") ) {
             detail = "stub";
 
         } else if ( detail.equalsIgnoreCase( "short" ) ||
-                    detail.equalsIgnoreCase( "stub" ) ) {
-
+                    detail.equalsIgnoreCase( "stub" ) ) 
+        {
             detail = "stub";
         } else if ( detail.equalsIgnoreCase( "base" ) ){
             detail = "base";
-
         } else {
             detail = "full";
         }
 
-        //validation of ns undone here ??????????
+        //*** validation of format
+        if( format == null || format.equals( "" ) ) {
+            format = "dxf";
+        } else if ( !format.equalsIgnoreCase( "native" ) 
+                        && !format.equalsIgnoreCase( "dxf" ) 
+                        && !format.equalsIgnoreCase( "both" ) ) 
+        {
+            throw FaultFactory.newInstance( 4 ); //unsupported operation
+        }
+
+        //validation of ns 
         if ( provider.equals( "NCBI" ) ) {
-            if( service.equals( "nlm" ) && !ns.equalsIgnoreCase( "nlmid" ) ) {
-                log.info( " forcing nlm as ns" );
+            if( service.equals( "nlm" ) ) {
+                log.info( " forcing nlm as ns. " );
                 ns = "nlmid";
-            } else if ( service.equals( "taxon" ) 
-                            && !ns.equalsIgnoreCase( "ncbitaxid" ) ) 
-            {
-                log.info( "forcing ncbitaxid as ns" );
+            } else if ( service.equals( "taxon" ) ) { 
+                log.info( "forcing ncbitaxid as ns. " );
                 ns = "ncbitaxid";
-            }  
+            } else if ( service.equals("pubmed") ) { 
+                log.info( "forcing pmid as ns. " );
+                ns = "pmid";
+            } else if ( service.equals( "refseq" ) ) {
+                ns = "refseq";
+            } else if ( service.equals( "entrezgene" ) ) {
+                ns = "entrezgene";
+            } else {
+                throw FaultFactory.newInstance( 4 ); //unsupported operation
+            }
         } else if ( provider.equals( "EBI" ) ) {
-            if( service.equals( "uniprot" ) 
-                    && !ns.equalsIgnoreCase( "uniprot" ) ) 
-            {
+            if( service.equals( "uniprot" ) ) { 
                 log.info( "getRecord: forcing uniprot as ns" );
                 ns = "uniprot";
+            } else if ( service.equals( "picr" ) ) {
+                if( detail.equalsIgnoreCase( "stub" ) ) {
+                    detail = "base"; // picr cann't support detail with stub
+                }
+            } else {
+                throw FaultFactory.newInstance( 4 ); //unsupported operation
             }
         } else if ( provider.equals( "DIP" ) ) {
-
+            if( service.equals( "dip" ) ) {
+                ns = "dip";
+            } else {
+                throw FaultFactory.newInstance( 4 ); //unsupported operation
+            }
+        } else if ( provider.equals( "MBI" ) ) {
+            if( service.equals( "prolinks" ) ) {
+                ns = "refseq";
+            } else {
+                throw FaultFactory.newInstance( 4 ); //unsupported operation
+            }
         } else {
-            throw FaultFactory.newInstance( 8 ); // invalid query type
+            throw FaultFactory.newInstance( 4 ); //unsupported operation
         }
 
         log.info( "getRecord: provider=" + provider 
@@ -97,10 +129,9 @@ public class ProxyPortImpl implements ProxyPort {
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
 
-            if ( format == null || format.equals( "" ) ||
-                 format.equalsIgnoreCase( "dxf" ) ||
-                 format.equalsIgnoreCase( "both" ) ) {
-
+            if ( format.equalsIgnoreCase( "dxf" ) 
+                    || format.equalsIgnoreCase( "both" ) ) 
+            {
                 log.info( "getRecord: before cachingService getDxf. " );
                 DatasetType result =
                     cachingSrv.getDxf( provider, service, ns, ac, detail );
@@ -113,11 +144,9 @@ public class ProxyPortImpl implements ProxyPort {
                 }
             }
             
-            if ( format != null &&
-                 ( format.equalsIgnoreCase( "native" ) ||
-                   format.equalsIgnoreCase( "both" ) )
-                 ) {
-
+            if ( format.equalsIgnoreCase( "native" ) 
+                    ||  format.equalsIgnoreCase( "both" ) )
+            {
                 log.info( "getRecord: before cachingService getNative. " );
                 NativeRecord natRec =
                     cachingSrv.getNative( provider, service, ns, ac );
