@@ -87,6 +87,18 @@
   </property>
  </bean>
 
+ <!-- reference proxy -->
+ <bean id="referenceProxy" init-method="initialize"
+       class="edu.ucla.mbi.proxy.RemoteProxyServer">
+  <property name="address">
+   <value>
+     http://%%URL%%/dip-proxy-server/proxy-service    
+   </value>
+  </property>
+  <property name="context">
+    <map/>
+  </property>
+ </bean>
 
 
  <!-- EBI proxy services -->

@@ -24,7 +24,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBContext;
 
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.datatype.XMLGregorianCalendar;
 
+import javax.xml.ws.Holder;
 import javax.xml.ws.BindingProvider;
 import com.sun.xml.ws.developer.JAXWSProperties;
 
@@ -82,9 +84,6 @@ public class RemoteProxyServer implements RemoteServer {
         ProxyService proxySrv = new ProxyService();
         ProxyPort port = proxySrv.getProxyPort();
 
-        NativeRecord natRecord = null;
-
-        /*
         try {
             log.info( " this=" + this );
             log.info( " port=" + url + " timeout=" + timeout );
@@ -101,40 +100,32 @@ public class RemoteProxyServer implements RemoteServer {
             ((BindingProvider) port).getRequestContext().put(
                    JAXWSProperties.CONNECT_TIMEOUT, timeout );
 
+            Holder<DatasetType> resDataset = new Holder<DatasetType>();
+            Holder<String> resNative = new Holder<String>();
+            Holder<XMLGregorianCalendar> timestamp =
+                                new Holder<XMLGregorianCalendar>();
+
+            port.getRecord( provider, service, ns, ac, "", "", "native", "", 0,
+                            timestamp, resDataset, resNative );
+
+            XMLGregorianCalendar qtime = timestamp.value;
+
+            NativeRecord record = new NativeRecord( provider, service, ns, ac );
+            record.setNativeXml( resNative.value );
+            record.setCreateTime( qtime.toGregorianCalendar().getTime() );
+
+            return record;
             
-            if ( service.equals( "refseq" ) ) {
-                natRecord = getRefseq( port, provider, service, ns, ac );
-            }
-            if ( service.equals( "entrezgene" ) ) {
-                natRecord = getGene( port, provider, service, ns, ac );
-            }
-            if ( service.equals( "taxon" ) ) {
-                natRecord = getTaxon( port, provider, service, ns, ac );
-            }
-            if ( service.equals( "pubmed" ) ) {
-                natRecord = getPubmedArticle( port, provider, service, ns, ac );
-            }
-            
-        } catch ( ServiceException fault ) {
-            throw fault;
         } catch ( Exception e ) {
-            log.info( "EbiProxy: getUniprot: exception: " + e.toString() );
+            log.info( "getNative: exception: " + e.toString() );
             if ( e.toString().contains( "No result found" ) ) {
-                // ServiceFault fault =
-                // new ServiceFault( "04 remote server: no hit." );
                 throw Fault.getServiceException( 5 ); // no hits
             } else if ( e.toString().contains( "Read timed out" ) ) {
-                // ServiceFault fault =
-                // new ServiceFault( "02 remote server: timeout." );
                 throw Fault.getServiceException( 12 ); // timeout
             } else {
-                // ServiceFault fault =
-                // new ServiceFault( "03 remote server: unknown." );
                 throw Fault.getServiceException( 99 ); // unknown
             }
         }
-        */
-        return natRecord;
     }
 
     public RemoteServer getRemoteServerInstance() {
@@ -202,8 +193,8 @@ public class RemoteProxyServer implements RemoteServer {
     }
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
-				 String detail, String service, 
-				 ProxyTransformer pTrans 
+				                 String detail, String service, 
+				                 ProxyTransformer pTrans 
                                  ) throws ServiceException {
 	
     	// NOTE: overload if dxf building more complex than

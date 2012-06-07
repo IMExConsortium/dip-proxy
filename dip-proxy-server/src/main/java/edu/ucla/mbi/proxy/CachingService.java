@@ -60,7 +60,7 @@ public class CachingService extends Observable {
         log.info( "getNative(provider=" + provider + ")" );
         log.info( "         (router=" + router + ")" );
         log.info( "         (router.rsc="
-                + router.getRemoteServerContext().getProvider() + ")" );
+                  + router.getRemoteServerContext().getProvider() + ")" );
         log.info( " cache on=" + rsc.isCacheOn() );
 
         NativeRecord cacheRecord = null; 

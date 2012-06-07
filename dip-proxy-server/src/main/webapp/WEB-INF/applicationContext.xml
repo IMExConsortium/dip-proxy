@@ -79,19 +79,19 @@
         <ref bean="ebiReferenceServer"/>
        </entry>      
 
-       <!--
+       
        <entry key="proxyProto"> 
-        <ref bean="ebiReferenceProxy"/>
+        <!--<ref bean="ebiReferenceProxy"/> -->
+        <ref bean="referenceProxy"/>
        </entry>      
-       -->
+       
        <entry key="router">
          <ref bean="ebiDhtRouter"/>
        </entry>
 
        <entry key="cache" value="on"/>
        <entry key="monitor" value="on"/>
-       <!--<entry key="remoteProxy" value="on"/> -->
-        <entry key="remoteProxy" value="off"/>
+       <entry key="remoteProxy" value="on"/>
        <entry key="debug" value="0"/>
 
       </map>
@@ -109,18 +109,18 @@
         <ref bean="ncbiReferenceServer"/>
        </entry>      
 
-       <!--
+       
        <entry key="proxyProto"> 
-        <ref bean="ncbiReferenceProxy"/>
+        <!--<ref bean="ncbiReferenceProxy"/> -->
+        <ref bean="referenceProxy"/>
        </entry>      
-       -->
+       
        <entry key="router">
          <ref bean="ncbiDhtRouter"/>
        </entry>
 
        <entry key="cache" value="on"/>
-       <!--<entry key="remoteProxy" value="on"/> -->
-        <entry key="remoteProxy" value="off"/>
+       <entry key="remoteProxy" value="on"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/> 
       </map>
@@ -130,7 +130,7 @@
       <map>
        <entry key="timeout" value="600"/>
        <entry key="transformer">
-        <ref bean="prlTransformer"/>
+       <ref bean="prlTransformer"/>
        </entry>
        <entry key="ttl"     value="14"/>
 
@@ -138,11 +138,12 @@
        <entry key="nativeServer">  
         <ref bean="prlReferenceServer"/>
        </entry>      
-       
+       --> 
        <entry key="proxyProto"> 
-        <ref bean="prlReferenceProxy"/>
+        <!--<ref bean="prlReferenceProxy"/> -->
+        <ref bean="referenceProxy"/>
        </entry>      
-       -->
+       
        <entry key="router">
           <ref bean="mbiDhtRouter"/>
        </entry>
@@ -167,11 +168,12 @@
         <ref bean="dipReferenceServer"/>
        </entry>      
 
-       <!--
+       
        <entry key="proxyProto">
-        <ref bean="dipReferenceProxy"/>
+        <!--<ref bean="dipReferenceProxy"/> -->
+        <ref bean="referenceProxy"/>
        </entry>
-       -->
+       
        <entry key="router">
         <ref bean="dipDhtRouter"/>
        </entry>
