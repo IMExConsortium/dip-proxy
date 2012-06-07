@@ -133,6 +133,7 @@ public class RemoteServerContext {
         log.info( "   nativeServer=" + context.get( "nativeServer" ) );
         nativeServer = (RemoteServer) context.get( "nativeServer" );
 
+        
         log.info( "   proxyProto=" + context.get( "proxyProto" ) );
         proxyServer = (RemoteProxyServer) context.get( "proxyProto" );
         

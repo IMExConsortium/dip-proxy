@@ -17,6 +17,7 @@
   wsdl="WEB-INF/wsdl/DhtService14.wsdl"
   url-pattern="/dht-service"/>
 
+ <!--
  <endpoint name="ebi-proxy"
   interface="edu.ucla.mbi.proxy.EbiProxyPort"
   implementation="edu.ucla.mbi.proxy.ebi.EbiCachingImpl"
@@ -50,6 +51,6 @@
   port="{http://mbi.ucla.edu/proxy/dip}proxyPort"
   wsdl="WEB-INF/wsdl/DipService14.wsdl"
   url-pattern="/dip-service"/>
-
+  -->
 </endpoints>
 

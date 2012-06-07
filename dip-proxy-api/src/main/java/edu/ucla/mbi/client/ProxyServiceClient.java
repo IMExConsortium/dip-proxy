@@ -1,4 +1,4 @@
-package edu.ucla.mbi.proxy;
+package edu.ucla.mbi.client;
 
 /*==============================================================================
  * $HeadURL::                                                                  $

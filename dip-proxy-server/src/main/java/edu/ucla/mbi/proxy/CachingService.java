@@ -39,8 +39,9 @@ public class CachingService extends Observable {
     static DxfRecordDAO dxfDAO = DipProxyDAO.getDxfRecordDAO();
     static NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO();
 
-    public CachingService( String provider, Router router,
-            RemoteServerContext rsc ) {
+    public CachingService( String provider, Router router, 
+                           RemoteServerContext rsc ) 
+    {
         this.provider = provider;
         this.router = router;
         this.rsc = rsc;
@@ -73,7 +74,8 @@ public class CachingService extends Observable {
             // ----------------------------------
 
             cacheRecord = DipProxyDAO.getNativeRecordDAO()
-                .find( provider, service, ns, ac );
+                                .find( provider, service, ns, ac );
+
             log.info( "Native rec: " + cacheRecord );
 
             if ( cacheRecord != null ) { // local record present
@@ -238,12 +240,12 @@ public class CachingService extends Observable {
     //--------------------------------------------------------------------------
 
     public DatasetType getDxf( String provider, String service, String ns,
-                               String ac, String detail ) 
-        throws ServiceException {
-        
+                               String ac, String detail 
+                               ) throws ServiceException 
+    {
         Log log = LogFactory.getLog( CachingService.class );
         log.info( "getDxf(prv=" + provider + " srv=" + service + " det="
-                + detail + ")" );
+                  + detail + ")" );
         
         log.info( " cache on=" + rsc.isCacheOn() );
 
@@ -264,7 +266,7 @@ public class CachingService extends Observable {
                 // ------------------------------
                 
                 dxfRecord = DipProxyDAO.getDxfRecordDAO()
-                    .find( provider, service, ns, ac, detail );
+                                .find( provider, service, ns, ac, detail );
                 
                 // check the expiration date
                 // -------------------------
@@ -319,8 +321,9 @@ public class CachingService extends Observable {
         long waitMillis = WSContext.getWaitMillis();
 
         log.info( "getDxf: nativeRecordN nrN=" + nrN );
-        while( nrN == null && 
-               (System.currentTimeMillis() - startTime < waitMillis )){
+        while( nrN == null 
+                && ( System.currentTimeMillis() - startTime < waitMillis ) ) 
+        {
             nrN = DipProxyDAO.getNativeRecordDAO().find(nr.getId());
         }
         
@@ -340,6 +343,7 @@ public class CachingService extends Observable {
         RemoteServer rs = selectRemoteServer( rsc );
         
         DatasetType dxfResult = null;
+        
         try {
             dxfResult = rs.buildDxf( nativeXml, ns, ac, 
                                      detail, service, rsc.getTransformer() );            
@@ -351,7 +355,8 @@ public class CachingService extends Observable {
             // ----------------------------------
             
             NativeRecord faultyRecord = DipProxyDAO.getNativeRecordDAO()
-                .find( provider, service, ns, ac );
+                                            .find( provider, service, ns, ac );
+
             faultyRecord.setNativeXml( "" );
             
             Calendar expCal = Calendar.getInstance();
@@ -400,7 +405,6 @@ public class CachingService extends Observable {
                 DipProxyDAO.getDxfRecordDAO().create( dxfRecord );
 
                 if ( rsc.getDebugLevel() == 1 ) {
-
                     if ( rsc.getDebugLevel() == 1 ) {
                         log.info( " dropping dxf record = " + dxfRecord );
                         DipProxyDAO.getDxfRecordDAO().delete( dxfRecord );

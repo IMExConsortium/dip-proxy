@@ -20,6 +20,7 @@
     </entry>
    </map>
   </property>
+  <!--
   <property name="context">
    <map>
     <entry key="ebiProxy">
@@ -28,8 +29,9 @@
     <entry key="ncbiProxy">
       <ref bean="ncbiReferenceProxy"/>
      </entry> 
-   </map>
+   </map> 
   </property>
+  -->
  </bean>
 
  <bean id="ncbiTransformer"

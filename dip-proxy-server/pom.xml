@@ -136,9 +136,16 @@
     <version>1.1</version>
     <scope>provided</scope>
    </dependency>
-  
-  </dependencies>
 
+   <!-- 
+   <dependency>
+    <groupId>javax.xml</groupId>
+    <artifactId>jaxws-api</artifactId>
+    <version>2.0EA3</version>
+   </dependency> 
+   -->
+  </dependencies>
+    
   <build>
    <finalName>dip-proxy-server</finalName>
 
@@ -169,10 +176,11 @@
               <includes>   
                 <include>services.xsd</include>
                 <include>DhtService14.wsdl</include>
-                <include>DipService14.wsdl</include> 
+              <!--  <include>DipService14.wsdl</include> 
                 <include>EbiService14.wsdl</include>
                 <include>NcbiService14.wsdl</include>
                 <include>ProlinksService14.wsdl</include>
+                -->
                 <include>DipLegacyService.wsdl</include>
                 <include>ProxyService14.wsdl</include> 
               </includes>
@@ -258,7 +266,7 @@
             <configuration>
               <classifier>client</classifier>
               <includes>
-                <include>**/proxy/*</include>
+                <!--<include>**/proxy/*</include> -->
                 <include>**/proxy/*/*</include>
                 <include>**/util/*</include>
               </includes>

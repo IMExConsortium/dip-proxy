@@ -39,7 +39,7 @@ public class DhtRouter implements Router {
     
     private DhtRouter( RemoteServerContext rsc,
                        Dht dht, int maxRetry ) { 
-	this.rsc = rsc;
+	    this.rsc = rsc;
         this.proxyDht = dht;
         this.maxRetry = maxRetry;
     }
@@ -194,19 +194,19 @@ public class DhtRouter implements Router {
 
         log.info( "  DhtRouter.update: " );
 
-	String address = "";
+	    String address = "";
 
-	if ( server != null ){
-	    log.info( "  remote server=" + server.getAddress() );
-	    address = server.getAddress();
-	} else {
-	    log.info( "  remote server=SELF" );
-	    String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
-	    address = rsc.getProxyProto().getAddress();
-	    address = address.replaceAll( "%%URL%%", url );
-	}
+	    if ( server != null ){
+	        log.info( "  remote server=" + server.getAddress() );
+	        address = server.getAddress();
+	    } else {
+	        log.info( "  remote server=SELF" );
+	        String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
+	        address = rsc.getProxyProto().getAddress();
+	        address = address.replaceAll( "%%URL%%", url );
+	    }
 
-	log.info( "  NS=" + record.getNs() + 
+	    log.info( "  NS=" + record.getNs() + 
                   "  AC=" + record.getAc() +
                   "  service=" + record.getService() );
         
@@ -214,9 +214,9 @@ public class DhtRouter implements Router {
                                    record.getNs(), 
                                    record.getAc() );
 
-	log.info( "  DhtRouterItem: address=" + address +
-		  " create=" + record.getCreateTime().getTime() +
-		  " expire=" + record.getExpireTime().getTime() );
+	    log.info( "  DhtRouterItem: address=" + address +
+		          " create=" + record.getCreateTime().getTime() +
+		          " expire=" + record.getExpireTime().getTime() );
 	
         DhtRouterItem routerItem =
             new DhtRouterItem( address,
@@ -224,12 +224,12 @@ public class DhtRouter implements Router {
                                record.getExpireTime().getTime() );
         
         if ( message.getMsg() == DhtRouterMessage.DELETE ) {
-	    log.info( "  DhtRouterItem: DELETING" );
+	        log.info( "  DhtRouterItem: DELETING" );
             proxyDht.deleteIterm( rid, routerItem );
         } 
         
         if ( message.getMsg() == DhtRouterMessage.UPDATE ) {
-	    log.info( "  DhtRouterItem: UPDATING" );
+	        log.info( "  DhtRouterItem: UPDATING" );
             proxyDht.updateIterm( rid, routerItem );
         }
     }

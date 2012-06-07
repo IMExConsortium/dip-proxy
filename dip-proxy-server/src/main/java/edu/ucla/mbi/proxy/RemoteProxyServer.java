@@ -1,10 +1,10 @@
 package edu.ucla.mbi.proxy;
 
-/*===========================================================================
- * $HeadURL::                                                               $
- * $Id::                                                                    $
- * Version: $Rev::                                                          $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * RemoteProxyServer:
  *
@@ -12,7 +12,7 @@ package edu.ucla.mbi.proxy;
  *    server using ns/ac (namespace/accession) pair as identifier and
  *    operation as the remote service name
  *
- *========================================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,6 +25,8 @@ import javax.xml.bind.JAXBContext;
 
 import javax.xml.transform.stream.StreamSource;
 
+import javax.xml.ws.BindingProvider;
+import com.sun.xml.ws.developer.JAXWSProperties;
 
 import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.dxf14.DxfJAXBContext;
@@ -36,8 +38,7 @@ import edu.ucla.mbi.cache.NativeRecord;
 
 import java.util.Map;
 
-public class RemoteProxyServer 
-    implements RemoteServer {
+public class RemoteProxyServer implements RemoteServer {
  
     String proxyAddress;
 
@@ -52,10 +53,10 @@ public class RemoteProxyServer
     }
 
     public void setAddress( String url ) {
-	url = url.replaceAll("^\\s+","");
-	url = url.replaceAll("\\s+$","");
+	    url = url.replaceAll("^\\s+","");
+	    url = url.replaceAll("\\s+$","");
 	
-	this.proxyAddress=url;
+	    this.proxyAddress=url;
     }
     
     public void setContext( Map<String,Object> context ) {
@@ -67,9 +68,73 @@ public class RemoteProxyServer
     }
     
     public NativeRecord getNative( String provider, String service,
-                             String ns, String ac, int timeout
-                             ) throws ServiceException {
-        return null;
+                                   String ns, String ac, int timeout
+                                   ) throws ServiceException 
+    {
+        Log log = LogFactory.getLog( RemoteProxyServer.class );
+
+        log.info( "getNative(NS=" + ns + " AC=" + ac + " OP=" + service + ")" );
+
+        // call EBI proxy localized at ProxyAddress
+
+        String url = getAddress();
+
+        ProxyService proxySrv = new ProxyService();
+        ProxyPort port = proxySrv.getProxyPort();
+
+        NativeRecord natRecord = null;
+
+        /*
+        try {
+            log.info( " this=" + this );
+            log.info( " port=" + url + " timeout=" + timeout );
+
+            // set server location
+            // ---------------------
+
+            ((BindingProvider) port).getRequestContext().put(
+                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url );
+
+            // set client Timeout
+            // ------------------
+
+            ((BindingProvider) port).getRequestContext().put(
+                   JAXWSProperties.CONNECT_TIMEOUT, timeout );
+
+            
+            if ( service.equals( "refseq" ) ) {
+                natRecord = getRefseq( port, provider, service, ns, ac );
+            }
+            if ( service.equals( "entrezgene" ) ) {
+                natRecord = getGene( port, provider, service, ns, ac );
+            }
+            if ( service.equals( "taxon" ) ) {
+                natRecord = getTaxon( port, provider, service, ns, ac );
+            }
+            if ( service.equals( "pubmed" ) ) {
+                natRecord = getPubmedArticle( port, provider, service, ns, ac );
+            }
+            
+        } catch ( ServiceException fault ) {
+            throw fault;
+        } catch ( Exception e ) {
+            log.info( "EbiProxy: getUniprot: exception: " + e.toString() );
+            if ( e.toString().contains( "No result found" ) ) {
+                // ServiceFault fault =
+                // new ServiceFault( "04 remote server: no hit." );
+                throw Fault.getServiceException( 5 ); // no hits
+            } else if ( e.toString().contains( "Read timed out" ) ) {
+                // ServiceFault fault =
+                // new ServiceFault( "02 remote server: timeout." );
+                throw Fault.getServiceException( 12 ); // timeout
+            } else {
+                // ServiceFault fault =
+                // new ServiceFault( "03 remote server: unknown." );
+                throw Fault.getServiceException( 99 ); // unknown
+            }
+        }
+        */
+        return natRecord;
     }
 
     public RemoteServer getRemoteServerInstance() {
@@ -82,58 +147,58 @@ public class RemoteProxyServer
     
 
     public void initialize() {
-	Log log = LogFactory.getLog( RemoteServer.class );
-	log.info("Initializing: " + this );
+	    Log log = LogFactory.getLog( RemoteServer.class );
+	    log.info("Initializing: " + this );
     }
 
 
     public DatasetType transform( String strNative,
-				  String ns, String ac, String detail,
-				  String service, ProxyTransformer pTrans 
+				                  String ns, String ac, String detail,
+				                  String service, ProxyTransformer pTrans 
                                   ) throws ServiceException {
-	Log log = LogFactory.getLog( RemoteProxyServer.class );
-	try {
-	    // native data in string representationa as input
+	
+        Log log = LogFactory.getLog( RemoteProxyServer.class );
+	    try {
+	        // native data in string representationa as input
 	    
-	    ByteArrayInputStream bisNative =
-		new ByteArrayInputStream( strNative.getBytes( "UTF-8" ) );
-	    StreamSource ssNative = new StreamSource( bisNative );
+	        ByteArrayInputStream bisNative =
+		    new ByteArrayInputStream( strNative.getBytes( "UTF-8" ) );
+	        StreamSource ssNative = new StreamSource( bisNative );
 	    
-	    // dxf as JAXBResult result of the transformation
+	        // dxf as JAXBResult result of the transformation
 	    
-	    JAXBContext dxfJc = DxfJAXBContext.getDxfContext();
-	    // JAXBContext.newInstance( "edu.ucla.mbi.dxf14" );
-	    JAXBResult result = new JAXBResult( dxfJc );
+	        JAXBContext dxfJc = DxfJAXBContext.getDxfContext();
+	        // JAXBContext.newInstance( "edu.ucla.mbi.dxf14" );
+	        JAXBResult result = new JAXBResult( dxfJc );
 	    
-	    //transform into DXF
+	        //transform into DXF
 	    
-	    pTrans.setTransformer( service );
+	        pTrans.setTransformer( service );
     	    pTrans.setParameters( detail, ns, ac );
     	    pTrans.transform( ssNative, result );
 	    
-	    DatasetType dxfResult  = 
-		(DatasetType) ( (JAXBElement) result.getResult() ).getValue();
+	        DatasetType dxfResult  = 
+		    (DatasetType) ( (JAXBElement) result.getResult() ).getValue();
 	    
             //test if dxfResult is empty
-	    if ( dxfResult.getNode().isEmpty() ) {
-		//ServiceFault fault = 
-		//    new ServiceFault( "05 remote server: transformer." );
-		throw Fault.getServiceException( 5 );  // no hits
-	    }	    
+	        if ( dxfResult.getNode().isEmpty() ) {
+		        //ServiceFault fault = 
+		        //new ServiceFault( "05 remote server: transformer." );
+		        throw Fault.getServiceException( 5 );  // no hits
+	        }	    
 	    
-	    return dxfResult;
+	        return dxfResult;
 	    
-	} catch ( ServiceException ex ) { 
-	    log.info( "Transformer fault: empty dxfResult ");
-	    throw ex;
+	    } catch ( ServiceException ex ) { 
+	        log.info( "Transformer fault: empty dxfResult ");
+	        throw ex;
         } catch ( Exception e ) {
-	    log.info( "Exception="+e.toString() );
-	    //ServiceFault fault = 
-	    //	new ServiceFault( "05 remote server: transform." ); 
-	    throw Fault.getServiceException( 5 );  // no hits
+	        log.info( "Exception="+e.toString() );
+	        //ServiceFault fault = 
+	        //	new ServiceFault( "05 remote server: transform." ); 
+	        throw Fault.getServiceException( 5 );  // no hits
 	    
-
-	}   
+	    }   
     }
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
@@ -142,9 +207,9 @@ public class RemoteProxyServer
                                  ) throws ServiceException {
 	
     	// NOTE: overload if dxf building more complex than
-	//       a simple xslt transformation
+	    //       a simple xslt transformation
 	
-	return this.transform( strNative, ns, ac, detail, service, pTrans );
+	    return this.transform( strNative, ns, ac, detail, service, pTrans );
     }
 }
 

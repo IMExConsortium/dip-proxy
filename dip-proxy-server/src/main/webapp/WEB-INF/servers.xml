@@ -131,7 +131,8 @@
     </map>
   </property>
  </bean>
-
+ 
+ <!--
  <bean id="ebiReferenceProxy" init-method="initialize"
        class="edu.ucla.mbi.proxy.ebi.EbiProxy">
   <property name="address">
@@ -143,10 +144,11 @@
     <map/>
   </property>
  </bean>
-
+ -->
 
  <!-- NCBI proxy services -->
 
+ 
  <bean id="ncbiReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.ncbi.NcbiServer">
 
@@ -155,6 +157,7 @@
   </property>
  </bean>
 
+ <!--
  <bean id="ncbiReferenceProxy" init-method="initialize"
        class="edu.ucla.mbi.proxy.ncbi.NcbiProxy">
   <property name="address">
@@ -166,11 +169,11 @@
     <map/>
   </property>
  </bean>
-
+ -->
 
 
  <!-- Prolinks proxy services -->
-
+ <!--
  <bean id="prlReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="restUrl">
@@ -191,6 +194,7 @@
     <map/>
   </property>
  </bean>
+ 
 
  <bean id="prlReferenceProxy" init-method="initialize"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksProxy">
@@ -203,7 +207,7 @@
     <map/>
   </property>
  </bean>
-
+ -->
 
  <!-- DIP proxy services -->
 
@@ -220,6 +224,7 @@
 
  </bean>
 
+ <!--
  <bean id="dipReferenceProxy" init-method="initialize"
        class="edu.ucla.mbi.proxy.dip.DipProxy">
   <property name="address">
@@ -231,5 +236,5 @@
     <map/>
   </property>
  </bean>
-
+ -->
 </beans>
