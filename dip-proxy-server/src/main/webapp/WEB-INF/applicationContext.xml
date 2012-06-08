@@ -81,12 +81,11 @@
 
        
        <entry key="proxyProto"> 
-        <!--<ref bean="ebiReferenceProxy"/> -->
         <ref bean="referenceProxy"/>
        </entry>      
        
        <entry key="router">
-         <ref bean="ebiDhtRouter"/>
+        <ref bean="dhtRouter"/>
        </entry>
 
        <entry key="cache" value="on"/>
@@ -111,12 +110,11 @@
 
        
        <entry key="proxyProto"> 
-        <!--<ref bean="ncbiReferenceProxy"/> -->
         <ref bean="referenceProxy"/>
        </entry>      
        
        <entry key="router">
-         <ref bean="ncbiDhtRouter"/>
+        <ref bean="dhtRouter"/>
        </entry>
 
        <entry key="cache" value="on"/>
@@ -134,18 +132,17 @@
        </entry>
        <entry key="ttl"     value="14"/>
 
-       <!--
+       
        <entry key="nativeServer">  
         <ref bean="prlReferenceServer"/>
        </entry>      
-       --> 
+        
        <entry key="proxyProto"> 
-        <!--<ref bean="prlReferenceProxy"/> -->
         <ref bean="referenceProxy"/>
        </entry>      
        
        <entry key="router">
-          <ref bean="mbiDhtRouter"/>
+        <ref bean="dhtRouter"/>
        </entry>
 
        <entry key="cache" value="on"/>
@@ -170,12 +167,11 @@
 
        
        <entry key="proxyProto">
-        <!--<ref bean="dipReferenceProxy"/> -->
         <ref bean="referenceProxy"/>
        </entry>
        
        <entry key="router">
-        <ref bean="dipDhtRouter"/>
+        <ref bean="dhtRouter"/>
        </entry>
 
        <entry key="cache" value="on"/>

@@ -21,12 +21,12 @@ import edu.ucla.mbi.cache.NativeRecord;
 public interface RemoteServer{
     
     public NativeRecord getNative( String provider, String service,
-                             String ns, String ac, int timeOut ) 
+                                   String ns, String ac, int timeOut ) 
         throws ServiceException;
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
-				 String detail, String service, 
-				 ProxyTransformer pTrans ) 
+				                 String detail, String service, 
+				                 ProxyTransformer pTrans ) 
         throws ServiceException;
     
 

@@ -112,8 +112,8 @@ public class CachingService extends Observable {
                 RemoteServer rs = 
                     selectNextRemoteServer( provider, service, ns, ac );
                 
-                log.info( "  selected rs=" + rs );
-                log.info( "   retries left=" + retry );
+                log.info( " selected rs=" + rs );
+                log.info( " retries left=" + retry );
                 retry--;
                 
                 try{
@@ -321,6 +321,7 @@ public class CachingService extends Observable {
         long waitMillis = WSContext.getWaitMillis();
 
         log.info( "getDxf: nativeRecordN nrN=" + nrN );
+        
         while( nrN == null 
                 && ( System.currentTimeMillis() - startTime < waitMillis ) ) 
         {
@@ -329,6 +330,7 @@ public class CachingService extends Observable {
         
         if ( nrN != null ) {
             nativeXml = nrN.getNativeXml();
+            //log.info( "getDxf: nativeXml=" + nativeXml );
         }else{
             log.warn( "getDxf(): for service " + service +
                       " and ac " + ac + " cannot get native record" );

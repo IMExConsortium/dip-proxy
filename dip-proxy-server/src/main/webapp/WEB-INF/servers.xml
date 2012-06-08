@@ -47,37 +47,7 @@
 
  <!-- dht-based routers -->
 
- <bean id="ebiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
-  <property name="dht">
-   <ref bean="dht"/>
-  </property>
-
-  <property name="maxRetry">
-    <value>3</value>
-  </property>
- </bean>
-
- <bean id="ncbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
-  <property name="dht">
-   <ref bean="dht"/>
-  </property>
-
-  <property name="maxRetry">
-    <value>3</value>
-  </property>
- </bean>
-
- <bean id="mbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
-  <property name="dht">
-   <ref bean="dht"/>
-  </property>
-
-  <property name="maxRetry">
-    <value>3</value>
-  </property>
- </bean>
-
- <bean id="dipDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+ <bean id="dhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
   </property>
@@ -144,22 +114,7 @@
   </property>
  </bean>
  
- <!--
- <bean id="ebiReferenceProxy" init-method="initialize"
-       class="edu.ucla.mbi.proxy.ebi.EbiProxy">
-  <property name="address">
-   <value>
-     http://%%URL%%/dip-proxy/ebi-service    
-   </value>
-  </property>
-  <property name="context">
-    <map/>
-  </property>
- </bean>
- -->
-
  <!-- NCBI proxy services -->
-
  
  <bean id="ncbiReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.ncbi.NcbiServer">
@@ -169,23 +124,9 @@
   </property>
  </bean>
 
- <!--
- <bean id="ncbiReferenceProxy" init-method="initialize"
-       class="edu.ucla.mbi.proxy.ncbi.NcbiProxy">
-  <property name="address">
-   <value>
-     http://%%URL%%/dip-proxy/ncbi-service    
-   </value>
-  </property>
-  <property name="context">
-    <map/>
-  </property>
- </bean>
- -->
-
 
  <!-- Prolinks proxy services -->
- <!--
+ 
  <bean id="prlReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="restUrl">
@@ -199,7 +140,9 @@
 
   <property name="ncbiProxy">
    <value>
-     http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service
+     <!--http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service -->
+    <!-- temporary address -->
+    http://10.1.1.201:8080/dip-proxy-server/proxy-service
    </value>  
   </property>
   <property name="context">
@@ -207,20 +150,6 @@
   </property>
  </bean>
  
-
- <bean id="prlReferenceProxy" init-method="initialize"
-       class="edu.ucla.mbi.proxy.prolinks.ProlinksProxy">
-  <property name="address">
-   <value>
-     http://%%URL%%/dip-proxy/prolinks-service    
-   </value>
-  </property>
-  <property name="context">
-    <map/>
-  </property>
- </bean>
- -->
-
  <!-- DIP proxy services -->
 
  <bean id="dipReferenceServer" init-method="initialize"
@@ -236,17 +165,4 @@
 
  </bean>
 
- <!--
- <bean id="dipReferenceProxy" init-method="initialize"
-       class="edu.ucla.mbi.proxy.dip.DipProxy">
-  <property name="address">
-   <value>
-     http://%URL%%/dip-proxy/dip-service
-   </value>
-  </property>
-  <property name="context">
-    <map/>
-  </property>
- </bean>
- -->
 </beans>

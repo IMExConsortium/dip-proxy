@@ -53,34 +53,34 @@ public abstract class RemoteNativeServer
     }
 
     public Map<String,Object> getContext() {
-	return context;
+	    return context;
     }
 
     public void setRestUrl( String url ) {
-	url = url.replaceAll("^\\s+","");
-	url = url.replaceAll("\\s+$","");
+	    url = url.replaceAll("^\\s+","");
+	    url = url.replaceAll("\\s+$","");
 	
-	this.restUrl=url;
+	    this.restUrl=url;
     }
     
     public String getRestUrl(){
-	return restUrl;
+	    return restUrl;
     }
 
     public void setRestAcTag( String tag ) {
-	tag = tag.replaceAll("^\\s+","");
-	tag = tag.replaceAll("\\s+$","");
+	    tag = tag.replaceAll("^\\s+","");
+	    tag = tag.replaceAll("\\s+$","");
         
-	this.restAcTag = tag ;
+	    this.restAcTag = tag ;
     }
 
     public String getRestAcTag(){
-	return restAcTag;
+	    return restAcTag;
     }
 
     public void initialize() {
-	Log log = LogFactory.getLog( RemoteServer.class );
-	log.info("Initializing: " + this );
+	    Log log = LogFactory.getLog( RemoteServer.class );
+	    log.info("Initializing: " + this );
     }
 
     // RemoteServer 

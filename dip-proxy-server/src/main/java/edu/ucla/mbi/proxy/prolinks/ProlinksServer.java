@@ -1,15 +1,15 @@
 package edu.ucla.mbi.proxy.prolinks;
 
-/*===========================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/#$
- * $Id$
- * Version: $Rev$
- *===========================================================================
+/*==============================================================================
+ * $HeadURL:: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/dip-prox$
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * ProlinksServer:
  *    services provided by Prolinks web services
  *
- *========================================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -94,8 +94,8 @@ public class ProlinksServer extends RemoteNativeServer {
             // RemoteProxyServer proxy =
             // ncbiProxy().getRemoteProxyServerInstance();
 
-            NcbiProxyService proxySrv = new NcbiProxyService();
-            NcbiProxyPort port = proxySrv.getProxyPort();
+            ProxyService proxySrv = new ProxyService();
+            ProxyPort port = proxySrv.getProxyPort();
 
             // set server location
             // ---------------------
@@ -151,8 +151,10 @@ public class ProlinksServer extends RemoteNativeServer {
                                 new Holder<DatasetType>();
                         Holder<String> resNative = new Holder<String>();
                         Holder<XMLGregorianCalendar> timestamp = null;
-                        port.getRefseq( "refseq", node_ac, "", detail, "", "",
-                                0, timestamp, resDataset, resNative );
+
+                        port.getRecord( "NCBI", "refseq", "refseq", node_ac, "", 
+                                        detail, "", "", 0, timestamp, 
+                                        resDataset, resNative );
 
                         DatasetType dataset = resDataset.value;
 

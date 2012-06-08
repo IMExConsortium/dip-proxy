@@ -1,4 +1,23 @@
 testing case:
-./dipProxyClient.sh proxyM EBI getPicrList AC=NP_500606 NS=refseq FORMAT=dxf DETAIL=full
-./dipProxyClient.sh proxyM EBI picr AC=NP_500606 NS=refseq FORMAT=both DETAIL=base
+
+*******************************************
+provider    service     ns
+*******************************************
+NCBI        nlm         nlmid 
+NCBI        pubmed      pmid
+NCBI        refseq      refseq
+NCBI        taxon       ncbitaxid
+NCBI        entrezgene  entrezgene
+-------------------------------------------
+EBI         uniprot     uniprot
+EBI         picr        refseq/uniprot
+-------------------------------------------
+MBI         prolinks    prolinks
+-------------------------------------------
+DIP         dip         dip
+********************************************
+example:
+./dipProxyClient.sh proxyM provider service AC= NS= FORMAT= DETAIL=
+
+./dipProxyClient.sh proxyM EBI picr AC=NP_500606 NS=refseq FORMAT=dxf DETAIL=base
 ./dipProxyClient.sh proxyM EBI picr AC=NP_500606 NS=refseq FORMAT=native 
