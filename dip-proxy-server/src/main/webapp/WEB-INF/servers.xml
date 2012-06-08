@@ -45,9 +45,37 @@
 
  </bean>
 
- <!-- dht-based routers -->
+ <bean id="ebiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
 
- <bean id="dhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="maxRetry">
+    <value>3</value>
+  </property>
+ </bean>
+
+ <bean id="ncbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
+
+  <property name="maxRetry">
+    <value>3</value>
+  </property>
+ </bean>
+
+ <bean id="mbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
+
+  <property name="maxRetry">
+    <value>3</value>
+  </property>
+ </bean>
+
+ <bean id="dipDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
   </property>

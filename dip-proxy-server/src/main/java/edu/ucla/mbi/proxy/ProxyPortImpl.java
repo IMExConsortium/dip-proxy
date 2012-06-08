@@ -125,6 +125,10 @@ public class ProxyPortImpl implements ProxyPort {
             Router router =
                 WSContext.getServerContext( provider ).createRouter() ;
 
+            log.info( "getRecord: router=" + router );
+            log.info( "getRecord: router.rsc=" 
+                       + router.getRemoteServerContext().getProvider() );
+
             CachingService cachingSrv =
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );

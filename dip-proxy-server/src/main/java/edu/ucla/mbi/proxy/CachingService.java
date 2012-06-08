@@ -20,6 +20,7 @@ import javax.xml.bind.*;
 import javax.xml.transform.stream.StreamSource;
 
 import edu.ucla.mbi.dxf14.*;
+import edu.ucla.mbi.orm.*;
 
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
@@ -83,7 +84,7 @@ public class CachingService extends Observable {
                 Date expirationTime = cacheRecord.getExpireTime();
 		
                 log.info( "Native record: CT=" + cacheRecord.getCreateTime()
-                        + " ET=" + expirationTime );
+                          + " ET=" + expirationTime );
 
                 if ( currentTime.after( expirationTime ) ) {
                     natXml = null;
@@ -350,8 +351,8 @@ public class CachingService extends Observable {
             dxfResult = rs.buildDxf( nativeXml, ns, ac, 
                                      detail, service, rsc.getTransformer() );            
         } catch( ServiceException se ) {
-            log.info( "CachingService: get Exception: " + se.toString() );
-            log.info( "CachingService: discarding native record" );
+            log.info( "getDxf: get Exception: " + se.toString() );
+            log.info( "getDxf: discarding native record" );
             
             // get cached copy of native record
             // ----------------------------------
@@ -364,7 +365,13 @@ public class CachingService extends Observable {
             Calendar expCal = Calendar.getInstance();
             faultyRecord.setExpireTime( expCal.getTime() );
             DipProxyDAO.getNativeRecordDAO().create( faultyRecord );
-            
+            /*
+            try {
+                DipProxyDAO.getNativeRecordDAO().delete( faultyRecord );
+            } catch ( DAOException e ) {
+                throw Fault.getServiceException( Fault.TRANSACTION );
+            }
+            */
             log.warn( "getDxf(): transform error for service " + service +
                       " and ac " + ac + " exception: "+ se.toString());
             throw Fault.getServiceException( Fault.TRANSFORM );

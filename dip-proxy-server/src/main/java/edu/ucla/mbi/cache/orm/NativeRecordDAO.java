@@ -33,8 +33,15 @@ public class NativeRecordDAO extends AbstractDAO {
         super.delete( nativer );
     }
 
-    public NativeRecord find(int id) throws DAOException{
-        NativeRecord nativer = (NativeRecord) super.find (NativeRecord.class, id);
+    public NativeRecord find( int id ) throws DAOException{
+        NativeRecord nativer = (NativeRecord) super.find( 
+                                                NativeRecord.class, id );
+        return nativer;
+    }
+
+    public NativeRecord get( int id ) throws DAOException{
+        NativeRecord nativer = (NativeRecord) super.get( 
+                                                NativeRecord.class, id );
         return nativer;
     }
 
