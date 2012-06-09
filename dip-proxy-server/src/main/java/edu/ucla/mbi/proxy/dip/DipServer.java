@@ -106,7 +106,7 @@ public class DipServer extends RemoteNativeServer {
             if ( ac.endsWith( "N" ) ) {
                 try {
                     //retList = port.getNode( "dip", ac, "", detail, "" );
-                    retList = port.getNode( "dip", ac, "", "", detail, "" );
+                    retList = port.getNode( "dip", ac, "", "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
                 }

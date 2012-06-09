@@ -17,40 +17,5 @@
   wsdl="WEB-INF/wsdl/DhtService14.wsdl"
   url-pattern="/dht-service"/>
 
- <!--
- <endpoint name="ebi-proxy"
-  interface="edu.ucla.mbi.proxy.EbiProxyPort"
-  implementation="edu.ucla.mbi.proxy.ebi.EbiCachingImpl"
-  service="{http://mbi.ucla.edu/proxy/ebi}EbiProxyService"
-  port="{http://mbi.ucla.edu/proxy/ebi}proxyPort"
-  wsdl="WEB-INF/wsdl/EbiService14.wsdl"
-  url-pattern="/ebi-service"/>
-
-
- <endpoint name="ncbi-proxy"
-  interface="edu.ucla.mbi.proxy.NcbiProxyPort"
-  implementation="edu.ucla.mbi.proxy.ncbi.NcbiCachingImpl"
-  wsdl="WEB-INF/wsdl/NcbiService14.wsdl"
-  service="{http://mbi.ucla.edu/proxy/ncbi}NcbiProxyService"
-  port="{http://mbi.ucla.edu/proxy/ncbi}proxyPort"
-  url-pattern="/ncbi-service"/>
-
-
- <endpoint name="prolinks-proxy"
-  interface="edu.ucla.mbi.proxy.ProlinksProxyPort"
-  implementation="edu.ucla.mbi.proxy.prolinks.ProlinksCachingImpl"
-  service="{http://mbi.ucla.edu/proxy/prolinks}ProlinksProxyService"
-  port="{http://mbi.ucla.edu/proxy/prolinks}proxyPort"
-  wsdl="WEB-INF/wsdl/ProlinksService14.wsdl"
-  url-pattern="/prolinks-service"/>
-
- <endpoint name="dip-proxy"
-  interface="edu.ucla.mbi.proxy.DipProxyPort"
-  implementation="edu.ucla.mbi.proxy.dip.DipCachingImpl"
-  service="{http://mbi.ucla.edu/proxy/dip}DipProxyService"
-  port="{http://mbi.ucla.edu/proxy/dip}proxyPort"
-  wsdl="WEB-INF/wsdl/DipService14.wsdl"
-  url-pattern="/dip-service"/>
-  -->
 </endpoints>
 
