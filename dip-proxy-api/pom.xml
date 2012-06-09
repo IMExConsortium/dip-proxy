@@ -47,67 +47,6 @@
      <groupId>org.codehaus.mojo</groupId>
      <artifactId>jaxws-maven-plugin</artifactId>
      <executions>
-      <!--      
-      <execution>
-       <id>dip-proxy</id>
-       <goals>
-        <goal>wsimport</goal>
-       </goals>
-       <configuration>
-        <verbose>false</verbose>
-        <bindingFiles>
-         <bindingFile>DXF1.4.jxb</bindingFile>
-         <bindingFile>services.jxb</bindingFile>
-         <bindingFile>DipService14.jxb</bindingFile>
-        </bindingFiles> 
-        <wsdlFiles>
-          <wsdlFile>DipService14.wsdl</wsdlFile> 
-        </wsdlFiles>
-        <staleFile>${basedir}/target/.dip-proxy.staleFlag</staleFile>
-        <keep>true</keep>
-       </configuration>
-      </execution>
-
-      <execution>
-       <id>ncbi-proxy</id>
-       <goals>
-        <goal>wsimport</goal>
-       </goals>
-       <configuration>
-        <verbose>false</verbose>
-        <bindingFiles>
-         <bindingFile>DXF1.4.jxb</bindingFile>
-         <bindingFile>services.jxb</bindingFile>
-         <bindingFile>NcbiService14.jxb</bindingFile>
-        </bindingFiles> 
-        <wsdlFiles>
-          <wsdlFile>NcbiService14.wsdl</wsdlFile> 
-        </wsdlFiles>
-        <staleFile>${basedir}/target/.ncbi-proxy.staleFlag</staleFile>
-        <keep>true</keep>
-       </configuration>
-      </execution>
-
-      <execution>
-       <id>ebi-proxy</id>
-       <goals>
-        <goal>wsimport</goal>
-       </goals>
-       <configuration>
-        <verbose>false</verbose>
-        <bindingFiles>
-         <bindingFile>DXF1.4.jxb</bindingFile>
-         <bindingFile>services.jxb</bindingFile>
-         <bindingFile>EbiService14.jxb</bindingFile>
-        </bindingFiles> 
-        <wsdlFiles>
-          <wsdlFile>EbiService14.wsdl</wsdlFile> 
-        </wsdlFiles>
-        <staleFile>${basedir}/target/.ebi-proxy.staleFlag</staleFile>
-        <keep>true</keep>
-       </configuration>
-      </execution>
-      -->
       <execution>
        <id>dht-proxy</id>
        <goals>
@@ -128,27 +67,6 @@
        </configuration>
       </execution>
 
-      <!--
-      <execution>
-       <id>prolinks-proxy</id>
-       <goals>
-        <goal>wsimport</goal>
-       </goals>
-       <configuration>
-        <verbose>false</verbose>
-        <bindingFiles>
-         <bindingFile>DXF1.4.jxb</bindingFile>
-         <bindingFile>services.jxb</bindingFile>
-         <bindingFile>ProlinksService14.jxb</bindingFile>
-        </bindingFiles> 
-        <wsdlFiles>
-          <wsdlFile>ProlinksService14.wsdl</wsdlFile> 
-        </wsdlFiles>
-        <keep>true</keep>
-        <staleFile>${basedir}/target/.prolinks-proxy.staleFlag</staleFile>
-       </configuration>
-      </execution>
-      -->
       <execution>
        <id>dip-legacy</id>
        <goals>
