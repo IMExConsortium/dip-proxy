@@ -58,18 +58,21 @@ public class ProlinksServer extends RemoteNativeServer {
             String url = getRestUrl();
             String acTag = getRestAcTag();
 
-            log.info( " restURL=" + url );
-            log.info( " restTag=" + acTag );
+            log.info( "getNative restURL=" + url );
+            log.info( "getNative restTag=" + acTag );
 
             url = url.replaceAll( acTag, ac );
+            log.info( "getNative: query url=" + url );
             retVal = NativeURL.query( url, timeOut );
         }
+
         if ( retVal == null ) {
-            log.info( " null returned" );
+            log.info( "getNative  null returned" );
             throw Fault.getServiceException( 5 ); // no hits
         }
 
         NativeRecord record = new NativeRecord( provider, service, ns, ac );
+        record.setNativeXml( retVal );
         return record;
     }
 
@@ -79,20 +82,9 @@ public class ProlinksServer extends RemoteNativeServer {
 
         Log log = LogFactory.getLog( ProlinksServer.class );
         log.info( " buildDxf called: " + ac );
-        // String refseqService = (String) ServiceContext
-        // .getRsc("Prolinks").getProperty("refseqService");
-
-        // String refseqService = ( (Map) pTrans.getContext().get( (String)
-        // ServiceContext
-        // .getRsc("Prolinks").getProperty("refseqService");
-
-        // log.info( "ProlinksServer: refseqService=" + refseqService );
 
         try {
             // -------------------------------------------------------------
-
-            // RemoteProxyServer proxy =
-            // ncbiProxy().getRemoteProxyServerInstance();
 
             ProxyService proxySrv = new ProxyService();
             ProxyPort port = proxySrv.getProxyPort();
@@ -106,21 +98,7 @@ public class ProlinksServer extends RemoteNativeServer {
 
             // set client Timeout
             // ------------------
-
-            /*
-             * 
-             * ( ( BindingProvider ) port ).getRequestContext() .put(
-             * JAXWSProperties.CONNECT_TIMEOUT, timeout );
-             */
-
-            // edu.ucla.mbi.services.ncbi.ObjectFactory ncbiOF =
-            // new edu.ucla.mbi.services.ncbi.ObjectFactory();
-            // NcbiPublicStub stub = new NcbiPublicStub( refseqService);
-            // log.info("ProlinksServer: refseqService="+refseqService+" stub="+stub);
-            // GetRefseq grs = ncbiOF.createGetRefseq();
             JAXBContext dxfJc = DxfJAXBContext.getDxfContext();
-            // JAXBContext dxfJc =
-            // JAXBContext.newInstance("edu.ucla.mbi.dxf14");
             Unmarshaller u = dxfJc.createUnmarshaller();
 
             JAXBElement<DatasetType> datasetElement =
@@ -176,15 +154,9 @@ public class ProlinksServer extends RemoteNativeServer {
         } catch ( Exception e ) {
             log.info( "ProlinksServer: " + e.toString() );
             String fault = e.toString();
-            // ServiceFault sf = null;
             if ( fault.contains( "03" ) ) {
-                // sf = new ServiceFault( "03 remote server: unknown." );
-                // new ServiceFailedException() );
                 throw Fault.getServiceException( 99 );
-
             } else {
-                // sf = new ServiceFault( "07 server: unknown." );
-                // new ServiceFailedException() );
                 throw Fault.getServiceException( Fault.UNKNOWN );
             }
         }

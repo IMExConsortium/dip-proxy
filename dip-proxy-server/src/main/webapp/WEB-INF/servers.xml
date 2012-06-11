@@ -159,7 +159,8 @@
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="restUrl">
    <value>
-    http://codd.mbi.ucla.edu/prolinks/query_prolinks.php?pid=%%ACTAG%%
+    <!--http://codd.mbi.ucla.edu/prolinks/query_prolinks.php?pid=%%ACTAG%% -->
+    http://prl.mbi.ucla.edu/prlbeta/php_dip_service?id=%%ACTAG%%
    </value>
   </property>
   <property name="restAcTag">

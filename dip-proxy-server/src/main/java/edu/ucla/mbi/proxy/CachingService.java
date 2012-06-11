@@ -120,6 +120,7 @@ public class CachingService extends Observable {
                 try{
                     remoteRec = rs.getNative( provider, service, ns, ac, 
                                               rsc.getTimeout() );
+                    log.info( "getNative: remoteRec=" + remoteRec );
                 }catch(ServiceException fault){
                     log.warn("RemoteServer getNative() fault: " 
                              + fault.getServiceFault().getMessage());                    
@@ -134,6 +135,7 @@ public class CachingService extends Observable {
 		
                 if( currentTime.after( qCal.getTime() ) ) {
                     remoteExpired = true;
+                    log.info( "getNative: remoteExpired=true. " );
                 } else {
                     remoteExpired = false;
                     natXml = remoteRec.getNativeXml();
