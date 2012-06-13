@@ -4,7 +4,7 @@
   <groupId>edu.ucla.mbi.dip</groupId>
   <artifactId>dip-proxy-api</artifactId>
   <packaging>jar</packaging>
-  <version>0.01</version>
+  <version>0.02</version>
   <name>dip-proxy-api</name>
 
   <url>http://imex.mbi.ucla.edu/trac/dip</url>
@@ -13,7 +13,7 @@
   <parent>
    <groupId>edu.ucla.mbi.dip</groupId>
    <artifactId>dip-proxy</artifactId>
-   <version>0.01</version>
+   <version>0.02</version>
   </parent>
   
 
@@ -25,18 +25,13 @@
     <version>2.1.4</version>
    </dependency>
 
+   
    <dependency>
     <groupId>commons-logging</groupId>
     <artifactId>commons-logging</artifactId>
     <version>1.1.1</version>
    </dependency>
- 
-   <dependency>
-     <groupId>junit</groupId>
-     <artifactId>junit</artifactId>
-     <version>3.8.1</version>
-    <scope>test</scope>
-   </dependency>
+  
   </dependencies>
 
  <build>

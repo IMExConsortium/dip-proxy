@@ -4,24 +4,17 @@
   <groupId>edu.ucla.mbi.dip</groupId>
   <artifactId>picr-client</artifactId>
   <packaging>jar</packaging>
-  <version>0.01</version>
+  <version>0.02</version>
   <name>picr-client</name>
   <url>http://dip.mbi.ucla.edu</url>
 
   <parent>
     <groupId>edu.ucla.mbi.dip</groupId>
     <artifactId>dip-proxy</artifactId>
-    <version>0.01</version>
+    <version>0.02</version>
   </parent>
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
