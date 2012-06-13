@@ -59,7 +59,7 @@ public class ProxyServiceClient {
         timeOutMilliSecond = timeOutMinuteIn * 60000;
         proxyReQueryTimes = proxyReQueryTimesIn;
 
-        log.info( "initialize:ebiServiceURL=" + serviceURL );
+        log.info( "initialize:proxyServiceURL=" + serviceURL );
     }
 
     //*** used for outside calling
