@@ -28,8 +28,6 @@ import edu.ucla.mbi.cache.orm.*;
 import edu.ucla.mbi.proxy.router.*;
 
 import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
-import edu.ucla.mbi.services.ServiceFault;
 
 public class CachingService extends Observable {
 
@@ -53,7 +51,7 @@ public class CachingService extends Observable {
     //--------------------------------------------------------------------------
     
     public NativeRecord getNative( String provider, String service, String ns,
-                                   String ac ) throws ServiceException {
+                                   String ac ) throws ProxyFault {
 
         Log log = LogFactory.getLog( CachingService.class );
         Date currentTime = Calendar.getInstance().getTime();
@@ -121,9 +119,9 @@ public class CachingService extends Observable {
                     remoteRec = rs.getNative( provider, service, ns, ac, 
                                               rsc.getTimeout() );
                     log.info( "getNative: remoteRec=" + remoteRec );
-                }catch(ServiceException fault){
+                }catch(ProxyFault fault){
                     log.warn("RemoteServer getNative() fault: " 
-                             + fault.getServiceFault().getMessage());                    
+                             + fault.getFaultInfo().getMessage());                    
                     throw fault;
                 }
 		            
@@ -161,7 +159,7 @@ public class CachingService extends Observable {
                 // NOTE: distinguish between no record vs error here ? 
                 
                 log.warn( "Get nativeXml null. " );
-                throw Fault.getServiceException( Fault.NO_RECORD );
+                throw FaultFactory.newInstance( Fault.NO_RECORD );
             }
         }
 
@@ -244,7 +242,7 @@ public class CachingService extends Observable {
 
     public DatasetType getDxf( String provider, String service, String ns,
                                String ac, String detail 
-                               ) throws ServiceException 
+                               ) throws ProxyFault 
     {
         Log log = LogFactory.getLog( CachingService.class );
         log.info( "getDxf(prv=" + provider + " srv=" + service + " det="
@@ -254,7 +252,7 @@ public class CachingService extends Observable {
 
         if ( rsc == null ) {
             log.warn("remote server is null.");
-            throw Fault.getServiceException( Fault.UNSUPPORTED_OP );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
         DxfRecord dxfRecord = null;
@@ -309,7 +307,7 @@ public class CachingService extends Observable {
             } catch ( Exception e ) {
                 log.warn( "getDxf(): for service " + service + 
                           " and ac " + ac + " exception: " + e.toString() );
-                throw Fault.getServiceException( Fault.UNKNOWN );
+                throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
         }
 
@@ -337,7 +335,7 @@ public class CachingService extends Observable {
         }else{
             log.warn( "getDxf(): for service " + service +
                       " and ac " + ac + " cannot get native record" );
-            throw Fault.getServiceException( Fault.NO_RECORD );
+            throw FaultFactory.newInstance( Fault.NO_RECORD );
         }
 
         // transform nativeXML to DXF
@@ -352,7 +350,7 @@ public class CachingService extends Observable {
         try {
             dxfResult = rs.buildDxf( nativeXml, ns, ac, 
                                      detail, service, rsc.getTransformer() );            
-        } catch( ServiceException se ) {
+        } catch( ProxyFault se ) {
             log.info( "getDxf: get Exception: " + se.toString() );
             log.info( "getDxf: discarding native record" );
             
@@ -371,12 +369,12 @@ public class CachingService extends Observable {
             try {
                 DipProxyDAO.getNativeRecordDAO().delete( faultyRecord );
             } catch ( DAOException e ) {
-                throw Fault.getServiceException( Fault.TRANSACTION );
+                throw FaultFactory.newInstance( Fault.TRANSACTION );
             }
             */
             log.warn( "getDxf(): transform error for service " + service +
                       " and ac " + ac + " exception: "+ se.toString());
-            throw Fault.getServiceException( Fault.TRANSFORM );
+            throw FaultFactory.newInstance( Fault.TRANSFORM );
         }
 
         // build and store dxf record
@@ -385,14 +383,14 @@ public class CachingService extends Observable {
         if ( dxfResult.getNode().isEmpty() ) {
             log.warn( "getDxf(): dxf_record missing node: service=" +
                       service + " and ac=" + ac + ".");
-            throw Fault.getServiceException( Fault.NO_RECORD );
+            throw FaultFactory.newInstance( Fault.NO_RECORD );
         }
         
         if( dxfResult.getNode().get(0).getAc().equals("") ){
             log.warn("getDxf(): dxf_record missin ac: service=" + 
                      service + " and ac " + ac + ".");  
             
-            throw Fault.getServiceException( Fault.TRANSFORM );            
+            throw FaultFactory.newInstance( Fault.TRANSFORM );            
         }
         
         if ( rsc.isCacheOn() ) {
@@ -425,7 +423,7 @@ public class CachingService extends Observable {
             } catch ( Exception e ) {
                 log.warn( "getDxf(): for service " + service + 
                           " and ac " + ac + " exception: " + e.toString() );
-                throw Fault.getServiceException( Fault.UNKNOWN );
+                throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
         }
         return dxfResult;
@@ -461,7 +459,7 @@ public class CachingService extends Observable {
     }
 
     private String marshall( DatasetType record ) 
-        throws ServiceException {
+        throws ProxyFault {
 
         try {
 
@@ -484,12 +482,12 @@ public class CachingService extends Observable {
         } catch ( Exception e ) {
             Log log = LogFactory.getLog( CachingService.class );
             log.warn( "marshall(): exception: " + e.toString() );
-            throw Fault.getServiceException( Fault.UNKNOWN );
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
     }
 
     private DatasetType unmarshall( String dxfString ) 
-        throws ServiceException {
+        throws ProxyFault {
         
         try {
             // unmarshall into DatasetType
@@ -516,7 +514,7 @@ public class CachingService extends Observable {
         } catch ( Exception e ) {
             Log log = LogFactory.getLog( CachingService.class );
             log.warn( "unmarshall(): exception: " + e.toString() );
-            throw Fault.getServiceException( Fault.UNKNOWN );
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
     }
 }

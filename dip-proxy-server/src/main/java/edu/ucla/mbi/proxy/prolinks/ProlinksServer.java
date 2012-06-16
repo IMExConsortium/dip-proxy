@@ -19,7 +19,6 @@ import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.proxy.ncbi.*;
 import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
 
 import javax.xml.bind.*;
 import java.io.*;
@@ -46,7 +45,7 @@ public class ProlinksServer extends RemoteNativeServer {
     }
 
     public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeOut ) throws ServiceException {
+            String ac, int timeOut ) throws ProxyFault {
 
         Log log = LogFactory.getLog( ProlinksServer.class );
         String retVal = null;
@@ -68,7 +67,7 @@ public class ProlinksServer extends RemoteNativeServer {
 
         if ( retVal == null ) {
             log.info( "getNative  null returned" );
-            throw Fault.getServiceException( 5 ); // no hits
+            throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
         }
 
         NativeRecord record = new NativeRecord( provider, service, ns, ac );
@@ -77,8 +76,9 @@ public class ProlinksServer extends RemoteNativeServer {
     }
 
     public DatasetType buildDxf( String strNative, String ns, String ac,
-            String detail, String service, ProxyTransformer pTrans )
-            throws ServiceException {
+                                 String detail, String service, 
+                                 ProxyTransformer pTrans 
+                                 ) throws ProxyFault {
 
         Log log = LogFactory.getLog( ProlinksServer.class );
         log.info( " buildDxf called: " + ac );
@@ -146,7 +146,7 @@ public class ProlinksServer extends RemoteNativeServer {
                         log.info( "ProlinksServer: stub getRefseq: "
                                 + sw.toString() );
 
-                        throw Fault.getServiceException( Fault.UNKNOWN );
+                        throw FaultFactory.newInstance( Fault.UNKNOWN );
                     }
                 }
             }
@@ -155,9 +155,9 @@ public class ProlinksServer extends RemoteNativeServer {
             log.info( "ProlinksServer: " + e.toString() );
             String fault = e.toString();
             if ( fault.contains( "03" ) ) {
-                throw Fault.getServiceException( 99 );
+                throw FaultFactory.newInstance( Fault.UNKNOWN );
             } else {
-                throw Fault.getServiceException( Fault.UNKNOWN );
+                throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
         }
     }

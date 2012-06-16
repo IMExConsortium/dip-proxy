@@ -19,27 +19,27 @@ public class TransformLogErrorListener implements ErrorListener{
 
     public void warning( TransformerException exception ) {
 
-	Log log = LogFactory.getLog( TransformLogErrorListener.class );
-	log.info( "TransformLogErrorListener: warning: " + 
-		  exception.getMessage() );
+	    Log log = LogFactory.getLog( TransformLogErrorListener.class );
+	    log.info( "TransformLogErrorListener: warning: " + 
+		exception.getMessage() );
     }
     
-    public void error( TransformerException exception )
-	throws TransformerException {
-
-	Log log = LogFactory.getLog( TransformLogErrorListener.class );
-	log.info( "TransformLogErrorListener: error: " + 
-		  exception.getMessage() );
-	throw exception;
+    public void error( TransformerException exception ) 
+                                        throws TransformerException 
+    {
+        Log log = LogFactory.getLog( TransformLogErrorListener.class );
+	    log.info( "TransformLogErrorListener: error: " + 
+		exception.getMessage() );
+	    throw exception;
     }
 
-    public void fatalError( TransformerException exception )
-	throws TransformerException {
-
-	Log log = LogFactory.getLog( TransformLogErrorListener.class );
-	log.info( "TransformLogErrorListener: fatalError: " + 
-		  exception.getMessage() );
-	throw exception;
+    public void fatalError( TransformerException exception ) 
+                                        throws TransformerException 
+    {
+	    Log log = LogFactory.getLog( TransformLogErrorListener.class );
+	    log.info( "TransformLogErrorListener: fatalError: " + 
+		exception.getMessage() );
+	    throw exception;
     }
 }
 

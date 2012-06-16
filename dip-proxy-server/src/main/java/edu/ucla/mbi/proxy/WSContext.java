@@ -131,6 +131,8 @@ public class WSContext{
 		            } catch ( NumberFormatException nfe ) {
 			            log.info( "ProxyWS: ttl=" + ttl +
 				                  " :format error. Using default." );
+                        throw nfe;
+                                                  
 		            }
 		        } else {
 		            log.info( "ProxyWS: ttl="+ttl+

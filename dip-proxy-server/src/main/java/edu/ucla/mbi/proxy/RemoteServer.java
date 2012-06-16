@@ -14,20 +14,19 @@ package edu.ucla.mbi.proxy;
  *
  *========================================================================= */
 
-import edu.ucla.mbi.services.ServiceException;
 import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.cache.NativeRecord;
 
 public interface RemoteServer{
     
     public NativeRecord getNative( String provider, String service,
-                                   String ns, String ac, int timeOut ) 
-        throws ServiceException;
+                                   String ns, String ac, int timeOut 
+                                   ) throws ProxyFault;
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
 				                 String detail, String service, 
-				                 ProxyTransformer pTrans ) 
-        throws ServiceException;
+				                 ProxyTransformer pTrans 
+                                 ) throws ProxyFault;
     
 
     public boolean isNative();

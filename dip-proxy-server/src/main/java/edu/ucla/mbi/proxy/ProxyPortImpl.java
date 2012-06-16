@@ -69,7 +69,7 @@ public class ProxyPortImpl implements ProxyPort {
                         && !format.equalsIgnoreCase( "dxf" ) 
                         && !format.equalsIgnoreCase( "both" ) ) 
         {
-            throw FaultFactory.newInstance( 4 ); //unsupported operation
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
         }
 
         //validation of ns 
@@ -88,7 +88,7 @@ public class ProxyPortImpl implements ProxyPort {
             } else if ( service.equals( "entrezgene" ) ) {
                 ns = "entrezgene";
             } else {
-                throw FaultFactory.newInstance( 4 ); //unsupported operation
+                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
         } else if ( provider.equals( "EBI" ) ) {
             if( service.equals( "uniprot" ) ) { 
@@ -99,19 +99,19 @@ public class ProxyPortImpl implements ProxyPort {
                     detail = "base"; // picr cann't support detail with stub
                 }
             } else {
-                throw FaultFactory.newInstance( 4 ); //unsupported operation
+                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
         } else if ( provider.equals( "DIP" ) ) {
             if( service.equals( "dip" ) ) {
                 ns = "dip";
             } else {
-                throw FaultFactory.newInstance( 4 ); //unsupported operation
+                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
         } else if ( provider.equals( "MBI" ) ) {
             if( service.equals( "prolinks" ) ) {
                 ns = "refseq";
             } else {
-                throw FaultFactory.newInstance( 4 ); //unsupported operation
+                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
         } else {
             throw FaultFactory.newInstance( 4 ); //unsupported operation
@@ -166,20 +166,14 @@ public class ProxyPortImpl implements ProxyPort {
                 }
             }
 
-        }catch ( ServiceException se ) {
-            String message = se.getServiceFault().getMessage();
-            log.warn( "ProxyPortImpl: ServiceException: message= " + message);
-
-            ProxyFault fault = new ProxyFault(message, se.getServiceFault());
+        }catch ( ProxyFault fault ) {
+            String message = fault.getFaultInfo().getMessage();
+            log.warn( "ProxyPortImpl: ProxyFault: message= " + message);
             throw fault;
 
         } catch ( Exception e ) {
             log.warn( "ProxyPortImpl: " + e.toString() );
-            ServiceFault fault = new ServiceFault();
-            fault.setMessage(e.toString());
-            fault.setFaultCode(99);
-            ProxyFault proxyFault = new ProxyFault(e.toString(), fault);
-            throw proxyFault;
+            throw  FaultFactory.newInstance( Fault.UNKNOWN );
         }
 
         return;

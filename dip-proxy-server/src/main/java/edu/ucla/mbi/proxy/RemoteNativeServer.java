@@ -28,7 +28,6 @@ import javax.xml.transform.stream.StreamSource;
 import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.dxf14.DxfJAXBContext;
 import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
 import edu.ucla.mbi.cache.NativeRecord;
 
 import java.util.Map;
@@ -88,13 +87,13 @@ public abstract class RemoteNativeServer
 
     abstract public NativeRecord getNative( String provider, String service,
                                             String ns, String ac, int timeout 
-                                            ) throws ServiceException; 
+                                            ) throws ProxyFault; 
     
     
     public DatasetType transform( String strNative,
 				                  String ns, String ac, String detail,
 				                  String service, ProxyTransformer pTrans 
-                                  ) throws ServiceException {
+                                  ) throws ProxyFault {
 
 	    Log log = LogFactory.getLog( RemoteServer.class );
 	    
@@ -122,15 +121,15 @@ public abstract class RemoteNativeServer
 	    
             //test if dxfResult is empty
 	        if ( dxfResult.getNode().isEmpty() ) {
-		        throw Fault.getServiceException( 5 );  // no hits
+		        throw FaultFactory.newInstance( Fault.NO_RECORD );  // no hits
 	        }	    
             return dxfResult;
 	    
-	    } catch ( ServiceException fault ) { 
+	    } catch ( ProxyFault fault ) { 
 	        log.info( "Transformer fault: empty dxfResult ");
 	        throw fault;
         } catch ( Exception e ) {
-	        throw Fault.getServiceException( 99 );  // no hits
+	        throw FaultFactory.newInstance( Fault.UNKNOWN );  
 	    
 	    }   
     }
@@ -138,7 +137,7 @@ public abstract class RemoteNativeServer
     public DatasetType buildDxf( String strNative, String ns, String ac,
 				                 String detail, String service, 
 				                 ProxyTransformer pTrans  
-	                             ) throws ServiceException {
+	                             ) throws ProxyFault {
 	
     	// NOTE: overload if dxf building more complex than
 	    //       a simple xslt transformation

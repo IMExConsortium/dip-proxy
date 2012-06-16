@@ -20,7 +20,7 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
 
-import edu.ucla.mbi.services.ServiceException;
+import edu.ucla.mbi.proxy.ProxyFault;
 
 public class NativeAgent implements Agent {
 
@@ -91,8 +91,8 @@ public class NativeAgent implements Agent {
                             // store native record locally
                             ndo.create( oldRecord );
 
-                        } catch ( ServiceException se ) {
-                            log.info( "remote service (" + prv + ") " + se );
+                        } catch ( ProxyFault fault ) {
+                            log.info( "remote service (" + prv + ") " + fault );
                         }
                     }
                 } catch ( Exception e ) {

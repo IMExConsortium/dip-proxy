@@ -17,14 +17,14 @@ import org.apache.commons.logging.LogFactory;
 public class WSContextManager 
     implements javax.servlet.ServletContextListener {
 
-    public void contextInitialized(javax.servlet.ServletContextEvent sce){
-	System.out.println("WSContextManager: contextInitialized");
+    public void contextInitialized(javax.servlet.ServletContextEvent sce) {
+	    System.out.println("WSContextManager: contextInitialized");
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
-	ClassLoader contextClassLoader = 
+	    ClassLoader contextClassLoader = 
 	    Thread.currentThread().getContextClassLoader();
-	LogFactory.release(contextClassLoader);
-	System.out.println("WSContextManager: contextDestroyed");
+	    LogFactory.release(contextClassLoader);
+	    System.out.println("WSContextManager: contextDestroyed");
     }
 }

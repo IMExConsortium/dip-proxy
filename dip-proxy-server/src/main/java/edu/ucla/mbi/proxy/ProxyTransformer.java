@@ -39,7 +39,7 @@ public class ProxyTransformer{
     }
 
     public Transformer getTransformer() {
-	return tf;
+	    return tf;
     }
     
     public void setTransformer( String service ) { 
@@ -88,7 +88,7 @@ public class ProxyTransformer{
     public void transform( StreamSource xmlStreamSource, 
                            JAXBResult jaxbResult) {
 	    
-	Log log = LogFactory.getLog( ProxyTransformer.class );
+	    Log log = LogFactory.getLog( ProxyTransformer.class );
 	
 	    try{
 	        tf.transform(xmlStreamSource, jaxbResult );

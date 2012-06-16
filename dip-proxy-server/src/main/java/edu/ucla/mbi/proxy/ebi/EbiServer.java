@@ -29,7 +29,6 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
 import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
 
 // EBI Picr client
 //----------------
@@ -111,7 +110,7 @@ public class EbiServer extends RemoteNativeServer {
     
     public NativeRecord getNative( String provider, String service, 
                                    String ns, String ac, int timeOut 
-                                   ) throws ServiceException {
+                                   ) throws ProxyFault {
         
         Log log = LogFactory.getLog( EbiServer.class );
 
@@ -138,10 +137,10 @@ public class EbiServer extends RemoteNativeServer {
                     log.warn("EbiServer: getNative:" + 
                              " uniprot service for AC " + ac +
                              ": no record found.");
-                    throw Fault.getServiceException( Fault.NO_RECORD );
+                    throw FaultFactory.newInstance( Fault.NO_RECORD );
                 }
-            } catch ( ServiceException ex ) {
-                throw ex;
+            } catch ( ProxyFault fault ) {
+                throw fault;
             } catch ( Exception e ) {
                 log.info( "EbiServer:" + 
                           " getUniprot: exception: " + e.toString() );
@@ -149,17 +148,17 @@ public class EbiServer extends RemoteNativeServer {
                     log.warn( "EbiServer: getNative:" +
                               " uniprot service for AC " + ac +
                               ": no record found." );
-                    throw Fault.getServiceException( Fault.NO_RECORD );
+                    throw FaultFactory.newInstance( Fault.NO_RECORD );
                 } else if ( e.toString().contains( "Read timeout" ) ) {
                     log.warn( "EbiServer: getNative:" +
                               " uniprot service for AC " + ac +
                               ": remote server timeout." );
-                    throw Fault.getServiceException( Fault.REMOTE_TIMEOUT );
+                    throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT );
                 } else {
                     log.warn("EbiServer: getNative:" +
                              " uniprot service for AC " + ac +
                              ": get exception: " + e.toString() + ". ");
-                    throw Fault.getServiceException( Fault.UNKNOWN );
+                    throw FaultFactory.newInstance( Fault.UNKNOWN );
                 }
             }
         }
@@ -183,7 +182,7 @@ public class EbiServer extends RemoteNativeServer {
 
                 } catch(Exception ex){
                     log.warn( "EbiServer: picr endpoint not set.");
-                    throw ex;
+                    throw FaultFactory.newInstance( Fault.UNKNOWN );
                 }
                 
 
@@ -231,9 +230,9 @@ public class EbiServer extends RemoteNativeServer {
                     log.warn("EbiServer: getNative:" +
                              " picr service for AC " + ac +
                              ": no record found." );
-                    throw Fault.getServiceException( Fault.NO_RECORD );
+                    throw FaultFactory.newInstance( Fault.NO_RECORD );
                 }
-            } catch (ServiceException fault){
+            } catch ( ProxyFault fault ) {
                 throw fault;                
             } catch ( Exception e ) {
 
@@ -241,22 +240,22 @@ public class EbiServer extends RemoteNativeServer {
                           " exception: " + e.toString() );
 
                 if ( e.toString().contains( "Read timeout" ) ) {
-                    throw Fault.getServiceException( Fault.REMOTE_TIMEOUT );
+                    throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT );
                 } else if ( e.toString().contains( "HTTP Status-Code 404: Not Found") ){
                     log.warn( "EbiServer: getNative:" +
                               " picr service for AC " + ac +
                               ": remote server is not available." );
-                    throw Fault.getServiceException( Fault.REMOTE_FAULT);
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT);
                 } else if( e.toString().contains( "Unsupported Content-Type: text/html") ){
                     log.warn( "EbiServer: getNative:" +
                               " picr service for AC " + ac +
                               ": unsupported Content-Type: text/html.");
-                    throw Fault.getServiceException( Fault.REMOTE_FAULT);
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT);
                 } else {
                     log.warn( "EbiServer: getNative:" +
                               " picr service for AC " + ac +                                             
                               ": get exception: " + e.toString() + ". ");
-                    throw Fault.getServiceException( Fault.UNKNOWN );
+                    throw FaultFactory.newInstance( Fault.UNKNOWN );
                 }
             }
         }

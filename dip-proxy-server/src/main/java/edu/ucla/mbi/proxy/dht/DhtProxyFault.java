@@ -12,13 +12,14 @@ package edu.ucla.mbi.proxy.dht;
 
 import edu.ucla.mbi.services.Fault;
 import edu.ucla.mbi.services.ServiceFault;
+import edu.ucla.mbi.proxy.FaultFactory;
 
 public class DhtProxyFault extends DhtFault {
 
     private static final String MESSAGE = "DhtProxyFault";
 
     public DhtProxyFault( int code ) {
-        super( MESSAGE, Fault.getServiceFault( code ) );
+        super( MESSAGE, FaultFactory.newInstance( code ).getFaultInfo() );
     }
 
     public DhtProxyFault( ServiceFault fault ) {
@@ -26,7 +27,9 @@ public class DhtProxyFault extends DhtFault {
     }
 
     public static DhtFault getFault( int code ) {
-        return new DhtFault( MESSAGE, Fault.getServiceFault( code ) );
+        ServiceFault serviceFault = new ServiceFault();
+        serviceFault.setFaultCode( code );
+        return new DhtFault( MESSAGE, serviceFault );
     }
 
     public static DhtFault getFault( ServiceFault fault ) {

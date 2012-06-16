@@ -9,7 +9,7 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
  <bean id="ebiTransformer"
-       class="edu.ucla.mbi.proxy.ebi.EbiProxyTransformer">
+       class="edu.ucla.mbi.proxy.ProxyTransformer">
   <property name="transfMap">
    <map>
     <entry key="uniprot">
@@ -20,18 +20,6 @@
     </entry>
    </map>
   </property>
-  <!--
-  <property name="context">
-   <map>
-    <entry key="ebiProxy">
-      <ref bean="ebiReferenceProxy"/>
-     </entry> 
-    <entry key="ncbiProxy">
-      <ref bean="ncbiReferenceProxy"/>
-     </entry> 
-   </map> 
-  </property>
-  -->
  </bean>
 
  <bean id="ncbiTransformer"
@@ -65,12 +53,6 @@
   </property>
   <property name="context">
    <map/>
-<!--
-    <entry key="ncbiProxy">  
-     <ref bean="ncbiReferenceServer"/>
-    </entry>
-   </map>
--->
   </property>
  </bean>
 

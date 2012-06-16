@@ -29,8 +29,6 @@ import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
 import edu.ucla.mbi.services.*;
-//import edu.ucla.mbi.services.dip.*;
-//import edu.ucla.mbi.services.dip.direct.*;
 
 import edu.ucla.mbi.legacy.dip.*;
 import edu.ucla.mbi.services.legacy.dip.*;
@@ -88,7 +86,7 @@ public class DipServer extends RemoteNativeServer {
     // ---------------------------------------------------------------------
 
     public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeOut ) throws ServiceException {
+            String ac, int timeOut ) throws ProxyFault {
 
         Log log = LogFactory.getLog( DipServer.class );
         log.info( "srv=" + service + " ns=" + ns + " ac=" + ac );
@@ -128,12 +126,12 @@ public class DipServer extends RemoteNativeServer {
             }
         } else {
             log.info( "unrecognized namespace" );
-            throw Fault.getServiceException( Fault.INVALID_ID );
+            throw FaultFactory.newInstance( Fault.INVALID_ID );
         }
 
         if ( retList == null ) {
             log.info( "no record found " );
-            throw Fault.getServiceException( Fault.NO_RECORD );
+            throw FaultFactory.newInstance( Fault.NO_RECORD );
         }
 
         // marshall List<NodeType> into dataset element
@@ -146,7 +144,7 @@ public class DipServer extends RemoteNativeServer {
         return record;
     }
 
-    private String marshall( List<NodeType> nodeList ) throws ServiceException {
+    private String marshall( List<NodeType> nodeList ) throws ProxyFault {
         try {
 
             edu.ucla.mbi.dxf14.ObjectFactory dofDxf =
@@ -171,7 +169,7 @@ public class DipServer extends RemoteNativeServer {
 
             Log log = LogFactory.getLog( DipServer.class );
             log.info( "marshalling exception " + e.toString() );
-            throw Fault.getServiceException( Fault.MARSHAL );
+            throw FaultFactory.newInstance( Fault.MARSHAL );
         }
     }
 }

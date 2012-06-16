@@ -34,7 +34,6 @@ import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.dxf14.DxfJAXBContext;
 
 import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
 
 import edu.ucla.mbi.cache.NativeRecord;
 
@@ -71,7 +70,7 @@ public class RemoteProxyServer implements RemoteServer {
     
     public NativeRecord getNative( String provider, String service,
                                    String ns, String ac, int timeout
-                                   ) throws ServiceException 
+                                   ) throws ProxyFault 
     {
         Log log = LogFactory.getLog( RemoteProxyServer.class );
 
@@ -119,11 +118,11 @@ public class RemoteProxyServer implements RemoteServer {
         } catch ( Exception e ) {
             log.info( "getNative: exception: " + e.toString() );
             if ( e.toString().contains( "No result found" ) ) {
-                throw Fault.getServiceException( 5 ); // no hits
+                throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
             } else if ( e.toString().contains( "Read timed out" ) ) {
-                throw Fault.getServiceException( 12 ); // timeout
+                throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT ); // timeout
             } else {
-                throw Fault.getServiceException( 99 ); // unknown
+                throw FaultFactory.newInstance( Fault.UNKNOWN ); // unknown
             }
         }
     }
@@ -146,7 +145,7 @@ public class RemoteProxyServer implements RemoteServer {
     public DatasetType transform( String strNative,
 				                  String ns, String ac, String detail,
 				                  String service, ProxyTransformer pTrans 
-                                  ) throws ServiceException {
+                                  ) throws ProxyFault {
 	
         Log log = LogFactory.getLog( RemoteProxyServer.class );
 	    try {
@@ -173,21 +172,17 @@ public class RemoteProxyServer implements RemoteServer {
 	    
             //test if dxfResult is empty
 	        if ( dxfResult.getNode().isEmpty() ) {
-		        //ServiceFault fault = 
-		        //new ServiceFault( "05 remote server: transformer." );
-		        throw Fault.getServiceException( 5 );  // no hits
+		        throw FaultFactory.newInstance( Fault.TRANSFORM ); 
 	        }	    
 	    
 	        return dxfResult;
 	    
-	    } catch ( ServiceException ex ) { 
+	    } catch ( ProxyFault fault ) { 
 	        log.info( "Transformer fault: empty dxfResult ");
-	        throw ex;
+	        throw fault;
         } catch ( Exception e ) {
 	        log.info( "Exception="+e.toString() );
-	        //ServiceFault fault = 
-	        //	new ServiceFault( "05 remote server: transform." ); 
-	        throw Fault.getServiceException( 5 );  // no hits
+	        throw FaultFactory.newInstance( Fault.TRANSFORM );  
 	    
 	    }   
     }
@@ -195,7 +190,7 @@ public class RemoteProxyServer implements RemoteServer {
     public DatasetType buildDxf( String strNative, String ns, String ac,
 				                 String detail, String service, 
 				                 ProxyTransformer pTrans 
-                                 ) throws ServiceException {
+                                 ) throws ProxyFault {
 	
     	// NOTE: overload if dxf building more complex than
 	    //       a simple xslt transformation

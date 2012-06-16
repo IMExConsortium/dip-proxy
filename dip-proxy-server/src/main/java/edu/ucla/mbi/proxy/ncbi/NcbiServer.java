@@ -37,7 +37,7 @@ public class NcbiServer extends RemoteNativeServer {
     private Log log = LogFactory.getLog( NcbiServer.class );
 
     public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeOut ) throws ServiceException {
+            String ac, int timeOut ) throws ProxyFault {
 
         String retVal = null;
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
@@ -74,7 +74,7 @@ public class NcbiServer extends RemoteNativeServer {
                     thread.start();
                     log.info( "getNative: nlm: ncbi fetch thread starting... " );
 
-                    throw Fault.getServiceException( 13 ); // REMOTE_FAULT
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // REMOTE_FAULT
                 }
 
                 String ncbi_error = xPath.evaluate(
@@ -84,7 +84,7 @@ public class NcbiServer extends RemoteNativeServer {
 
                 if( !ncbi_error.equals("") ) {
                     log.warn("getNative: nlm esearch: No items found");
-                    throw Fault.getServiceException( Fault.NO_RECORD );
+                    throw FaultFactory.newInstance( Fault.NO_RECORD );
                 }
 
                 String ncbi_nlmid = xPath.evaluate( 
@@ -98,7 +98,7 @@ public class NcbiServer extends RemoteNativeServer {
                     thread.start();
                     log.info( "getNative: nlm: ncbi fetch thread starting... " );
 
-                    throw Fault.getServiceException( 13 ); // REMOTE_FAULT 
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // REMOTE_FAULT 
                 }
 
                 //--------------------------------------------------------------                
@@ -131,7 +131,7 @@ public class NcbiServer extends RemoteNativeServer {
                     thread.start();
 
                     log.info( "getNative: nlm: ncbi fetch thread starting..." );                     
-                    throw Fault.getServiceException( 13 ); // REMOTE_FAULT 
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );  
                 } else {
                     /*
                     //this is old criteria to decide if it's a journal
@@ -152,7 +152,7 @@ public class NcbiServer extends RemoteNativeServer {
                     if( !typeOfResource.equals("Serial") ) {
                         log.warn( "NcbiServer: nlm: " +
                                   "TypeOfResource is not Serial.");
-                        throw Fault.getServiceException( Fault.NO_RECORD );
+                        throw FaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
                         //extract xml string
                         retVal = NativeURL.query( url_efetch_string, timeOut );
@@ -165,16 +165,16 @@ public class NcbiServer extends RemoteNativeServer {
                                                             ns, ac, ncbi_nlmid );
                             thread.start();
                             log.info( "getNative: ncbi fetch thread starting." );
-                            throw Fault.getServiceException( 13 ); // REMOTE_FAULT
+                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
                         }
                     }
                 }
-            }catch( ServiceException fault ) {
+            }catch( ProxyFault fault ) {
                 throw fault;            
             }catch( Exception e ) {
                 log.warn( "NcbiServer: getNative: nlm: " +
                           "getService Exception:\n" + e.toString() + ". ");
-                throw Fault.getServiceException( Fault.UNKNOWN );
+                throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
         }
 
@@ -199,7 +199,7 @@ public class NcbiServer extends RemoteNativeServer {
 
                 log.warn( "NcbiServer: refseq get wrong retVal for ac " + 
                           ac + "." );
-                throw Fault.getServiceException( Fault.REMOTE_FAULT );
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
             } 
         }
         
@@ -221,7 +221,7 @@ public class NcbiServer extends RemoteNativeServer {
 
         if ( retVal == null ){
             log.warn( "NcbiServer: get retVal null or not found for ac " + ac + "." );
-            throw Fault.getServiceException( Fault.NO_RECORD );
+            throw FaultFactory.newInstance( Fault.NO_RECORD );
         }
 
         NativeRecord record = new NativeRecord( provider, service, ns, ac);
