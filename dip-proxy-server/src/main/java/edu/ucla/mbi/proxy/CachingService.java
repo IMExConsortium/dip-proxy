@@ -506,7 +506,7 @@ public class CachingService extends Observable {
             DatasetType dxfResult = datasetElement.getValue();
             
             if ( dxfResult.getNode().isEmpty() ) {
-                throw Fault.getServiceException( Fault.NO_RECORD );
+                throw FaultFactory.newInstance( Fault.NO_RECORD );
             } else {
                 return dxfResult;
             }

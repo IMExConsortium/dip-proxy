@@ -18,7 +18,6 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
 import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;

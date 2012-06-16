@@ -13,8 +13,6 @@ package edu.ucla.mbi.proxy;
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
-import edu.ucla.mbi.services.ServiceFault;
 import edu.ucla.mbi.services.TimeStamp;
 
 import edu.ucla.mbi.cache.NativeRecord;
