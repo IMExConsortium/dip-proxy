@@ -103,8 +103,9 @@ sub checkProxySoapOut{
         return ( $datasetOut, "0" );
 
     }elsif( $format eq "dxf" || $format eq "both" ) { 
-        $datasetOut =~ /<(ns2:|ns3:)?dataset/ ) {
-        if( $datasetOut !~ /<(ns2:|ns3:)?node/ ) {
+        if( $datasetOut !~ /<(ns2:|ns3:)?dataset/ 
+                || $datasetOut !~ /<(ns2:|ns3:)?node/ ) 
+        {
             return("0", "no hit record");
         }
 
