@@ -20,6 +20,12 @@
   <dependencies>
 
    <dependency>
+     <groupId>edu.ucla.mbi.dip</groupId>
+     <artifactId>dip-util-api</artifactId>
+     <version>0.02</version>
+   </dependency>
+
+   <dependency>
     <groupId>com.sun.xml.ws</groupId>
     <artifactId>jaxws-rt</artifactId>
     <version>2.1.4</version>
@@ -38,6 +44,32 @@
    <finalName>dip-proxy-api</finalName>
 
    <plugins>
+    <!-- unpack DXF14.xsd and services.xsd from dip-util-api.jar -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-dependency-plugin</artifactId>
+      <executions>
+        <execution>
+          <id>unpack</id>
+          <phase>generate-sources</phase>
+          <goals>
+            <goal>unpack</goal>
+          </goals>
+          <configuration>
+            <artifactItems>
+              <artifactItem>
+                <groupId>edu.ucla.mbi.dip</groupId>
+                <artifactId>dip-util-api</artifactId>
+                <version>0.02</version>
+                <outputDirectory>${basedir}/src</outputDirectory>
+                <includes>**/*.xsd, **/*.jxb</includes>
+              </artifactItem>
+            </artifactItems>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+
     <plugin>
      <groupId>org.codehaus.mojo</groupId>
      <artifactId>jaxws-maven-plugin</artifactId>

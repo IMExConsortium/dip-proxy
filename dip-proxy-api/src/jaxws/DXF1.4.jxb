@@ -1,7 +1,0 @@
-<bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1">
-  <bindings scd="x-schema::dxf" xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14">
-    <schemaBindings>
-      <package name="edu.ucla.mbi.dxf14" />
-    </schemaBindings>
-  </bindings>
-</bindings>

@@ -1,7 +1,0 @@
-<bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1">
-  <bindings scd="x-schema::dsv" xmlns:dsv="http://dip.doe-mbi.ucla.edu/services">
-    <schemaBindings>
-      <package name="edu.ucla.mbi.services" />
-    </schemaBindings>
-  </bindings>
-</bindings>
