@@ -83,7 +83,7 @@
         <verbose>false</verbose>
         <bindingFiles>
          <bindingFile>DXF1.4.jxb</bindingFile>
-         <bindingFile>services.jxb</bindingFile>
+         <bindingFile>Fault.jxb</bindingFile>
          <bindingFile>DhtService14.jxb</bindingFile>
         </bindingFiles> 
         <wsdlFiles>
@@ -122,7 +122,7 @@
         <verbose>false</verbose>
         <bindingFiles>
          <bindingFile>DXF1.4.jxb</bindingFile>
-         <bindingFile>services.jxb</bindingFile>
+         <bindingFile>Fault.jxb</bindingFile>
          <bindingFile>ProxyService14.jxb</bindingFile>
         </bindingFiles>
         <wsdlFiles>

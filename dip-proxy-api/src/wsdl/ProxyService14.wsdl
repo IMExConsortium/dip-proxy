@@ -14,15 +14,15 @@
              xmlns:xs="http://www.w3.org/2001/XMLSchema"
              targetNamespace="http://mbi.ucla.edu/proxy" 
     	     xmlns:proxy="http://mbi.ucla.edu/proxy" 
-             xmlns:dsv="http://dip.doe-mbi.ucla.edu/services"
-	     xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" > 
+             xmlns:dipfault="http://dip.doe-mbi.ucla.edu/fault"
+	         xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" > 
  <types>
 
   <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
        targetNamespace="http://mbi.ucla.edu/proxy"> 
 
-   <xs:import namespace="http://dip.doe-mbi.ucla.edu/services"
-       schemaLocation="services.xsd"/> 
+   <xs:import namespace="http://dip.doe-mbi.ucla.edu/fault"
+       schemaLocation="Fault.xsd"/> 
 
    <xs:import namespace="http://dip.doe-mbi.ucla.edu/services/dxf14"
        schemaLocation="DXF1.4.xsd"/> 
@@ -70,7 +70,7 @@
  </message>
 
  <message name="proxyFault">
-  <part element="dsv:serviceFault" name="fault"/>
+  <part element="dipfault:serviceFault" name="fault"/>
  </message>
 		
  <portType name="ProxyPortType">

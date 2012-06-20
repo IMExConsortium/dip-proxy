@@ -15,7 +15,7 @@
              xmlns:xs="http://www.w3.org/2001/XMLSchema"
              targetNamespace="http://mbi.ucla.edu/proxy/dht" 
              xmlns:dht="http://mbi.ucla.edu/proxy/dht" 
-             xmlns:dsv="http://dip.doe-mbi.ucla.edu/services"
+             xmlns:dipfault="http://dip.doe-mbi.ucla.edu/fault"
              xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" >
  <types>
   <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
@@ -23,8 +23,9 @@
 
    <xs:import namespace="http://dip.doe-mbi.ucla.edu/services/dxf14"
               schemaLocation="DXF1.4.xsd"/>
-   <xs:import namespace="http://dip.doe-mbi.ucla.edu/services"
-              schemaLocation="services.xsd"/>
+
+   <xs:import namespace="http://dip.doe-mbi.ucla.edu/fault"
+              schemaLocation="Fault.xsd"/>
 
    <xs:element name="setDhtConfig">
     <xs:annotation>
@@ -90,7 +91,7 @@
  </message>
 
  <message name="dhtFault">
-  <part element="dsv:serviceFault" name="fault"/>
+  <part element="dipfault:serviceFault" name="fault"/>
  </message>
 
  <portType name="DhtProxyPortType">
