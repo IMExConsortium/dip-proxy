@@ -84,7 +84,7 @@
     <value>3</value>
   </property>
  </bean>
-
+ 
  <!-- reference proxy -->
  <bean id="referenceProxy" init-method="initialize"
        class="edu.ucla.mbi.proxy.RemoteProxyServer">

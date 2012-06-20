@@ -133,31 +133,6 @@
 
   <servlet-mapping>
    <servlet-name>dip-proxy</servlet-name>
-   <url-pattern>/dip-service</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-   <servlet-name>dip-proxy</servlet-name>
-   <url-pattern>/dxf-service</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-   <servlet-name>dip-proxy</servlet-name>
-   <url-pattern>/ebi-service</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-   <servlet-name>dip-proxy</servlet-name>
-   <url-pattern>/ncbi-service</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-   <servlet-name>dip-proxy</servlet-name>
-   <url-pattern>/prolinks-service</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-   <servlet-name>dip-proxy</servlet-name>
    <url-pattern>/proxy-service</url-pattern>
   </servlet-mapping>
 
@@ -173,7 +148,6 @@
 
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
-    <welcome-file>index.html</welcome-file>
   </welcome-file-list>
   
 </web-app>

@@ -85,7 +85,7 @@
        </entry>      
        
        <entry key="router">
-        <ref bean="ebiDhtRouter"/>
+        <ref bean="ebiDhtRouter"/> 
        </entry>
 
        <entry key="cache" value="on"/>
@@ -114,7 +114,7 @@
        </entry>      
        
        <entry key="router">
-        <ref bean="ncbiDhtRouter"/>
+        <ref bean="ncbiDhtRouter"/> 
        </entry>
 
        <entry key="cache" value="on"/>
@@ -142,7 +142,7 @@
        </entry>      
        
        <entry key="router">
-        <ref bean="mbiDhtRouter"/>
+        <ref bean="mbiDhtRouter"/> 
        </entry>
 
        <entry key="cache" value="on"/>
@@ -171,7 +171,7 @@
        </entry>
        
        <entry key="router">
-        <ref bean="dipDhtRouter"/>
+        <ref bean="dipDhtRouter"/> 
        </entry>
 
        <entry key="cache" value="on"/>
