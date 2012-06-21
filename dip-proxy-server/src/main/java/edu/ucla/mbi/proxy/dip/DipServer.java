@@ -14,7 +14,6 @@ package edu.ucla.mbi.proxy.dip;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 import java.net.URL;
 
 import javax.xml.bind.*;
@@ -27,8 +26,7 @@ import java.io.StringWriter;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.cache.NativeRecord;
-
-import edu.ucla.mbi.services.*;
+import edu.ucla.mbi.fault.*;
 
 import edu.ucla.mbi.legacy.dip.*;
 import edu.ucla.mbi.services.legacy.dip.*;

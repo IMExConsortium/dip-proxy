@@ -33,7 +33,7 @@ import com.sun.xml.ws.developer.JAXWSProperties;
 import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.dxf14.DxfJAXBContext;
 
-import edu.ucla.mbi.services.Fault;
+import edu.ucla.mbi.fault.*;
 
 import edu.ucla.mbi.cache.NativeRecord;
 

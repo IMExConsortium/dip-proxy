@@ -28,7 +28,7 @@ import javax.xml.namespace.QName;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
-import edu.ucla.mbi.services.Fault;
+import edu.ucla.mbi.fault.*;
 
 // EBI Picr client
 //----------------

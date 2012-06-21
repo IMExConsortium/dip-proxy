@@ -27,7 +27,7 @@ import edu.ucla.mbi.cache.orm.*;
 
 import edu.ucla.mbi.proxy.router.*;
 
-import edu.ucla.mbi.services.Fault;
+import edu.ucla.mbi.fault.*;
 
 public class CachingService extends Observable {
 

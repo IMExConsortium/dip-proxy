@@ -10,9 +10,7 @@ package edu.ucla.mbi.proxy.dht;
  *
  *========================================================================= */
 
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceFault;
-import edu.ucla.mbi.proxy.FaultFactory;
+import edu.ucla.mbi.fault.*;
 
 public class DhtProxyFault extends DhtFault {
 

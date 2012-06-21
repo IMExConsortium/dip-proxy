@@ -1,4 +1,4 @@
-package edu.ucla.mbi.proxy;
+package edu.ucla.mbi.fault;
 
 /*===========================================================================
  * $HeadURL::                                                               $
@@ -10,8 +10,7 @@ package edu.ucla.mbi.proxy;
  *
  *========================================================================= */
 
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceFault;
+import edu.ucla.mbi.proxy.ProxyFault;
 
 public class FaultFactory {
 
