@@ -4,14 +4,14 @@
   <groupId>edu.ucla.mbi.dip</groupId>
   <artifactId>picr-client</artifactId>
   <packaging>jar</packaging>
-  <version>0.02</version>
+  <version>>${parent.version}</version>
   <name>picr-client</name>
   <url>http://dip.mbi.ucla.edu</url>
 
   <parent>
     <groupId>edu.ucla.mbi.dip</groupId>
     <artifactId>dip-proxy</artifactId>
-    <version>0.02</version>
+    <version>${current.version}</version>
   </parent>
 
   <dependencies>

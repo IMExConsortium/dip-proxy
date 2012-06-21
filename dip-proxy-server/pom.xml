@@ -4,12 +4,12 @@
   <groupId>edu.ucla.mbi.dip</groupId>
   <artifactId>dip-proxy-server</artifactId>
   <packaging>war</packaging>
-  <version>0.02</version>
+  <version>${parent.version}</version>
   <name>dip-proxy-server</name>
   <url>http://dip.mbi.ucla.edu</url>
 
   <properties>
-    <dip-proxy.version>${project.version}</dip-proxy.version>
+    <!--<dip-proxy.version>${project.version}</dip-proxy.version> -->
     <dip-proxy.bld>$Rev: 182 $</dip-proxy.bld>
     <dip-proxy.wsver>1.0</dip-proxy.wsver>
 
@@ -81,7 +81,7 @@
   <parent>
    <groupId>edu.ucla.mbi.dip</groupId>
    <artifactId>dip-proxy</artifactId>
-   <version>0.02</version>
+   <version>${current.version}</version>
   </parent>
 
   <dependencies>
@@ -89,19 +89,19 @@
    <dependency>
      <groupId>edu.ucla.mbi.dip</groupId>
      <artifactId>picr-client</artifactId>
-     <version>0.02</version>
+     <version>${parent.version}</version>
    </dependency>
 
    <dependency>
      <groupId>edu.ucla.mbi.dip</groupId>
      <artifactId>dip-proxy-api</artifactId>
-     <version>0.02</version>
+     <version>${parent.version}</version>
    </dependency>
 
     <dependency>
      <groupId>edu.ucla.mbi.dip</groupId>
      <artifactId>dip-util-struts</artifactId>
-     <version>0.02</version>
+     <version>${parent.version}</version>
    </dependency>
 
    
@@ -114,7 +114,7 @@
    <dependency>
      <groupId>edu.ucla.mbi.dip</groupId>
      <artifactId>dip-util-orm</artifactId>
-     <version>0.02</version>
+     <version>${parent.version}</version>
    </dependency>
 
    <dependency>

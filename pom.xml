@@ -4,10 +4,13 @@
   <groupId>edu.ucla.mbi.dip</groupId>
   <artifactId>dip-proxy</artifactId>
   <packaging>pom</packaging>
-  <version>0.02</version>
+  <version>${current.version}</version>
   <name>dip-proxy</name>
-
   <url>http://dip.mbi.ucla.edu</url>
+
+  <properties>
+    <current.version>0.02</current.version>
+  </properties>
 
   <organization>
     <name>UCLA-DOE Institute for Genomics and Proteomics</name>
