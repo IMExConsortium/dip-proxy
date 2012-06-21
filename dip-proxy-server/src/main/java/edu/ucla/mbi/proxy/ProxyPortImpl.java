@@ -12,8 +12,8 @@ package edu.ucla.mbi.proxy;
 
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.TimeStamp;
+import edu.ucla.mbi.fault.*;
+import edu.ucla.mbi.util.TimeStamp;
 
 import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.proxy.router.Router;

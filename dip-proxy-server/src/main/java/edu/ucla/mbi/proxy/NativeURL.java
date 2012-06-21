@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import java.net.*;
 import java.io.*;
 
-import edu.ucla.mbi.services.Fault;
+import edu.ucla.mbi.fault.*;
 
 public class NativeURL {
                                                                             
