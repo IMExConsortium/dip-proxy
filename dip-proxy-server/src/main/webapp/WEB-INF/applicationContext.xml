@@ -49,7 +49,7 @@
 <!-- ===================================================== PROXY SERVICES -->
 
  <bean id="wsContext" init-method="initialize" destroy-method="cleanup"
-       class="edu.ucla.mbi.proxy.WSContext">
+       class="edu.ucla.mbi.server.WSContext">
    
   <property name="port" value="8080" />
 

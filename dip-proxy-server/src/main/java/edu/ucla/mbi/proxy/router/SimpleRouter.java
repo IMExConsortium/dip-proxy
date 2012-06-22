@@ -17,7 +17,8 @@ import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import java.util.*;
 
-import edu.ucla.mbi.proxy.*;
+import edu.ucla.mbi.server.RemoteServerContext;
+import edu.ucla.mbi.proxy.RemoteServer;
 
 public class SimpleRouter implements Router {
     

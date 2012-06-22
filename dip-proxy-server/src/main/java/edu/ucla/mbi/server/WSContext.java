@@ -1,4 +1,4 @@
-package edu.ucla.mbi.proxy;
+package edu.ucla.mbi.server;
                                                                            
 /*==============================================================================
  * $HeadURL::                                                                  $ 
@@ -16,6 +16,7 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.monitor.Scheduler;
 import edu.ucla.mbi.cache.orm.*;

@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 
-import edu.ucla.mbi.proxy.*;
+import edu.ucla.mbi.server.*;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
 

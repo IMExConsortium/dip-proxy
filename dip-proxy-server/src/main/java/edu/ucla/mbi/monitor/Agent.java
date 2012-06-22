@@ -11,7 +11,7 @@ package edu.ucla.mbi.monitor;
    #
    #==================================================================== */
 
-import edu.ucla.mbi.proxy.WSContext;
+import edu.ucla.mbi.server.WSContext;
 
 public interface Agent extends Runnable {
 

@@ -22,7 +22,7 @@ import javax.jws.WebService;
 import javax.xml.ws.Holder;
 
 import edu.ucla.mbi.dxf14.*;
-import edu.ucla.mbi.proxy.*;
+import edu.ucla.mbi.server.WSContext;
 import edu.ucla.mbi.proxy.router.*;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.dht.DhtProxyPort")

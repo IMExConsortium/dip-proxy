@@ -25,7 +25,7 @@ import java.util.*;
 
 import edu.ucla.mbi.util.Sparkline;
 
-import edu.ucla.mbi.proxy.*;
+import edu.ucla.mbi.server.WSContext;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
 

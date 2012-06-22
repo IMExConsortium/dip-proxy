@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import edu.ucla.mbi.proxy.*;
+import edu.ucla.mbi.server.WSContext;
 
 public class Scheduler {
 
