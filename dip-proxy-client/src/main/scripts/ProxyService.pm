@@ -17,7 +17,6 @@ package ProxyService;
 #
 ##==============================================================================
 
-#use DipProxy::ProxyNCBI;
 use SOAP::Lite;
 use XML::Dumper;
 use Data::Dumper;
@@ -81,9 +80,9 @@ sub proxyService {
     if( $provider eq "EBI" && $service eq "picr" && $detail eq "full" 
             && $format eq "dxf" && defined($ncbitaxid) && $ncbitaxid ne "0" ) 
     {
-        #print "ProxyEBI.pm: before filterPicrDataset: \$soap_out is below:\n$soap_out\n";
+        #print "ProxyService.pm: before filterPicrDataset: \$soap_out is below:\n$soap_out\n";
         ($soap_out, $fault) = filterPicrDataset( $soap_out, $ncbitaxid ); 
-        #print "ProxyEBI.pm after filterPicrDataset: \$soap_out is below: \n$soap_out\n";    
+        #print "ProxyService.pm after filterPicrDataset: \$soap_out is below: \n$soap_out\n";    
     }
 
     return ($soap_out, $fault);
