@@ -12,7 +12,6 @@ package edu.ucla.mbi.client;
 
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
-import edu.ucla.mbi.services.*;
 import edu.ucla.mbi.fault.*;
 
 import javax.xml.bind.*;

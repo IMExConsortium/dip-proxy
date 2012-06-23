@@ -160,6 +160,7 @@
         <version>2.0.2</version>
         <configuration>
           <archiveClasses>true</archiveClasses>
+          
           <webResources>
 
             <resource>
@@ -241,7 +242,8 @@
           </webResources>
         </configuration>
     </plugin>
-    
+
+    <!--    
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -261,6 +263,7 @@
           </execution>
         </executions>
     </plugin>
+    -->
 
     <plugin>
      <groupId>org.mortbay.jetty</groupId>
