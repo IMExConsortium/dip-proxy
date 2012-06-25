@@ -116,24 +116,11 @@
      <artifactId>dip-util-orm</artifactId>
      <version>${parent.version}</version>
    </dependency>
-
-   <dependency>
-    <groupId>xalan</groupId>
-    <artifactId>xalan</artifactId>
-    <version>2.7.1</version>
-   </dependency>
-
+   
    <dependency>
     <groupId>javax.servlet</groupId>
     <artifactId>servlet-api</artifactId>
     <version>2.5</version>
-    <scope>provided</scope>
-   </dependency>
-
-   <dependency>
-    <groupId>javax.activation</groupId>
-    <artifactId>activation</artifactId>
-    <version>1.1</version>
     <scope>provided</scope>
    </dependency>
 
