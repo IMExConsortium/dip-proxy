@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="css/portal.css" type="text/css">
-<link rel="stylesheet" href="css/${icentral.css}" type="text/css">
+<link rel="stylesheet" href="css/${dip-proxy.css}" type="text/css">
 <link rel="stylesheet" href="css/icentraltab.css" type="text/css">
 <link rel="stylesheet" href="css/icentralstruts.css" type="text/css">
 

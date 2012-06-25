@@ -9,15 +9,8 @@
   <url>http://dip.mbi.ucla.edu</url>
 
   <properties>
-    <!--<dip-proxy.version>${project.version}</dip-proxy.version> -->
-    <dip-proxy.bld>$Rev: 182 $</dip-proxy.bld>
-    <dip-proxy.wsver>1.0</dip-proxy.wsver>
-
-      <dip-proxy.jdbc>jdbc/proxyws</dip-proxy.jdbc>
-      <!--<dip-proxy.jdbc>java:comp/env/jdbc/proxyws</dip-proxy.jdbc> -->
-
-      <!--<dip-proxy.css>dip-proxy-test.css</dip-proxy.css> -->
-     <icentral.css>icentral-test.css</icentral.css>
+    <dip-proxy.jdbc>jdbc/proxyws</dip-proxy.jdbc>
+    <dip-proxy.css>icentral-test.css</dip-proxy.css> 
   </properties>
 
   <profiles>
