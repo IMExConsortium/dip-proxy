@@ -166,9 +166,7 @@
               <targetPath>WEB-INF/wsdl</targetPath>
               <filtering>true</filtering>
               <includes>   
-                <include>services.xsd</include>
                 <include>DhtService14.wsdl</include>
-                <include>DipLegacyService.wsdl</include>
                 <include>ProxyService14.wsdl</include> 
               </includes>
             </resource>
@@ -178,11 +176,12 @@
               <targetPath>xsl</targetPath>
               <filtering>true</filtering>
               <includes>
-                <include>*.xsl</include>
+                <!--<include>*.xsl</include>-->
                 <include>*/*.xsl</include>
               </includes>
             </resource>
 
+           <!-- 
             <resource>
               <directory>${basedir}/../etc/dip-proxy</directory>
               <targetPath>META-INF</targetPath>
@@ -191,6 +190,7 @@
                 <include>context.xml</include>
               </includes>
             </resource>
+            -->
 
             <resource>
               <directory>${basedir}/src/main/resources</directory>
@@ -200,16 +200,17 @@
                 <include>hibernate.cfg.xml</include>
               </includes>
             </resource>
-
+           
+            
             <resource>
-              <directory>${basedir}/../etc/dip-proxy</directory>
+              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
               <targetPath>WEB-INF</targetPath>
               <filtering>true</filtering>
               <includes>
                 <include>jetty-env.xml</include>
               </includes>
             </resource>
-
+            <!--
             <resource>
               <directory>${basedir}/../etc/dip-proxy</directory>
               <targetPath>WEB-INF/classes</targetPath>
@@ -227,13 +228,13 @@
                 <include>*.json</include>
               </includes>
             </resource>
-
+            -->
             <resource>
               <directory>${basedir}/src/main/webapp/tiles</directory>
               <targetPath>tiles</targetPath>
               <filtering>true</filtering>
               <includes>
-                <include>*.jsp</include>
+                <include>icentral-css.jsp</include>
               </includes>
             </resource>
 
@@ -255,11 +256,12 @@
               <name>com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace</name>
               <value>false</value>
             </systemProperty>
-
+            <!--
             <systemProperty>
               <name>log4j.configuration</name>
               <value>file:../etc/dip-proxy/jetty-log4j.properties</value>
             </systemProperty>
+            -->
           </systemProperties>
         </configuration>
 
