@@ -24,27 +24,27 @@
 
 <!-- ========================================================== CONTEXT -->
 
- <import resource="context.xml" />
+ <import resource="contextBean.xml" />
 
 <!-- ===================================================== REMOTE SERVERS -->
 
- <import resource="servers.xml" />
+ <import resource="serversBean.xml" />
 
 <!-- ======================================================= TRANSFORMERS -->
 
- <import resource="transformers.xml" />
+ <import resource="transformersBean.xml" />
 
 <!-- ========================================================== SCHEDULER -->
 
- <import resource="scheduler.xml" />
+ <import resource="schedulerBean.xml" />
 
 <!-- ========================================================== AOP AUDIT -->
 
- <import resource="audit.xml" />
+ <import resource="auditBean.xml" />
 
 <!-- ========================================================== DAO -->
 
- <import resource="dao.xml"/>
+ <import resource="daoBean.xml"/>
 
 <!-- ===================================================== PROXY SERVICES -->
 
