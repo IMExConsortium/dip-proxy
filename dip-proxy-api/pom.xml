@@ -4,7 +4,6 @@
   <groupId>edu.ucla.mbi.dip</groupId>
   <artifactId>dip-proxy-api</artifactId>
   <packaging>jar</packaging>
-  <version>${parent.version}</version>
   <name>dip-proxy-api</name>
 
   <url>http://imex.mbi.ucla.edu/trac/dip</url>
@@ -21,7 +20,7 @@
    <dependency>
      <groupId>edu.ucla.mbi.dip</groupId>
      <artifactId>dip-util-ws</artifactId>
-     <version>${parent.version}</version>
+     <version>0.02</version>
    </dependency>
 
    <dependency>
@@ -51,7 +50,7 @@
               <artifactItem>
                 <groupId>edu.ucla.mbi.dip</groupId>
                 <artifactId>dip-util-ws</artifactId>
-                <version>${parent.version}</version>
+                <version>0.02</version>
                 <outputDirectory>${basedir}/src</outputDirectory>
                 <includes>**/*.xsd, **/*.jxb</includes>
               </artifactItem>
@@ -64,6 +63,7 @@
     <plugin>
      <groupId>org.codehaus.mojo</groupId>
      <artifactId>jaxws-maven-plugin</artifactId>
+     <version>1.9</version>
      <executions>
       <execution>
        <id>dht-proxy</id>
@@ -125,17 +125,6 @@
       </execution>
 
      </executions>
-    </plugin>
-
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <verbose>true</verbose>
-          <fork>true</fork>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
     </plugin>
 
    </plugins>
