@@ -93,6 +93,20 @@
       </plugin>
     </plugins>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>public</id>
+      <name>IMEx Public Maven Reopsitory</name>
+      <url>http://imex.mbi.ucla.edu/archiva/repository/internal/</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>Archiva Managed Snapshot Repository</name>
+      <url>http://imex.mbi.ucla.edu/archiva/repository/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
   
 </project>
 
