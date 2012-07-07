@@ -7,11 +7,12 @@
   <name>dip-proxy-server</name>
   <url>http://dip.mbi.ucla.edu</url>
 
+  <!--
   <properties>
     <dip-proxy.jdbc>jdbc/proxyws</dip-proxy.jdbc>
     <dip-proxy.css>icentral-test.css</dip-proxy.css> 
   </properties>
-
+  -->
   <profiles>
 
     <profile>
