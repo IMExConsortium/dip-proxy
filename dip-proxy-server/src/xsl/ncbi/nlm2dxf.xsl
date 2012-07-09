@@ -14,7 +14,7 @@
 
   </xsl:template>
 
-  <xsl:template match="RecordSet/NLMCatalogRecord">
+  <xsl:template match="NLMCatalogRecordSet/NLMCatalogRecord">
     <xsl:element name="ns1:node">
 	    <xsl:attribute name="ac">
             <xsl:value-of select="./NlmUniqueID/text()"/>
