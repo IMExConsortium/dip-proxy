@@ -12,6 +12,7 @@ package edu.ucla.mbi.client;
 
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
+import edu.ucla.mbi.fault.*;
 
 import javax.xml.bind.*;
 import java.io.*;
@@ -126,6 +127,8 @@ public class ProxyCommandClient {
                 System.out.println( resultStr );
             }
 
+        } catch ( ProxyFault fault ) {
+            System.out.println( fault.getFaultInfo().getMessage() ) ;
         } catch ( Exception e ) {
             System.out.println( e.toString() );
         }

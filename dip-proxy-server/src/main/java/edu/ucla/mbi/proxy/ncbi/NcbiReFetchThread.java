@@ -94,7 +94,8 @@ public class NcbiReFetchThread extends Thread {
 
                         if( !ncbi_error.equals("")){
                             log.warn("getNative: nlm esearch: No items found");
-                            break;
+                            //break;
+                            throw FaultFactory.newInstance( Fault.NO_RECORD );
                         }
                 
                         nlmid = (String) xPath.evaluate( 
