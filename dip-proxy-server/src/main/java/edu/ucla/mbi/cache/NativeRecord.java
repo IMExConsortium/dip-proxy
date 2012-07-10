@@ -37,9 +37,9 @@ public class NativeRecord implements Record {
         this.provider = provider;
         this.service = service;
         this.ns = ns;
-	this.ac = ac;
+	    this.ac = ac;
 	
-	this.createTime = Calendar.getInstance().getTime();
+	    this.createTime = Calendar.getInstance().getTime();
     }
 
     // setters
@@ -133,7 +133,6 @@ public class NativeRecord implements Record {
         return ttl;
     }
     
-    
     public String toString(){
 
         int lastPos = nativeXml.length()-1;
@@ -144,55 +143,55 @@ public class NativeRecord implements Record {
         String str = "[NativeRecord: id= " + id + 
             "; ns= " + ns + ";ac = " + ac;
 
-	if ( nativeXml.length() > 0) {
- 	    str = str + ";nativeXml = " + 
-		nativeXml.substring(0,lastPos); 
-	} else {
-	    str = str + ";nativeXml = ()";
-	}
+	    if ( nativeXml.length() > 0) {
+ 	        str = str + ";nativeXml = " + 
+		    nativeXml.substring(0,lastPos); 
+	    } else {
+	        str = str + ";nativeXml = ()";
+	    }
 	
-	str = str + "\n;createTime " + 
+	    str = str + "\n;createTime " + 
 	    createTime.toString() + "]";
-	return str;
+	    return str;
     }
     
     
     public void setCreateTime(){
-	createTime = Calendar.getInstance().getTime();
+	    createTime = Calendar.getInstance().getTime();
     }
 
     public void resetExpireTime( int ttl ) {
 	
-	if( createTime == null ) {
-	    createTime = Calendar.getInstance().getTime();
-	}
+	    if( createTime == null ) {
+	        createTime = Calendar.getInstance().getTime();
+	    }
                                                                            
-	Calendar expCal = Calendar.getInstance();
-	expCal.setTime( createTime );
-	expCal.add( Calendar.SECOND, ttl );	
-	expireTime = expCal.getTime();
+	    Calendar expCal = Calendar.getInstance();
+	    expCal.setTime( createTime );
+	    expCal.add( Calendar.SECOND, ttl );	
+	    expireTime = expCal.getTime();
         this.ttl = ttl;
     }
 
     public void resetExpireTime( Date now, int ttl ) {
 	
-	if( createTime == null ) {
-	    createTime = Calendar.getInstance().getTime();
-	}
+	    if( createTime == null ) {
+	        createTime = Calendar.getInstance().getTime();
+	    }
                                                                            
-	Calendar expCal = Calendar.getInstance();
-	expCal.setTime( now );
-	expCal.add( Calendar.SECOND, ttl );	
-	expireTime = expCal.getTime();
+	    Calendar expCal = Calendar.getInstance();
+	    expCal.setTime( now );
+	    expCal.add( Calendar.SECOND, ttl );	
+	    expireTime = expCal.getTime();
         this.ttl = ttl;
     }
 
     public Date getQueryTime() {
 	                                                                           
-	Calendar qCal = Calendar.getInstance();
-	qCal.setTime( expireTime );
-	qCal.add( Calendar.SECOND, -ttl );	
+	    Calendar qCal = Calendar.getInstance();
+	    qCal.setTime( expireTime );
+	    qCal.add( Calendar.SECOND, -ttl );	
 	
-	return qCal.getTime();
+	    return qCal.getTime();
     }
 }

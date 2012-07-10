@@ -122,33 +122,35 @@ public class CachingService extends Observable {
                              + fault.getFaultInfo().getMessage());                    
                     throw fault;
                 }
-		            
-                Date queryTime = remoteRec.getCreateTime();  // primary query
+		      
+                if( remoteRec != null ) {      
+                    Date queryTime = remoteRec.getCreateTime();  // primary query
                 
-                Calendar qCal = Calendar.getInstance();
-                qCal.setTime( queryTime );
-                qCal.add( Calendar.SECOND, rsc.getTtl() );
+                    Calendar qCal = Calendar.getInstance();
+                    qCal.setTime( queryTime );
+                    qCal.add( Calendar.SECOND, rsc.getTtl() );
 		
-                if( currentTime.after( qCal.getTime() ) ) {
-                    remoteExpired = true;
-                    log.info( "getNative: remoteExpired=true. " );
-                } else {
-                    remoteExpired = false;
-                    natXml = remoteRec.getNativeXml();
-                }
+                    if( currentTime.after( qCal.getTime() ) ) {
+                        remoteExpired = true;
+                        log.info( "getNative: remoteExpired=true. " );
+                    } else {
+                        remoteExpired = false;
+                        natXml = remoteRec.getNativeXml();
+                    }
                 
-                if ( natXml == null ) { // remote site problem
-                    // NOTE: should also drop on exception remote exception ???
+                    if ( natXml == null ) { // remote site problem
+                        // NOTE: should also drop on exception remote exception ???
                     
-                    this.setChanged(); // drop site from DHT
+                        this.setChanged(); // drop site from DHT
                     
-                    DhtRouterMessage message =
-                        new DhtRouterMessage( DhtRouterMessage.DELETE,
-                                              remoteRec, rs );
+                        DhtRouterMessage message =
+                            new DhtRouterMessage( DhtRouterMessage.DELETE,
+                                                  remoteRec, rs );
                     
-                    this.notifyObservers( message ); 
-                    this.clearChanged();
-                }
+                        this.notifyObservers( message ); 
+                        this.clearChanged();
+                    }
+                } 
             }
             
             if ( natXml == null || natXml.length() == 0 ) {

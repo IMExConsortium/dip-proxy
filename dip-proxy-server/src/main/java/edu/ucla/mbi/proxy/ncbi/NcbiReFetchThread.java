@@ -204,7 +204,7 @@ public class NcbiReFetchThread extends Thread {
                         if ( currentTime.after( expirationTime ) ) {
                             cacheRecord.setNativeXml ( retVal );
                             cacheRecord.resetExpireTime ( remoteQueryTime, ttl );
-                            nDAO.create( record ); // store/update native record locally
+                            nDAO.create( cacheRecord ); // store/update native record locally
                             log.info( "NcbiReFetchThread: getNative: native record is updated.");
                         }
                     }
