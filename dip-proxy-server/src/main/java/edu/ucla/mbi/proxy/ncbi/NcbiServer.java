@@ -68,11 +68,21 @@ public class NcbiServer extends RemoteNativeServer {
              
                 if( rootElementEsearch.getChildNodes().getLength() ==  0 ) {
                     log.warn("getNative: nlm esearch: return an empty result." ); 
-                        
-                    NcbiReFetchThread thread = new NcbiReFetchThread(
+                    
+                    try {    
+                        NcbiReFetchThread thread = new NcbiReFetchThread(
                                                                 ns, ac, "" );
-                    thread.start();
-                    log.info( "getNative: nlm: ncbi fetch thread starting... " );
+                        thread.start();
+                        log.info( "getNative: nlm: ncbi fetch thread starting... " );
+                    } catch ( RuntimeException e ) {
+                        if( e.getMessage().equals( "NO_RECORD" ) ) {
+                            throw FaultFactory.newInstance( Fault.NO_RECORD );
+                        } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                        } else {
+                            throw FaultFactory.newInstance( Fault.UNKNOWN );
+                        }
+                    }
                 }
 
                 String ncbi_error = xPath.evaluate(
@@ -91,10 +101,20 @@ public class NcbiServer extends RemoteNativeServer {
 
                 if( ncbi_nlmid.equals("") ){
                     log.warn("getNative: nlm esearch: return wrong xml style. ");
-                   
-                    NcbiReFetchThread thread = new NcbiReFetchThread( ns, ac, "" );
-                    thread.start();
-                    log.info( "getNative: nlm: ncbi fetch thread starting... " );
+                  
+                    try { 
+                        NcbiReFetchThread thread = new NcbiReFetchThread( ns, ac, "" );
+                        thread.start();
+                        log.info( "getNative: nlm: ncbi fetch thread starting... " );
+                    } catch ( RuntimeException e ) {
+                        if( e.getMessage().equals( "NO_RECORD" ) ) {
+                            throw FaultFactory.newInstance( Fault.NO_RECORD );
+                        } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                        } else {
+                            throw FaultFactory.newInstance( Fault.UNKNOWN );
+                        }
+                    }
                 }
 
                 //--------------------------------------------------------------                
@@ -121,12 +141,21 @@ public class NcbiServer extends RemoteNativeServer {
 
                 if( testNode == null ) {
                     log.warn("getNative: nlm: native server return empty set. ");
-                    
-                    NcbiReFetchThread thread = new NcbiReFetchThread( 
+                    try { 
+                        NcbiReFetchThread thread = new NcbiReFetchThread( 
                                                         ns, ac, ncbi_nlmid );
-                    thread.start();
+                        thread.start();
 
-                    log.info( "getNative: nlm: ncbi fetch thread starting..." );                     
+                        log.info( "getNative: nlm: ncbi fetch thread starting..." );                     
+                    } catch ( RuntimeException e ) {
+                        if( e.getMessage().equals( "NO_RECORD" ) ) {
+                            throw FaultFactory.newInstance( Fault.NO_RECORD );
+                        } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );            
+                        } else {
+                            throw FaultFactory.newInstance( Fault.UNKNOWN );
+                        }
+                    }
                 } else {
                     /*
                     //this is old criteria to decide if it's a journal
@@ -156,11 +185,21 @@ public class NcbiServer extends RemoteNativeServer {
                                 "</NLMCatalogRecordSet>" ) ) {
 
                             log.info( "getNative: nlm: retVal is empty set. " );
-                                
-                            NcbiReFetchThread thread = new NcbiReFetchThread (
+                            
+                            try {    
+                                NcbiReFetchThread thread = new NcbiReFetchThread (
                                                             ns, ac, ncbi_nlmid );
-                            thread.start();
-                            log.info( "getNative: ncbi fetch thread starting." );
+                                thread.start();
+                                log.info( "getNative: ncbi fetch thread starting." );
+                            } catch ( RuntimeException e ) {
+                                if( e.getMessage().equals( "NO_RECORD" ) ) {
+                                    throw FaultFactory.newInstance( Fault.NO_RECORD );
+                                } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                                } else {
+                                    throw FaultFactory.newInstance( Fault.UNKNOWN );
+                                }
+                            }
                         }
                     }
                 }

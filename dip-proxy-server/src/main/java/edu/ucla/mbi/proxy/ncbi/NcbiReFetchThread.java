@@ -110,7 +110,8 @@ public class NcbiReFetchThread extends Thread {
                     log.warn( "getNative: nlm: " +
                               "getService Exception:\n" + e.toString() + ". ");
                     log.warn( "NcbiReFetchThread TERMINATE. " );
-                    return;           
+                    //return; 
+                    throw new RuntimeException("REMOTE_FAULT");          
                 }
             }
         }
@@ -150,7 +151,8 @@ public class NcbiReFetchThread extends Thread {
                         if( !typeOfResource.equals("Serial") ) {
                             log.warn( "NcbiServer: nlm: " +
                                   "TypeOfResource is not Serial.");
-                            return;
+                            //return;
+                            throw new RuntimeException("NO_RECORD");
                         } else {
                             retVal = NativeURL.query( url_efetch_string, timeOut );
 
@@ -163,12 +165,15 @@ public class NcbiReFetchThread extends Thread {
                             }
                         }
                     }
+                } catch ( RuntimeException e ) {
+                    throw e;            
                 } catch ( Exception e ) {
                     log.warn( "NcbiReFetchThread: getNative: nlm: " +
                               "thread Exception:\n" + e.toString() + ". ");
                     log.info( "NcbiReFetchThread: TERMINATE. " );
                    
-                    return;                   
+                    //return; 
+                    throw new RuntimeException("REMOTE_FAULT");                  
                 }
             }
 
