@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+ !===========================================================================
+ ! $HeadURL::                                                               $
+ ! $Id::                                                                    $
+ ! Version: $Rev::                                                          $
+ !===========================================================================
+ !
+ ! Dip Web Services:  Prolinks proxy services
+ !
+ !======================================================================= -->
+
+<bindings wsdlLocation="../wsdl/ProlinksService14.wsdl"
+    xmlns="http://java.sun.com/xml/ns/jaxws"
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" >
+
+ <package name="edu.ucla.mbi.proxy"/>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='ProlinksProxyPortType']/wsdl:operation[@name='getProlinks']/wsdl:fault">
+   <class name="ProxyFault">
+    <javadoc>Proxy exception</javadoc>
+   </class>
+  </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:service[@name='ProlinksProxyService']">
+  <class name="ProlinksProxyService"/>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='ProlinksProxyPortType']">
+  <class name="ProlinksProxyPort"/>
+ </bindings>
+
+
+</bindings>
+
+
