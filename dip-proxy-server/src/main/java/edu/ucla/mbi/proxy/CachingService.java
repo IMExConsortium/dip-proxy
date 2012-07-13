@@ -143,10 +143,18 @@ public class CachingService extends Observable {
                     if( currentTime.after( qCal.getTime() ) ) {
                         log.info( "getNative: remoteExpired=true. " );
                         String expiredNatXml = remoteRec.getNativeXml();
+                        
                         if( expiredNatXml != null && expiredNatXml.length() > 0 ) {
                             if( expiredRemoteRec == null ) {
                                 expiredRemoteRec = remoteRec;
                                 log.info( "getNative: got a remote expiredRec." );
+                            } else {
+                                if( expiredRemoteRec.getExpireTime().after( 
+                                        remoteRec.getExpireTime() ) ) 
+                                {
+                                    //*** using more recentlly expired record
+                                    expiredRemoteRec = remoteRec; 
+                                }
                             }
                         } else {
                             messageDelete = true;
@@ -229,7 +237,7 @@ public class CachingService extends Observable {
 
 		        log.info( "  CachingService: rqt=" + remoteQueryTime );
 		        log.info( "  CachingService: lqt=" + cacheRecord.getQueryTime() );
-            } else {
+            } else if ( cacheExpired ) {
                 //*** local cache is expired     
                 if ( !remoteExpired && remoteRec != null ) {  
                     //*** update cache record from valid remote record
@@ -241,10 +249,22 @@ public class CachingService extends Observable {
                     // NOTE: remoteRecord must specify time of the primary
                     //       source query
 
-                    Date remoteQueryTime = remoteRec.getCreateTime();
-                    cacheRecord.resetExpireTime( remoteQueryTime, rsc.getTtl() );
+                    Date remoteCreateTime = remoteRec.getCreateTime();
+                    cacheRecord.resetExpireTime( remoteCreateTime, rsc.getTtl() );
                     
-                } else {                    
+                } else if( remoteExpired && remoteRec != null 
+                            && cacheRecord.getExpireTime().after( 
+                                    remoteRec.getExpireTime() ) ) 
+                {
+                    //*** update caceh record from expired remote record
+                    cacheRecord.setNativeXml( remoteRec.getNativeXml() );
+
+                    // NOTE: remoteRecord must specify time of the primary
+                    //       source query
+
+                    Date remoteQueryTime = remoteRec.getQueryTime();
+                    cacheRecord.resetExpireTime( remoteQueryTime, rsc.getTtl() );            
+                } else {                   
                     //*** reset expired time for the expired cache record   
                     log.info( "  CachingService: cache record: updating ttl" );
                     Date queryTime = cacheRecord.getQueryTime(); // primary query
