@@ -60,10 +60,13 @@ public class CachingService extends Observable {
                   + router.getRemoteServerContext().getProvider() + ")" );
         log.info( " cache on=" + rsc.isCacheOn() );
 
-        NativeRecord cacheRecord = null; 
+        NativeRecord cacheRecord = null;
+        boolean cacheExpired = false;
+        
+        NativeRecord remoteRec = null;
+        boolean remoteExpired = false;
+        
         String natXml = null;
-	
-        boolean cacheExpired = true;
 	
         if ( rsc.isCacheOn() ) { // try retrieve from local cache
 
@@ -83,26 +86,27 @@ public class CachingService extends Observable {
                           + " ET=" + expirationTime );
 
                 if ( currentTime.after( expirationTime ) ) {
-                    natXml = null;
-                    cacheExpired = true; 
+                    cacheExpired = true;
                 } else {
                     natXml = cacheRecord.getNativeXml();
-                    if( natXml != null ) {
-                        cacheExpired = false;
+                    if( natXml == null ) {
+                        cacheExpired = true;
+                    } else {
+                        log.info( "Native record: return from local cache. ");
+                        //*** return valid record from local cache  
+                        return cacheRecord;
                     }
                 }
             }
         }
         
-        NativeRecord remoteRec = null;
-        
-        if ( cacheExpired ) {  // NOTE: includes empty cache
+        if ( cacheRecord == null || cacheExpired ) {  
+            // NOTE: includes empty cache and expired cache
             
-            int retry = router.getMaxRetry();
-            
-            boolean remoteExpired = true;
-            
-            while ( retry > 0 && natXml == null && remoteExpired ) {
+            int retry = router.getMaxRetry();            
+            NativeRecord expiredRemoteRec = null;
+
+            while ( retry > 0 && natXml == null ) {
                 
                 // no valid local copy - try remote source(s)
                 
@@ -113,14 +117,21 @@ public class CachingService extends Observable {
                 log.info( " retries left=" + retry );
                 retry--;
                 
-                try{
+                try {
                     remoteRec = rs.getNative( provider, service, ns, ac, 
                                               rsc.getTimeout() );
                     log.info( "getNative: remoteRec=" + remoteRec );
-                }catch(ProxyFault fault){
+                } catch( ProxyFault fault ) {
                     log.warn("RemoteServer getNative() fault: " 
                              + fault.getFaultInfo().getMessage());                    
-                    throw fault;
+
+                    if( fault.getFaultInfo().getFaultCode() == 5 ) {
+                       throw fault; // NO_RECORD fault
+                    }
+
+                    if( retry == 0  && expiredRemoteRec == null ) {
+                        throw fault; //no any expiredRecord existing
+                    }
                 }
 		      
                 if( remoteRec != null ) {      
@@ -130,24 +141,38 @@ public class CachingService extends Observable {
                     qCal.setTime( queryTime );
                     qCal.add( Calendar.SECOND, rsc.getTtl() );
 		
+                    boolean messageDelete = false;
+
                     if( currentTime.after( qCal.getTime() ) ) {
-                        remoteExpired = true;
                         log.info( "getNative: remoteExpired=true. " );
+                        String expiredNatXml = remoteRec.getNativeXml();
+                        if( expiredNatXml != null && expiredNatXml.length() > 0 ) {
+                            if( expiredRemoteRec == null ) {
+                                expiredRemoteRec = remoteRec;
+                                log.info( "getNative: got a remote expiredRec." );
+                            }
+                        } else {
+                            messageDelete = true;
+                        }
                     } else {
-                        remoteExpired = false;
                         natXml = remoteRec.getNativeXml();
+    
+                        if ( natXml == null || natXml.length() == 0 ) {
+                            messageDelete = true;
+                        }
                     }
-                
-                    if ( natXml == null ) { // remote site problem
+
+                    if( messageDelete ) {
+                        // remote site problem
                         // NOTE: should also drop on exception remote exception ???
-                    
+
                         this.setChanged(); // drop site from DHT
-                    
+    
                         DhtRouterMessage message =
-                            new DhtRouterMessage( DhtRouterMessage.DELETE,
-                                                  remoteRec, rs );
-                    
-                        this.notifyObservers( message ); 
+                                new DhtRouterMessage( DhtRouterMessage.DELETE,
+                                                      remoteRec, rs );
+
+                        this.notifyObservers( message );
                         this.clearChanged();
                     }
                 } 
@@ -159,7 +184,19 @@ public class CachingService extends Observable {
                 // NOTE: distinguish between no record vs error here ? 
                 
                 log.warn( "Get nativeXml null. " );
-                throw FaultFactory.newInstance( Fault.NO_RECORD );
+
+                if( !cacheExpired ) {
+                    if( expiredRemoteRec == null ) {
+                        //*** Both cache and remote don't have a valid record \
+                        //*** or expired record.
+                        throw FaultFactory.newInstance( Fault.UNKNOWN );
+                    } else {
+                        //*** remoteRec is a expired record
+                        remoteRec = expiredRemoteRec;
+                        natXml = remoteRec.getNativeXml();
+                        remoteExpired = true;
+                    }
+                } 
             }
         }
 
@@ -168,7 +205,8 @@ public class CachingService extends Observable {
         
         if ( rsc.isCacheOn() ) { // update/store in the local cache
             
-            if ( cacheRecord == null ) { // create new local record
+            if ( cacheRecord == null ) { 
+                //*** create new local record based on remoteRec
                 
                 log.info( "  CachingService: creating cache record" );
 		
@@ -178,20 +216,25 @@ public class CachingService extends Observable {
 		        // NOTE: remoteRecord must specify time of the primary 
 		        //       source query
 		
-		        Date remoteQueryTime = remoteRec.getCreateTime();
+                Date remoteQueryTime;
+                if( remoteExpired ) {
+		            remoteQueryTime = remoteRec.getQueryTime();
+                } else {
+                    remoteQueryTime = remoteRec.getCreateTime();
+                }
+
 		        cacheRecord.resetExpireTime( remoteQueryTime, rsc.getTtl() ); 
 
 		        log.info( "  CachingService: rqt=" + remoteQueryTime );
 		        log.info( "  CachingService: lqt=" + cacheRecord.getQueryTime() );
 
             } else {
-                
-                if (  remoteRec != null ) {  // update cache record to remote
+                //*** local cache is expired     
+                if ( !remoteExpired ) {  
+                    //*** update cache record from valid remote record
                     
                     log.info( "  CachingService: updating cache record" );
                     
-                    // NOTE: cached records so use getQueryTime()
-				
                     cacheRecord.setNativeXml( remoteRec.getNativeXml() );
                     
                     // NOTE: remoteRecord must specify time of the primary
@@ -200,8 +243,8 @@ public class CachingService extends Observable {
                     Date remoteQueryTime = remoteRec.getCreateTime();
                     cacheRecord.resetExpireTime( remoteQueryTime, rsc.getTtl() );
                     
-                } else {
-                    
+                } else {                    
+                    //*** reset expired time for the expired cache record   
                     log.info( "  CachingService: cache record: updating ttl" );
                     Date queryTime = cacheRecord.getQueryTime(); // primary query
                     cacheRecord.resetExpireTime( queryTime, rsc.getTtl() );
@@ -225,14 +268,12 @@ public class CachingService extends Observable {
             
             DhtRouterMessage message =
                 new DhtRouterMessage( DhtRouterMessage.UPDATE, cacheRecord,
-                                      // rsc.getProxyProto() );
                                       null ); // self
             this.notifyObservers( message );
             this.clearChanged();
             
             return cacheRecord;
-        } else {
-	    
+        } else {	    
             // caching off - return remoteRecord
             return remoteRec;
         }
@@ -256,10 +297,10 @@ public class CachingService extends Observable {
         }
 
         DxfRecord dxfRecord = null;
+        Date currentTime = Calendar.getInstance().getTime();
+        boolean dxf_expired = false;
 
         if ( rsc.isCacheOn() ) {
-            
-            boolean dxf_expired = false;
             
             try {
                 
@@ -275,7 +316,7 @@ public class CachingService extends Observable {
                 if ( dxfRecord != null ) {
                     
                     Date expirationTime = dxfRecord.getExpireTime();
-                    Date currentTime = Calendar.getInstance().getTime();
+                    //Date currentTime = Calendar.getInstance().getTime();
                     
                     log.info( "CachingService: dxf record CT="
                               + dxfRecord.getCreateTime() + " ET= "
@@ -311,13 +352,16 @@ public class CachingService extends Observable {
             }
         }
 
-        // valid dxf record not available when here
+        // valid dxf record not available when here ( null or expired )
         // -----------------------------------------
         
         NativeRecord nr = getNative( provider, service, ns, ac );
+        String nativeXml = null;
+        
+        /*
+        //*** the following maybe is useless
         NativeRecord nrN = DipProxyDAO.getNativeRecordDAO().find( nr.getId() );
         
-        String nativeXml = null;
         long startTime = System.currentTimeMillis();
         long waitMillis = WSContext.getWaitMillis();
 
@@ -328,7 +372,7 @@ public class CachingService extends Observable {
         {
             nrN = DipProxyDAO.getNativeRecordDAO().find(nr.getId());
         }
-        
+
         if ( nrN != null ) {
             nativeXml = nrN.getNativeXml();
             //log.info( "getDxf: nativeXml=" + nativeXml );
@@ -337,11 +381,38 @@ public class CachingService extends Observable {
                       " and ac " + ac + " cannot get native record" );
             throw FaultFactory.newInstance( Fault.NO_RECORD );
         }
+        */
 
-        // transform nativeXML to DXF
+        if ( nr != null ) {
+            nativeXml = nr.getNativeXml();
+            //log.info( "getDxf: nativeXml=" + nativeXml );
+        }else{
+            log.warn( "getDxf(): for service " + service +
+                      " and ac " + ac + " cannot get native record" );
+            throw FaultFactory.newInstance( Fault.NO_RECORD );
+        }
+        
+        //*** transform nativeXML to DXF
         // ---------------------------
         
         // NOTE: parametrize getTransformer() with detail here ?
+
+        //**** check if nr is expired
+        if ( currentTime.after( nr.getExpireTime() ) ) {
+            if( dxf_expired ) {
+                //*** nr is expired then return original expired dxf
+                DatasetType dxfRslt = unmarshall( dxfRecord.getDxf() );
+
+                if ( !dxfRslt.getNode().isEmpty()
+                        && !dxfRslt.getNode().get(0).getAc().equals("") ) 
+                {
+                    return dxfRslt;
+                }
+            } else {
+                //*** expired native cause expired dxf
+                dxf_expired = true;
+            } 
+        } 
         
         RemoteServer rs = selectRemoteServer( rsc );
         
@@ -356,7 +427,7 @@ public class CachingService extends Observable {
             
             // get cached copy of native record
             // ----------------------------------
-            
+            /*
             NativeRecord faultyRecord = DipProxyDAO.getNativeRecordDAO()
                                             .find( provider, service, ns, ac );
 
@@ -365,6 +436,8 @@ public class CachingService extends Observable {
             Calendar expCal = Calendar.getInstance();
             faultyRecord.setExpireTime( expCal.getTime() );
             DipProxyDAO.getNativeRecordDAO().create( faultyRecord );
+            */
+
             /*
             try {
                 DipProxyDAO.getNativeRecordDAO().delete( faultyRecord );
@@ -383,7 +456,7 @@ public class CachingService extends Observable {
         if ( dxfResult.getNode().isEmpty() ) {
             log.warn( "getDxf(): dxf_record missing node: service=" +
                       service + " and ac=" + ac + ".");
-            throw FaultFactory.newInstance( Fault.NO_RECORD );
+            throw FaultFactory.newInstance( Fault.TRANSFORM );
         }
         
         if( dxfResult.getNode().get(0).getAc().equals("") ){
@@ -407,8 +480,11 @@ public class CachingService extends Observable {
                 }
 
                 dxfRecord.setDxf( dxfString );
-                dxfRecord.resetExpireTime( rsc.getTtl() );
-
+                if( dxf_expired ) {
+                    dxfRecord.resetExpireTime( nr.getQueryTime(), rsc.getTtl() );
+                } else {
+                    dxfRecord.resetExpireTime( rsc.getTtl() );
+                }
                 
                 //log.info( " caching dxf: new expiration time=" + getExpireTime() );
                 DipProxyDAO.getDxfRecordDAO().create( dxfRecord );
@@ -458,8 +534,7 @@ public class CachingService extends Observable {
         return router.getNativeServer();
     }
 
-    private String marshall( DatasetType record ) 
-        throws ProxyFault {
+    private String marshall( DatasetType record ) throws ProxyFault {
 
         try {
 

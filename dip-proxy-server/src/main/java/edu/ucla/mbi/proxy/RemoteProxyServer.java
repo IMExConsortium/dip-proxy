@@ -114,7 +114,9 @@ public class RemoteProxyServer implements RemoteServer {
             record.setCreateTime( qtime.toGregorianCalendar().getTime() );
 
             return record;
-            
+
+        } catch ( ProxyFault fault ) {
+            throw fault;
         } catch ( Exception e ) {
             log.info( "getNative: exception: " + e.toString() );
             if ( e.toString().contains( "No result found" ) ) {

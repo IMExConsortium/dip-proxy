@@ -160,5 +160,18 @@ public class DxfRecord implements Record {
         expCal.setTime( createTime );
         expCal.add( Calendar.SECOND, ttl );
         expireTime = expCal.getTime();
-    }   
+    }  
+
+    public void resetExpireTime( Date now, int ttl ) {
+
+        if( createTime == null ) {
+            createTime = Calendar.getInstance().getTime();
+        }
+
+        Calendar expCal = Calendar.getInstance();
+        expCal.setTime( now );
+        expCal.add( Calendar.SECOND, ttl );
+        expireTime = expCal.getTime();
+    }
+ 
 }
