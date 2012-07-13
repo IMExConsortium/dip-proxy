@@ -122,15 +122,12 @@ public class CachingService extends Observable {
                                               rsc.getTimeout() );
                     log.info( "getNative: remoteRec=" + remoteRec );
                 } catch( ProxyFault fault ) {
-                    log.warn("RemoteServer getNative() fault: " 
+                    log.warn("getNative: RemoteServer getNative() fault: " 
                              + fault.getFaultInfo().getMessage());                    
 
                     if( fault.getFaultInfo().getFaultCode() == 5 ) {
+                       log.info( "getNative: faultCode=5 throw NO_RECORD fault. ");
                        throw fault; // NO_RECORD fault
-                    }
-
-                    if( retry == 0  && expiredRemoteRec == null ) {
-                        throw fault; //no any expiredRecord existing
                     }
                 }
 		      
@@ -185,10 +182,11 @@ public class CachingService extends Observable {
                 
                 log.warn( "Get nativeXml null. " );
 
-                if( !cacheExpired ) {
+                if( cacheRecord == null ) {
                     if( expiredRemoteRec == null ) {
                         //*** Both cache and remote don't have a valid record \
                         //*** or expired record.
+                        log.info( "getNative: final natXml is null, throw UNKNOWN fault. ");
                         throw FaultFactory.newInstance( Fault.UNKNOWN );
                     } else {
                         //*** remoteRec is a expired record
@@ -196,6 +194,8 @@ public class CachingService extends Observable {
                         natXml = remoteRec.getNativeXml();
                         remoteExpired = true;
                     }
+                } else {
+                    remoteRec = null;
                 } 
             }
         }
@@ -205,7 +205,9 @@ public class CachingService extends Observable {
         
         if ( rsc.isCacheOn() ) { // update/store in the local cache
             
-            if ( cacheRecord == null ) { 
+            if ( cacheRecord == null ) {
+                //in this case, remoteRec is not null    
+                    
                 //*** create new local record based on remoteRec
                 
                 log.info( "  CachingService: creating cache record" );
@@ -227,10 +229,9 @@ public class CachingService extends Observable {
 
 		        log.info( "  CachingService: rqt=" + remoteQueryTime );
 		        log.info( "  CachingService: lqt=" + cacheRecord.getQueryTime() );
-
             } else {
                 //*** local cache is expired     
-                if ( !remoteExpired ) {  
+                if ( !remoteExpired && remoteRec != null ) {  
                     //*** update cache record from valid remote record
                     
                     log.info( "  CachingService: updating cache record" );
@@ -316,7 +317,6 @@ public class CachingService extends Observable {
                 if ( dxfRecord != null ) {
                     
                     Date expirationTime = dxfRecord.getExpireTime();
-                    //Date currentTime = Calendar.getInstance().getTime();
                     
                     log.info( "CachingService: dxf record CT="
                               + dxfRecord.getCreateTime() + " ET= "
