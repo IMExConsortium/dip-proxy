@@ -39,7 +39,7 @@ import edu.ucla.mbi.cache.NativeRecord;
 
 import java.util.Map;
 
-public class RemoteProxyServer implements RemoteServer {
+public class RemoteProxyServerNewVersion implements RemoteServer {
  
     String proxyAddress;
 
