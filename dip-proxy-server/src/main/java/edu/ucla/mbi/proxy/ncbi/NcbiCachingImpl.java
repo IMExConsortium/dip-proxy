@@ -1,10 +1,10 @@
 package edu.ucla.mbi.proxy.ncbi;
 
-/*================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/#$
- * $Id$
- * Version: $Rev$
- *================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * NcbiCachingImpl - NCBI Database access implemented 
  * through efetch SOAP
@@ -12,7 +12,7 @@ package edu.ucla.mbi.proxy.ncbi;
  *  NOTE: Modify gen-src/axis2/ncbi/resources/services.xml to use
  *  this instead of default NcbiPublicSkeleton.
  *
- *============================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,10 +24,9 @@ import javax.xml.ws.Holder;
 
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
-import edu.ucla.mbi.services.ServiceFault;
-import edu.ucla.mbi.services.TimeStamp;
+import edu.ucla.mbi.fault.*;
+import edu.ucla.mbi.util.TimeStamp;
+import edu.ucla.mbi.server.WSContext;
 
 import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.proxy.router.Router;
@@ -119,20 +118,16 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 		        }                
             }
             
-        }catch ( ServiceException se ) {
-            String message = se.getServiceFault().getMessage();
+        }catch ( ProxyFault fault ) {
+            String message = fault.getFaultInfo().getMessage();
             log.warn( "NcbiCachingImpl: ServiceException: message= " + message);
 
-            ProxyFault fault = new ProxyFault(message, se.getServiceFault());
             throw fault;
 
         } catch ( Exception e ) {
             log.warn( "NcbiCachingImpl: " + e.toString() );
             ServiceFault fault = new ServiceFault();
-            fault.setMessage(e.toString());
-            fault.setFaultCode(99);
-            ProxyFault proxyFault = new ProxyFault(e.toString(), fault);
-            throw proxyFault;
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
  
         return;
@@ -220,20 +215,15 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 		        }                
             }
             
-        }catch ( ServiceException se ) {
-            String message = se.getServiceFault().getMessage();
+        }catch ( ProxyFault fault ) {
+            String message = fault.getFaultInfo().getMessage();
             log.warn( "NcbiCachingImpl: ServiceException: message= " + message);
 
-            ProxyFault fault = new ProxyFault(message, se.getServiceFault());
             throw fault;
 
         } catch ( Exception e ) {
             log.warn( "NcbiCachingImpl: " + e.toString() );
-            ServiceFault fault = new ServiceFault();
-            fault.setMessage(e.toString());
-            fault.setFaultCode(99);
-            ProxyFault proxyFault = new ProxyFault(e.toString(), fault);
-            throw proxyFault;
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
         
         return;
@@ -317,20 +307,15 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 		        }
             }
             
-        }catch ( ServiceException se ) {
-            String message = se.getServiceFault().getMessage();
+        }catch ( ProxyFault fault ) {
+            String message = fault.getFaultInfo().getMessage();
             log.warn( "NcbiCachingImpl: ServiceException: message= " + message);
 
-            ProxyFault fault = new ProxyFault(message, se.getServiceFault());
             throw fault;
 
         } catch ( Exception e ) {
             log.warn( "NcbiCachingImpl: " + e.toString() );
-            ServiceFault fault = new ServiceFault();
-            fault.setMessage(e.toString());
-            fault.setFaultCode(99);
-            ProxyFault proxyFault = new ProxyFault(e.toString(), fault);
-            throw proxyFault;
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
  
         return;
@@ -414,20 +399,15 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                 }
             }
 
-	    }catch ( ServiceException se ) {
-            String message = se.getServiceFault().getMessage();
+	    }catch ( ProxyFault fault ) {
+            String message = fault.getFaultInfo().getMessage();
             log.warn( "NcbiCachingImpl: ServiceException: message= " + message);
 
-            ProxyFault fault = new ProxyFault(message, se.getServiceFault());
             throw fault;
 
         } catch ( Exception e ) {
             log.warn( "NcbiCachingImpl: " + e.toString() );
-            ServiceFault fault = new ServiceFault();
-            fault.setMessage(e.toString());
-            fault.setFaultCode(99);
-            ProxyFault proxyFault = new ProxyFault(e.toString(), fault);
-            throw proxyFault;
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
  
         return;
@@ -514,20 +494,15 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                 }
             }
 
-	    }catch ( ServiceException se ) {
-            String message = se.getServiceFault().getMessage();
+	    }catch ( ProxyFault fault ) {
+            String message = fault.getFaultInfo().getMessage();
             log.warn( "NcbiCachingImpl: ServiceException: message= " + message);
 
-            ProxyFault fault = new ProxyFault(message, se.getServiceFault());
             throw fault;
 
         } catch ( Exception e ) {
             log.warn( "NcbiCachingImpl: " + e.toString() );
-            ServiceFault fault = new ServiceFault();
-            fault.setMessage(e.toString());
-            fault.setFaultCode(99);
-            ProxyFault proxyFault = new ProxyFault(e.toString(), fault);
-            throw proxyFault;
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
 
         return;

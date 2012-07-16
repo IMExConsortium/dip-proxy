@@ -1,10 +1,10 @@
 package edu.ucla.mbi.proxy.prolinks;
 
-/* =======================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/#$
- * $Id$
- * Version: $Rev$
- *=========================================================================
+/* =============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *                                                                        
  * ProlinksCachingImpl - Prolinks Database access implemented             
  * through ....                                                           
@@ -12,19 +12,19 @@ package edu.ucla.mbi.proxy.prolinks;
  *  NOTE: Modify gen-src/axis2/prolinks/resources/services.xml to use     
  *  this instead of default ProlinksPublicSkeleton.                       
  *                                                                        
- *====================================================================== */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
+import edu.ucla.mbi.server.WSContext;
 
 import edu.ucla.mbi.cache.NativeRecord;
 
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
-import edu.ucla.mbi.services.TimeStamp;
+import edu.ucla.mbi.fault.*;
+import edu.ucla.mbi.util.TimeStamp;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -108,11 +108,11 @@ public class ProlinksCachingImpl implements ProlinksProxyPort {
                 }
             }
 
-        } catch ( ServiceException se ) {
-            log.info( "ServiceFault: " + se.toString() );
-            throw FaultFactory.newInstance( se.getServiceFault() );
+        } catch ( ProxyFault fault ) {
+            log.info( "getProlinks fault: " + fault.getFaultInfo().getMessage() );
+            throw fault;
         } catch ( Exception e ) {
-            log.info( "ProlinksCachingImpl: " + e.toString() );
+            log.info( "getProlinks fault: " + e.toString() );
             throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
     }

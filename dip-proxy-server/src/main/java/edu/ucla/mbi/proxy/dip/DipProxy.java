@@ -1,10 +1,10 @@
 package edu.ucla.mbi.proxy.dip;
 
-/*===========================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/#$
- * $Id$
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
  * Version: $Rev$
- *===========================================================================
+ *==============================================================================
  *
  * RemoteProxyServer:
  *
@@ -12,7 +12,7 @@ package edu.ucla.mbi.proxy.dip;
  *    server using ns/ac (namespace/accession) pair as identifier and
  *    operation as the remote service name
  *
- *========================================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,8 +37,7 @@ import java.util.Map;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
+import edu.ucla.mbi.fault.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -68,7 +67,7 @@ public class DipProxy extends RemoteProxyServer {
     }
 
     public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeout ) throws ServiceException {
+            String ac, int timeout ) throws ProxyFault {
 
         Log log = LogFactory.getLog( DipProxy.class );
         log.info( "getNative(NS=" + ns + " AC=" + ac + " OP=" + service + ")" );
@@ -102,27 +101,28 @@ public class DipProxy extends RemoteProxyServer {
                 natRecord = getDipRecord( port, provider, service, ns, ac );
             }
 
-        } catch ( ServiceException fault ) {
+        } catch ( ProxyFault fault ) {
             throw fault;
         } catch ( Exception e ) {
             log.info( "EbiProxy: getUniprot: exception: " + e.toString() );
             if ( e.toString().contains( "No result found" ) ) {
 
-                throw Fault.getServiceException( Fault.NO_RECORD );
+                throw FaultFactory.newInstance( Fault.NO_RECORD );
             } else if ( e.toString().contains( "Read timed out" ) ) {
 
-                throw Fault.getServiceException( Fault.REMOTE_TIMEOUT );
+                throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT );
             } else {
 
-                throw Fault.getServiceException( Fault.UNKNOWN );
+                throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
         }
         return natRecord;
     }
 
     public DatasetType transform( String strNative, String ac, String ns,
-            String detail, String service, ProxyTransformer pTrans )
-            throws ServiceException {
+                    String detail, String service, ProxyTransformer pTrans )
+                                                            throws ProxyFault 
+    {
         Log log = LogFactory.getLog( DipProxy.class );
 
         try {
@@ -130,6 +130,7 @@ public class DipProxy extends RemoteProxyServer {
 
             ByteArrayInputStream bisNative =
                     new ByteArrayInputStream( strNative.getBytes( "UTF-8" ) );
+
             StreamSource ssNative = new StreamSource( bisNative );
 
             // dxf as JAXBResult result of the transformation
@@ -151,23 +152,23 @@ public class DipProxy extends RemoteProxyServer {
             if ( dxfResult.getNode().isEmpty() ) {
                 // ServiceFault fault =
                 // new ServiceFault( "05 remote server: transformer." );
-                throw Fault.getServiceException( 7 ); // transformation
+                throw FaultFactory.newInstance( Fault.TRANSFORM ); // transformation
             }
 
             return dxfResult;
 
-        } catch ( ServiceException fault ) {
+        } catch ( ProxyFault fault ) {
             log.info( "Transformer fault: empty dxfResult " );
             throw fault;
         } catch ( Exception e ) {
             log.info( "Exception=" + e.toString() );
-            throw Fault.getServiceException( Fault.UNKNOWN );
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
     }
 
     public DatasetType buildDxf( String strNative, String ac, String ns,
             String detail, String service, ProxyTransformer pTrans )
-            throws ServiceException {
+            throws ProxyFault {
 
         // NOTE: overload if dxf building more complex than
         // a simple xslt transformation
@@ -176,7 +177,8 @@ public class DipProxy extends RemoteProxyServer {
     }
 
     private NativeRecord getDipRecord( DipProxyPort port, String provider,
-            String service, String ns, String ac ) throws ServiceException {
+                    String service, String ns, String ac ) throws ProxyFault 
+    {
 
         Holder<DatasetType> resDataset = new Holder<DatasetType>();
         Holder<String> resNative = new Holder<String>();
@@ -200,7 +202,7 @@ public class DipProxy extends RemoteProxyServer {
             Log log = LogFactory.getLog( DipProxy.class );
             log.info( e.toString() );
 
-            throw Fault.getServiceException( Fault.UNKNOWN );
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
     }
 }

@@ -33,8 +33,7 @@ import com.sun.xml.ws.developer.JAXWSProperties;
 
 import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.dxf14.DxfJAXBContext;
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
+import edu.ucla.mbi.fault.*;
 
 import edu.ucla.mbi.cache.NativeRecord;
 
@@ -79,7 +78,7 @@ public class NcbiProxy extends RemoteProxyServer {
     }
 
     public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeout ) throws ServiceException {
+            String ac, int timeout ) throws ProxyFault {
 
         Log log = LogFactory.getLog( NcbiProxy.class );
 
@@ -123,22 +122,22 @@ public class NcbiProxy extends RemoteProxyServer {
                 natRecord = getPubmedArticle( port, provider, service, ns, ac );
             }
 
-        } catch ( ServiceException fault ) {
+        } catch ( ProxyFault fault ) {
             throw fault;
         } catch ( Exception e ) {
             log.info( "EbiProxy: getUniprot: exception: " + e.toString() );
             if ( e.toString().contains( "No result found" ) ) {
                 // ServiceFault fault =
                 // new ServiceFault( "04 remote server: no hit." );
-                throw Fault.getServiceException( 5 ); // no hits
+                throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
             } else if ( e.toString().contains( "Read timed out" ) ) {
                 // ServiceFault fault =
                 // new ServiceFault( "02 remote server: timeout." );
-                throw Fault.getServiceException( 12 ); // timeout
+                throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT ); // timeout
             } else {
                 // ServiceFault fault =
                 // new ServiceFault( "03 remote server: unknown." );
-                throw Fault.getServiceException( 99 ); // unknown
+                throw FaultFactory.newInstance( Fault.UNKNOWN ); // unknown
             }
         }
         return natRecord;
@@ -146,8 +145,9 @@ public class NcbiProxy extends RemoteProxyServer {
     }
 
     public DatasetType transform( String strNative, String ac, String ns,
-            String detail, String service, ProxyTransformer pTrans )
-            throws ServiceException {
+                    String detail, String service, ProxyTransformer pTrans )
+                                                            throws ProxyFault 
+    {
         Log log = LogFactory.getLog( NcbiProxy.class );
         try {
             // native data in string representationa as input
@@ -176,25 +176,25 @@ public class NcbiProxy extends RemoteProxyServer {
             if ( dxfResult.getNode().isEmpty() ) {
                 // ServiceFault fault =
                 // new ServiceFault( "05 remote server: transformer." );
-                throw Fault.getServiceException( 5 ); // unknown
+                //throw Fault.getProxyFault( 5 ); // unknown
+                throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
 
             return dxfResult;
 
-        } catch ( ServiceException fault ) {
-            log.info( "Transformer fault: empty dxfResult " );
-            throw Fault.getServiceException( 5 ); // no hits
+        } catch ( ProxyFault fault ) {
+            throw fault; 
         } catch ( Exception e ) {
             log.info( "Exception=" + e.toString() );
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transform." );
-            throw Fault.getServiceException( Fault.UNKNOWN );
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
     }
 
     public DatasetType buildDxf( String strNative, String ac, String ns,
             String detail, String service, ProxyTransformer pTrans )
-            throws ServiceException {
+            throws ProxyFault {
 
         // NOTE: overload if dxf building more complex than
         // a simple xslt transformation
@@ -203,7 +203,7 @@ public class NcbiProxy extends RemoteProxyServer {
     }
 
     private NativeRecord getRefseq( NcbiProxyPort port, String provider,
-            String service, String ns, String ac ) throws ServiceException {
+            String service, String ns, String ac ) throws ProxyFault {
 
         Holder<DatasetType> resDataset = new Holder<DatasetType>();
         Holder<String> resNative = new Holder<String>();
@@ -229,12 +229,12 @@ public class NcbiProxy extends RemoteProxyServer {
 
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transformer." );
-            throw Fault.getServiceException( 13 ); // unknown ??
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // unknown ??
         }
     }
 
     private NativeRecord getPubmedArticle( NcbiProxyPort port, String provider,
-            String service, String ns, String ac ) throws ServiceException {
+            String service, String ns, String ac ) throws ProxyFault {
 
         Holder<DatasetType> resDataset = new Holder<DatasetType>();
         Holder<String> resNative = new Holder<String>();
@@ -258,7 +258,7 @@ public class NcbiProxy extends RemoteProxyServer {
 
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transformer." );
-            throw Fault.getServiceException( 13 ); // remote server
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // remote server
 
         } catch ( Error e ) {
 
@@ -267,12 +267,12 @@ public class NcbiProxy extends RemoteProxyServer {
 
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transformer." );
-            throw Fault.getServiceException( 13 ); // remote server
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // remote server
         }
     }
 
     private NativeRecord getGene( NcbiProxyPort port, String provider,
-            String service, String ns, String ac ) throws ServiceException {
+            String service, String ns, String ac ) throws ProxyFault {
         Holder<DatasetType> resDataset = new Holder<DatasetType>();
         Holder<String> resNative = new Holder<String>();
         Holder<XMLGregorianCalendar> timestamp =
@@ -295,7 +295,7 @@ public class NcbiProxy extends RemoteProxyServer {
 
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transformer." );
-            throw Fault.getServiceException( 13 ); // unknown;
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // unknown;
 
         } catch ( Error e ) {
 
@@ -304,12 +304,14 @@ public class NcbiProxy extends RemoteProxyServer {
 
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transformer." );
-            throw Fault.getServiceException( 13 ); // unknown
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // unknown
         }
     }
 
     private NativeRecord getTaxon( NcbiProxyPort port, String provider,
-            String service, String ns, String ac ) throws ServiceException {
+            String service, String ns, String ac ) throws ProxyFault 
+    {
+
         Holder<DatasetType> resDataset = new Holder<DatasetType>();
         Holder<String> resNative = new Holder<String>();
         Holder<XMLGregorianCalendar> timestamp =
@@ -332,7 +334,7 @@ public class NcbiProxy extends RemoteProxyServer {
 
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transformer." );
-            throw Fault.getServiceException( 13 ); // remote server
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // remote server
         } catch ( Error e ) {
 
             Log log = LogFactory.getLog( NcbiProxy.class );
@@ -340,7 +342,7 @@ public class NcbiProxy extends RemoteProxyServer {
 
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transformer." );
-            throw Fault.getServiceException( 13 ); // remote server
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // remote server
         }
     }
 }

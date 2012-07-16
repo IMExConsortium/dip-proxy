@@ -1,16 +1,16 @@
 package edu.ucla.mbi.proxy.dip;
 
-/*=========================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/#$
- * $Id$
- * Version: $Rev$
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * DipCachingImpl - Dip Database access implemented 
  * through SOAP service
  *
  *
- *======================================================================== */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,9 +19,9 @@ import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.*;
 
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
-import edu.ucla.mbi.services.TimeStamp;
+import edu.ucla.mbi.fault.*;
+import edu.ucla.mbi.util.TimeStamp;
+import edu.ucla.mbi.server.WSContext;
 
 import javax.jws.WebService;
 import javax.xml.ws.Holder;
@@ -112,9 +112,9 @@ public class DipCachingImpl implements DipProxyPort {
                 }
             }
 
-        } catch ( ServiceException se ) {
-            log.info( "ServiceFault: " + se.toString() );
-            throw  FaultFactory.newInstance( se.getServiceFault() );
+        } catch ( ProxyFault fault ) {
+            log.info( "ServiceFault: " + fault.getFaultInfo().getMessage() );
+            throw  fault;
         } catch ( Exception e ) {
             log.info( "DipCachingImpl: " + e.toString() );
             throw FaultFactory.newInstance( Fault.UNKNOWN );

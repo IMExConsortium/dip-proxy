@@ -37,8 +37,7 @@ import java.util.Map;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
+import edu.ucla.mbi.fault.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -68,7 +67,7 @@ public class EbiProxy extends RemoteProxyServer {
     }
 
     public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeout ) throws ServiceException {
+            String ac, int timeout ) throws ProxyFault {
 
         Log log = LogFactory.getLog( EbiProxy.class );
 
@@ -107,7 +106,7 @@ public class EbiProxy extends RemoteProxyServer {
                 natRecord = getPicrList( port, provider, service, ns, ac );
             }
 
-        } catch ( ServiceException fault ) {
+        } catch ( ProxyFault fault ) {
             throw fault;
         } catch ( Exception e ) {
             log.info( "EbiProxy: getUniprot: exception: " + e.toString() );
@@ -115,15 +114,15 @@ public class EbiProxy extends RemoteProxyServer {
             if ( e.toString().contains( "No result found" ) ) {
                 // ServiceFault fault =
                 // new ServiceFault( "04 remote server: no hit." );
-                throw Fault.getServiceException( 5 ); // no hits
+                throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
             } else if ( e.toString().contains( "Read timed out" ) ) {
                 // ServiceFault fault =
                 // new ServiceFault( "02 remote server: timeout." );
-                throw Fault.getServiceException( 12 ); // remote timeout
+                throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT ); // remote timeout
             } else {
                 // ServiceFault fault =
                 // new ServiceFault( "03 remote server: unknown." );
-                throw Fault.getServiceException( 99 ); // unknown error ???
+                throw FaultFactory.newInstance( Fault.UNKNOWN ); // unknown error ???
             }
 
         }
@@ -132,14 +131,17 @@ public class EbiProxy extends RemoteProxyServer {
     }
 
     public DatasetType transform( String strNative, String ac, String ns,
-            String detail, String service, ProxyTransformer pTrans )
-            throws ServiceException {
+                    String detail, String service, ProxyTransformer pTrans )
+                                                            throws ProxyFault 
+    {
         Log log = LogFactory.getLog( EbiProxy.class );
+
         try {
             // native data in string representationa as input
 
             ByteArrayInputStream bisNative =
                     new ByteArrayInputStream( strNative.getBytes( "UTF-8" ) );
+
             StreamSource ssNative = new StreamSource( bisNative );
 
             // dxf as JAXBResult result of the transformation
@@ -160,28 +162,28 @@ public class EbiProxy extends RemoteProxyServer {
             if ( dxfResult.getNode().isEmpty() ) {
                 // ServiceFault fault =
                 // new ServiceFault( "05 remote server: transformer." );
-                throw Fault.getServiceException( Fault.NO_RECORD ); // no hits
+                throw FaultFactory.newInstance( Fault.UNKNOWN ); // no hits
                 // or
                 // transformation ???
             }
 
             return dxfResult;
 
-        } catch ( ServiceException ex ) {
+        } catch ( ProxyFault ex ) {
             log.info( "Transformer fault: empty dxfResult " );
             throw ex;
         } catch ( Exception e ) {
             log.info( "Exception=" + e.toString() );
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transform." );
-            throw Fault.getServiceException( Fault.UNKNOWN ); // unknown error
+            throw FaultFactory.newInstance( Fault.UNKNOWN ); // unknown error
             // ???
         }
     }
 
     public DatasetType buildDxf( String strNative, String ac, String ns,
             String detail, String service, ProxyTransformer pTrans )
-            throws ServiceException {
+            throws ProxyFault {
 
         // NOTE: overload if dxf building more complex than
         // a simple xslt transformation
@@ -190,7 +192,7 @@ public class EbiProxy extends RemoteProxyServer {
     }
 
     private NativeRecord getUniprot( EbiProxyPort port, String provider,
-            String service, String ns, String ac ) throws ServiceException {
+            String service, String ns, String ac ) throws ProxyFault {
 
         Holder<DatasetType> resDataset = new Holder<DatasetType>();
         Holder<String> resNative = new Holder<String>();
@@ -215,7 +217,7 @@ public class EbiProxy extends RemoteProxyServer {
             Log log = LogFactory.getLog( EbiProxy.class );
             log.info( e.toString() );
 
-            throw Fault.getServiceException( Fault.REMOTE_FAULT ); // remote
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); // remote
             // server
         }
     }
@@ -223,7 +225,7 @@ public class EbiProxy extends RemoteProxyServer {
     /* GetPicrList */
 
     private NativeRecord getPicrList( EbiProxyPort port, String provider,
-            String service, String ns, String ac ) throws ServiceException {
+            String service, String ns, String ac ) throws ProxyFault {
 
         Holder<DatasetType> resDataset = new Holder<DatasetType>();
         Holder<String> resNative = new Holder<String>();
@@ -246,7 +248,7 @@ public class EbiProxy extends RemoteProxyServer {
 
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transformer." );
-            throw Fault.getServiceException( 7 ); // transformation error ?
+            throw FaultFactory.newInstance( Fault.TRANSFORM ); // transformation error ?
 
         } catch ( Error e ) {
             Log log = LogFactory.getLog( EbiProxy.class );
@@ -254,7 +256,7 @@ public class EbiProxy extends RemoteProxyServer {
 
             // ServiceFault fault =
             // new ServiceFault( "05 remote server: transformer." );
-            throw Fault.getServiceException( 7 ); // transformation error ?
+            throw FaultFactory.newInstance( Fault.TRANSFORM ); // transformation error ?
         }
     }
 }

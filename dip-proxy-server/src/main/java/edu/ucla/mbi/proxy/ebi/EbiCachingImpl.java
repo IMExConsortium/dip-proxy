@@ -1,10 +1,10 @@
 package edu.ucla.mbi.proxy.ebi;
 
-/*=======================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/#$
- * $Id$
- * Version: $Rev$
- *=========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * EbiCachingImpl - EBI Database access implemented 
  * through efetch SOAP
@@ -12,7 +12,7 @@ package edu.ucla.mbi.proxy.ebi;
  *  NOTE: Modify gen-src/axis2/ebi/resources/services.xml to use
  *  this instead of default EbiPublicSkeleton.
  *
- *====================================================================== */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,10 +21,9 @@ import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.*;
 
-import edu.ucla.mbi.services.Fault;
-import edu.ucla.mbi.services.ServiceException;
-import edu.ucla.mbi.services.ServiceFault;
-import edu.ucla.mbi.services.TimeStamp;
+import edu.ucla.mbi.fault.*;
+import edu.ucla.mbi.util.TimeStamp;
+import edu.ucla.mbi.server.WSContext;
 
 import javax.jws.WebService;
 import javax.xml.ws.Holder;
@@ -119,20 +118,15 @@ public class EbiCachingImpl implements EbiProxyPort {
                 }
             }
 
-        } catch ( ServiceException se ) {
-            String message = se.getServiceFault().getMessage();
+        } catch ( ProxyFault fault ) {
+            String message = fault.getFaultInfo().getMessage();
             log.warn( "EbiCachingImpl: ServiceException: message= " + message);
 
-            ProxyFault fault = new ProxyFault(message, se.getServiceFault());
             throw fault;
 
         } catch ( Exception e ) {
             log.warn( "EbiCachingImpl: " + e.toString() );
-            ServiceFault fault = new ServiceFault();
-            fault.setMessage(e.toString());
-            fault.setFaultCode(99);
-            ProxyFault proxyFault = new ProxyFault(e.toString(), fault);
-            throw proxyFault;
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
     }
 
@@ -200,25 +194,13 @@ public class EbiCachingImpl implements EbiProxyPort {
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
                 }
             }
-
-        } catch ( ProxyFault sf ) {
-            
-            throw sf; // pass EbiFault
-
-        } catch ( ServiceException se ) { // pass exception
-            String message = se.getServiceFault().getMessage();
-            log.warn( "EbiCachingImpl: ServiceException: message= " + message);
-            
-            ProxyFault fault = new ProxyFault(message, se.getServiceFault());
+        } catch ( ProxyFault fault ) { // pass exception
+            String message = fault.getFaultInfo().getMessage();
             throw fault; 
 
         } catch ( Exception e ) {
             log.warn( "EbiCachingImpl: " + e.toString() );
-            ServiceFault fault = new ServiceFault();
-            fault.setMessage(e.toString());
-            fault.setFaultCode(99);
-            ProxyFault proxyFault = new ProxyFault(e.toString(), fault);
-            throw proxyFault;
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
     }
 }
