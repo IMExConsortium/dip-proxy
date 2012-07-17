@@ -40,7 +40,8 @@ import edu.ucla.mbi.cache.NativeRecord;
 import java.util.Map;
 
 public class RemoteProxyServerNewVersion implements RemoteServer {
- 
+
+    Log log = LogFactory.getLog( RemoteProxyServerNewVersion.class ); 
     String proxyAddress;
 
     private static Map<String,Object> context;
@@ -61,18 +62,19 @@ public class RemoteProxyServerNewVersion implements RemoteServer {
     }
     
     public void setContext( Map<String,Object> context ) {
-        RemoteProxyServer.context = context;
+        //RemoteProxyServerNewVersion.context = context;
+        this.context = context;
     }
     
     public Map<String,Object> getContext() {
-	return context;
+	    return context;
     }
     
     public NativeRecord getNative( String provider, String service,
                                    String ns, String ac, int timeout
                                    ) throws ProxyFault 
     {
-        Log log = LogFactory.getLog( RemoteProxyServer.class );
+        //Log log = LogFactory.getLog( RemoteProxyServerNewVersion.class );
 
         log.info( "getNative(NS=" + ns + " AC=" + ac + " OP=" + service + ")" );
 
@@ -149,7 +151,7 @@ public class RemoteProxyServerNewVersion implements RemoteServer {
 				                  String service, ProxyTransformer pTrans 
                                   ) throws ProxyFault {
 	
-        Log log = LogFactory.getLog( RemoteProxyServer.class );
+        //Log log = LogFactory.getLog( RemoteProxyServer.class );
 	    try {
 	        // native data in string representationa as input
 	    

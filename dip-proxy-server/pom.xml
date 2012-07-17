@@ -157,6 +157,10 @@
               <includes>   
                 <include>DhtService14.wsdl</include>
                 <include>ProxyService14.wsdl</include> 
+                <include>NcbiService14.wsdl</include>
+                <include>EbiService14.wsdl</include>
+                <include>ProlinksService14.wsdl</include>
+                <include>DipService14.wsdl</include>
               </includes>
             </resource>
 

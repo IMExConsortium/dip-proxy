@@ -79,7 +79,7 @@ public class WSContext{
     }
 
     public void setOldVersionServices ( Map<String,Map> services ) {
-        this.services = services;
+        this.oldVersionServices = services;
     }
    
     public Map<String,Map> getServices() {
@@ -283,16 +283,19 @@ public class WSContext{
 
             String remoteProxyOn =
                 (String) ( (Map) services.get( service ) ).get( "remoteProxy" );
+
             boolean isRemoteProxyOn = false;
 
             if ( remoteProxyOn != null ) {
                 if ( remoteProxyOn.equalsIgnoreCase( "true" ) ||
                      remoteProxyOn.equalsIgnoreCase( "on" ) ||
-                     remoteProxyOn.equalsIgnoreCase( "yes" ) ){
+                     remoteProxyOn.equalsIgnoreCase( "yes" ) )
+                {
                     isRemoteProxyOn = true;
                 } else if (remoteProxyOn.equalsIgnoreCase( "false" ) ||
                            remoteProxyOn.equalsIgnoreCase( "off" ) ||
-                           remoteProxyOn.equalsIgnoreCase( "no" ) ){
+                           remoteProxyOn.equalsIgnoreCase( "no" ) )
+                {
                     isRemoteProxyOn = false;
                 } else {
                     throw new ProxyException( "Provider: " + service +
@@ -309,9 +312,11 @@ public class WSContext{
 	        // proxy prototype
 	        //----------------
 
-            RemoteProxyServer proxyProto = 
-                (RemoteProxyServer) ( (Map) services.get( service ) ).get( "proxyProto" );
+            //RemoteProxyServer proxyProto = 
+            //    (RemoteProxyServer) ( (Map) services.get( service ) ).get( "proxyProto" );
             
+            RemoteServer proxyProto =         
+                (RemoteServer) ( (Map) services.get( service ) ).get( "proxyProto" );
             ( (Map) services.get( service ) ).put( "proxyProto", proxyProto );
 
 	        // router
@@ -348,17 +353,19 @@ public class WSContext{
             ( (Map) services.get( service ) ).put( "debug", intDebug );
 
 	    }
+
 	    log.info( "ProxyWS: WSContext initializing... DONE" );
 
         //*** initializing oldVersionServerContexts *******
 	    for( Iterator<String> 
 		        i = oldVersionServices.keySet().iterator(); i.hasNext(); ) {
 
+            log.info( "WSContext: initialzing oldVersionServices..." );
 	        String service = i.next();
 	    
 	        // Time To Live
 	        //-------------
-	    
+	        log.info( "WSContext: initialzing oldVersionServices ttl ..." );
 	        String ttl = 
 		        (String) ( (Map) oldVersionServices.get( service ) ).get( "ttl" );
 	        int intTtl = DEFAULT_TTL*60*60*24;
@@ -387,10 +394,11 @@ public class WSContext{
 	         
             ( (Map) oldVersionServices.get( service ) ).put( "ttl", intTtl );
 	    
-
+            
 	        // Remote Service Timeout
 	        //-----------------------
 
+            log.info( "WSContext: initailizing oldVersionService timeout..." );
 	        String timeout =
 		        (String) ( (Map) oldVersionServices.get( service ) ).get( "timeout" );
 	    
@@ -517,9 +525,11 @@ public class WSContext{
 	        // proxy prototype
 	        //----------------
 
-            RemoteProxyServer proxyProto = 
-                (RemoteProxyServer) ( (Map) oldVersionServices.get( service ) ).get( "proxyProto" );
+            //RemoteProxyServer proxyProto = 
+            //    (RemoteProxyServer) ( (Map) oldVersionServices.get( service ) ).get( "proxyProto" );
             
+            RemoteServer proxyProto = 
+                (RemoteServer) ( (Map) oldVersionServices.get( service ) ).get( "proxyProto" );
             ( (Map) oldVersionServices.get( service ) ).put( "proxyProto", proxyProto );
 
 	        // router
@@ -556,7 +566,7 @@ public class WSContext{
             ( (Map) oldVersionServices.get( service ) ).put( "debug", intDebug );
 
 	    }
-	    log.info( "ProxyWS: WSContext initializing... DONE" );
+	    log.info( "ProxyWS: WSContext oldVersionService initializing... DONE" );
     }
 
     public void cleanup() {
