@@ -1,4 +1,4 @@
-package edu.ucla.mbi.proxy.ncbi;
+package edu.ucla.mbi.client;
 
 /*===========================================================================
  * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/#$

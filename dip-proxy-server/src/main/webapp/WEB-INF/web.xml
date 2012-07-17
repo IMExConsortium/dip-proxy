@@ -136,6 +136,26 @@
    <url-pattern>/proxy-service</url-pattern>
   </servlet-mapping>
 
+   <servlet-mapping>
+   <servlet-name>dip-proxy</servlet-name>
+   <url-pattern>/ebi-service</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+   <servlet-name>dip-proxy</servlet-name>
+   <url-pattern>/ncbi-service</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+   <servlet-name>dip-proxy</servlet-name>
+   <url-pattern>/dip-service</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+   <servlet-name>dip-proxy</servlet-name>
+   <url-pattern>/prolinks-service</url-pattern>
+  </servlet-mapping>
+
   <mime-mapping>
         <extension>inc</extension>
         <mime-type>text/plain</mime-type>

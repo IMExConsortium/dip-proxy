@@ -39,7 +39,7 @@ public class RemoteServerContext {
 
     private RemoteServer nativeServer = null;
     private RemoteProxyServer proxyServer = null;
-    
+
     private Router router = null;
     
     public int getTimeout(){

@@ -39,7 +39,8 @@ import edu.ucla.mbi.cache.NativeRecord;
 
 import java.util.Map;
 
-public class RemoteProxyServerNewVersion implements RemoteServer {
+//public class RemoteProxyServerNewVersion implements RemoteServer {
+public class RemoteProxyServerNewVersion extends RemoteProxyServer {
 
     Log log = LogFactory.getLog( RemoteProxyServerNewVersion.class ); 
     String proxyAddress;
