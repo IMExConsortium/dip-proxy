@@ -7,12 +7,6 @@
   <name>dip-proxy-server</name>
   <url>http://dip.mbi.ucla.edu</url>
 
-  <!--
-  <properties>
-    <dip-proxy.jdbc>jdbc/proxyws</dip-proxy.jdbc>
-    <dip-proxy.css>icentral-test.css</dip-proxy.css> 
-  </properties>
-  -->
   <profiles>
 
     <profile>
@@ -26,7 +20,7 @@
       <properties>
         <environment.srv>tomcat</environment.srv>
         <dip-proxy.jdbc>java:/comp/env/jdbc/proxyws</dip-proxy.jdbc>
-        <dip-proxy.css>dip-proxy-test.css</dip-proxy.css>
+        <dip-proxy.css>icentral-test.css</dip-proxy.css>
       </properties>
       <build>
         <finalName>dip-proxy</finalName>
