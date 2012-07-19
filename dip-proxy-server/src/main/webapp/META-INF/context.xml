@@ -7,7 +7,7 @@
  <Resource name="jdbc/proxyws" type="javax.sql.DataSource"
                      auth="Container"
                      driverClassName="org.postgresql.Driver"
-                     username="${dip-proxy.hibernate.connection.username}" password="${dip-proxy.hibernate.connection.password}"
-                     url="jdbc:postgresql://10.1.1.11:5432/proxyws"
+                     username="${hibernate.connection.username}" password="${hibernate.connection.password}"
+                     url="${hibernate.connection.url}"
                      maxIdle="2" maxWait="5000" maxActive="4"/>
 </Context>

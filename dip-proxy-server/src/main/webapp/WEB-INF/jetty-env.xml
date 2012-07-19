@@ -7,11 +7,11 @@
   <Arg>jdbc/proxyws</Arg>
   <Arg>
    <New class="org.postgresql.ds.PGSimpleDataSource">
-    <Set name="User">${dip-proxy.hibernate.connection.username}</Set>
-    <Set name="Password">${dip-proxy.hibernate.connection.password}</Set>
-    <Set name="DatabaseName">${dip-proxy.hibernate.connection.dbname}</Set>
-    <Set name="ServerName">${dip-proxy.hibernate.connection.servername}</Set>
-    <Set name="PortNumber">${dip-proxy.hibernate.connection.portnum}</Set>
+    <Set name="User">${hibernate.connection.username}</Set>
+    <Set name="Password">${hibernate.connection.password}</Set>
+    <Set name="DatabaseName">${hibernate.connection.dbname}</Set>
+    <Set name="ServerName">${hibernate.connection.servername}</Set>
+    <Set name="PortNumber">${hibernate.connection.portnum}</Set>
    </New>
   </Arg>
  </New>
