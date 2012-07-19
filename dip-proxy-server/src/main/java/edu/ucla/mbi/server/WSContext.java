@@ -28,13 +28,9 @@ public class WSContext{
     private static final int DEFAULT_DEBUG = 0;        // 
     
     private static Map<String,Map> services;
-    private static Map<String,Map> oldVersionServices;
 
     private static Map<String, RemoteServerContext> serverContexts 
                                 = new HashMap<String, RemoteServerContext>();
-
-    private static Map<String, RemoteServerContext> oldVersionServerContexts 
-                                = new HashMap<String, RemoteServerContext>();    
 
     private static Dht proxyDht;
 
@@ -78,24 +74,12 @@ public class WSContext{
 	    this.services = services;
     }
 
-    public void setOldVersionServices ( Map<String,Map> services ) {
-        this.oldVersionServices = services;
-    }
-   
     public Map<String,Map> getServices() {
 	    return services;
     }
     
-    public Map<String, Map> getOldVersionServices() {
-        return oldVersionServices;
-    }
-
     public static Map getService( String provider ) {
         return (Map) services.get( provider );
-    }
-
-    public static Map getOldVersionService( String provider ) {
-        return (Map) oldVersionServices.get( provider );
     }
 
     public static Scheduler getScheduler() {
@@ -122,20 +106,6 @@ public class WSContext{
 	        serverContexts.put( provider, rsc );
 	    }
 	    return serverContexts.get( provider );
-    }
-
-    public static RemoteServerContext getOldVersionServerContext( 
-                                                    String provider ) {
-
-        Log log = LogFactory.getLog( WSContext.class );
-        log.info( "ProxyWS: WSContext.getOldVersionServerContext(" + provider + ")" );
-
-        if( oldVersionServerContexts.get( provider ) == null ) {
-            RemoteServerContext rsc = new RemoteServerContext();
-            rsc.initOldVersion( provider );
-            oldVersionServerContexts.put( provider, rsc );
-        }
-        return oldVersionServerContexts.get( provider );
     }
 
     public void initialize() {
@@ -355,218 +325,6 @@ public class WSContext{
 	    }
 
 	    log.info( "ProxyWS: WSContext initializing... DONE" );
-
-        //*** initializing oldVersionServerContexts *******
-	    for( Iterator<String> 
-		        i = oldVersionServices.keySet().iterator(); i.hasNext(); ) {
-
-            log.info( "WSContext: initialzing oldVersionServices..." );
-	        String service = i.next();
-	    
-	        // Time To Live
-	        //-------------
-	        log.info( "WSContext: initialzing oldVersionServices ttl ..." );
-	        String ttl = 
-		        (String) ( (Map) oldVersionServices.get( service ) ).get( "ttl" );
-	        int intTtl = DEFAULT_TTL*60*60*24;
-	        if ( ttl != null ) {
-		        if (ttl.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
-		            try {
-			            // detault units: days
-			            intTtl = Integer.parseInt( ttl );
-			            // convert to seconds
-			            intTtl = intTtl*60*60*24;
-		            } catch ( NumberFormatException nfe ) {
-			            log.info( "ProxyWS: ttl=" + ttl +
-				                  " :format error. Using default." );
-                        throw nfe;
-                                                  
-		            }
-		        } else {
-		            log.info( "ProxyWS: ttl="+ttl+
-				              " :unknown units/format. Using default.");
-		            ttl = String.valueOf( DEFAULT_TTL );
-		        }
-	        } else {
-		        log.info( "ProxyWS: ttl not specified: Using default." );
-		        ttl = String.valueOf( DEFAULT_TTL );
-	        }
-	         
-            ( (Map) oldVersionServices.get( service ) ).put( "ttl", intTtl );
-	    
-            
-	        // Remote Service Timeout
-	        //-----------------------
-
-            log.info( "WSContext: initailizing oldVersionService timeout..." );
-	        String timeout =
-		        (String) ( (Map) oldVersionServices.get( service ) ).get( "timeout" );
-	    
-	        int intTimeout = DEFAULT_TIMEOUT;
-	        if( timeout != null ) {
-                if ( timeout.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
-		            try {
-                        // detault units: seconds
-			            intTimeout = Integer.parseInt( timeout );
-			            // convert to miliseconds
-                        intTimeout = intTimeout*1000; 
-                    } catch( NumberFormatException nfe ) {
-                        log.info( "ProxyWS: timeout=" + timeout +
-				                  " :format error. Using default." );
-                    }
-                } else {
-                    log.info("ProxyWS: timeout="+timeout+
-                             " :unknown units/format. Using default.");
-		            timeout=String.valueOf(DEFAULT_TIMEOUT);
-                }
-            } else {
-                log.info( "ProxyWS: ttl not specified: Using default." );
-		        timeout=String.valueOf( DEFAULT_TIMEOUT );
-            }
-	    
-	        ( (Map) oldVersionServices.get( service ) ).put( "timeout", intTimeout );
-	    
-	        log.info( "ProxyWS:  " + service + " (ttl: " + ttl + " days; " +
-		              "timeout=" + timeout + " s)" );
-	    
-
-	        // Cache flag
-            //------------
-
-            String cacheOn =
-                (String) ( (Map) oldVersionServices.get( service ) ).get( "cache" );
-            boolean isCacheOn = true;
-	    
-            if ( cacheOn != null ) {
-                if ( cacheOn.equalsIgnoreCase( "true" ) ||
-                     cacheOn.equalsIgnoreCase( "on" ) ||
-                     cacheOn.equalsIgnoreCase( "yes" )){
-                    isCacheOn = true;
-                } else if (cacheOn.equalsIgnoreCase( "false" ) ||
-                           cacheOn.equalsIgnoreCase( "off" ) ||
-                           cacheOn.equalsIgnoreCase( "no" ) ){
-                    isCacheOn = false;
-                } else {
-                    throw new ProxyException( "Service: " + service +
-                                              " cache flag format error");
-                }
-                log.info( "ProxyWS:   cache=" + isCacheOn );
-            } else {
-                log.info( "ProxyWS:   cache=" + isCacheOn +
-                          " (default)");
-            }
-
-            ( (Map) oldVersionServices.get( service ) ).put( "cacheOn", isCacheOn );
-
-            // Monitor flag
-            //-------------
-
-            String monitorOn =
-                (String) ( (Map) oldVersionServices.get( service ) ).get( "monitor" );
-            boolean isMonitorOn = false;
-
-            if ( monitorOn != null ) {
-                if ( monitorOn.equalsIgnoreCase( "true" ) ||
-                     monitorOn.equalsIgnoreCase( "on" ) ||
-                     monitorOn.equalsIgnoreCase( "yes" ) ){
-                    isMonitorOn = true;
-                } else if (monitorOn.equalsIgnoreCase( "false" ) ||
-                           monitorOn.equalsIgnoreCase( "off" ) ||
-                           monitorOn.equalsIgnoreCase( "no" ) ){
-                    isMonitorOn = false;
-                } else {
-                    throw new ProxyException( "Service: " + service +
-                                              " monitor flag format error");
-                }
-                log.info( "ProxyWS:   monitor=" + isMonitorOn );
-            } else {
-                log.info( "ProxyWS:   monitor=" + isMonitorOn +
-                          " (default)");
-            }
-
-            ( (Map) oldVersionServices.get( service ) ).put( "monitorOn", isMonitorOn );
-	    
-	    
-	        // Monitor Interval
-	        //-----------------
- 
-
-	        // Monitor query
-	        //--------------
-
-            // Remote Proxy flag
-            //------------------
-
-            String remoteProxyOn =
-                (String) ( (Map) oldVersionServices.get( service ) ).get( "remoteProxy" );
-            boolean isRemoteProxyOn = false;
-
-            if ( remoteProxyOn != null ) {
-                if ( remoteProxyOn.equalsIgnoreCase( "true" ) ||
-                     remoteProxyOn.equalsIgnoreCase( "on" ) ||
-                     remoteProxyOn.equalsIgnoreCase( "yes" ) ){
-                    isRemoteProxyOn = true;
-                } else if (remoteProxyOn.equalsIgnoreCase( "false" ) ||
-                           remoteProxyOn.equalsIgnoreCase( "off" ) ||
-                           remoteProxyOn.equalsIgnoreCase( "no" ) ){
-                    isRemoteProxyOn = false;
-                } else {
-                    throw new ProxyException( "Provider: " + service +
-                                              " remote proxy flag format error");
-                }
-                log.info( "ProxyWS:   remote proxy=" + isRemoteProxyOn );
-            } else {
-                log.info( "ProxyWS:   monitor=" + isRemoteProxyOn +
-                          " (default)");
-            }
-
-            ( (Map) oldVersionServices.get( service ) ).put( "remoteProxyOn", isRemoteProxyOn );
-            
-	        // proxy prototype
-	        //----------------
-
-            //RemoteProxyServer proxyProto = 
-            //    (RemoteProxyServer) ( (Map) oldVersionServices.get( service ) ).get( "proxyProto" );
-            
-            RemoteServer proxyProto = 
-                (RemoteServer) ( (Map) oldVersionServices.get( service ) ).get( "proxyProto" );
-            ( (Map) oldVersionServices.get( service ) ).put( "proxyProto", proxyProto );
-
-	        // router
-	        //-------
-
-            Router router = 
-                (Router) ( (Map) oldVersionServices.get( service ) ).get( "router" );
-            
-            ( (Map) oldVersionServices.get( service ) ).put( "router", router );
-            
-	        // debug level
-	        //------------
-	    
-	        String debug = 
-		        (String) ( (Map) oldVersionServices.get( service ) ).get( "debug" );
-	        int intDebug = DEFAULT_DEBUG;
-	        if ( debug != null ) {
-		        if (debug.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
-		            try {
-			            // detault units: days
-			            intDebug = Integer.parseInt( debug );
-		            } catch ( NumberFormatException nfe ) {
-			            log.info( "ProxyWS: debug=" + debug +
-				                  " :format error. Using default." );
-                    }
-                } else {
-                    log.info("ProxyWS: debug="+ debug +
-                             " :unknown units/format. Using default.");
-                }
-	        } else {
-		        log.info( "ProxyWS: debug level not specified: Using default." );
-            }
-	         
-            ( (Map) oldVersionServices.get( service ) ).put( "debug", intDebug );
-
-	    }
-	    log.info( "ProxyWS: WSContext oldVersionService initializing... DONE" );
     }
 
     public void cleanup() {
