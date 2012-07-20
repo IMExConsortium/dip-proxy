@@ -21,14 +21,25 @@
       <properties>
         <environment.srv>tomcat</environment.srv>
         <dip-proxy.css>icentral-test.css</dip-proxy.css>
-        <!--<hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource> -->
+
+        <!--- using JNDI -->
+
+        <!-- for tomcat server -->
+        <!-- <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource> -->
+        <!-- <hibernate.connection.url>jdbc:postgresql://10.1.1.114:5432/proxyws201</hibernate.connection.url> -->
+
+        <!-- for jetty server -->
         <hibernate.connection.datasource>jdbc/proxyws</hibernate.connection.datasource>
-        <hibernate.connection.url>jdbc:postgresql://10.1.1.11:5432/proxyws201</hibernate.connection.url>
-        
         <hibernate.connection.dbname>proxyws201</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.114</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
-        
+
+        <!-- end of JNDI -->
+
+        <!-- using JDBC -->
+        <!-- <hibernate.connection.url>jdbc:postgresql://10.1.1.114:5432/proxyws201</hibernate.connection.url> -->
+        <!-- end of JDBC -->
+
       </properties>
       <build>
         <finalName>dip-proxy</finalName>
@@ -36,7 +47,7 @@
    </profile>
 
    <profile>
-     <id>beta</id>
+     <id>dip-proxy-beta</id>
      <activation>
        <property>
          <name>build</name>
@@ -44,9 +55,20 @@
        </property>
      </activation>
      <properties>
-       <environment.srv>tomcat</environment.srv>
-       <dip-proxy.jdbc>java:/comp/env/jdbc/proxyws</dip-proxy.jdbc>
-       <dip-proxy.css>dip-proxy-beta.css</dip-proxy.css>
+        <environment.srv>tomcat</environment.srv>
+        <dip-proxy.css>dip-proxy-beta.css</dip-proxy.css>
+
+        <!--- using JNDI -->
+        <!-- for tomcat server -->
+        <!--<hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource> -->
+        <!-- for jetty server -->
+        <hibernate.connection.datasource>jdbc/proxyws</hibernate.connection.datasource>
+
+        <hibernate.connection.dbname>proxyws201</hibernate.connection.dbname>
+        <hibernate.connection.servername>10.1.1.114</hibernate.connection.servername>
+        <hibernate.connection.portnum>5432</hibernate.connection.portnum>
+        <!-- end of JNDI -->
+        
      </properties>
      <build>
        <finalName>dip-proxy</finalName>
@@ -54,17 +76,28 @@
    </profile>
 
    <profile>
-     <id>production</id>
+     <id>dip-proxy-production</id>
      <activation>
-       <property>
-         <name>build</name>
-         <value>prod</value>
-       </property> 
+        <property>
+          <name>build</name>
+          <value>prod</value>
+        </property> 
      </activation>
      <properties>
-       <environment.srv>tomcat</environment.srv>
-       <dip-proxy.jdbc>java:/comp/env/jdbc/proxyws</dip-proxy.jdbc>
-       <dip-proxy.css>dip-proxy.css</dip-proxy.css>
+        <environment.srv>tomcat</environment.srv>
+        <dip-proxy.css>dip-proxy.css</dip-proxy.css>
+      
+        <!--- using JNDI -->
+        <!-- for tomcat server -->
+        <!--<hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource> -->
+        <!-- for jetty server -->
+        <hibernate.connection.datasource>jdbc/proxyws</hibernate.connection.datasource>
+
+        <hibernate.connection.dbname>proxyws201</hibernate.connection.dbname>
+        <hibernate.connection.servername>10.1.1.114</hibernate.connection.servername>
+        <hibernate.connection.portnum>5432</hibernate.connection.portnum>
+        <!-- end of JNDI -->
+ 
      </properties>
      <build>
        <finalName>dip-proxy</finalName>
@@ -183,7 +216,8 @@
                 <include>hibernate.properties</include>
               </includes>
             </resource>
-              
+            
+            <!-- this resource is used for jetty server -->  
             <resource>
               <directory>${basedir}/src/main/webapp/WEB-INF</directory>
               <targetPath>WEB-INF</targetPath>
@@ -191,9 +225,18 @@
               <includes>
                 <include>jetty-env.xml</include>
               </includes>
-
             </resource>
-            
+         
+            <!-- this resource is used for tomcat server -->
+            <resource>
+              <directory>${basedir}/src/main/webapp/META-INF</directory>
+              <targetPath>META-INF</targetPath>
+              <filtering>true</filtering>
+              <includes>
+                <include>context.xml</include>
+              </includes>
+            </resource>
+   
             <resource>
               <directory>${basedir}/src/main/webapp/tiles</directory>
               <targetPath>tiles</targetPath>
