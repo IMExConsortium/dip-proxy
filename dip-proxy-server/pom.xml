@@ -10,6 +10,20 @@
   <profiles>
 
     <profile>
+      <id>server-tomcat</id>
+      <activation>
+        <property>
+          <name>server</name>
+          <value>tomcat</value>
+        </property>
+      </activation>
+      <properties>
+        <!--- using JNDI for tomcat server-->
+        <tomcat.datasource>java:/comp/env/</tomcat.datasource> 
+      </properties>
+    </profile>
+
+    <profile>
       <id>dip-proxy-dev</id>
       <activation>
         <activeByDefault>true</activeByDefault>
@@ -23,23 +37,15 @@
         <dip-proxy.css>icentral-test.css</dip-proxy.css>
 
         <!--- using JNDI -->
-
-        <!-- for tomcat server -->
-        <!-- <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource> -->
-        <!-- <hibernate.connection.url>jdbc:postgresql://10.1.1.114:5432/proxyws201</hibernate.connection.url> -->
-
+        <hibernate.connection.datasource>${tomcat.datasource}jdbc/proxyws</hibernate.connection.datasource>
         <!-- for jetty server -->
-        <hibernate.connection.datasource>jdbc/proxyws</hibernate.connection.datasource>
         <hibernate.connection.dbname>proxyws201</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.114</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
-
-        <!-- end of JNDI -->
-
-        <!-- using JDBC -->
-        <!-- <hibernate.connection.url>jdbc:postgresql://10.1.1.114:5432/proxyws201</hibernate.connection.url> -->
-        <!-- end of JDBC -->
-
+        <!-- for tomcat server -->
+        <hibernate.connection.url>
+            jdbc:postgresql://${hibernate.connection.servername}:${hibernate.connection.portnum}/${hibernate.connection.dbname}
+        </hibernate.connection.url>
       </properties>
       <build>
         <finalName>dip-proxy</finalName>
@@ -55,20 +61,16 @@
        </property>
      </activation>
      <properties>
-        <environment.srv>tomcat</environment.srv>
         <dip-proxy.css>dip-proxy-beta.css</dip-proxy.css>
-
-        <!--- using JNDI -->
-        <!-- for tomcat server -->
-        <!--<hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource> -->
-        <!-- for jetty server -->
-        <hibernate.connection.datasource>jdbc/proxyws</hibernate.connection.datasource>
-
+        
+        <hibernate.connection.datasource>${tomcat.datasource}jdbc/proxyws</hibernate.connection.datasource>
         <hibernate.connection.dbname>proxyws201</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.114</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
-        <!-- end of JNDI -->
-        
+        <hibernate.connection.url>
+            jdbc:postgresql://${hibernate.connection.servername}:${hibernate.connection.portnum}/${hibernate.connection.dbname}
+        </hibernate.connection.url>
+ 
      </properties>
      <build>
        <finalName>dip-proxy</finalName>
@@ -84,20 +86,16 @@
         </property> 
      </activation>
      <properties>
-        <environment.srv>tomcat</environment.srv>
         <dip-proxy.css>dip-proxy.css</dip-proxy.css>
       
-        <!--- using JNDI -->
-        <!-- for tomcat server -->
-        <!--<hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource> -->
-        <!-- for jetty server -->
-        <hibernate.connection.datasource>jdbc/proxyws</hibernate.connection.datasource>
-
+        <hibernate.connection.datasource>${tomcat.datasource}jdbc/proxyws</hibernate.connection.datasource>
         <hibernate.connection.dbname>proxyws201</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.114</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
-        <!-- end of JNDI -->
- 
+        <hibernate.connection.url>
+            jdbc:postgresql://${hibernate.connection.servername}:${hibernate.connection.portnum}/${hibernate.connection.dbname}
+        </hibernate.connection.url>
+
      </properties>
      <build>
        <finalName>dip-proxy</finalName>
