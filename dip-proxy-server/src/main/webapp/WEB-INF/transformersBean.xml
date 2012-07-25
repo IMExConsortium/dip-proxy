@@ -49,6 +49,9 @@
     class="edu.ucla.mbi.proxy.ProxyTransformer">
   <property name="transfMap">
     <map>
+     <entry key="prolinks">
+      <value></value>
+     </entry>
     </map>
   </property>
   <property name="context">

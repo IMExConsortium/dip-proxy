@@ -153,6 +153,7 @@ public class NativeRecordDAO extends AbstractDAO {
         Map result = new HashMap<String,Integer>();
         
         try {
+            
             Query query = session
                 .createQuery( "select nr.service, count (*) " + 
                               " from NativeRecord nr " +

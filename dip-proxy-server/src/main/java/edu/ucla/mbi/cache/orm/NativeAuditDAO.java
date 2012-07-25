@@ -165,7 +165,7 @@ public class NativeAuditDAO extends AbstractDAO {
             
             // get services
             //-------------
-            
+            /*    
             Query serviceQuery = session
                 .createQuery( "select distinct na.service " +
                               " from NativeAudit na " +
@@ -173,6 +173,10 @@ public class NativeAuditDAO extends AbstractDAO {
             
             serviceQuery.setParameter( "prv", provider );
             List<String> services = (List<String>) serviceQuery.list();
+            */
+            Set<String> services = WSContext.getServerContext( provider )
+                                            .getTransformer().getTransfMap()
+                                            .keySet();
 
             // get newest entries
             //-------------------

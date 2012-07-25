@@ -109,7 +109,9 @@ public class NativeStatus extends PageSupport {
                     log.info( "prv=" + prv );
 
                     Map<String,Long> prvCounts = ndo.countAll( prv );
+                    log.info( "prvCounts end. ");
                     Map<String,Double> prvDelay = ado.delayAll( prv );
+                    log.info( "prvDelay end. ");
                     counts.put( prv, prvCounts );
                     delays.put( prv, prvDelay );
 

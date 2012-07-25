@@ -41,7 +41,11 @@ public class ProxyTransformer{
     public Transformer getTransformer() {
 	    return tf;
     }
-    
+   
+    public Map<String, Resource> getTransfMap() {
+        return transfMap;
+    } 
+
     public void setTransformer( String service ) { 
         Log log = LogFactory.getLog( ProxyTransformer.class );
         try {
