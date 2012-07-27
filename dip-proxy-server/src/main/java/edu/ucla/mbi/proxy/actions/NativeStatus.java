@@ -33,7 +33,7 @@ public class NativeStatus extends PageSupport {
 
     private WSContext wsContext = null;
 
-    private Map<String,Map> counts = null;
+    //private Map<String,Map> counts = null;
     private Map<String,Map> delays = null;
 
 
@@ -42,11 +42,11 @@ public class NativeStatus extends PageSupport {
     }
 
     //---------------------------------------------------------------------
-
+    /*
     public Map<String,Map> getCounts() {
         return counts;
     }
-
+    */
     public Map<String,Map> getDelays() {
         return delays;
     }
@@ -87,14 +87,14 @@ public class NativeStatus extends PageSupport {
             addActionError( "No page id" );
         }
 
-        counts = new TreeMap<String,Map>();
+        //counts = new TreeMap<String,Map>();
         delays = new TreeMap<String,Map>();
 
         try {
-            NativeRecordDAO ndo = DipProxyDAO.getNativeRecordDAO();
+            //NativeRecordDAO ndo = DipProxyDAO.getNativeRecordDAO();
             NativeAuditDAO ado = DipProxyDAO.getNativeAuditDAO();
 
-            if ( ndo != null ){
+            //if ( ndo != null ){
 
                 // go over providers
                 //------------------
@@ -108,14 +108,14 @@ public class NativeStatus extends PageSupport {
 
                     log.info( "prv=" + prv );
 
-                    Map<String,Long> prvCounts = ndo.countAll( prv );
-                    log.info( "prvCounts end. ");
+                    //Map<String,Long> prvCounts = ndo.countAll( prv );
+                    //log.info( "prvCounts end. ");
                     Map<String,Double> prvDelay = ado.delayAll( prv );
                     log.info( "prvDelay end. ");
-                    counts.put( prv, prvCounts );
+                    //counts.put( prv, prvCounts );
                     delays.put( prv, prvDelay );
 
-                }
+                //}
             }
         } catch ( DAOException de ) {
 

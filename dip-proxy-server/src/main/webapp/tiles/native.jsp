@@ -15,7 +15,8 @@
   <th>Native Response Time [s]</th>
  </tr>
 
- <s:iterator value="counts" var="prvd" status="ps">
+ <%--<s:iterator value="counts" var="prvd" status="ps"> --%>
+ <s:iterator value="delays" var="prvd" status="ps">
   <s:if test='value.size >0'>
    <s:set name="prv" value="key" /> 
     <tr>
