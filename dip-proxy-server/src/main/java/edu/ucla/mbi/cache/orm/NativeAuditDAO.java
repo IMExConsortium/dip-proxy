@@ -166,19 +166,11 @@ public class NativeAuditDAO extends AbstractDAO {
             
             // get services
             //-------------
-            /*    
-            Query serviceQuery = session
-                .createQuery( "select distinct na.service " +
-                              " from NativeAudit na " +
-                              " where na.provider = :prv " );
-            
-            serviceQuery.setParameter( "prv", provider );
-            List<String> services = (List<String>) serviceQuery.list();
-            */
+            log.info("delayAll: before wsContext.");
             Set<String> services = WSContext.getServerContext( provider )
                                             .getTransformer().getTransfMap()
                                             .keySet();
-
+            log.info("delayAll: afer wsContext.");
             // get newest entries
             //-------------------
                 
@@ -186,17 +178,18 @@ public class NativeAuditDAO extends AbstractDAO {
                   ii.hasNext(); ) {
 
                 String service = ii.next();
-
+                
                 Query query = session
                     .createQuery( "select na.responseTime  " +
                                   " from NativeAudit na " +
-                                  " where na.id = " +
+                                  " where na.provider = :prv " +
+                                  " and na.service = :srv" +
+                                  " and na.id = " +
                                   " (select max(na.id) " +
                                   "   from NativeAudit na " +
                                   "   where na.provider = :prv " +
-                                  "   and na.service = :srv ) " +
-                                  " and na.provider = :prv " +
-                                  " and na.service = :srv" );
+                                  "   and na.service = :srv ) " );
+
                 query.setParameter( "prv", provider );
                 query.setParameter( "srv", service );
                 query.setMaxResults(1);
@@ -205,6 +198,7 @@ public class NativeAuditDAO extends AbstractDAO {
                 log.info( "prv=" + provider + " srv=" + service + " del=" + delay);
                 result.put( service, delay/1000.0 );            
             }
+            log.info("delayAll: after loop.");
             tx.commit();
         } catch ( HibernateException e ) {
             handleException( e );

@@ -13,11 +13,16 @@ package edu.ucla.mbi.cache.orm;
 import org.hibernate.*;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.orm.*;
+import edu.ucla.mbi.server.*;
 
 import java.net.*;
 import java.util.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class NativeRecordDAO extends AbstractDAO {
+
+    private Log log = LogFactory.getLog( NativeRecordDAO.class );
 
     public NativeRecordDAO ( HibernateOrmUtil util ) {
         super( util );
@@ -151,7 +156,7 @@ public class NativeRecordDAO extends AbstractDAO {
         Transaction tx = session.beginTransaction();
         
         Map result = new HashMap<String,Integer>();
-        
+        log.info( "coutAll: before try. "); 
         try {
             
             Query query = session
@@ -179,7 +184,7 @@ public class NativeRecordDAO extends AbstractDAO {
         } finally {
             session.close();
         }
- 
+        log.info( "countAll: after try. ");
         return result;
     }
 
@@ -198,15 +203,11 @@ public class NativeRecordDAO extends AbstractDAO {
             
             // get services
             //-------------
+            Set<String> services = WSContext.getServerContext(
+                                            provider.toUpperCase() )
+                                            .getTransformer().getTransfMap()
+                                            .keySet();
 
-            Query serviceQuery = 
-                session.createQuery( "select distinct nr.service " +
-                                     " from NativeRecord nr " +
-                                     " where nr.provider = :prv " );
-            
-            serviceQuery.setParameter( "prv", provider.toUpperCase() );
-            List<String> services = (List<String>) serviceQuery.list();
-        
             // get oldest entries
             //-------------------
             
@@ -261,15 +262,11 @@ public class NativeRecordDAO extends AbstractDAO {
 
             // get services
             //-------------
-
-            Query serviceQuery = session
-                .createQuery( "select distinct nr.service " +
-                              " from NativeRecord nr " +
-                              " where nr.provider = :prv " );
-            
-            serviceQuery.setParameter( "prv", provider.toUpperCase() );
-            List<String> services = (List<String>) serviceQuery.list();
-        
+            Set<String> services = WSContext.getServerContext( 
+                                            provider.toUpperCase() )
+                                            .getTransformer().getTransfMap()
+                                            .keySet();
+ 
             // get oldest entries
             //-------------------
             

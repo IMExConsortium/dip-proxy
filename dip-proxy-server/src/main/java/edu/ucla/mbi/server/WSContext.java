@@ -21,6 +21,8 @@ import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.monitor.Scheduler;
 import edu.ucla.mbi.cache.orm.*;
 
+import edu.ucla.mbi.util.struts2.action.*;
+
 public class WSContext{
     
     private static final int DEFAULT_TTL     = 14;     // two weeks
@@ -321,6 +323,9 @@ public class WSContext{
             }
 	         
             ( (Map) services.get( service ) ).put( "debug", intDebug );
+
+            //*** initialize RemoteServerContext for individual provider
+            RemoteServerContext rsc = getServerContext( service );
 
 	    }
 
