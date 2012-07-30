@@ -4,7 +4,7 @@ use XML::XPath;
 use XML::XPath::XMLParser;
 
 my $URL= "http://dip.doe-mbi.ucla.edu/dip-proxy";
-my $PURL= "http://10.1.1.%%%:8080/dip-proxy";
+my $PURL= "http://10.1.1.%%%:8080/dip-proxy-server";
 
 my ( $ip, $srv, $mth, $ns, $ac, $format, $prv ) = @ARGV;
 

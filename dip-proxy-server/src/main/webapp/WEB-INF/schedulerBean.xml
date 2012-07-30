@@ -30,7 +30,7 @@
    <ref bean="wsContext"/>
   </property>
   
-  <property name="threadCount" value="5" />
+  <property name="threadCount" value="0" />
 
   <property name="agents">
    <map>

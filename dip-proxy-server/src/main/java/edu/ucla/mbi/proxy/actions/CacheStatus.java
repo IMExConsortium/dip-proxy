@@ -88,7 +88,6 @@ public class CacheStatus extends PageSupport {
         try {
 
             NativeRecordDAO ndo = DipProxyDAO.getNativeRecordDAO();
-            NativeAuditDAO ado = DipProxyDAO.getNativeAuditDAO();
 
             if ( ndo != null ){
 

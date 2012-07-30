@@ -119,7 +119,7 @@
 
        <entry key="cache" value="on"/>
        <entry key="remoteProxy" value="off"/>
-       <entry key="monitor" value="off"/>
+       <entry key="monitor" value="on"/>
        <entry key="debug" value="0"/> 
       </map>
      </entry>
@@ -159,7 +159,7 @@
        <entry key="transformer">
         <ref bean="dipTransformer"/>
        </entry>
-       <entry key="ttl"     value="14"/>
+       <entry key="ttl" value="14"/>
 
        <entry key="nativeServer"> 
         <ref bean="dipReferenceServer"/>

@@ -7,6 +7,10 @@
   <name>dip-proxy-server</name>
   <url>http://dip.mbi.ucla.edu</url>
 
+   <properties>
+     <tomcat.datasource></tomcat.datasource>
+   </properties>
+
   <profiles>
 
     <profile>
