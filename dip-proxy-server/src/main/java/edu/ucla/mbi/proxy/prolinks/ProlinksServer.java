@@ -62,12 +62,19 @@ public class ProlinksServer extends RemoteNativeServer {
 
             url = url.replaceAll( acTag, ac );
             log.info( "getNative: query url=" + url );
-            retVal = NativeURL.query( url, timeOut );
+            
+            try {
+                retVal = NativeURL.query( url, timeOut );
+            } catch ( ProxyFault fault ) {
+                throw fault;
+            }
         }
 
         if ( retVal == null ) {
             log.info( "getNative  null returned" );
             throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
+        } else {
+            log.info( "getNative: retVal=" + retVal.substring(0, 200) );
         }
 
         NativeRecord record = new NativeRecord( provider, service, ns, ac );

@@ -87,42 +87,31 @@ public class NativeStatus extends PageSupport {
             addActionError( "No page id" );
         }
 
-        //counts = new TreeMap<String,Map>();
         delays = new TreeMap<String,Map>();
 
         try {
-            //NativeRecordDAO ndo = DipProxyDAO.getNativeRecordDAO();
             NativeAuditDAO ado = DipProxyDAO.getNativeAuditDAO();
 
-            //if ( ndo != null ){
+            // go over providers
+            //------------------
 
-                // go over providers
-                //------------------
+            Set<String> providers = wsContext.getServices().keySet();
 
-                Set<String> providers = wsContext.getServices().keySet();
+            for (Iterator<String> ii = providers.iterator();
+                ii.hasNext(); ) {
 
-                for (Iterator<String> ii = providers.iterator();
-                     ii.hasNext(); ) {
+                String prv = ii.next();
 
-                    String prv = ii.next();
+                log.info( "prv=" + prv );
 
-                    log.info( "prv=" + prv );
-
-                    //Map<String,Long> prvCounts = ndo.countAll( prv );
-                    //log.info( "prvCounts end. ");
-                    Map<String,Double> prvDelay = ado.delayAll( prv );
-                    log.info( "prvDelay end. ");
-                    //counts.put( prv, prvCounts );
-                    delays.put( prv, prvDelay );
-
-                //}
+                Map<String,Double> prvDelay = ado.delayAll( prv );
+                log.info( "prvDelay end. ");
+                delays.put( prv, prvDelay );
             }
         } catch ( DAOException de ) {
 
         }
 
-        //log.info("Action: CacheStatus");
-        //setMessage( getText( MESSAGE ) );
         return SUCCESS;
     }
 
