@@ -130,6 +130,11 @@ public class DipServer extends RemoteNativeServer {
         if ( retList == null ) {
             log.info( "no record found " );
             throw FaultFactory.newInstance( Fault.NO_RECORD );
+        } else if( retList.size() == 0 ) {
+            log.info( "remote service return empty list. " );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        } else {
+            log.info( "getNative: retList.size=" + retList.size() ); 
         }
 
         // marshall List<NodeType> into dataset element
@@ -143,6 +148,10 @@ public class DipServer extends RemoteNativeServer {
     }
 
     private String marshall( List<NodeType> nodeList ) throws ProxyFault {
+
+        Log log = LogFactory.getLog( DipServer.class );
+        log.info( "initialize service" );
+
         try {
 
             edu.ucla.mbi.dxf14.ObjectFactory dofDxf =
@@ -161,11 +170,17 @@ public class DipServer extends RemoteNativeServer {
             dxfMarshaller.marshal( dofDxf.createDataset( record ), swResult );
 
             String result = swResult.toString();
+
+            if( result.length() > 200 ) {
+                log.info( "marshall: native string=" + result.substring(0, 200) );
+            } else {
+                log.info( "marshall: native string=" + result );
+            }
+
             return result;
 
         } catch ( Exception e ) {
 
-            Log log = LogFactory.getLog( DipServer.class );
             log.info( "marshalling exception " + e.toString() );
             throw FaultFactory.newInstance( Fault.MARSHAL );
         }

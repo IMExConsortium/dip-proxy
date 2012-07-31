@@ -206,6 +206,7 @@
               <filtering>true</filtering>
               <includes>
                 <include>*/*.xsl</include>
+                <include>*.xsl</include>
               </includes>
             </resource>
 
