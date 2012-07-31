@@ -180,7 +180,7 @@ public class NcbiServer extends RemoteNativeServer {
                     } else {
                         //extract xml string
                         retVal = NativeURL.query( url_efetch_string, timeOut );
-                        if( retVal == null || retVal.trim().equals(
+                        if( retVal.trim().equals(
                                 "<?xml version=\"1.0\"?><NLMCatalogRecordSet>" + 
                                 "</NLMCatalogRecordSet>" ) ) {
 
@@ -217,7 +217,11 @@ public class NcbiServer extends RemoteNativeServer {
                 "http://eutils.ncbi.nlm.nih.gov"
                 + "/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id="
                 + ac;
-            retVal = NativeURL.query( url, timeOut );
+            try {
+                retVal = NativeURL.query( url, timeOut );
+            } catch ( ProxyFault fault ) {
+                throw fault;
+            }
         }
         
         if ( service.equals( "refseq" ) ) {
@@ -226,8 +230,12 @@ public class NcbiServer extends RemoteNativeServer {
                 + "/entrez/eutils/efetch.fcgi?db=protein&id=" + ac
                 + "&rettype=gpc&retmode=xml";
 
-            retVal = NativeURL.query( url, timeOut );
-            
+            try {
+                retVal = NativeURL.query( url, timeOut );
+            } catch ( ProxyFault fault ) {
+                throw fault;
+            }
+      
             if( retVal.contains("<INSDSet><Error>") 
                     || retVal.contains( "<TSeqSet/>" ) ) {
 
@@ -242,7 +250,12 @@ public class NcbiServer extends RemoteNativeServer {
                 "http://eutils.ncbi.nlm.nih.gov"
                 + "/entrez/eutils/efetch.fcgi?db=gene&id=" + ac
                 + "&retmode=xml";
-            retVal = NativeURL.query( url, timeOut );
+            try {
+                retVal = NativeURL.query( url, timeOut );
+            } catch ( ProxyFault fault ) {
+                throw fault;
+            }
+
         }
         
         if ( service.equals( "taxon" ) ) {
@@ -250,12 +263,11 @@ public class NcbiServer extends RemoteNativeServer {
                     "http://eutils.ncbi.nlm.nih.gov"
                             + "/entrez/eutils/efetch.fcgi?db=taxonomy&id=" + ac
                             + "&retmode=xml";
-            retVal = NativeURL.query( url, timeOut );
-        }
-
-        if ( retVal == null ){
-            log.warn( "NcbiServer: get retVal null or not found for ac " + ac + "." );
-            throw FaultFactory.newInstance( Fault.NO_RECORD );
+            try {
+                retVal = NativeURL.query( url, timeOut );
+            } catch ( ProxyFault fault ) {
+                throw fault;
+            }
         }
 
         NativeRecord record = new NativeRecord( provider, service, ns, ac);

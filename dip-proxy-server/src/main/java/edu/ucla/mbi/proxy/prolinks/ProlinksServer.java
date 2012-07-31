@@ -70,15 +70,9 @@ public class ProlinksServer extends RemoteNativeServer {
             }
         }
 
-        if ( retVal == null ) {
-            log.info( "getNative  null returned" );
-            throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
-        } else {
-            if( retVal.length() > 200 ) {
-                log.info( "getNative: retVal=" + retVal.substring(0, 200) );
-            } else {
-                log.info( "getNative: retVal=" + retVal );
-            }
+        if ( retVal.contains( "<faultCode>97</faultCode>" ) ) {
+            log.info( "query: return faultCode 97. " );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
 
         NativeRecord record = new NativeRecord( provider, service, ns, ac );

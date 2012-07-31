@@ -125,10 +125,7 @@ public class CachingService extends Observable {
                     log.warn("getNative: RemoteServer getNative() fault: " 
                              + fault.getFaultInfo().getMessage());                    
 
-                    if( fault.getFaultInfo().getFaultCode() == 5 ) {
-                       log.info( "getNative: faultCode=5 throw NO_RECORD fault. ");
-                       throw fault; // NO_RECORD fault
-                    }
+                    throw fault;
                 }
 		      
                 if( remoteRec != null ) {      

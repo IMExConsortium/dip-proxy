@@ -132,13 +132,6 @@ public class EbiServer extends RemoteNativeServer {
 
             try {
                 retVal = NativeURL.query( url, timeOut );
-
-                if ( retVal == null ) {
-                    log.warn("EbiServer: getNative:" + 
-                             " uniprot service for AC " + ac +
-                             ": no record found.");
-                    throw FaultFactory.newInstance( Fault.NO_RECORD );
-                }
             } catch ( ProxyFault fault ) {
                 throw fault;
             } catch ( Exception e ) {

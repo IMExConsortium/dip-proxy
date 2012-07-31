@@ -1,10 +1,10 @@
 package edu.ucla.mbi.proxy;
 
-/*===========================================================================
- * $HeadURL::                                                               $
- * $Id::                                                                    $
- * Version: $Rev::                                                          $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * NativeURL
  *
@@ -12,7 +12,7 @@ package edu.ucla.mbi.proxy;
  *    server using ns/ac (namespace/accession) pair as identifier and
  *    operation as the remote service name
  *
- *========================================================================= */
+ *=========================================================================== */
 
 
 
@@ -57,6 +57,12 @@ public class NativeURL {
 		        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );  // unknown remote
             }
         }
-	    return retVal;
+
+        if( retVal == null ) {
+            log.info( "query:  return null. " );
+            throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
+        } else {        
+	        return retVal;
+        }
     }
 }
