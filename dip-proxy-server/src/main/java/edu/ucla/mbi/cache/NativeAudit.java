@@ -25,12 +25,22 @@ public class NativeAudit {
    
     private Date time = null;
     private long response = 0;
+    private int status = 0;
 
     public NativeAudit() { };
+
 
     public NativeAudit( String provider, String service, 
                         String ns, String ac,
                         Date time, long response) {
+     
+        this(provider,service,ns,ac,time,response, 0 );
+    }
+
+
+    public NativeAudit( String provider, String service, 
+                        String ns, String ac,
+                        Date time, long response, int status) {
 	
         this.provider = provider;
         this.service = service;
@@ -38,7 +48,7 @@ public class NativeAudit {
 	this.ac = ac;
 	this.time = time;
 	this.response = response;
-	
+	this.status = status;
     }
 
     // setters
@@ -77,8 +87,12 @@ public class NativeAudit {
         this.response = time;
         return this;
     }
+
+    public NativeAudit setStatus( int status ){
+        this.status = status;
+        return this;
+    }
     
-   
     // getters
     //--------
     
@@ -109,4 +123,9 @@ public class NativeAudit {
     public long getResponseTime(){
         return response;
     }
+
+    public int getStatus(){
+        return status;
+    }
+
 }
