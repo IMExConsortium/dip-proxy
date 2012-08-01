@@ -33,7 +33,6 @@ public class NativeStatus extends PageSupport {
 
     private WSContext wsContext = null;
 
-    //private Map<String,Map> counts = null;
     private Map<String,Map> delays = null;
 
 
@@ -41,12 +40,6 @@ public class NativeStatus extends PageSupport {
         this.wsContext = wsContext;
     }
 
-    //---------------------------------------------------------------------
-    /*
-    public Map<String,Map> getCounts() {
-        return counts;
-    }
-    */
     public Map<String,Map> getDelays() {
         return delays;
     }

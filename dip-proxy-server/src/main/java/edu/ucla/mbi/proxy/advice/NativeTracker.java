@@ -20,6 +20,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
 import edu.ucla.mbi.server.WSContext;
+import edu.ucla.mbi.proxy.ProxyFault;
 
 public class NativeTracker {
 
@@ -70,7 +71,20 @@ public class NativeTracker {
                                               (String) args[1] );
         
         Calendar beforeCal = Calendar.getInstance();
-        Object returnValue = pjp.proceed();
+
+        Object returnValue = null;
+
+        try {
+            //Object returnValue = pjp.proceed();
+            returnValue = pjp.proceed();
+        } catch ( ProxyFault fault ) {
+            log.info( "invoke: got fault: " + fault.toString() );
+            log.info( "invoke: proxy fault: " 
+                      + fault.getFaultInfo().getMessage() );
+
+            throw fault;
+        }
+
         Calendar afterCal = Calendar.getInstance();
 
         long resTime = afterCal.getTimeInMillis() - 
