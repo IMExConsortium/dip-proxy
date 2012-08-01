@@ -116,10 +116,10 @@ public class NativeAuditDAO extends AbstractDAO {
         try {
 
             Query query = session
-                .createQuery( "select na.time, na.responseTime " +
+                .createQuery( "select na.time, na.responseTime, na.status " +
                               " from NativeAudit na " +
                               " where na.provider = :prv " +
-                              "   and na.service = :srv  " +
+                              " and na.service = :srv  " +
                               " order by na.time desc " );
             
             query.setParameter( "prv", provider );
@@ -132,10 +132,10 @@ public class NativeAuditDAO extends AbstractDAO {
                   ii.hasNext(); ) {
                 
                 Object[] i = ii.next();
-                long[] pair = new long[2];
+                long[] pair = new long[3];
                 pair[0] = ((Date) i[0]).getTime(); // time in seconds
                 pair[1] = ((Long) i[1]).longValue();
-                
+                pair[2] = ((Integer) i[2] ).intValue();
                 result.add( pair );
             }
             
@@ -194,9 +194,11 @@ public class NativeAuditDAO extends AbstractDAO {
                 query.setParameter( "srv", service );
                 query.setMaxResults(1);
                 Long delay = (Long) query.uniqueResult();
-                
-                log.info( "prv=" + provider + " srv=" + service + " del=" + delay);
-                result.put( service, delay/1000.0 );            
+
+                if( delay != null ) {                
+                    log.info( "prv=" + provider + " srv=" + service + " del=" + delay);
+                    result.put( service, delay/1000.0 );            
+                }
             }
             log.info("delayAll: after loop.");
             tx.commit();

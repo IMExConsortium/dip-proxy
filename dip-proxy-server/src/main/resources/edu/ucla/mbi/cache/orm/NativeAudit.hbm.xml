@@ -17,6 +17,7 @@
     <property name="ac"  column="ac"/>
     <property name="time" column="time"/>
     <property name="responseTime" column="delay"/>
+    <property name="status" column="status" />
   </class>
 </hibernate-mapping>
 

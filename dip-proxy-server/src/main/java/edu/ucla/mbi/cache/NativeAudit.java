@@ -32,23 +32,24 @@ public class NativeAudit {
 
     public NativeAudit( String provider, String service, 
                         String ns, String ac,
-                        Date time, long response) {
-     
+                        Date time, long response) 
+    {
         this(provider,service,ns,ac,time,response, 0 );
     }
 
 
     public NativeAudit( String provider, String service, 
                         String ns, String ac,
-                        Date time, long response, int status) {
+                        Date time, long response, int status) 
+    {
 	
         this.provider = provider;
         this.service = service;
         this.ns = ns;
-	this.ac = ac;
-	this.time = time;
-	this.response = response;
-	this.status = status;
+	    this.ac = ac;
+	    this.time = time;
+	    this.response = response;
+	    this.status = status;
     }
 
     // setters
@@ -61,12 +62,12 @@ public class NativeAudit {
     
     public NativeAudit setProvider( String provider ) {
         this.provider = provider;
-	return this;
+	    return this;
     }
 
     public NativeAudit setService( String service ) {
         this.service = service;
-	return this;
+	    return this;
     }
      
     public NativeAudit setNs( String ns ) {
@@ -83,6 +84,7 @@ public class NativeAudit {
         this.time = time;
         return this;
     }
+
     public NativeAudit setResponseTime( long time) {
         this.response = time;
         return this;

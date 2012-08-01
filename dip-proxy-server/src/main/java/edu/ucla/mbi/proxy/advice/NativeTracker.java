@@ -21,6 +21,7 @@ import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
 import edu.ucla.mbi.server.WSContext;
 import edu.ucla.mbi.proxy.ProxyFault;
+import edu.ucla.mbi.fault.*;
 
 public class NativeTracker {
 
@@ -55,8 +56,7 @@ public class NativeTracker {
         }
     }
 
-    public Object invoke( ProceedingJoinPoint pjp ) 
-        throws Throwable {
+    public Object invoke( ProceedingJoinPoint pjp ) throws Throwable {
 
         java.lang.Object[] args = pjp.getArgs();
         
@@ -73,29 +73,29 @@ public class NativeTracker {
         Calendar beforeCal = Calendar.getInstance();
 
         Object returnValue = null;
+        int status = 0;
 
         try {
-            //Object returnValue = pjp.proceed();
             returnValue = pjp.proceed();
         } catch ( ProxyFault fault ) {
-            log.info( "invoke: got fault: " + fault.toString() );
-            log.info( "invoke: proxy fault: " 
+            log.info( "invoke: proxy fault code: " 
+                      + fault.getFaultInfo().getFaultCode() );
+            log.info( "invoke: proxy fault message: " 
                       + fault.getFaultInfo().getMessage() );
 
-            throw fault;
+            status = fault.getFaultInfo().getFaultCode();
         }
 
         Calendar afterCal = Calendar.getInstance();
 
         long resTime = afterCal.getTimeInMillis() - 
-            beforeCal.getTimeInMillis() ;
+                            beforeCal.getTimeInMillis() ;
         
         log.info( " response time: " + resTime );
         
         NativeAudit nextAudit = null;
 
-        if (lastAudit != null ){
-
+        if (lastAudit != null ) {
 
             log.info( "last audit:" + 
                       " prv=" + lastAudit.getProvider() + 
@@ -103,24 +103,36 @@ public class NativeTracker {
                       " ns=" + lastAudit.getNs() + 
                       " ac=" + lastAudit.getAc() +
                       " time=" + lastAudit.getTime() );
-            if( afterCal.getTimeInMillis() - 
-                lastAudit.getTime().getTime() > interval ) {
-            
+
+            if( ( afterCal.getTimeInMillis() - 
+                    lastAudit.getTime().getTime() > interval )
+                        && status == 0  ) 
+            {
                 nextAudit = new NativeAudit( (String) args[0],
                                              (String) args[1],
                                              (String) args[2],
                                              (String) args[3],
                                              beforeCal.getTime(),
                                              resTime );
-            }
-            
+            } 
         } else {
+            if( status == 0 ) {
+                nextAudit = new NativeAudit( (String) args[0],
+                                             (String) args[1],
+                                             (String) args[2],
+                                             (String) args[3],
+                                             beforeCal.getTime(),
+                                             resTime );
+            } 
+        }
+
+        if( status != 0 ) {
             nextAudit = new NativeAudit( (String) args[0],
                                          (String) args[1],
                                          (String) args[2],
                                          (String) args[3],
                                          beforeCal.getTime(),
-                                         resTime );
+                                         resTime, status );
         }
 
         if ( nextAudit != null ) {
@@ -130,6 +142,10 @@ public class NativeTracker {
         
         log.info( "DONE" );
 
-        return returnValue;
+        if( status != 0 ) {
+            throw FaultFactory.newInstance( status );
+        } else {
+            return returnValue;
+        }
     }    
 }

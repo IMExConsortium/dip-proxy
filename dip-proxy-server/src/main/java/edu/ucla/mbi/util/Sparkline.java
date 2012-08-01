@@ -53,8 +53,8 @@ public class Sparkline {
     
     //---------------------------------------------------------------------
     
-    public BufferedImage build( java.util.List<Long> trace, String mode ) {
-        
+    //public BufferedImage build( java.util.List<Long> trace, String mode ) { 
+    public BufferedImage build( java.util.List<long[]> trace, String mode ) {
         Log log = LogFactory.getLog( Sparkline.class );
         
         BufferedImage bufferedImage = 
@@ -94,35 +94,41 @@ public class Sparkline {
         double yExpScl= Math.log( height ) / yRange;
         double xScl= width/xMax;
 
-        for ( Iterator<Long> ii = trace.iterator(); 
+        //for ( Iterator<Long> ii = trace.iterator(); 
+        for ( Iterator<long[]> ii = trace.iterator();
               ii.hasNext(); ) {
             
-            long i = ii.next().longValue();
+            //long i = ii.next().longValue();
+            long[] i = ii.next();
 
             if ( mode != null && mode.equals( "log" ) ) {
-                y =  1+yLogScl * Math.log( i + 1); 
+                //y =  1+yLogScl * Math.log( i + 1); 
+                y =  1+yLogScl * Math.log( i[1] + 1);
             } else {
-                y =  1+Math.exp( yExpScl*i ); 
+                //y =  1+Math.exp( yExpScl*i ); 
+                y =  1+Math.exp( yExpScl*i[1] );
             }
             
             if (y > height ){
                 y = height;
             }
 
-            if ( x==0 ){
+            if ( x==0 ) {
                 p.moveTo( xScl * x, y );
-                if ( 30.0 * i > yRange ){
+                if ( 30.0 * i[1] > yRange ){
                     line = new Color(128,  64,  0 );
                     fill = new Color(255, 204,  0 );
                 }
-                if ( 3.0 * i > yRange ) {
+
+                if ( 3.0 * i[1] > yRange || i[2] != 0  ) { 
+                    // i[2] is status of delay
                     line = new Color(128,   0,   0 );
                     fill = new Color(255,   0,   0 );
                 }
-
             } else {
                 p.lineTo( xScl * x, y );
             }
+
             x++;
         }
 

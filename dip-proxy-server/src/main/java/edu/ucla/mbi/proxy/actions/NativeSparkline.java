@@ -99,6 +99,7 @@ public class NativeSparkline extends ActionSupport {
         java.util.List<long[]> series = 
             nad.findLastList( provider, service, count );
 
+        /*
         java.util.List<Long> trace = new ArrayList();
         
         for( Iterator<long[]> ii = series.iterator(); 
@@ -106,10 +107,11 @@ public class NativeSparkline extends ActionSupport {
             long[] i = ii.next();
             trace.add( i[1] );           
         }
-        
-        BufferedImage bufferedImage = 
-            sparkline.build( trace, mode );
+        */
 
+        BufferedImage bufferedImage = 
+        //    sparkline.build( trace, mode );
+                sparkline.build( series, mode );
         try {
             
             ByteArrayOutputStream os = new ByteArrayOutputStream();            
