@@ -78,7 +78,8 @@ public class NativeSparkline extends ActionSupport {
         Log log = LogFactory.getLog( NativeSparkline.class );
 
         NativeAuditDAO nad = DipProxyDAO.getNativeAuditDAO();
-        
+        int lastAuditStatus = 0;       
+
         int count = 12*24; // 1 day
 
         if ( range != null ) {
@@ -99,19 +100,20 @@ public class NativeSparkline extends ActionSupport {
         java.util.List<long[]> series = 
             nad.findLastList( provider, service, count );
 
-        /*
-        java.util.List<Long> trace = new ArrayList();
         
-        for( Iterator<long[]> ii = series.iterator(); 
-             ii.hasNext(); ) {
-            long[] i = ii.next();
-            trace.add( i[1] );           
-        }
-        */
+        java.util.List<Long> trace = new ArrayList();
+       
+        for( int i = 0; i < series.size(); i++ ) {
+            long[] item = series.get(i);
+            trace.add( item[1] );
+            if( i == 0 ) {
+                lastAuditStatus = (int)item[2];
+            }
+        } 
 
         BufferedImage bufferedImage = 
-        //    sparkline.build( trace, mode );
-                sparkline.build( series, mode );
+            sparkline.build( trace, mode, lastAuditStatus );
+        
         try {
             
             ByteArrayOutputStream os = new ByteArrayOutputStream();            

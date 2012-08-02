@@ -29,6 +29,14 @@
   <property name="height" value="20"/>
   <property name="XRange" value="240.0"/>
   <property name="YRange" value="30000.0"/>
+  <property name="faultStatusList">
+    <list>
+      <value>12</value> 
+      <value>13</value>
+      <value>97</value>
+      <value>99</value>
+    </list> 
+  </property>
  </bean>
 
  <bean id="nativeSparkAction" scope="prototype"

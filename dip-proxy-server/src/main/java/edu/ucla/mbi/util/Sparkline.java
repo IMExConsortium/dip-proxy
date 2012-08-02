@@ -30,31 +30,37 @@ public class Sparkline {
 
     private int width = 240;
     private int height = 20;
+
+    private java.util.List<Integer> faultStatusList;
  
-    public void setXRange( double range ){
+    public void setXRange( double range ) {
         this.xRange = range;
     }
-    public void setYRange( double range ){
+    public void setYRange( double range ) {
         this.yRange = range;
-    }
+    } 
 
-    public void setWidth( int width ){
+    public void setWidth( int width ) {
         this.width = width;
     }
 
-    public void setHeight( int height ){
+    public void setHeight( int height ) {
         this.height = height;
     }
 
-    public void setMode( String mode ){
+    public void setMode( String mode ) {
         this.mode = mode;
     }
 
-    
+    public void setFaultStatusList ( java.util.List<Integer> statusList ) {
+        this.faultStatusList = statusList;
+    }
+
     //---------------------------------------------------------------------
     
-    //public BufferedImage build( java.util.List<Long> trace, String mode ) { 
-    public BufferedImage build( java.util.List<long[]> trace, String mode ) {
+    public BufferedImage build( java.util.List<Long> trace, String mode,
+                                int lastAuditStatus ) { 
+   
         Log log = LogFactory.getLog( Sparkline.class );
         
         BufferedImage bufferedImage = 
@@ -93,20 +99,15 @@ public class Sparkline {
         double yLogScl= height / Math.log( yRange + 1);
         double yExpScl= Math.log( height ) / yRange;
         double xScl= width/xMax;
-
-        //for ( Iterator<Long> ii = trace.iterator(); 
-        for ( Iterator<long[]> ii = trace.iterator();
+        
+        for ( Iterator<Long> ii = trace.iterator(); 
               ii.hasNext(); ) {
             
-            //long i = ii.next().longValue();
-            long[] i = ii.next();
-
+            long i = ii.next().longValue();
             if ( mode != null && mode.equals( "log" ) ) {
-                //y =  1+yLogScl * Math.log( i + 1); 
-                y =  1+yLogScl * Math.log( i[1] + 1);
+                y =  1+yLogScl * Math.log( i + 1); 
             } else {
-                //y =  1+Math.exp( yExpScl*i ); 
-                y =  1+Math.exp( yExpScl*i[1] );
+                y =  1+Math.exp( yExpScl*i ); 
             }
             
             if (y > height ){
@@ -115,13 +116,14 @@ public class Sparkline {
 
             if ( x==0 ) {
                 p.moveTo( xScl * x, y );
-                if ( 30.0 * i[1] > yRange ){
+                if ( 30.0 * i > yRange ){
                     line = new Color(128,  64,  0 );
                     fill = new Color(255, 204,  0 );
                 }
 
-                if ( 3.0 * i[1] > yRange || i[2] != 0  ) { 
-                    // i[2] is status of delay
+                if ( 3.0 * i > yRange 
+                        || faultStatusList.contains( lastAuditStatus ) ) 
+                { 
                     line = new Color(128,   0,   0 );
                     fill = new Color(255,   0,   0 );
                 }
