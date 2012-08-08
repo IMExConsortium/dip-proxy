@@ -1,4 +1,7 @@
 ---------------------------------------------------------------------
+default: mvn clean jetty:run-war
+    using jetty server and dev database connection
+---------------------------------------------------------------------
 jetty server running commands:
     mvn -P dip-proxy-dev clean jetty:run-war
     mvn -P dip-proxy-beta clean jetty:run-war

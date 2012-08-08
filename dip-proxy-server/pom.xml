@@ -42,16 +42,9 @@
 
         <!--- using JNDI -->
         <hibernate.connection.datasource>${tomcat.datasource}jdbc/proxyws</hibernate.connection.datasource>
-        <!-- for jetty server -->
         <hibernate.connection.dbname>proxyws201</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.114</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
-        <!-- for tomcat server -->
-        <!--
-        <hibernate.connection.url>
-            jdbc:postgresql://${hibernate.connection.servername}:${hibernate.connection.portnum}/${hibernate.connection.dbname}
-        </hibernate.connection.url>
-        -->
       </properties>
       <build>
         <finalName>dip-proxy</finalName>
@@ -72,11 +65,6 @@
         <hibernate.connection.dbname>proxyws</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.211</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
-        <!--
-        <hibernate.connection.url>
-            jdbc:postgresql://${hibernate.connection.servername}:${hibernate.connection.portnum}/${hibernate.connection.dbname}
-        </hibernate.connection.url>
-        -->
      </properties>
      <build>
        <finalName>dip-proxy</finalName>
@@ -98,11 +86,6 @@
         <hibernate.connection.dbname>proxyws</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.211</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
-        <!--
-        <hibernate.connection.url>
-            jdbc:postgresql://${hibernate.connection.servername}:${hibernate.connection.portnum}/${hibernate.connection.dbname}
-        </hibernate.connection.url>
-        -->
      </properties>
      <build>
        <finalName>dip-proxy</finalName>
