@@ -32,11 +32,12 @@
     <param-value>
       /WEB-INF/tiles.xml
     </param-value>
-
+  </context-param>
   <!-- ================================================= SPRING context  -->
-
+  <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>/WEB-INF/applicationContext.xml</param-value>
+    <!-- <param-value>/WEB-INF/classes/applicationContext.xml</param-value> -->
+    <param-value>classpath*:spring/applicationContext.xml</param-value>
 
   </context-param>
 
@@ -87,6 +88,13 @@
   </listener>
 
   <!-- ================================================= SPRING listener -->
+  <!--
+  <listener>
+    <listener-class>
+        org.springframework.web.context.request.RequestContextListener
+    </listener-class>
+  </listener>
+  -->
 
   <listener>
     <listener-class>
@@ -94,6 +102,7 @@
     </listener-class>
   </listener>
 
+  
   <!-- ================================================= JAX-WS listener -->
 
   <listener>

@@ -34,7 +34,8 @@
      <interceptor name="menu"
                      class="edu.ucla.mbi.util.struts2.interceptor.MenuInterceptor"/>
 
-     <interceptor name="acl" class="aclInterceptor"/>
+     
+     <interceptor name="acl" class="aclInterceptor"/> 
      
      <interceptor-stack name="mgrStack">
             <interceptor-ref name="exception"/>

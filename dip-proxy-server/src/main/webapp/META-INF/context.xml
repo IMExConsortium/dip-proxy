@@ -8,6 +8,6 @@
                      auth="Container"
                      driverClassName="org.postgresql.Driver"
                      username="${hibernate.connection.username}" password="${hibernate.connection.password}"
-                     url="${hibernate.connection.url}"
+                     url="jdbc:postgresql://${hibernate.connection.servername}:${hibernate.connection.portnum}/${hibernate.connection.dbname}"
                      maxIdle="2" maxWait="5000" maxActive="4"/>
 </Context>

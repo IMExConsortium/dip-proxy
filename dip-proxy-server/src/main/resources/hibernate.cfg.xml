@@ -15,9 +15,9 @@
 <hibernate-configuration>
  <session-factory>
 	   
-  <mapping resource="edu/ucla/mbi/cache/orm/DxfRecord.hbm.xml"/>
-  <mapping resource="edu/ucla/mbi/cache/orm/NativeRecord.hbm.xml"/>
-  <mapping resource="edu/ucla/mbi/cache/orm/NativeAudit.hbm.xml"/>
+  <mapping resource="hibernate-mapping/DxfRecord.hbm.xml"/>
+  <mapping resource="hibernate-mapping/NativeRecord.hbm.xml"/>
+  <mapping resource="hibernate-mapping/NativeAudit.hbm.xml"/>
 
  </session-factory>
 </hibernate-configuration>
