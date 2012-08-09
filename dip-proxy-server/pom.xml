@@ -164,18 +164,17 @@
     <finalName>dip-proxy-server</finalName>
     <resources>
       <resource>
-        <directory>src/main/resources</directory>
+        <directory>${basedir}/src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
-    
+   
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.2</version>
         <configuration>
-          <archiveClasses>true</archiveClasses> 
           <webResources>
 
             <resource>
@@ -201,14 +200,25 @@
             </resource>
 
             <resource>
-              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+              <directory>${basedir}/src/main/config</directory>
+              <targetPath>WEB-INF</targetPath>
+              <filtering>true</filtering>
+              <includes>
+                <include>sun-jaxws.xml</include>
+                <include>web.xml</include>
+              </includes>
+            </resource>
+
+            <resource>
+              <directory>${basedir}/src/main/config/jetty</directory>
               <targetPath>WEB-INF</targetPath>
               <filtering>true</filtering>
               <includes>
                 <include>jetty-env.xml</include>
               </includes>
+              
             </resource>
-
+            
             <resource>
               <directory>${basedir}/src/main/webapp/META-INF</directory>
               <targetPath>META-INF</targetPath>
@@ -246,9 +256,8 @@
               <maxIdleTime>3600000</maxIdleTime>
             </connector>
           </connectors>
-
-          <!--<webDefaultXml>${basedir}/src/main/resources/webdefault.xml</webDefaultXml> -->
-          <webDefaultXml>${basedir}/src/main/config/jetty/webdefault.xml</webDefaultXml>
+          
+          <webDefaultXml>${basedir}/src/main/config/jetty/webdefault.xml</webDefaultXml> 
 
           <systemProperties>
             <systemProperty>
@@ -258,7 +267,6 @@
 
             <systemProperty>
               <name>log4j.configuration</name>
-              <!--<value>file:${basedir}/src/main/resources/jetty-log4j.properties</value>  -->
               <value>file:${basedir}/src/main/config/jetty/jetty-log4j.properties</value>
             </systemProperty>
 

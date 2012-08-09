@@ -22,23 +22,18 @@
 <!-- ===================================================== CONTEXT setup -->
 <!-- ===================================================== ============= -->
 
-  <context-param>
-
   <!-- ================================================== TILES context  -->
-
+  <context-param>
     <param-name>
       org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG
     </param-name>
-    <param-value>
-      /WEB-INF/tiles.xml
-    </param-value>
+    <param-value>/WEB-INF/classes/struts/tiles.xml</param-value>
   </context-param>
+
   <!-- ================================================= SPRING context  -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <!-- <param-value>/WEB-INF/classes/applicationContext.xml</param-value> -->
-    <param-value>classpath*:spring/applicationContext.xml</param-value>
-
+    <param-value>/WEB-INF/classes/spring/applicationContext.xml</param-value> 
   </context-param>
 
 <!-- ===================================================== ============= -->
@@ -88,14 +83,6 @@
   </listener>
 
   <!-- ================================================= SPRING listener -->
-  <!--
-  <listener>
-    <listener-class>
-        org.springframework.web.context.request.RequestContextListener
-    </listener-class>
-  </listener>
-  -->
-
   <listener>
     <listener-class>
       org.springframework.web.context.ContextLoaderListener
