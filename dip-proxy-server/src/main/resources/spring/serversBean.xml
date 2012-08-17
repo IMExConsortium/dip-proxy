@@ -87,7 +87,7 @@
  
  <!-- reference proxy -->
  <bean id="referenceProxy" init-method="initialize"
-       class="edu.ucla.mbi.proxy.RemoteProxyServerNewVersion">
+       class="edu.ucla.mbi.proxy.RemoteProxyServer">
   <property name="address">
    <value>
      http://%%URL%%/dip-proxy-server/proxy-service    
