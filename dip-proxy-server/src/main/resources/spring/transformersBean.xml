@@ -50,7 +50,7 @@
   <property name="transfMap">
     <map>
      <entry key="prolinks">
-      <value></value>
+      <value>/xsl/dxf2dxf.xsl</value>
      </entry>
     </map>
   </property>
@@ -64,7 +64,8 @@
   <property name="transfMap">
     <map>
      <entry key="dip">
-      <value>/xsl/pretty-print.xsl</value>
+      <!--<value>/xsl/pretty-print.xsl</value> -->
+        <value>/xsl/dxf2dxf.xsl</value>
      </entry>
     </map>
   </property>

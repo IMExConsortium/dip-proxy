@@ -167,13 +167,14 @@
      <value>%%ACTAG%%</value>
   </property>
 
-  <property name="ncbiProxy">
+  <property name="ncbiProxyAddress">
    <value>
      <!--http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service -->
     <!-- temporary address -->
     http://10.1.1.201:8080/dip-proxy-server/proxy-service
    </value>  
   </property>
+
   <property name="context">
     <map/>
   </property>

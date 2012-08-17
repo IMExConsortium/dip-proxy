@@ -170,6 +170,7 @@ public class RemoteProxyServerNewVersion extends RemoteProxyServer {
 	    
 	        pTrans.setTransformer( service );
     	    pTrans.setParameters( detail, ns, ac );
+            log.info( "transform: before transform.");
     	    pTrans.transform( ssNative, result );
 	    
 	        DatasetType dxfResult  = 
@@ -188,7 +189,6 @@ public class RemoteProxyServerNewVersion extends RemoteProxyServer {
         } catch ( Exception e ) {
 	        log.info( "Exception="+e.toString() );
 	        throw FaultFactory.newInstance( Fault.TRANSFORM );  
-	    
 	    }   
     }
     
@@ -199,7 +199,7 @@ public class RemoteProxyServerNewVersion extends RemoteProxyServer {
 	
     	// NOTE: overload if dxf building more complex than
 	    //       a simple xslt transformation
-	
+        log.info( "buildDxf entering ... " );	
 	    return this.transform( strNative, ns, ac, detail, service, pTrans );
     }
 }

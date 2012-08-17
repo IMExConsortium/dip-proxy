@@ -38,7 +38,7 @@ import java.util.Map;
 public class RemoteProxyServer implements RemoteServer {
  
     String proxyAddress;
-
+    private Log log = LogFactory.getLog( RemoteProxyServer.class );
     private static Map<String,Object> context;
 
     public boolean isNative(){
@@ -91,7 +91,7 @@ public class RemoteProxyServer implements RemoteServer {
                                   ) throws ProxyFault 
     {
 	
-        Log log = LogFactory.getLog( RemoteProxyServer.class );
+        //Log log = LogFactory.getLog( RemoteProxyServer.class );
 	    try {
 	        // native data in string representationa as input
 	    
@@ -142,7 +142,7 @@ public class RemoteProxyServer implements RemoteServer {
 	
     	// NOTE: overload if dxf building more complex than
 	    // a simple xslt transformation
-	
+        log.info( "buildDxf entering ... ");	
 	    return this.transform( strNative, ns, ac, detail, service, pTrans );
     }
 }

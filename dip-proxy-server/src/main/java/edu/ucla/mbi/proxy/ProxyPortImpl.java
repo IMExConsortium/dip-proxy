@@ -135,10 +135,9 @@ public class ProxyPortImpl implements ProxyPort {
             if ( format.equalsIgnoreCase( "dxf" ) 
                     || format.equalsIgnoreCase( "both" ) ) 
             {
-                log.info( "getRecord: before cachingService getDxf. " );
                 DatasetType result =
                     cachingSrv.getDxf( provider, service, ns, ac, detail );
-
+                
                 if ( result != null ) {
                     dataset.value = result ;
                 } else {
@@ -150,7 +149,6 @@ public class ProxyPortImpl implements ProxyPort {
             if ( format.equalsIgnoreCase( "native" ) 
                     ||  format.equalsIgnoreCase( "both" ) )
             {
-                log.info( "getRecord: before cachingService getNative. " );
                 NativeRecord natRec =
                     cachingSrv.getNative( provider, service, ns, ac );
 
@@ -169,7 +167,6 @@ public class ProxyPortImpl implements ProxyPort {
             String message = fault.getFaultInfo().getMessage();
             log.warn( "ProxyPortImpl: ProxyFault: message= " + message);
             throw fault;
-
         } catch ( Exception e ) {
             log.warn( "ProxyPortImpl: " + e.toString() );
             throw  FaultFactory.newInstance( Fault.UNKNOWN );

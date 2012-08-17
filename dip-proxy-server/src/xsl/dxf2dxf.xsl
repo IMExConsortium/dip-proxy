@@ -22,22 +22,18 @@
   </xsl:template>
 
   <xsl:template match="/dxf:dataset/dxf:node/*">
-    <xsl:if test="$edu.ucla.mbi.services.detail='stub'">
-        <xsl:copy>
-                <xsl:copy-of select="@*"/>
-                <xsl:copy-of select="./text()"/> 
-        </xsl:copy>
-    </xsl:if>
-
-    <xsl:if test="$edu.ucla.mbi.services.detail='stub' and local-name()!='xrefList' and 
-            local-name()!='partList' and local-name()!='attrList'" >
+    <xsl:if test="$edu.ucla.mbi.services.detail='stub' 
+                  and local-name()!='xrefList' 
+                  and local-name()!='partList' 
+                  and local-name()!='attrList'" >
             <xsl:copy>
                 <xsl:copy-of select="@*"/>
                 <xsl:copy-of select="./text()"/> 
             </xsl:copy>
     </xsl:if>
     
-    <xsl:if test="$edu.ucla.mbi.services.detail='base' or $edu.ucla.mbi.services.detail='full'">
+    <xsl:if test="$edu.ucla.mbi.services.detail='base' 
+                  or $edu.ucla.mbi.services.detail='full'">
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:copy-of select="./text()"/>
@@ -82,8 +78,9 @@
   </xsl:template>
 
   <xsl:template match="dxf:xref/dxf:node/*">
-    <xsl:if test="local-name()!='xrefList' and 
-            local-name()!='partList' and local-name()!='attrList'" >
+    <xsl:if test="local-name()!='xrefList' 
+                  and local-name()!='partList' 
+                  and local-name()!='attrList'" >
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:copy-of select="./text()"/>
@@ -95,15 +92,22 @@
   <xsl:template match="dxf:part/dxf:node">
     <xsl:copy>
         <xsl:copy-of select="@*"/>
-        <xsl:if test="$edu.ucla.mbi.services.detail='full'">
-            <xsl:apply-templates/>
-        </xsl:if>
+        <xsl:apply-templates/>
     </xsl:copy>
   </xsl:template>
 
   <xsl:template match="dxf:part/dxf:node/*">
-    <xsl:if test="local-name()!='xrefList' and 
-            local-name()!='partList' and local-name()!='attrList'" >
+    <xsl:if test="$edu.ucla.mbi.services.detail='base' 
+                  and local-name()!='xrefList' 
+                  and local-name()!='partList' 
+                  and local-name()!='attrList'" >
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:copy-of select="./text()"/>
+        </xsl:copy>
+    </xsl:if>
+
+    <xsl:if test="$edu.ucla.mbi.services.detail='full' ">
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:copy-of select="./text()"/>

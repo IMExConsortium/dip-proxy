@@ -43,6 +43,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 public class EbiProxy extends RemoteProxyServer {
 
+    private Log log = LogFactory.getLog( EbiProxy.class );
     private static Map<String, Object> context;
 
     public void setContext( Map<String, Object> context ) {
@@ -134,7 +135,7 @@ public class EbiProxy extends RemoteProxyServer {
                     String detail, String service, ProxyTransformer pTrans )
                                                             throws ProxyFault 
     {
-        Log log = LogFactory.getLog( EbiProxy.class );
+        //Log log = LogFactory.getLog( EbiProxy.class );
 
         try {
             // native data in string representationa as input
@@ -187,7 +188,7 @@ public class EbiProxy extends RemoteProxyServer {
 
         // NOTE: overload if dxf building more complex than
         // a simple xslt transformation
-
+        log.info( "buildDxf start... ");
         return this.transform( strNative, ac, ns, detail, service, pTrans );
     }
 

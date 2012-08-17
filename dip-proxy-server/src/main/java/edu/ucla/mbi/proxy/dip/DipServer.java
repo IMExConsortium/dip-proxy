@@ -91,10 +91,12 @@ public class DipServer extends RemoteNativeServer {
 
         String retVal = null;
         List<NodeType> retList = null;
+        String detail = "full";
+
         if ( ns.equals( "dip" ) ) {
             if ( ac.endsWith( "E" ) ) {
                 try {
-                    retList = port.getLink( "dip", ac, "", detail, "" );
+                    retList = port.getLink( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
                 }
@@ -110,14 +112,14 @@ public class DipServer extends RemoteNativeServer {
             }
             if ( ac.endsWith( "X" ) ) {
                 try {
-                    retList = port.getEvidence( "dip", ac, "", detail, "" );
+                    retList = port.getEvidence( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
                 }
             }
             if ( ac.endsWith( "S" ) ) {
                 try {
-                    retList = port.getSource( "dip", ac, "", detail, "" );
+                    retList = port.getSource( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
                 }

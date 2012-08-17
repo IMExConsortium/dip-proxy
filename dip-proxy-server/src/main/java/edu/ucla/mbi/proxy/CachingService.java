@@ -29,6 +29,8 @@ import edu.ucla.mbi.server.*;
 
 public class CachingService extends Observable {
 
+    private Log log = LogFactory.getLog( CachingService.class );
+
     protected String provider;
     private RemoteServerContext rsc;
     private Router router;
@@ -51,7 +53,6 @@ public class CachingService extends Observable {
     public NativeRecord getNative( String provider, String service, String ns,
                                    String ac ) throws ProxyFault {
 
-        Log log = LogFactory.getLog( CachingService.class );
         Date currentTime = Calendar.getInstance().getTime();
         
         log.info( "getNative(provider=" + provider + ")" );
@@ -303,7 +304,6 @@ public class CachingService extends Observable {
                                String ac, String detail 
                                ) throws ProxyFault 
     {
-        Log log = LogFactory.getLog( CachingService.class );
         log.info( "getDxf(prv=" + provider + " srv=" + service + " det="
                   + detail + ")" );
         
@@ -371,43 +371,17 @@ public class CachingService extends Observable {
 
         // valid dxf record not available when here ( null or expired )
         // -----------------------------------------
-        
-        NativeRecord nr = getNative( provider, service, ns, ac );
+      
+        NativeRecord nr = null;
         String nativeXml = null;
-        
-        /*
-        //*** the following maybe is useless
-        NativeRecord nrN = DipProxyDAO.getNativeRecordDAO().find( nr.getId() );
-        
-        long startTime = System.currentTimeMillis();
-        long waitMillis = WSContext.getWaitMillis();
-
-        log.info( "getDxf: nativeRecordN nrN=" + nrN );
-        
-        while( nrN == null 
-                && ( System.currentTimeMillis() - startTime < waitMillis ) ) 
-        {
-            nrN = DipProxyDAO.getNativeRecordDAO().find(nr.getId());
-        }
-
-        if ( nrN != null ) {
-            nativeXml = nrN.getNativeXml();
-            //log.info( "getDxf: nativeXml=" + nativeXml );
-        }else{
-            log.warn( "getDxf(): for service " + service +
-                      " and ac " + ac + " cannot get native record" );
-            throw FaultFactory.newInstance( Fault.NO_RECORD );
-        }
-        */
-
-        if ( nr != null ) {
+ 
+        try { 
+            nr = getNative( provider, service, ns, ac );
             nativeXml = nr.getNativeXml();
-            //log.info( "getDxf: nativeXml=" + nativeXml );
-        }else{
-            log.warn( "getDxf(): for service " + service +
-                      " and ac " + ac + " cannot get native record" );
-            throw FaultFactory.newInstance( Fault.NO_RECORD );
-        }
+        } catch ( ProxyFault fault ) {
+            throw fault;
+        } 
+
         
         //*** transform nativeXML to DXF
         // ---------------------------
@@ -424,6 +398,11 @@ public class CachingService extends Observable {
                         && !dxfRslt.getNode().get(0).getAc().equals("") ) 
                 {
                     return dxfRslt;
+                } else {
+                    //*** the expired dxf record is invalid, delete it
+                    log.warn( "getDxf: expired dxf is invalid, discard it. ");
+                    DipProxyDAO.getDxfRecordDAO().delete( dxfRecord ); 
+                    throw FaultFactory.newInstance( Fault.UNKNOWN );
                 }
             } else {
                 //*** expired native cause expired dxf
@@ -436,8 +415,12 @@ public class CachingService extends Observable {
         DatasetType dxfResult = null;
         
         try {
+            log.info( "getDxf: before buildDxf. transformer=" 
+                      + rsc.getTransformer() );
+
             dxfResult = rs.buildDxf( nativeXml, ns, ac, 
                                      detail, service, rsc.getTransformer() );            
+            log.info( "getDxf: after buildDxf. dxfResult=" + dxfResult );
         } catch( ProxyFault se ) {
             log.info( "getDxf: get Exception: " + se.toString() );
             log.info( "getDxf: discarding native record" );
@@ -475,25 +458,27 @@ public class CachingService extends Observable {
                       service + " and ac=" + ac + ".");
             throw FaultFactory.newInstance( Fault.TRANSFORM );
         }
-        
+       
         if( dxfResult.getNode().get(0).getAc().equals("") ){
             log.warn("getDxf(): dxf_record missin ac: service=" + 
                      service + " and ac " + ac + ".");  
             
             throw FaultFactory.newInstance( Fault.TRANSFORM );            
-        }
-        
+        } 
+
         if ( rsc.isCacheOn() ) {
             try {
                 
                 // mashall DatasetType object into a string representation
                 // --------------------------------------------------------
-                
+                //log.info( "getDxf: before marshall. ");                
                 String dxfString = marshall( dxfResult );
+                //log.info( "getDxf: after marshall. dxfString=" + dxfString );
+                //log.info( "getDxf: after marshall. dxfRecord=" + dxfRecord );
 
                 if ( dxfRecord == null ) {
                     dxfRecord =
-                            new DxfRecord( provider, service, ns, ac, detail );
+                        new DxfRecord( provider, service, ns, ac, detail );
                 }
 
                 dxfRecord.setDxf( dxfString );
@@ -528,7 +513,6 @@ public class CachingService extends Observable {
                                                  String accession ) {
         if ( rsc.isRemoteProxyOn() ) {
             
-            Log log = LogFactory.getLog( CachingService.class );
             log.info( " selecting next proxy..." );
             
             // register as interested
@@ -569,10 +553,10 @@ public class CachingService extends Observable {
 
             String result = swResult.toString();
 
+            //log.info( "marshall: result=" + result );
             return result;
 
         } catch ( Exception e ) {
-            Log log = LogFactory.getLog( CachingService.class );
             log.warn( "marshall(): exception: " + e.toString() );
             throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
@@ -604,7 +588,6 @@ public class CachingService extends Observable {
             }
             
         } catch ( Exception e ) {
-            Log log = LogFactory.getLog( CachingService.class );
             log.warn( "unmarshall(): exception: " + e.toString() );
             throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
