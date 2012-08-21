@@ -84,26 +84,7 @@
         <keep>true</keep>
        </configuration>
       </execution>
-
-      <execution>
-       <id>dip-legacy</id>
-       <goals>
-        <goal>wsimport</goal>
-       </goals>
-       <configuration>
-        <verbose>false</verbose>
-        <bindingFiles>
-         <bindingFile>DXF1.4.jxb</bindingFile>
-         <bindingFile>DipLegacy.jxb</bindingFile>
-        </bindingFiles>
-        <wsdlFiles>
-          <wsdlFile>DipLegacyService.wsdl</wsdlFile>
-        </wsdlFiles>
-        <staleFile>${basedir}/target/.dip-legacy.staleFlag</staleFile>
-        <keep>true</keep>
-       </configuration>
-      </execution>
-
+      
       <execution>
        <id>proxy</id>
        <goals>
