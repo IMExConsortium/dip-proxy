@@ -22,18 +22,26 @@
   </xsl:template>
 
   <xsl:template match="/dxf:dataset/dxf:node/*">
-    <xsl:if test="$edu.ucla.mbi.services.detail='stub' 
-                  and local-name()!='xrefList' 
-                  and local-name()!='partList' 
-                  and local-name()!='attrList'" >
+    
+    <xsl:if test="$edu.ucla.mbi.services.detail='stub' and local-name()!='xrefList' and 
+            local-name()!='partList' and local-name()!='attrList'" >
             <xsl:copy>
                 <xsl:copy-of select="@*"/>
                 <xsl:copy-of select="./text()"/> 
             </xsl:copy>
     </xsl:if>
     
-    <xsl:if test="$edu.ucla.mbi.services.detail='base' 
-                  or $edu.ucla.mbi.services.detail='full'">
+    <xsl:if test="$edu.ucla.mbi.services.detail!='stub'"> 
+        <xsl:call-template name="node">
+            <xsl:with-param name="detailLevel">
+                <xsl:value-of select="$edu.ucla.mbi.services.detail"/>
+            </xsl:with-param>
+        </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="node">
+    <xsl:param name="detailLevel"/>
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:copy-of select="./text()"/>
@@ -42,7 +50,7 @@
                     <xsl:for-each select="./dxf:xref">
                         <xsl:copy>
                             <xsl:copy-of select="@*"/>
-                            <xsl:if test="$edu.ucla.mbi.services.detail='full'">
+                            <xsl:if test="$detailLevel='full'">
                                 <xsl:apply-templates/>
                             </xsl:if> 
                         </xsl:copy>
@@ -67,9 +75,8 @@
                 </xsl:when>
             </xsl:choose>
         </xsl:copy>
-    </xsl:if>
   </xsl:template>
-
+  
   <xsl:template match="dxf:xref/dxf:node">
     <xsl:copy>
         <xsl:copy-of select="@*"/>
@@ -78,7 +85,8 @@
   </xsl:template>
 
   <xsl:template match="dxf:xref/dxf:node/*">
-    <xsl:if test="local-name()!='xrefList' 
+    <xsl:if test="$edu.ucla.mbi.services.detail='base'
+                  and local-name()!='xrefList'
                   and local-name()!='partList' 
                   and local-name()!='attrList'" >
         <xsl:copy>
@@ -86,6 +94,15 @@
             <xsl:copy-of select="./text()"/>
         </xsl:copy>
     </xsl:if>
+
+    <xsl:if test="$edu.ucla.mbi.services.detail='full'">
+        <xsl:call-template name="node">
+            <xsl:with-param name="detailLevel">
+                base
+            </xsl:with-param>
+        </xsl:call-template>
+    </xsl:if>
+
   </xsl:template>  
 
  
@@ -97,9 +114,9 @@
   </xsl:template>
 
   <xsl:template match="dxf:part/dxf:node/*">
-    <xsl:if test="$edu.ucla.mbi.services.detail='base' 
-                  and local-name()!='xrefList' 
-                  and local-name()!='partList' 
+    <xsl:if test="$edu.ucla.mbi.services.detail='base'  
+                  and local-name()!='xrefList'  
+                  and local-name()!='partList'  
                   and local-name()!='attrList'" >
         <xsl:copy>
             <xsl:copy-of select="@*"/>
@@ -108,13 +125,13 @@
     </xsl:if>
 
     <xsl:if test="$edu.ucla.mbi.services.detail='full' ">
-        <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <xsl:copy-of select="./text()"/>
-        </xsl:copy>
+        <xsl:call-template name="node">
+            <xsl:with-param name="detailLevel">
+                base
+            </xsl:with-param>
+        </xsl:call-template>
     </xsl:if>
   </xsl:template>  
-
  
   <xsl:template match="dxf:attr/*">
     <xsl:copy>
