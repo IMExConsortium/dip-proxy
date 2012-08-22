@@ -101,7 +101,7 @@ public class ProxyPortImpl implements ProxyPort {
                 throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
         } else if ( provider.equals( "DIP" ) ) {
-            if( service.equals( "dip" ) ) {
+            if( service.equals( "dip" ) || service.equals( "diplegacy" ) ) {
                 ns = "dip";
             } else {
                 throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 

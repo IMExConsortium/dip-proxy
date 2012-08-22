@@ -423,7 +423,7 @@ public class CachingService extends Observable {
             log.info( "getDxf: after buildDxf. dxfResult=" + dxfResult );
         } catch( ProxyFault se ) {
             log.info( "getDxf: get Exception: " + se.toString() );
-            log.info( "getDxf: discarding native record" );
+            //log.info( "getDxf: discarding native record" );
             
             // get cached copy of native record
             // ----------------------------------

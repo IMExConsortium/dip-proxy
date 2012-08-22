@@ -67,6 +67,9 @@
       <!--<value>/xsl/pretty-print.xsl</value> -->
         <value>/xsl/dxf2dxf.xsl</value>
      </entry>
+     <entry key="diplegacy">
+        <value>/xsl/dxf2dxf.xsl</value>
+     </entry>
     </map>
   </property>
   <property name="context">

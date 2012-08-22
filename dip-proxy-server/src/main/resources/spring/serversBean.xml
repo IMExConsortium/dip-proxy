@@ -187,8 +187,12 @@
 
   <property name="context">
     <map>
-      <entry key="endpoint">
+      <entry key="diplegacyEndpoint">
         <value>http://dip.doe-mbi.ucla.edu/dip-legacy/dxf</value>
+      </entry>
+
+      <entry key="dipEndpoint">
+        <value>http://10.1.1.203:8080/dip-database-server/dxf-service</value>
       </entry>
     </map>
   </property>
