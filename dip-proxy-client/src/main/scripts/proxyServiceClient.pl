@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-push(@Inc, `pwd`);
 use ProxyService;
 
 my ( $provider, $service, $ac, $ns, $detail, $format, $testnum, $taxid );
