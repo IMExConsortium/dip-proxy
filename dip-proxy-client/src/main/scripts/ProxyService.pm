@@ -1,4 +1,4 @@
-package ProxyService;
+package src.main.scripts.ProxyService;
 
 ##==============================================================================
 # $HeadURL::                                                                   $
