@@ -134,92 +134,115 @@ public class DipServer extends RemoteNativeServer {
         String retVal = null;
         List<NodeType> retList = null;
         String detail = "full";
- 
-        if ( ns.equals( "dip" ) ) {
-             if ( service.equals( "dip" ) ) {
-                if( ac.matches( "DIP-\\d+LP" ) ) {
-                    log.info( "ac=" + ac + " for getLink. " );
-                    try {
-                        log.info( "getNative: getLink. " );            
-                        retList = dipPort.getLink( "dip", ac, "", detail, "dxf" );
-                        log.info( "getNative: after getLink. retList=" + retList );
-                    } catch ( DipDbFault fault ) {
-                        log.warn( "getNative: fault=" + fault.getMessage() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
-                    }
-                } else if ( ac.matches( "DIP-\\d+XE" ) ) {
-                    try {
-                        retList = dipPort.getEvidence( "dip", ac, "", detail, "dxf" );
-                    } catch ( DipDbFault fault ) {
-                        log.warn( "getNative: fault=" + fault.getMessage() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                    }
-                } else if ( ac.matches( "DIP-\\d+SA" ) ) {
-                    try {
-                        retList = dipPort.getSource( "dip", ac, "", detail, "dxf" );
-                    } catch ( DipDbFault fault ) {
-                        log.warn( "getNative: fault=" + fault.getMessage() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                    }
-                } else if ( ac.matches( "(DIP-\\d+NP) | (DIP-\\d+NG) | (DIP-\\d+NM) " ) ) {
-                    try {
-                        retList = dipPort.getNode( "dip", ac, "", detail, "dxf" );
-                    } catch ( DipDbFault fault ) {
-                        log.warn( "getNative: fault=" + fault.getMessage() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                    }
-                } else {
-                    log.warn( "getNative: ac=" + ac + " is invalid id. " );
-                    throw FaultFactory.newInstance( Fault.INVALID_ID );
-                }
-            } else if ( service.equals( "diplegacy" ) ) {
-                if( ac.matches( "DIP-\\d+E" ) ) {
-                    try {
-                        retList = diplegacyPort.getLink( "dip", ac, "", detail, "dxf" );
-                    } catch ( Exception ex ) {
-                        log.info( "exception=" + ex.toString() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
-                    }
-                } else if ( ac.matches( "DIP-\\d+N" ) ) {
-                    try {
-                        retList = diplegacyPort.getNode( "dip", ac, "", "", detail, "dxf" );
-                    } catch ( Exception ex ) {
-                        log.info( "exception=" + ex.toString() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                    }
-                } else if ( ac.matches( "DIP-\\d+X" ) ) {
-                    try {
-                        retList = diplegacyPort.getEvidence( "dip", ac, "", detail, "dxf" );
-                    } catch ( Exception ex ) {
-                        log.info( "exception=" + ex.toString() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                    }
-                } else if ( ac.matches( "DIP-\\d+S" ) ) {
-                    try {
-                        retList = diplegacyPort.getSource( "dip", ac, "", detail, "dxf" );
-                    } catch ( Exception ex ) {
-                        log.info( "exception=" + ex.toString() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                    }
-                } else {
-                    log.warn( "getNative: ac=" + ac + " is invalid id. " );
-                    throw FaultFactory.newInstance( Fault.INVALID_ID );
-                }
-            } else {
-                log.warn( "getNative: service=" + service + " is a invalid service. " );
-                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-            }
-        } else {
+        
+        if ( !ns.equals( "dip" ) ) {
             log.warn( "getNative: ns=" + ns + " is a unrecognized namespace. " );
             throw FaultFactory.newInstance( Fault.INVALID_ID );
         }
 
-        if ( retList == null ) {
+        if ( service.equals( "dip" ) ) {
+            if( ac.substring( ac.length()-2, ac.length()-1 ).equals( "L" ) ) {
+                //*** link ac with format DIP-\d+LP
+                log.info( "ac=" + ac + " for getLink. " );
+                try {
+                    log.info( "getNative: getLink. " );            
+                    retList = dipPort.getLink( "dip", ac, "", detail, "dxf" );
+                } catch ( DipDbFault fault ) {
+                    if( fault.getFaultInfo().getFaultCode() == 5 ) { 
+                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                    } else {
+                        log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
+                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
+                    }
+                }
+            } else if ( ac.substring( ac.length()-2, ac.length()-1 )
+                                                        .equals( "X" ) ) 
+            {
+                //*** evidence ac with format DIP-\d+XE
+                try {
+                    retList = dipPort.getEvidence( "dip", ac, "", detail, "dxf" );
+                } catch ( DipDbFault fault ) {
+                    if( fault.getFaultInfo().getFaultCode() == 5 ) {
+                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                    } else {
+                        log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
+                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    }
+                }
+            } else if ( ac.substring( ac.length()-2, ac.length()-1 )
+                                                            .equals( "S" ) ) 
+            {
+                //*** article ac with format DIP-\d+SA
+                try {
+                    retList = dipPort.getSource( "dip", ac, "", detail, "dxf" );
+                } catch ( DipDbFault fault ) {
+                    if( fault.getFaultInfo().getFaultCode() == 5 ) {
+                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                    } else {
+                        log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
+                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    }
+                }
+            } else if ( ac.substring( ac.length()-2, ac.length()-1 )
+                                                                .equals( "N" ) ) 
+            {
+                //*** dipnode (protein, gene, message) ac with 
+                //*** format (DIP-\\d+NP) | (DIP-\\d+NG) | (DIP-\\d+NM)
+                try {
+                    retList = dipPort.getNode( "dip", ac, "", detail, "dxf" );
+                } catch ( DipDbFault fault ) {
+                    if( fault.getFaultInfo().getFaultCode() == 5 ) {
+                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                    } else {
+                        log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
+                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    }
+                }
+            } else {
+                log.warn( "getNative: ac=" + ac + " is invalid id. " );
+                throw FaultFactory.newInstance( Fault.INVALID_ID );
+            }
+        } else if ( service.equals( "diplegacy" ) ) {
+            if( ac.matches( "DIP-\\d+E" ) ) {
+                try {
+                    retList = diplegacyPort.getLink( "dip", ac, "", detail, "dxf" );
+                } catch ( Exception ex ) {
+                    log.info( "exception=" + ex.toString() );
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
+                }
+            } else if ( ac.matches( "DIP-\\d+N" ) ) {
+                try {
+                    retList = diplegacyPort.getNode( "dip", ac, "", "", detail, "dxf" );
+                } catch ( Exception ex ) {
+                    log.info( "exception=" + ex.toString() );
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                }
+            } else if ( ac.matches( "DIP-\\d+X" ) ) {
+                try {
+                    retList = diplegacyPort.getEvidence( "dip", ac, "", detail, "dxf" );
+                } catch ( Exception ex ) {
+                    log.info( "exception=" + ex.toString() );
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                }
+            } else if ( ac.matches( "DIP-\\d+S" ) ) {
+                try {
+                    retList = diplegacyPort.getSource( "dip", ac, "", detail, "dxf" );
+                } catch ( Exception ex ) {
+                    log.info( "exception=" + ex.toString() );
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                }
+            } else {
+                log.warn( "getNative: ac=" + ac + " is invalid id. " );
+                throw FaultFactory.newInstance( Fault.INVALID_ID );
+            }
+        } else {
+            log.warn( "getNative: service=" + service + " is a invalid service. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        if ( retList == null || retList.size() == 0 ) {
             log.info( "no record found " );
             throw FaultFactory.newInstance( Fault.NO_RECORD );
-        } else if( retList.size() == 0 ) {
-            log.info( "remote service return empty list. " );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
         } else {
             log.info( "getNative: retList.size=" + retList.size() ); 
         }
