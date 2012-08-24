@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.xml.bind.*;
+import javax.xml.ws.BindingProvider;
 import javax.xml.namespace.QName;
 
 import edu.ucla.mbi.proxy.*;
@@ -42,6 +43,7 @@ public class EbiServer extends RemoteNativeServer {
     List<String> searchDB;
 
     String picrEndpoint = null;
+    AccessionMapperInterface picrPort;    
     
     private final String 
         nsPicr = "http://www.ebi.ac.uk/picr/AccessionMappingService";
@@ -99,10 +101,33 @@ public class EbiServer extends RemoteNativeServer {
         
         if( context != null ){
             picrEndpoint = (String) getContext().get( "picrEndpoint" );
-            if( picrEndpoint != null ){
+            if( picrEndpoint != null && picrEndpoint.length() > 0 ) {
                 picrEndpoint = picrEndpoint.replaceAll( "^\\s+", "" );
                 picrEndpoint = picrEndpoint.replaceAll( "\\s+$", "" );
+            } else {
+                log.warn( "EbiServer: PICR service initializing failed "
+                          + "because of the picrEndpoint is not set. " );
+                return;
             }
+        }
+
+        //*** call EBI PICR utility
+        try{
+            AccessionMapperService amSrv =
+                new AccessionMapperService( new URL( picrEndpoint + "?wsdl" ),
+                                            new QName( nsPicr, nmPicr ) );
+
+            picrPort = amSrv.getAccessionMapperPort();
+
+            if ( picrPort != null ) {
+                ((BindingProvider) picrPort).getRequestContext()
+                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                  picrEndpoint );
+            }
+        } catch ( Exception ex ) {
+            log.warn( "EbiServer: PICR service initializing failed: "
+                      + "reason=" + ex.toString() + "." );
+            return;
         }
     }
     
@@ -160,7 +185,7 @@ public class EbiServer extends RemoteNativeServer {
 
         if ( service.equals( "picr" ) ) {
             try {
-
+                /*
                 // call EBI PICR utility
 
                 AccessionMapperInterface port = null;
@@ -177,10 +202,10 @@ public class EbiServer extends RemoteNativeServer {
                     log.warn( "EbiServer: picr endpoint not set.");
                     throw FaultFactory.newInstance( Fault.UNKNOWN );
                 }
-                
+                */
 
                 List<UPEntry> entries =
-                        port.getUPIForAccession( ac, "", searchDB, "", true );
+                        picrPort.getUPIForAccession( ac, "", searchDB, "", true );
 
                 log.info( "EbiServer: got entries: " + entries );
                 

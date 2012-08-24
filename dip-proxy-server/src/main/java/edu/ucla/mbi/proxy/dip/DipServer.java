@@ -61,65 +61,65 @@ public class DipServer extends RemoteNativeServer {
             dipEndpoint = (String) getContext().get( "dipEndpoint" );
             diplegacyEndpoint = (String) getContext().get( "diplegacyEndpoint" );
 
-            if( dipEndpoint != null ){
+            if( dipEndpoint != null &&  dipEndpoint.length() > 0 ) {
                 dipEndpoint = dipEndpoint.replaceAll( "^\\s+", "" );
                 dipEndpoint = dipEndpoint.replaceAll( "\\s+$", "" );
+            } else {
+                log.warn( "DipServer: DipDxfService initializing failed "
+                           + "because of dipEndpoint is not set. " );
+                return;
             }
 
-            if( diplegacyEndpoint != null ){
+            if( diplegacyEndpoint != null && diplegacyEndpoint.length() > 0 ) {
                 diplegacyEndpoint = diplegacyEndpoint.replaceAll( "^\\s+", "" );
                 diplegacyEndpoint = diplegacyEndpoint.replaceAll( "\\s+$", "" );
+            } else {
+                log.warn( "DipServer: DipLegacyService initializing failed "
+                           + "because of diplegacyEndpoint is not set. " );
+                return;
             }
+
         }
         
-        if( dipEndpoint != null && dipEndpoint.length() > 0 ){
-
-            log.info( " dipEndpoint=" + dipEndpoint );
+        log.info( " dipEndpoint=" + dipEndpoint );
            
-            try { 
-                DipDxfService service = 
-                    new DipDxfService( new URL( dipEndpoint + "?wsdl" ), 
-                                          new QName( dipNsSrv, dipNmSrv ) );
+        try { 
+            DipDxfService service = 
+                new DipDxfService( new URL( dipEndpoint + "?wsdl" ), 
+                                   new QName( dipNsSrv, dipNmSrv ) );
             
-                dipPort = service.getDipDxfPort();
+            dipPort = service.getDipDxfPort();
 
-                if ( dipPort != null ) {
+            if ( dipPort != null ) {
                     ((BindingProvider) dipPort).getRequestContext()
                         .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                               dipEndpoint );
-                }
-            } catch ( Exception e ) {
-                log.warn( "DipServer: DipDxfService initializing failed: "  
-                          + "reason=" +  e.toString() + ". ");
-                return;
-            }     
-        } else {
-            log.warn( "DipServer: dipEndpoint is null . ");
-        }
+            }
+        } catch ( Exception e ) {
+            log.warn( "DipServer: DipDxfService initializing failed: "  
+                       + "reason=" +  e.toString() + ". ");
+            return;
+        }     
 
-        if( diplegacyEndpoint != null && diplegacyEndpoint.length() > 0 ){
-
-            log.info( " diplegacyEndpoint=" + diplegacyEndpoint );
+        log.info( " diplegacyEndpoint=" + diplegacyEndpoint );
             
-            try {
-                DipLegacyService service =
-                    new DipLegacyService( new URL( diplegacyEndpoint + "?wsdl" ),
-                                          new QName( diplegacyNsSrv, diplegacyNmSrv ) );
+        try {
+            DipLegacyService service =
+                new DipLegacyService( new URL( diplegacyEndpoint + "?wsdl" ),
+                                      new QName( diplegacyNsSrv, 
+                                                 diplegacyNmSrv ) );
 
-                diplegacyPort = service.getLegacyPort();
+            diplegacyPort = service.getLegacyPort();
 
-                if ( diplegacyPort != null ) {
+            if ( diplegacyPort != null ) {
                     ((BindingProvider) diplegacyPort).getRequestContext()
                         .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                               diplegacyEndpoint );
-                } 
-            } catch ( Exception e ) {
-                log.warn( "DipServer: DipLegacyService initializing failed: "   
-                          + "reason=" +  e.toString() + ". ");
-                return;
-            }
-        } else {
-            log.warn( "DipServer: diplegacyEndpoint is null . ");
+            } 
+        } catch ( Exception e ) {
+            log.warn( "DipServer: DipLegacyService initializing failed: "   
+                       + "reason=" +  e.toString() + ". ");
+            return;
         }
     }
 
@@ -156,7 +156,7 @@ public class DipServer extends RemoteNativeServer {
                     }
                 }
             } else if ( ac.substring( ac.length()-2, ac.length()-1 )
-                                                        .equals( "X" ) ) 
+                                                            .equals( "X" ) ) 
             {
                 //*** evidence ac with format DIP-\d+XE
                 try {
