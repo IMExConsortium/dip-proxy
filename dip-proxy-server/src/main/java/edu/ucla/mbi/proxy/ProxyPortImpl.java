@@ -112,6 +112,12 @@ public class ProxyPortImpl implements ProxyPort {
             } else {
                 throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
+        } else if ( provider.equals( "SGD" ) ) {
+            if( service.equals( "yeastmine" ) ) {
+                ns= "sgd";
+            } else {
+                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            }
         } else {
             throw FaultFactory.newInstance( 4 ); //unsupported operation
         }

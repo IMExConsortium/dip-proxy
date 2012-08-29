@@ -178,6 +178,33 @@
        <entry key="monitor" value="off"/>
       </map>
      </entry>
+
+     <entry key="SGD">
+      <map>
+       <entry key="timeout" value="600"/>
+       <entry key="transformer">
+        <ref bean="yeastMineTransformer"/>
+       </entry>
+       <entry key="ttl" value="14"/>
+
+       <entry key="nativeServer">
+        <ref bean="yeastMineReferenceServer"/>
+       </entry>
+
+
+       <entry key="proxyProto">
+        <ref bean="referenceProxy"/>
+       </entry>
+
+       <entry key="router">
+        <ref bean="yeastMineDhtRouter"/>
+       </entry>
+ 
+       <entry key="cache" value="on"/>
+       <entry key="monitor" value="off"/>
+      </map>
+     </entry>
+
    </map> 
   </property>
  </bean>

@@ -72,6 +72,7 @@ public class ProlinksServer extends RemoteNativeServer {
             }
         }
 
+        /*
         Pattern pattern = Pattern.compile( "<faultCode>(\\d+)</faultCode>" );
         Matcher matcher = pattern.matcher( retVal );
         if( matcher.find() ) {
@@ -87,6 +88,17 @@ public class ProlinksServer extends RemoteNativeServer {
                 log.info( "query: return faultCode=" + faultCode );
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
             }
+        }*/
+
+        if( retVal.contains( "<faultCode>97</faultCode>" ) ) {
+            log.info( "query: return faultCode 97. " );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        } else if ( retVal.contains( "<faultCode>5</faultCode>" ) ) {
+            log.info( "query: return faultCode 5. " );
+            throw FaultFactory.newInstance( Fault.NO_RECORD );
+        } else if ( retVal.contains( "</faultCode>") ) {
+            log.warn( "query: return faultCode=" + retVal );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
 
         NativeRecord record = new NativeRecord( provider, service, ns, ac );

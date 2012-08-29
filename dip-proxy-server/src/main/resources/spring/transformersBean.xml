@@ -77,4 +77,20 @@
   </property>
  </bean>
 
+ <bean id="yeastMineTransformer"
+    class="edu.ucla.mbi.proxy.ProxyTransformer">
+  <property name="transfMap">
+    <map>
+      <!--
+      <entry key="yeastmine">
+        <value>/xsl/intermine/intermine2dxf.xsl</value> 
+      </entry>
+      --> 
+    </map> 
+  </property>
+  <property name="context">
+   <map/>
+  </property>
+ </bean>
+
 </beans>

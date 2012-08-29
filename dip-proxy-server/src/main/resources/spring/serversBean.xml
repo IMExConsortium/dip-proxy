@@ -84,6 +84,16 @@
     <value>3</value>
   </property>
  </bean>
+
+ <bean id="yeastMineDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
+
+  <property name="maxRetry">
+    <value>3</value>
+  </property>
+ </bean>
  
  <!-- reference proxy -->
  <bean id="referenceProxy" init-method="initialize"
@@ -197,6 +207,28 @@
     </map>
   </property>
 
+ </bean>
+
+ <!-- YEASTMINE proxy services -->
+
+ <bean id="yeastMineReferenceServer" init-method="initialize"
+       class="edu.ucla.mbi.proxy.intermine.InterMineServer">
+
+  <property name="context">
+    <map>
+      <entry key="interMineURL">
+        <value>
+            http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml
+        <!--
+        http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=<query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"><constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/></query>&format=xml
+        -->
+        </value>
+      </entry>
+      <entry key="interMineAcTag">
+        <value>%%ACTAG%%</value>
+      </entry>
+    </map>
+  </property>
  </bean>
 
 </beans>
