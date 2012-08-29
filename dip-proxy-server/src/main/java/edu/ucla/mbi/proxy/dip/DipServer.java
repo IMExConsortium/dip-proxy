@@ -81,26 +81,6 @@ public class DipServer extends RemoteNativeServer {
 
         }
         
-        log.info( " dipEndpoint=" + dipEndpoint );
-           
-        try { 
-            DipDxfService service = 
-                new DipDxfService( new URL( dipEndpoint + "?wsdl" ), 
-                                   new QName( dipNsSrv, dipNmSrv ) );
-            
-            dipPort = service.getDipDxfPort();
-
-            if ( dipPort != null ) {
-                    ((BindingProvider) dipPort).getRequestContext()
-                        .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                              dipEndpoint );
-            }
-        } catch ( Exception e ) {
-            log.warn( "DipServer: DipDxfService initializing failed: "  
-                       + "reason=" +  e.toString() + ". ");
-            return;
-        }     
-
         log.info( " diplegacyEndpoint=" + diplegacyEndpoint );
             
         try {
@@ -119,8 +99,29 @@ public class DipServer extends RemoteNativeServer {
         } catch ( Exception e ) {
             log.warn( "DipServer: DipLegacyService initializing failed: "   
                        + "reason=" +  e.toString() + ". ");
-            return;
+            diplegacyPort = null;
         }
+
+        log.info( " dipEndpoint=" + dipEndpoint );
+
+        try {
+            DipDxfService service =
+                new DipDxfService( new URL( dipEndpoint + "?wsdl" ),
+                                   new QName( dipNsSrv, dipNmSrv ) );
+
+            dipPort = service.getDipDxfPort();
+
+            if ( dipPort != null ) {
+                    ((BindingProvider) dipPort).getRequestContext()
+                        .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                              dipEndpoint );
+            }
+        } catch ( Exception e ) {
+            log.warn( "DipServer: DipDxfService initializing failed: "
+                       + "reason=" +  e.toString() + ". ");
+            dipPort = null;
+        }
+
     }
 
     // ---------------------------------------------------------------------
@@ -141,7 +142,12 @@ public class DipServer extends RemoteNativeServer {
         }
 
         if ( service.equals( "dip" ) ) {
-            if( ac.substring( ac.length()-2, ac.length()-1 ).equals( "L" ) ) {
+            if( dipPort == null ) {
+                log.warn( "getNative: dipPort initailizing fault." );
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            } else if( ac.substring( ac.length()-2, ac.length()-1 )
+                                                            .equals( "L" ) ) 
+            {
                 //*** link ac with format DIP-\d+LP
                 log.info( "ac=" + ac + " for getLink. " );
                 try {
@@ -203,7 +209,10 @@ public class DipServer extends RemoteNativeServer {
                 throw FaultFactory.newInstance( Fault.INVALID_ID );
             }
         } else if ( service.equals( "diplegacy" ) ) {
-            if( ac.matches( "DIP-\\d+E" ) ) {
+            if( diplegacyPort == null ) {
+                log.warn( "getNative: diplegacyPort initailizing fault." );
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            } else if( ac.matches( "DIP-\\d+E" ) ) {
                 try {
                     retList = diplegacyPort.getLink( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
