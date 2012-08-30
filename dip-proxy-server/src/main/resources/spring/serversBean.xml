@@ -117,7 +117,6 @@
    <value>
     http://www.uniprot.org/uniprot/%%ACTAG%%.xml
    </value>
-<!--     http://www.ebi.ac.uk/Tools/webservices/rest/dbfetch/uniprotkb/%%ACTAG%%/uniprotxml -->
   </property>
   <property name="restAcTag">
      <value>%%ACTAG%%</value>
@@ -167,6 +166,7 @@
  
  <bean id="prlReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
+
   <property name="restUrl">
    <value>
     <!--http://codd.mbi.ucla.edu/prolinks/query_prolinks.php?pid=%%ACTAG%% -->
@@ -214,20 +214,13 @@
  <bean id="yeastMineReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.NativeRestServer">
 
-  <property name="context">
-    <map>
-      <entry key="nativeURL">
-        <value>
-            http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml
-        <!--
-        http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=<query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"><constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/></query>&format=xml
-        -->
-        </value>
-      </entry>
-      <entry key="queryAcTag">
-        <value>%%ACTAG%%</value>
-      </entry>
-    </map>
+  <property name="restUrl">
+   <value>
+    http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml
+   </value>
+  </property>
+  <property name="restAcTag">
+     <value>%%ACTAG%%</value>
   </property>
  </bean>
 

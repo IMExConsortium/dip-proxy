@@ -36,8 +36,6 @@ public abstract class RemoteNativeServer
     implements RemoteServer {
 
     private static Map<String,Object> context;
-    String restUrl;
-    String restAcTag;
 
     public boolean isNative(){
         return true;
@@ -53,28 +51,6 @@ public abstract class RemoteNativeServer
 
     public Map<String,Object> getContext() {
 	    return context;
-    }
-
-    public void setRestUrl( String url ) {
-	    url = url.replaceAll("^\\s+","");
-	    url = url.replaceAll("\\s+$","");
-	
-	    this.restUrl=url;
-    }
-    
-    public String getRestUrl(){
-	    return restUrl;
-    }
-
-    public void setRestAcTag( String tag ) {
-	    tag = tag.replaceAll("^\\s+","");
-	    tag = tag.replaceAll("\\s+$","");
-        
-	    this.restAcTag = tag ;
-    }
-
-    public String getRestAcTag(){
-	    return restAcTag;
     }
 
     public void initialize() {

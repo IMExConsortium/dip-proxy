@@ -33,13 +33,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.stream.StreamSource;
 
 
-public class ProlinksServer extends RemoteNativeServer {
+public class ProlinksServer extends NativeRestServer {
 
+    private Log log = LogFactory.getLog( ProlinksServer.class );
     private String ncbiProxyAddress = null;
 
     public void setNcbiProxyAddress( String ncbiProxy ) {
-        Log log = LogFactory.getLog( ProlinksServer.class );
-
         ncbiProxy = ncbiProxy.replaceAll( "^\\s*", "" );
         ncbiProxy = ncbiProxy.replaceAll( "\\s*$", "" );
         log.info( " NcbiProxy=" + ncbiProxy );
@@ -49,46 +48,11 @@ public class ProlinksServer extends RemoteNativeServer {
     public NativeRecord getNative( String provider, String service, String ns,
                                    String ac, int timeOut ) throws ProxyFault 
     {
-        Log log = LogFactory.getLog( ProlinksServer.class );
-        String retVal = null;
 
-        log.info( " getNative: NS=" + ns + " AC=" + ac + " SRV=" + service );
+        NativeRecord record = super.getNative( provider, service, 
+                                               ns, ac, timeOut );
 
-        if ( service.equals( "prolinks" ) ) {
-
-            String url = getRestUrl();
-            String acTag = getRestAcTag();
-
-            log.info( "getNative restURL=" + url );
-            log.info( "getNative restTag=" + acTag );
-
-            url = url.replaceAll( acTag, ac );
-            log.info( "getNative: query url=" + url );
-            
-            try {
-                retVal = NativeURL.query( url, timeOut );
-            } catch ( ProxyFault fault ) {
-                throw fault;
-            }
-        }
-
-        /*
-        Pattern pattern = Pattern.compile( "<faultCode>(\\d+)</faultCode>" );
-        Matcher matcher = pattern.matcher( retVal );
-        if( matcher.find() ) {
-            String faultCode = matcher.group(1);
-            
-            if( faultCode.equals("97") ) {
-                log.info( "query: return faultCode 97. " );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            } else if ( faultCode.equals( "5" ) ) {
-                log.info( "query: return faultCode 5. " );
-                throw FaultFactory.newInstance( Fault.NO_RECORD );
-            } else {
-                log.info( "query: return faultCode=" + faultCode );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            }
-        }*/
+        String retVal = record.getNativeXml();
 
         if( retVal.contains( "<faultCode>97</faultCode>" ) ) {
             log.info( "query: return faultCode 97. " );
@@ -99,11 +63,9 @@ public class ProlinksServer extends RemoteNativeServer {
         } else if ( retVal.contains( "</faultCode>") ) {
             log.warn( "query: return faultCode=" + retVal );
             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        } else {
+            return record;
         }
-
-        NativeRecord record = new NativeRecord( provider, service, ns, ac );
-        record.setNativeXml( retVal );
-        return record;
     }
 
     
