@@ -14,8 +14,6 @@ package edu.ucla.mbi.proxy;
  *
  *=========================================================================== */
 
-
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.net.*;
@@ -31,13 +29,21 @@ public class NativeURL {
 	
         try {
 	        java.net.URL xmlURL = new URL( url );
-	        java.net.URLConnection conn = xmlURL.openConnection();
+	        java.net.HttpURLConnection conn 
+                    = (HttpURLConnection) xmlURL.openConnection();
+
+            if( conn.getResponseCode() != 200 ) {
+                log.warn ( "query: connectin get response message: " 
+                           + conn.getResponseMessage() );
+                throw new IOException( conn.getResponseMessage() );
+            }
 
 	        // setting timeout ensure the client does not deadlock indefinitely
 	        // -----------------------------------------------------------------
 	        conn.setConnectTimeout( timeOut ); // uTimeout is int as milliseconds
 	        conn.setReadTimeout( timeOut );
 	    
+            
             BufferedReader in = 
 		        new BufferedReader( new InputStreamReader( conn.getInputStream() ) );
 
@@ -49,6 +55,10 @@ public class NativeURL {
 		        }
 		        retVal = sb.toString();
 	        }
+            
+            in.close();
+            conn.disconnect();
+
         } catch ( Exception e ) {
 	        log.info( "NativeURL: exception: " + e.toString());
             if( e.toString().contains( "TimeoutException" ) ) {

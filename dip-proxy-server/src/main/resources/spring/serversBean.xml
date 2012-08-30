@@ -212,11 +212,11 @@
  <!-- YEASTMINE proxy services -->
 
  <bean id="yeastMineReferenceServer" init-method="initialize"
-       class="edu.ucla.mbi.proxy.intermine.InterMineServer">
+       class="edu.ucla.mbi.proxy.NativeRestServer">
 
   <property name="context">
     <map>
-      <entry key="interMineURL">
+      <entry key="nativeURL">
         <value>
             http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml
         <!--
@@ -224,7 +224,7 @@
         -->
         </value>
       </entry>
-      <entry key="interMineAcTag">
+      <entry key="queryAcTag">
         <value>%%ACTAG%%</value>
       </entry>
     </map>
