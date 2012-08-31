@@ -38,8 +38,11 @@ import uk.ac.ebi.picr.*;
 import uk.ac.ebi.picr.accessionmappingservice.*;
 import uk.ac.ebi.picr.model.*;
 
-public class EbiServer extends NativeRestServer {
+public class EbiServer extends RemoteNativeServer {
 
+//public class EbiServer extends NativeRestServer {
+
+    private NativeRestServer uniprotRestServer = null;
     List<String> searchDB;
 
     String picrEndpoint = null;
@@ -87,20 +90,10 @@ public class EbiServer extends NativeRestServer {
 
         Map<String, Object> context = getContext();
         
-        if ( context != null && context.get( "searchDbList" ) != null ) {
-            log.info( " searchDB list: " );
-            for ( Iterator ii =
-                    ((List) context.get( "searchDbList" )).iterator(); ii
-                    .hasNext(); ) {
-                String db = (String) ii.next();
-                db = db.replaceAll( "\\s+", "" );
-                log.info( "  db=" + db );
-                searchDB.add( db );
-            }
-        }
-        
         if( context != null ){
+            
             picrEndpoint = (String) getContext().get( "picrEndpoint" );
+            
             if( picrEndpoint != null && picrEndpoint.length() > 0 ) {
                 picrEndpoint = picrEndpoint.replaceAll( "^\\s+", "" );
                 picrEndpoint = picrEndpoint.replaceAll( "\\s+$", "" );
@@ -109,6 +102,22 @@ public class EbiServer extends NativeRestServer {
                           + "because of the picrEndpoint is not set. " );
                 return;
             }
+
+            if( context.get( "searchDbList" ) != null ) {
+                log.info( " searchDB list: " );
+                for ( Iterator ii =
+                      ((List) context.get( "searchDbList" )).iterator(); 
+                      ii.hasNext(); ) 
+                {
+                    String db = (String) ii.next();
+                    db = db.replaceAll( "\\s+", "" );
+                    log.info( "  db=" + db );
+                    searchDB.add( db );
+                }            
+            }
+
+            //*** initialize uniprot rest server
+            uniprotRestServer = (NativeRestServer) context.get( "uniprotRestServer" );
         }
 
         //*** call EBI PICR utility
@@ -129,6 +138,7 @@ public class EbiServer extends NativeRestServer {
                       + "reason=" + ex.toString() + "." );
             return;
         }
+
     }
     
     //-------------------------------------------------------------------------
@@ -139,6 +149,7 @@ public class EbiServer extends NativeRestServer {
         
         Log log = LogFactory.getLog( EbiServer.class );
 
+        NativeRecord record = null;
         String retVal = null;
 
         log.info( "NS=" + ns + " AC=" + ac + " SRV=" + service );
@@ -146,7 +157,7 @@ public class EbiServer extends NativeRestServer {
         if ( service.equals( "uniprot" ) ) {
 
             // call EBI WSDbfetch utility: REST version
-
+            /*
             String url = getRestUrl();
             String acTag = getRestAcTag();
 
@@ -178,7 +189,18 @@ public class EbiServer extends NativeRestServer {
                              ": get exception: " + e.toString() + ". ");
                     throw FaultFactory.newInstance( Fault.UNKNOWN );
                 }
+            }*/
+            
+            if( uniprotRestServer == null ) {
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
             }
+            
+            try {
+                record = uniprotRestServer.getNative( provider, service, ns, ac, timeOut );
+            } catch ( ProxyFault fault ) {
+                throw fault;
+            }
+           
         }
 
         //----------------------------------------------------------------------
@@ -276,10 +298,13 @@ public class EbiServer extends NativeRestServer {
                     throw FaultFactory.newInstance( Fault.UNKNOWN );
                 }
             }
+
+            record = new NativeRecord( provider, service, ns, ac);
+            record.setNativeXml( retVal );
         }
         
-        NativeRecord record = new NativeRecord( provider, service, ns, ac);
-        record.setNativeXml( retVal );
+        //NativeRecord record = new NativeRecord( provider, service, ns, ac);
+        //record.setNativeXml( retVal );
         return record;
     }
 }

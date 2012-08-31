@@ -33,24 +33,48 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.stream.StreamSource;
 
 
-public class ProlinksServer extends NativeRestServer {
+public class ProlinksServer extends RemoteNativeServer {
 
     private Log log = LogFactory.getLog( ProlinksServer.class );
-    private String ncbiProxyAddress = null;
 
-    public void setNcbiProxyAddress( String ncbiProxy ) {
-        ncbiProxy = ncbiProxy.replaceAll( "^\\s*", "" );
-        ncbiProxy = ncbiProxy.replaceAll( "\\s*$", "" );
-        log.info( " NcbiProxy=" + ncbiProxy );
-        this.ncbiProxyAddress = ncbiProxy;
+    private String ncbiProxyAddress = null;
+    private NativeRestServer prolinksRestServer = null;
+
+    public void initialize() {
+
+        Log log = LogFactory.getLog( ProlinksServer.class );
+        log.info( "initialize service" );
+
+        if( getContext() != null ){
+
+            prolinksRestServer = (NativeRestServer) getContext().get( 
+                                                    "prolinksRestServer" );
+
+            ncbiProxyAddress = ( String ) getContext().get( "ncbiProxyAddress" );
+            
+            if( ncbiProxyAddress != null &&  ncbiProxyAddress.length() > 0 ) {
+                ncbiProxyAddress = ncbiProxyAddress.replaceAll( "^\\s+", "" );
+                ncbiProxyAddress = ncbiProxyAddress.replaceAll( "\\s+$", "" );
+            } else {
+                log.warn( "ProlinksServer: initializing failed "
+                           + "because of ncbiProxyAddress is not set. " );
+                ncbiProxyAddress = null;
+            }
+        }
     }
+    
 
     public NativeRecord getNative( String provider, String service, String ns,
                                    String ac, int timeOut ) throws ProxyFault 
     {
 
-        NativeRecord record = super.getNative( provider, service, 
-                                               ns, ac, timeOut );
+        if( prolinksRestServer == null ) {
+            log.warn( "getNative: prolinksRestServer is not initialized. " );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        }
+
+        NativeRecord record = prolinksRestServer.getNative ( provider, 
+                                                service, ns, ac, timeOut );
 
         String retVal = record.getNativeXml();
 
@@ -76,7 +100,12 @@ public class ProlinksServer extends NativeRestServer {
     {
         Log log = LogFactory.getLog( ProlinksServer.class );
         log.info( " buildDxf called: " + ac );
-        
+
+        if( ncbiProxyAddress == null ) {
+            log.warn( "buildDxf: ncbiProxyAddress is not initialized. " );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        }
+
         edu.ucla.mbi.dxf14.DatasetType dxfResult = 
                 super.buildDxf ( strNative, ns, ac, detail, service, pTrans );
        

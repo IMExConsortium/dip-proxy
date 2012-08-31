@@ -34,14 +34,56 @@ import java.net.URL;
 public class NcbiServer extends RemoteNativeServer {
 
     private Log log = LogFactory.getLog( NcbiServer.class );
+    private NativeRestServer nlmEsearchRestServer = null;
+    private NativeRestServer nlmEfetchRestServer = null;
+    private NativeRestServer pubmedRestServer = null;
+    private NativeRestServer refseqRestServer = null;
+    private NativeRestServer entrezgeneRestServer = null;
+    private NativeRestServer taxonRestServer = null;
+
+    public void initialize() {
+
+        Log log = LogFactory.getLog( NcbiServer.class );
+        log.info( "initialize service" );
+
+        if( getContext() != null ){
+
+            nlmEsearchRestServer = (NativeRestServer) getContext().get(
+                                                    "nlmEsearchRestServer" );
+
+            nlmEfetchRestServer = (NativeRestServer) getContext().get(
+                                                    "nlmEfetchRestServer" );
+
+            pubmedRestServer = (NativeRestServer) getContext().get(
+                                                    "pubmedRestServer" );
+
+            refseqRestServer = (NativeRestServer) getContext().get(
+                                                    "refseqRestServer" );
+
+            entrezgeneRestServer = (NativeRestServer) getContext().get(
+                                                    "entrezgeneRestServer" );
+
+            taxonRestServer = (NativeRestServer) getContext().get(
+                                                    "taxonRestServer" );
+
+        }
+    }
 
     public NativeRecord getNative( String provider, String service, String ns,
             String ac, int timeOut ) throws ProxyFault {
 
+        NativeRecord record = null;
         String retVal = null;
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
             
         if ( service.equals( "nlm" ) ) {
+
+            if( nlmEsearchRestServer == null || nlmEfetchRestServer == null ) {
+                log.warn( "getNative: nlmEsearchRestServer "
+                          + "or nlmEfetchRestServer is null. " );
+
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            }
 
             XPathFactory xpf = XPathFactory.newInstance();
             XPath xPath = xpf.newXPath();
@@ -51,15 +93,17 @@ public class NcbiServer extends RemoteNativeServer {
             // esearch ncbi internal id of the nlmid
             //--------------------------------------
             
-            String url_esearch_string =
-                "http://eutils.ncbi.nlm.nih.gov"
-                + "/entrez/eutils/esearch.fcgi"
-                + "?db=nlmcatalog&retmode=xml&term=" + ac + "[nlmid]";
-
             try{
                 DocumentBuilder builder = fct.newDocumentBuilder();
 
+                String url_esearch_string = nlmEsearchRestServer.getRestUrl();
+
+                url_esearch_string = url_esearch_string.replaceAll( 
+                                    nlmEsearchRestServer.getRestAcTag(), ac );
+ 
                 URL url_esearch = new URL( url_esearch_string );
+                
+                log.info( "getNative: url_esearch=" + url_esearch ); 
                 InputSource xml_esearch = new InputSource( 
                                                 url_esearch.openStream() );
 
@@ -71,9 +115,15 @@ public class NcbiServer extends RemoteNativeServer {
                     
                     try {    
                         NcbiReFetchThread thread = new NcbiReFetchThread(
-                                                                ns, ac, "" );
+                                                        ns, ac, "", 
+                                                        nlmEsearchRestServer,
+                                                        nlmEfetchRestServer);
+
                         thread.start();
                         log.info( "getNative: nlm: ncbi fetch thread starting... " );
+                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    } catch ( ProxyFault fault ) {
+                        throw fault;
                     } catch ( RuntimeException e ) {
                         if( e.getMessage().equals( "NO_RECORD" ) ) {
                             throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -103,9 +153,17 @@ public class NcbiServer extends RemoteNativeServer {
                     log.warn("getNative: nlm esearch: return wrong xml style. ");
                   
                     try { 
-                        NcbiReFetchThread thread = new NcbiReFetchThread( ns, ac, "" );
+                        NcbiReFetchThread thread = new NcbiReFetchThread( 
+                                                        ns, ac, "",
+                                                        nlmEsearchRestServer,
+                                                        nlmEfetchRestServer);
+
                         thread.start();
+
                         log.info( "getNative: nlm: ncbi fetch thread starting... " );
+                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    } catch ( ProxyFault fault ) {
+                        throw fault;
                     } catch ( RuntimeException e ) {
                         if( e.getMessage().equals( "NO_RECORD" ) ) {
                             throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -122,13 +180,13 @@ public class NcbiServer extends RemoteNativeServer {
                 //------------------
 
                 log.info( "NcbiServer: nlm: ncbi_nlmid is " + ncbi_nlmid );
-                
-                String url_efetch_string =
-                    "http://eutils.ncbi.nlm.nih.gov"
-                    + "/entrez/eutils/efetch.fcgi?db=nlmcatalog&retmode=xml&id="
-                    + ncbi_nlmid ;
+
+                String url_efetch_string = nlmEfetchRestServer.getRestUrl();
+                url_efetch_string = url_efetch_string.replaceAll( 
+                            nlmEfetchRestServer.getRestAcTag(), ncbi_nlmid );
 
                 URL url_efetch = new URL( url_efetch_string );
+
                 InputSource xml_efetch = new InputSource(
                                                 url_efetch.openStream() );
 
@@ -143,10 +201,16 @@ public class NcbiServer extends RemoteNativeServer {
                     log.warn("getNative: nlm: native server return empty set. ");
                     try { 
                         NcbiReFetchThread thread = new NcbiReFetchThread( 
-                                                        ns, ac, ncbi_nlmid );
+                                                        ns, ac, ncbi_nlmid,
+                                                        nlmEsearchRestServer,
+                                                        nlmEfetchRestServer);
+
                         thread.start();
 
                         log.info( "getNative: nlm: ncbi fetch thread starting..." );                     
+                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    } catch ( ProxyFault fault ) {
+                        throw fault;
                     } catch ( RuntimeException e ) {
                         if( e.getMessage().equals( "NO_RECORD" ) ) {
                             throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -179,7 +243,15 @@ public class NcbiServer extends RemoteNativeServer {
                         throw FaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
                         //extract xml string
-                        retVal = NativeURL.query( url_efetch_string, timeOut );
+                        try {
+                            record = nlmEfetchRestServer.getNative( provider, 
+                                                    service, ns, ncbi_nlmid, timeOut );
+                        } catch ( ProxyFault fault ) {
+                            throw fault;
+                        }
+
+                        retVal = record.getNativeXml();
+
                         if( retVal.trim().equals(
                                 "<?xml version=\"1.0\"?><NLMCatalogRecordSet>" + 
                                 "</NLMCatalogRecordSet>" ) ) {
@@ -187,10 +259,20 @@ public class NcbiServer extends RemoteNativeServer {
                             log.info( "getNative: nlm: retVal is empty set. " );
                             
                             try {    
-                                NcbiReFetchThread thread = new NcbiReFetchThread (
-                                                            ns, ac, ncbi_nlmid );
+                                NcbiReFetchThread thread 
+                                    = new NcbiReFetchThread ( 
+                                                        ns, ac, ncbi_nlmid,
+                                                        nlmEsearchRestServer,
+                                                        nlmEfetchRestServer);
+
                                 thread.start();
+
                                 log.info( "getNative: ncbi fetch thread starting." );
+
+                                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+
+                            } catch ( ProxyFault fault ) {
+                                throw fault;
                             } catch ( RuntimeException e ) {
                                 if( e.getMessage().equals( "NO_RECORD" ) ) {
                                     throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -213,29 +295,34 @@ public class NcbiServer extends RemoteNativeServer {
         }
 
         if ( service.equals( "pubmed" ) ) {
-            String url =
-                "http://eutils.ncbi.nlm.nih.gov"
-                + "/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id="
-                + ac;
+            if( pubmedRestServer == null ) {
+                log.warn( "getNative: pubmedRestServer is null. " );
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            }
+
             try {
-                retVal = NativeURL.query( url, timeOut );
+                record = pubmedRestServer.getNative( provider, service, 
+                                                     ns, ac, timeOut );
             } catch ( ProxyFault fault ) {
                 throw fault;
-            }
+            } 
         }
         
         if ( service.equals( "refseq" ) ) {
-            String url =
-                "http://eutils.ncbi.nlm.nih.gov"
-                + "/entrez/eutils/efetch.fcgi?db=protein&id=" + ac
-                + "&rettype=gpc&retmode=xml";
+            if( refseqRestServer == null ) {
+                log.warn( "getNative: refseqRestServer is null. " );
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            }
 
             try {
-                retVal = NativeURL.query( url, timeOut );
+                record = refseqRestServer.getNative( provider, service, 
+                                                     ns, ac, timeOut );
             } catch ( ProxyFault fault ) {
                 throw fault;
             }
-      
+
+            retVal = record.getNativeXml();
+
             if( retVal.contains("<INSDSet><Error>") 
                     || retVal.contains( "<TSeqSet/>" ) ) {
 
@@ -246,12 +333,14 @@ public class NcbiServer extends RemoteNativeServer {
         }
         
         if ( service.equals( "entrezgene" ) ) {
-            String url =
-                "http://eutils.ncbi.nlm.nih.gov"
-                + "/entrez/eutils/efetch.fcgi?db=gene&id=" + ac
-                + "&retmode=xml";
+            if( entrezgeneRestServer == null ) {
+                log.warn( "getNative: entrezgeneRestServer is null. " );
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            }
+
             try {
-                retVal = NativeURL.query( url, timeOut );
+                record = entrezgeneRestServer.getNative( provider, service, 
+                                                         ns, ac, timeOut );
             } catch ( ProxyFault fault ) {
                 throw fault;
             }
@@ -259,19 +348,19 @@ public class NcbiServer extends RemoteNativeServer {
         }
         
         if ( service.equals( "taxon" ) ) {
-            String url =
-                    "http://eutils.ncbi.nlm.nih.gov"
-                            + "/entrez/eutils/efetch.fcgi?db=taxonomy&id=" + ac
-                            + "&retmode=xml";
+            if( taxonRestServer == null ) {
+                log.warn( "getNative: taxonRestServer is null. " );
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            }
+
             try {
-                retVal = NativeURL.query( url, timeOut );
+                record = taxonRestServer.getNative( provider, service,
+                                                    ns, ac, timeOut );
             } catch ( ProxyFault fault ) {
                 throw fault;
             }
         }
 
-        NativeRecord record = new NativeRecord( provider, service, ns, ac);
-        record.setNativeXml( retVal );
         return record;   
     }
 }

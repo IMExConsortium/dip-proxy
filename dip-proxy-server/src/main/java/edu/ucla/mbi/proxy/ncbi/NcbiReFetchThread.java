@@ -15,7 +15,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.ucla.mbi.server.WSContext;
-import edu.ucla.mbi.proxy.NativeURL;
+import edu.ucla.mbi.proxy.NativeRestServer;
+import edu.ucla.mbi.proxy.ProxyFault;
 import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.fault.*;
 
@@ -46,11 +47,17 @@ public class NcbiReFetchThread extends Thread {
     private long waitMillis = threadRunMinutes * 60 * 1000;  
     private String provider = "NCBI";
     private String service = "nlm";
-    
-    public NcbiReFetchThread( String ns, String ac, String nlmid ) {
+    private NativeRestServer nlmEsearchRestServer = null;
+    private NativeRestServer nlmEfetchRestServer = null;
+
+    public NcbiReFetchThread( String ns, String ac, String nlmid, 
+                              NativeRestServer nlmEsearchRestServer, 
+                              NativeRestServer nlmEfetchRestServer ) {
         this.ns = ns;
         this.ac = ac;
         this.nlmid = nlmid;
+        this.nlmEsearchRestServer = nlmEsearchRestServer;
+        this.nlmEfetchRestServer = nlmEfetchRestServer;        
     }
 
     public void run() {
@@ -62,7 +69,8 @@ public class NcbiReFetchThread extends Thread {
         XPath xPath = xpf.newXPath();
         DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();
         long startTime = System.currentTimeMillis();
-        
+        NativeRecord record = null;
+ 
         if( nlmid.equals( "" ) ) {
             log.info( "NcbiReFetchThread: nlmid is empty. " );
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
@@ -71,11 +79,14 @@ public class NcbiReFetchThread extends Thread {
                 // esearch ncbi internal id of the nlmid
                 //--------------------------------------
             
-                String url_esearch_string =
+                String url_esearch_string = nlmEsearchRestServer.getRestUrl();
+                url_esearch_string = url_esearch_string.replaceAll(
+                                    nlmEsearchRestServer.getRestAcTag(), ac );
+                /*
                     "http://eutils.ncbi.nlm.nih.gov"
                     + "/entrez/eutils/esearch.fcgi"
                     + "?db=nlmcatalog&retmode=xml&term=" + ac + "[nlmid]";
-
+                */
                 try {
                     DocumentBuilder builder = fct.newDocumentBuilder();
 
@@ -124,10 +135,14 @@ public class NcbiReFetchThread extends Thread {
             log.info( "NcbiReFetchThread: after esearch: nlmid is " + nlmid );
             startTime = System.currentTimeMillis();            
             boolean emptySet = true;
-            String url_efetch_string = "http://eutils.ncbi.nlm.nih.gov"
+            String url_efetch_string = nlmEfetchRestServer.getRestUrl();
+            url_efetch_string = url_efetch_string.replaceAll(
+                                    nlmEfetchRestServer.getRestAcTag(), nlmid );
+            /*
+                        "http://eutils.ncbi.nlm.nih.gov"
                         + "/entrez/eutils/efetch.fcgi?db=nlmcatalog&retmode=xml&id="
                         + nlmid ;
-
+            */
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
 
                 try { 
@@ -154,7 +169,16 @@ public class NcbiReFetchThread extends Thread {
                             //return;
                             throw new RuntimeException("NO_RECORD");
                         } else {
-                            retVal = NativeURL.query( url_efetch_string, timeOut );
+                            //retVal = NativeURL.query( url_efetch_string, timeOut );
+                            try {
+                                record = nlmEfetchRestServer.getNative( 
+                                                        provider, service,
+                                                        ns, nlmid, timeOut );
+                            } catch ( ProxyFault fault ) {
+                                throw fault;
+                            }
+
+                            retVal = record.getNativeXml();
 
                             if( !retVal.trim().equals(
                                 "<?xml version=\"1.0\"?><NLMCatalogRecordSet>" + 
@@ -179,8 +203,8 @@ public class NcbiReFetchThread extends Thread {
 
             if( !emptySet && retVal != null ) {
                 
-                NativeRecord record = new NativeRecord( provider, service, 
-                                                            ns, ac);
+                //NativeRecord record = new NativeRecord( provider, service, 
+                //                                            ns, ac);
                 record.setNativeXml( retVal );
 
                 NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO(); 
