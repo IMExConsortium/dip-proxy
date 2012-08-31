@@ -128,7 +128,17 @@ public class CachingService extends Observable {
 
                     throw fault;
                 }
-		      
+		     
+                if( remoteRec == null && service.equals( "nlm" ) ) {
+                    //*** check if ncbi refetch thread already saved the record
+                    cacheRecord = DipProxyDAO.getNativeRecordDAO()
+                                        .find( provider, service, ns, ac );
+
+                    if( cacheRecord != null ) {
+                        return cacheRecord;
+                    }
+                } 
+
                 if( remoteRec != null ) {      
                     Date queryTime = remoteRec.getCreateTime();  // primary query
                 

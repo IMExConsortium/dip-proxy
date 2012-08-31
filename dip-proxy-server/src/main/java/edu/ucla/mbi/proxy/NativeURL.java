@@ -61,9 +61,13 @@ public class NativeURL {
 
         } catch ( Exception e ) {
 	        log.info( "NativeURL: exception: " + e.toString());
-            if( e.toString().contains( "TimeoutException" ) ) {
+            if( e.toString().contains( "TimeoutException" ) 
+                    || e.toString().contains( "Read timeout" ) ) 
+            {
 		        throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT );  // timeout
-	        }else {
+	        } else if ( e.toString().contains( "No result found" ) ) {
+                throw FaultFactory.newInstance( Fault.NO_RECORD );
+            } else {
                 //*** including http status 503 Service Temporarily Unavailable
 		        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );  // unknown remote
             }

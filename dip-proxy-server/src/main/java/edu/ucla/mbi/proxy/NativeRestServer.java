@@ -14,6 +14,9 @@ package edu.ucla.mbi.proxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.net.*;
+import java.io.*;
+
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
@@ -71,4 +74,62 @@ public class NativeRestServer extends RemoteNativeServer {
         return record;
 
     }
+
+    private String query( String url, int timeOut ) throws ProxyFault {
+        String retVal = "";
+
+        try {
+            java.net.URL xmlURL = new URL( url );
+            java.net.HttpURLConnection conn
+                    = (HttpURLConnection) xmlURL.openConnection();
+
+            if( conn.getResponseCode() != 200 ) {
+                log.warn ( "query: connectin get response message: "
+                           + conn.getResponseMessage() );
+                throw new IOException( conn.getResponseMessage() );
+            }
+
+            // setting timeout ensure the client does not deadlock indefinitely
+            // -----------------------------------------------------------------
+            conn.setConnectTimeout( timeOut ); // uTimeout is int as milliseconds
+            conn.setReadTimeout( timeOut );
+
+
+            BufferedReader in =
+                new BufferedReader( new InputStreamReader( conn.getInputStream() ) );
+
+            if ( in != null ){
+                String inputLine = new String();
+                StringBuffer sb = new StringBuffer();
+                while( ( inputLine = in.readLine() ) != null ) {
+                    sb.append(inputLine);
+                }
+                retVal = sb.toString();
+            }
+
+            in.close();
+            conn.disconnect();
+
+        } catch ( Exception e ) {
+            log.info( "NativeURL: exception: " + e.toString());
+            if( e.toString().contains( "TimeoutException" )
+                    || e.toString().contains( "Read timeout" ) )
+            {
+                throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT );  // timeout
+            } else if ( e.toString().contains( "No result found" ) ) {
+                throw FaultFactory.newInstance( Fault.NO_RECORD );
+            } else {
+                //*** including http status 503 Service Temporarily Unavailable
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );  // unknown remote
+            }
+        }
+
+        if( retVal == null ) {
+            log.info( "query:  return null. " );
+            throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
+        } else {
+            return retVal;
+        }
+    }
+
 }
