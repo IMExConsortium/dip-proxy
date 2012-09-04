@@ -182,8 +182,14 @@ public class NcbiServer extends RemoteNativeServer {
                 log.info( "NcbiServer: nlm: ncbi_nlmid is " + ncbi_nlmid );
 
                 String url_efetch_string = nlmEfetchRestServer.getRestUrl();
+
+                log.info( "NcbiServer: nlm: url_efetch_string=" 
+                          +  url_efetch_string );
+
                 url_efetch_string = url_efetch_string.replaceAll( 
                             nlmEfetchRestServer.getRestAcTag(), ncbi_nlmid );
+
+                log.info( "NcbiServer: after replace url_efetch_string=" + url_efetch_string );
 
                 URL url_efetch = new URL( url_efetch_string );
 
@@ -198,7 +204,7 @@ public class NcbiServer extends RemoteNativeServer {
                                rootElementEfetch, XPathConstants.NODE );
 
                 if( testNode == null ) {
-                    log.warn("getNative: nlm: native server return empty set. ");
+                    log.warn( "getNative: nlm: native server return empty set. " );
                     try { 
                         NcbiReFetchThread thread = new NcbiReFetchThread( 
                                                         ns, ac, ncbi_nlmid,
@@ -221,6 +227,8 @@ public class NcbiServer extends RemoteNativeServer {
                         }
                     }
                 } else {
+                    log.info( "getNative: nlm: testNode != null " +
+                              " and ncbi_nlmid=" + ncbi_nlmid + " . " );
                     /*
                     //this is old criteria to decide if it's a journal
                     String publicationType = xPath.evaluate( 
@@ -306,6 +314,7 @@ public class NcbiServer extends RemoteNativeServer {
             } catch ( ProxyFault fault ) {
                 throw fault;
             } 
+            
         }
         
         if ( service.equals( "refseq" ) ) {
