@@ -57,14 +57,15 @@ public class NativeRestServer extends RemoteNativeServer {
         String retVal = null;
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
 
-        restUrl = restUrl.replaceAll( restAcTag, ac );
+        String real_restUrl = restUrl.replaceAll( restAcTag, ac );
         try {
-            retVal = NativeURL.query( restUrl, timeOut );
+            retVal = NativeURL.query( real_restUrl, timeOut );
         } catch( ProxyFault fault ) {
             throw fault;
         }
 
         if( retVal.endsWith( "</cause></error></ResultSet>" ) ) {
+            //*** this error for intermine server
             log.warn( "query: return error=" + retVal );
             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
