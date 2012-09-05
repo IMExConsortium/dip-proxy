@@ -60,7 +60,7 @@ public class ProxyCommandClient {
         System.out.println( "SRV: " + sr + " ->Provider: " + provider
                             + " ->service: " + service
                             + " -> AC=" + ac
-                            + " -> NS=" + ac
+                            + " -> NS=" + ns
                             + " -> FORMAT=" + format
                             + " -> DETAIL=" + detail );
 
