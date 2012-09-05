@@ -13,6 +13,7 @@
   <property name="transfMap">
    <map>
     <entry key="uniprot">
+        <!-- key is the web service name -->
      <value>/xsl/ebi/uniprot2dxf.xsl</value>
     </entry>
     <entry key="picr">
@@ -81,11 +82,9 @@
     class="edu.ucla.mbi.proxy.ProxyTransformer">
   <property name="transfMap">
     <map>
-      <!--
       <entry key="yeastmine">
-        <value>/xsl/intermine/intermine2dxf.xsl</value> 
+        <value>/xsl/intermine2dxf.xsl</value> 
       </entry>
-      --> 
     </map> 
   </property>
   <property name="context">

@@ -198,7 +198,7 @@
 
   <property name="context">
     <map>
-      <entry key="diplegacyEndpoint">
+      <entry key="dipLegacyEndpoint">
         <value>http://dip.doe-mbi.ucla.edu/dip-legacy/dxf</value>
       </entry>
 
@@ -217,7 +217,10 @@
 
   <property name="restUrl">
    <value>
-    http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml
+    <!-- http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml  -->
+     
+    http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.name+Gene.symbol+Gene.secondaryIdentifier+Gene.organism.name+Gene.organism.taxonId+Gene.organism.species"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml
+
    </value>
   </property>
   <property name="restAcTag">

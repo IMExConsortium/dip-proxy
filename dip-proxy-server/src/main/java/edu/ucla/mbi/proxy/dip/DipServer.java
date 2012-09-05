@@ -35,16 +35,16 @@ import edu.ucla.mbi.dip.dbservice.*;
 
 public class DipServer extends RemoteNativeServer {
 
-    private DipLegacyPort diplegacyPort;
-    private String diplegacyEndpoint = null;
+    private DipLegacyPort dipLegacyPort;
+    private String dipLegacyEndpoint = null;
     
     private DipDxfPort dipPort;
     private String dipEndpoint = null;
 
     private final String detail = "full";
     
-    private final String diplegacyNsSrv = "http://mbi.ucla.edu/services/legacy/dip";
-    private final String diplegacyNmSrv = "DipLegacyService";
+    private final String dipLegacyNsSrv = "http://mbi.ucla.edu/services/legacy/dip";
+    private final String dipLegacyNmSrv = "DipLegacyService";
 
     private final String dipNsSrv = "http://mbi.ucla.edu/dip/dbservice";
     private final String dipNmSrv = "dipDxfService";
@@ -59,7 +59,7 @@ public class DipServer extends RemoteNativeServer {
         if( getContext() != null ){
 
             dipEndpoint = (String) getContext().get( "dipEndpoint" );
-            diplegacyEndpoint = (String) getContext().get( "diplegacyEndpoint" );
+            dipLegacyEndpoint = (String) getContext().get( "dipLegacyEndpoint" );
 
             if( dipEndpoint != null &&  dipEndpoint.length() > 0 ) {
                 dipEndpoint = dipEndpoint.replaceAll( "^\\s+", "" );
@@ -70,36 +70,36 @@ public class DipServer extends RemoteNativeServer {
                 return;
             }
 
-            if( diplegacyEndpoint != null && diplegacyEndpoint.length() > 0 ) {
-                diplegacyEndpoint = diplegacyEndpoint.replaceAll( "^\\s+", "" );
-                diplegacyEndpoint = diplegacyEndpoint.replaceAll( "\\s+$", "" );
+            if( dipLegacyEndpoint != null && dipLegacyEndpoint.length() > 0 ) {
+                dipLegacyEndpoint = dipLegacyEndpoint.replaceAll( "^\\s+", "" );
+                dipLegacyEndpoint = dipLegacyEndpoint.replaceAll( "\\s+$", "" );
             } else {
                 log.warn( "DipServer: DipLegacyService initializing failed "
-                           + "because of diplegacyEndpoint is not set. " );
+                           + "because of dipLegacyEndpoint is not set. " );
                 return;
             }
 
         }
         
-        log.info( " diplegacyEndpoint=" + diplegacyEndpoint );
+        log.info( " dipLegacyEndpoint=" + dipLegacyEndpoint );
             
         try {
             DipLegacyService service =
-                new DipLegacyService( new URL( diplegacyEndpoint + "?wsdl" ),
-                                      new QName( diplegacyNsSrv, 
-                                                 diplegacyNmSrv ) );
+                new DipLegacyService( new URL( dipLegacyEndpoint + "?wsdl" ),
+                                      new QName( dipLegacyNsSrv, 
+                                                 dipLegacyNmSrv ) );
 
-            diplegacyPort = service.getLegacyPort();
+            dipLegacyPort = service.getLegacyPort();
 
-            if ( diplegacyPort != null ) {
-                    ((BindingProvider) diplegacyPort).getRequestContext()
+            if ( dipLegacyPort != null ) {
+                    ((BindingProvider) dipLegacyPort).getRequestContext()
                         .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                              diplegacyEndpoint );
+                              dipLegacyEndpoint );
             } 
         } catch ( Exception e ) {
             log.warn( "DipServer: DipLegacyService initializing failed: "   
                        + "reason=" +  e.toString() + ". ");
-            diplegacyPort = null;
+            dipLegacyPort = null;
         }
 
         log.info( " dipEndpoint=" + dipEndpoint );
@@ -209,33 +209,33 @@ public class DipServer extends RemoteNativeServer {
                 throw FaultFactory.newInstance( Fault.INVALID_ID );
             }
         } else if ( service.equals( "diplegacy" ) ) {
-            if( diplegacyPort == null ) {
-                log.warn( "getNative: diplegacyPort initailizing fault." );
+            if( dipLegacyPort == null ) {
+                log.warn( "getNative: dipLegacyPort initailizing fault." );
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
             } else if( ac.matches( "DIP-\\d+E" ) ) {
                 try {
-                    retList = diplegacyPort.getLink( "dip", ac, "", detail, "dxf" );
+                    retList = dipLegacyPort.getLink( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
                     throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
                 }
             } else if ( ac.matches( "DIP-\\d+N" ) ) {
                 try {
-                    retList = diplegacyPort.getNode( "dip", ac, "", "", detail, "dxf" );
+                    retList = dipLegacyPort.getNode( "dip", ac, "", "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
                     throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
                 }
             } else if ( ac.matches( "DIP-\\d+X" ) ) {
                 try {
-                    retList = diplegacyPort.getEvidence( "dip", ac, "", detail, "dxf" );
+                    retList = dipLegacyPort.getEvidence( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
                     throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
                 }
             } else if ( ac.matches( "DIP-\\d+S" ) ) {
                 try {
-                    retList = diplegacyPort.getSource( "dip", ac, "", detail, "dxf" );
+                    retList = dipLegacyPort.getSource( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
                     throw FaultFactory.newInstance( Fault.REMOTE_FAULT );

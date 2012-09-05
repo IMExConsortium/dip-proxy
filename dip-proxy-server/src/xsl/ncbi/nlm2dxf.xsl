@@ -11,7 +11,6 @@
     <ns1:dataset>	  
 	    <xsl:apply-templates />
     </ns1:dataset>
-
   </xsl:template>
 
   <xsl:template match="NLMCatalogRecordSet/NLMCatalogRecord">

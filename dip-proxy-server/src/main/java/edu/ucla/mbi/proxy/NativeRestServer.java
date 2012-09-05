@@ -66,8 +66,14 @@ public class NativeRestServer extends RemoteNativeServer {
 
         if( retVal.endsWith( "</cause></error></ResultSet>" ) ) {
             //*** this error for intermine server
-            log.warn( "query: return error=" + retVal );
+            log.warn( "getNative: return error=" + retVal );
             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        }
+
+        if( retVal.endsWith( "<ResultSet ></ResultSet>" ) ) {
+            //**** this fault for intermine server
+            log.warn( "getNative: return an empty set. " );
+            throw FaultFactory.newInstance( Fault.NO_RECORD );
         }
 
         NativeRecord record = new NativeRecord( provider, service, ns, ac );

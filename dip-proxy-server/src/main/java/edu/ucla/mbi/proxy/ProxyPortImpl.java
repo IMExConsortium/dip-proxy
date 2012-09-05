@@ -40,7 +40,9 @@ public class ProxyPortImpl implements ProxyPort {
                            Holder<DatasetType> dataset,
                            Holder<String> nativerecord
                            ) throws ProxyFault {
-  
+ 
+        log.info( "provider=" + provider + " and service=" + service
+                  + " and ac=" + ac + " and ns=" + ns ); 
         //*** validation of ac 
         if ( ac == null || ac.equals( "" ) ) {
             log.info( "missing accession" );
@@ -101,7 +103,9 @@ public class ProxyPortImpl implements ProxyPort {
                 throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
         } else if ( provider.equals( "DIP" ) ) {
+            log.info( "getRecord: provider is DIP. and service=" + service );
             if( service.equals( "dip" ) || service.equals( "diplegacy" ) ) {
+                log.info( "getRecord: forcing dip as ns. " );
                 ns = "dip";
             } else {
                 throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
