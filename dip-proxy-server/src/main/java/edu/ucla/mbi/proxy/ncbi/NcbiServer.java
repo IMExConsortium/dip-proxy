@@ -31,7 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import java.net.URL;
 
-public class NcbiServer extends RemoteNativeServer {
+public class NcbiServer extends RemoteNativeServer implements NativeServer{
 
     private Log log = LogFactory.getLog( NcbiServer.class );
     private NativeRestServer nlmEsearchRestServer = null;

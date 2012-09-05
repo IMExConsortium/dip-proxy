@@ -22,7 +22,7 @@ import edu.ucla.mbi.cache.NativeRecord;
 
 import edu.ucla.mbi.fault.*;
 
-public class NativeRestServer extends RemoteNativeServer {
+public class NativeRestServer implement NativeServer {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
 
