@@ -1,3 +1,4 @@
+
 package edu.ucla.mbi.proxy;
 
 /*===========================================================================
@@ -57,18 +58,25 @@ public class RemoteServerImpl implements RemoteServer {
 	    log.info("Initializing: " + this );
     }
 
+    NativeServer natSrv;
+    public void setNativeServer(NativeServer server) {
+        natSrv = server;
+    }
+
     // Remore Native Server 
     //---------------------
 
     public NativeRecord getNative( String provider, String service,
-                                            String ns, String ac, int timeout 
+                                   String ns, String ac, int timeout 
                                    ) throws ProxyFault{
 
         // gets  NativeServer instance (eg NativeRestServer) from the context 
         // and gets native record from the remore native server by calling
         //  nrc.getNative(....);  
+
+
         
-        return null;
+        return natSrv.getNative( provider, service, ns, ac, timeout);
     }
     
     

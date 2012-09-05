@@ -38,7 +38,7 @@ import uk.ac.ebi.picr.*;
 import uk.ac.ebi.picr.accessionmappingservice.*;
 import uk.ac.ebi.picr.model.*;
 
-public class EbiServer extends RemoteNativeServer {
+public class EbiServer extends RemoteNativeServer implements NativeServer {
 
 //public class EbiServer extends NativeRestServer {
 

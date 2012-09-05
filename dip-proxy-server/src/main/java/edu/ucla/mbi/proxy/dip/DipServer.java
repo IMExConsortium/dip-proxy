@@ -33,7 +33,7 @@ import edu.ucla.mbi.services.legacy.dip.*;
 
 import edu.ucla.mbi.dip.dbservice.*;
 
-public class DipServer extends RemoteNativeServer {
+public class DipServer extends RemoteNativeServer implements NativeServer {
 
     private DipLegacyPort dipLegacyPort;
     private String dipLegacyEndpoint = null;

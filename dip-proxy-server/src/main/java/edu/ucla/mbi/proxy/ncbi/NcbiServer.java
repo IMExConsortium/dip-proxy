@@ -55,7 +55,10 @@ public class NcbiServer extends RemoteNativeServer implements NativeServer{
                                                     "nlmEfetchRestServer" );
 
             pubmedRestServer = (NativeRestServer) getContext().get(
-                                                    "pubmedRestServer" );
+                                                                   //                                        "pubmedRestServer" );
+            //                                       "pubmed"
+
+            
 
             refseqRestServer = (NativeRestServer) getContext().get(
                                                     "refseqRestServer" );
@@ -309,7 +312,13 @@ public class NcbiServer extends RemoteNativeServer implements NativeServer{
             }
 
             try {
-                record = pubmedRestServer.getNative( provider, service, 
+                record = (NativeRestServer) 
+                    getContext().get(service)).getNative( provider, service,
+                                                          ns, ac, timeOut );
+            
+            //                                    "pubmedRestServer" );
+            //                                       "pubmed"
+            //record = pubmedRestServer.getNative( provider, service, 
                                                      ns, ac, timeOut );
             } catch ( ProxyFault fault ) {
                 throw fault;

@@ -33,7 +33,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.stream.StreamSource;
 
 
-public class ProlinksServer extends RemoteNativeServer {
+public class ProlinksServer extends RemoteNativeServer implements NativeServer {
 
     private Log log = LogFactory.getLog( ProlinksServer.class );
 
