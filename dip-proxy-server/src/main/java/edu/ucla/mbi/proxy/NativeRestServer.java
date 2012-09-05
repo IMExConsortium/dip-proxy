@@ -59,7 +59,7 @@ public class NativeRestServer extends RemoteNativeServer {
 
         String real_restUrl = restUrl.replaceAll( restAcTag, ac );
         try {
-            retVal = NativeURL.query( real_restUrl, timeOut );
+            retVal = query( real_restUrl, timeOut );
         } catch( ProxyFault fault ) {
             throw fault;
         }
@@ -118,7 +118,7 @@ public class NativeRestServer extends RemoteNativeServer {
             conn.disconnect();
 
         } catch ( Exception e ) {
-            log.info( "NativeURL: exception: " + e.toString());
+            log.info( "query: exception: " + e.toString());
             if( e.toString().contains( "TimeoutException" )
                     || e.toString().contains( "Read timeout" ) )
             {
