@@ -22,7 +22,7 @@ import edu.ucla.mbi.cache.NativeRecord;
 
 import edu.ucla.mbi.fault.*;
 
-public class NativeRestServer implement NativeServer {
+public class NativeRestServer implements NativeServer {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
 
@@ -30,9 +30,9 @@ public class NativeRestServer implement NativeServer {
     private String restAcTag = null;
    
     public void setRestUrl( String url ) {
-        url = url.replaceAll("^\\s+","");
-        url = url.replaceAll("\\s+$","");
-
+        //url = url.replaceAll("^\\s+","");
+        //url = url.replaceAll("\\s+$","");
+        url = url.replaceAll("\\s", "");
         this.restUrl=url;
     }
 
@@ -50,7 +50,12 @@ public class NativeRestServer implement NativeServer {
     public String getRestAcTag(){
         return restAcTag;
     }
- 
+
+    public void initialize() {
+        Log log = LogFactory.getLog( NativeRestServer.class );
+        log.info( "initializing: " );
+    }
+     
     public NativeRecord getNative( String provider, String service, String ns,
             String ac, int timeOut ) throws ProxyFault {
 
@@ -127,6 +132,7 @@ public class NativeRestServer implement NativeServer {
                 throw FaultFactory.newInstance( Fault.NO_RECORD );
             } else {
                 //*** including http status 503 Service Temporarily Unavailable
+                //***   and wrong url address
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );  // unknown remote
             }
         }

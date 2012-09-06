@@ -116,7 +116,7 @@
 
   <property name="context">
     <map>
-      <entry key="uniprotRestServer">
+      <entry key="uniprot">
         <ref bean="uniprotRestServer"/>
       </entry>
       
@@ -151,22 +151,22 @@
 
   <property name="context">
     <map>
-      <entry key="nlmEsearchRestServer">
+      <entry key="nlmEsearch">
         <ref bean="nlmEsearchRestServer"/>
       </entry>
-      <entry key="nlmEfetchRestServer">
+      <entry key="nlmEfetch">
         <ref bean="nlmEfetchRestServer"/>
       </entry>
-      <entry key="pubmedRestServer">
+      <entry key="pubmed">
         <ref bean="pubmedRestServer"/>
       </entry>
-      <entry key="refseqRestServer">
+      <entry key="refseq">
         <ref bean="refseqRestServer"/>
       </entry>
-      <entry key="entrezgeneRestServer">
+      <entry key="entrezgene">
         <ref bean="entrezgeneRestServer"/>
       </entry>
-      <entry key="taxonRestServer">
+      <entry key="taxon">
         <ref bean="taxonRestServer"/>
       </entry>
     </map>
@@ -180,7 +180,7 @@
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="context">
     <map>
-        <entry key="prolinksRestServer">
+        <entry key="prolinks">
             <ref bean="prolinksRestServer"/>
         </entry>
         <entry key="ncbiProxyAddress">
@@ -210,16 +210,36 @@
 
  </bean>
 
- <!-- yeastmine rest server -->
+ <!-- YeastMine proxy services -->
  
  <bean id="yeastMineReferenceServer" init-method="initialize"
+       class="edu.ucla.mbi.proxy.RemoteServerImpl">
+
+  <property name="context">
+    <map>
+        <entry key="yeastmine">
+            <ref bean="yeastMineRestServer"/>
+        </entry>
+    </map>
+  </property>
+ </bean>
+
+ <!-- yeastmine rest server -->
+ 
+ <bean id="yeastMineRestServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.NativeRestServer">
 
   <property name="restUrl">
    <value>
     <!-- http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml  -->
      
-    http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.name+Gene.symbol+Gene.secondaryIdentifier+Gene.organism.name+Gene.organism.taxonId+Gene.organism.species"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml
+    http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query
+        =&lt;query+name=""+model="genomic"
+            +view="Gene.name+Gene.symbol+Gene.secondaryIdentifier
+                    +Gene.organism.name+Gene.organism.taxonId
+                    +Gene.organism.species"&gt;
+         &lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;
+         &lt;/query&gt;&amp;format=xml
 
    </value>
   </property>

@@ -1,18 +1,17 @@
 package edu.ucla.mbi.proxy;
 
-/*===========================================================================
- * $HeadURL::                                                               $
- * $Id::                                                                    $
- * Version: $Rev::                                                          $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * RemoteServer:
  *
- *    returns string representation of a data record requested from the 
- *    server using ns/ac (namespace/accession) pair as identifier and
- *    operation as the remote service name
- *
- *========================================================================= */
+ *    An interface with two functions:
+ *          getNative(...) and buildDxf(...)
+ *    
+ *=========================================================================== */
 
 import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.cache.NativeRecord;
@@ -28,7 +27,7 @@ public interface RemoteServer{
 				                 ProxyTransformer pTrans 
                                  ) throws ProxyFault;
     
-
+    
     public boolean isNative();
     public String getAddress();
     

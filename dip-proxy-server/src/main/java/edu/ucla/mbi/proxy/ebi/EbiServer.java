@@ -1,15 +1,15 @@
 package edu.ucla.mbi.proxy.ebi;
 
-/*===========================================================================
- * $HeadURL: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/#$
- * $Id$
- * Version: $Rev$
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * EbiServer:
  *    services provided by EBI web services
  *
- *========================================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +38,7 @@ import uk.ac.ebi.picr.*;
 import uk.ac.ebi.picr.accessionmappingservice.*;
 import uk.ac.ebi.picr.model.*;
 
-public class EbiServer extends RemoteNativeServer implements NativeServer {
+public class EbiServer extends RemoteServerImpl {
 
 //public class EbiServer extends NativeRestServer {
 
@@ -117,7 +117,7 @@ public class EbiServer extends RemoteNativeServer implements NativeServer {
             }
 
             //*** initialize uniprot rest server
-            uniprotRestServer = (NativeRestServer) context.get( "uniprotRestServer" );
+            uniprotRestServer = (NativeRestServer) context.get( "uniprot" );
         }
 
         //*** call EBI PICR utility
@@ -190,7 +190,7 @@ public class EbiServer extends RemoteNativeServer implements NativeServer {
                     throw FaultFactory.newInstance( Fault.UNKNOWN );
                 }
             }*/
-            
+            /*
             if( uniprotRestServer == null ) {
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
             }
@@ -199,7 +199,8 @@ public class EbiServer extends RemoteNativeServer implements NativeServer {
                 record = uniprotRestServer.getNative( provider, service, ns, ac, timeOut );
             } catch ( ProxyFault fault ) {
                 throw fault;
-            }
+            }*/
+            return super.getNative(  provider, service, ns, ac, timeOut );
            
         }
 

@@ -33,7 +33,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.stream.StreamSource;
 
 
-public class ProlinksServer extends RemoteNativeServer implements NativeServer {
+public class ProlinksServer extends RemoteServerImpl {
 
     private Log log = LogFactory.getLog( ProlinksServer.class );
 
@@ -72,7 +72,7 @@ public class ProlinksServer extends RemoteNativeServer implements NativeServer {
             log.warn( "getNative: prolinksRestServer is not initialized. " );
             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
-
+        /*
         NativeRecord record = prolinksRestServer.getNative ( provider, 
                                                 service, ns, ac, timeOut );
 
@@ -89,7 +89,8 @@ public class ProlinksServer extends RemoteNativeServer implements NativeServer {
             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
         } else {
             return record;
-        }
+        }*/
+        return super.getNative( provider, service, ns, ac, timeOut );
     }
 
     

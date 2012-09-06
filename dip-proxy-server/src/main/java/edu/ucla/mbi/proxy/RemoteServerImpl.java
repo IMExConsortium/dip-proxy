@@ -1,19 +1,14 @@
-
 package edu.ucla.mbi.proxy;
 
-/*===========================================================================
- * $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/dip-prox#$
- * $Id:: RemoteNativeServer.java 2679 2012-08-30 01:49:50Z wyu              $
- * Version: $Rev:: 2679                                                     $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/src/main/ja#$
+ * $Id:: RemoteNativeServer.java 2679 2012-08-30 01:49:50Z wyu                 $
+ * Version: $Rev:: 2679                                                        $
+ *==============================================================================
  *
- * RemoteServer:
+ * RemoteServerImpl:
  *
- *    returns string representation of a data record requested from the 
- *    server using ns/ac (namespace/accession) pair as identifier and
- *    operation as the remote service name
- *
- *========================================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,7 +31,8 @@ import java.util.Map;
 public class RemoteServerImpl implements RemoteServer {
 
     private static Map<String,Object> context;
-
+    //private NativeServer natSrv;
+    
     public boolean isNative(){
         return true;
     }
@@ -45,8 +41,10 @@ public class RemoteServerImpl implements RemoteServer {
         return null;
     };
     
+
     public void setContext( Map<String,Object> context ) {
-        RemoteNativeServer.context = context;
+        //RemoteNativeServer.context = context;
+        this.context = context;
     }
 
     public Map<String,Object> getContext() {
@@ -58,10 +56,10 @@ public class RemoteServerImpl implements RemoteServer {
 	    log.info("Initializing: " + this );
     }
 
-    NativeServer natSrv;
+    /*
     public void setNativeServer(NativeServer server) {
         natSrv = server;
-    }
+    }*/
 
     // Remore Native Server 
     //---------------------
@@ -73,8 +71,8 @@ public class RemoteServerImpl implements RemoteServer {
         // gets  NativeServer instance (eg NativeRestServer) from the context 
         // and gets native record from the remore native server by calling
         //  nrc.getNative(....);  
-
-
+        //return natSrv.getNative( provider, service, ns, ac, timeout);
+        NativeServer natSrv = (NativeServer) context.get( service );
         
         return natSrv.getNative( provider, service, ns, ac, timeout);
     }

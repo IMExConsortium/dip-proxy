@@ -31,7 +31,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import java.net.URL;
 
-public class NcbiServer extends RemoteNativeServer implements NativeServer{
+//public class NcbiServer extends RemoteNativeServer implements NativeServer{
+public class NcbiServer extends RemoteServerImpl implements NativeServer{
 
     private Log log = LogFactory.getLog( NcbiServer.class );
     private NativeRestServer nlmEsearchRestServer = null;
@@ -49,25 +50,24 @@ public class NcbiServer extends RemoteNativeServer implements NativeServer{
         if( getContext() != null ){
 
             nlmEsearchRestServer = (NativeRestServer) getContext().get(
-                                                    "nlmEsearchRestServer" );
+                                                    "nlmEsearch" );
 
             nlmEfetchRestServer = (NativeRestServer) getContext().get(
-                                                    "nlmEfetchRestServer" );
+                                                    "nlmEfetch" );
 
             pubmedRestServer = (NativeRestServer) getContext().get(
-                                                                   //                                        "pubmedRestServer" );
-            //                                       "pubmed"
+                                                   "pubmed" );
 
             
 
             refseqRestServer = (NativeRestServer) getContext().get(
-                                                    "refseqRestServer" );
+                                                    "refseq" );
 
             entrezgeneRestServer = (NativeRestServer) getContext().get(
-                                                    "entrezgeneRestServer" );
+                                                    "entrezgene" );
 
             taxonRestServer = (NativeRestServer) getContext().get(
-                                                    "taxonRestServer" );
+                                                    "taxon" );
 
         }
     }
@@ -312,14 +312,14 @@ public class NcbiServer extends RemoteNativeServer implements NativeServer{
             }
 
             try {
-                record = (NativeRestServer) 
+                record = ((NativeRestServer) 
                     getContext().get(service)).getNative( provider, service,
                                                           ns, ac, timeOut );
             
             //                                    "pubmedRestServer" );
             //                                       "pubmed"
             //record = pubmedRestServer.getNative( provider, service, 
-                                                     ns, ac, timeOut );
+            //                                         ns, ac, timeOut );
             } catch ( ProxyFault fault ) {
                 throw fault;
             } 
