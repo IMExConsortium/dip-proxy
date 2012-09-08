@@ -30,8 +30,6 @@ public class NativeRestServer implements NativeServer {
     private String restAcTag = null;
    
     public void setRestUrl( String url ) {
-        //url = url.replaceAll("^\\s+","");
-        //url = url.replaceAll("\\s+$","");
         url = url.replaceAll("\\s", "");
         this.restUrl=url;
     }

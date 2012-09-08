@@ -19,7 +19,7 @@ import edu.ucla.mbi.cache.NativeRecord;
 public interface RemoteServer{
     
     public NativeRecord getNative( String provider, String service,
-                                   String ns, String ac, int timeOut 
+                                   String ns, String ac, int timeout 
                                    ) throws ProxyFault;
     
     public DatasetType buildDxf( String strNative, String ns, String ac,

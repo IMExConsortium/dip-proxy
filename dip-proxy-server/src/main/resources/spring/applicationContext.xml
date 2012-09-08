@@ -204,7 +204,6 @@
        <entry key="monitor" value="off"/>
       </map>
      </entry>
-
    </map> 
   </property>
  </bean>

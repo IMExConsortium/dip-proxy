@@ -38,23 +38,20 @@ public class ProlinksServer extends RemoteServerImpl {
     private Log log = LogFactory.getLog( ProlinksServer.class );
 
     private String ncbiProxyAddress = null;
-    private NativeRestServer prolinksRestServer = null;
 
     public void initialize() {
 
         Log log = LogFactory.getLog( ProlinksServer.class );
-        log.info( "initialize service" );
+        log.info( "initialize service=" + this );
 
         if( getContext() != null ){
-
-            prolinksRestServer = (NativeRestServer) getContext().get( 
-                                                    "prolinksRestServer" );
-
+            
+            super.initialize(); // used for prolinks rest server initializing
+            
             ncbiProxyAddress = ( String ) getContext().get( "ncbiProxyAddress" );
             
             if( ncbiProxyAddress != null &&  ncbiProxyAddress.length() > 0 ) {
-                ncbiProxyAddress = ncbiProxyAddress.replaceAll( "^\\s+", "" );
-                ncbiProxyAddress = ncbiProxyAddress.replaceAll( "\\s+$", "" );
+                ncbiProxyAddress = ncbiProxyAddress.replaceAll( "\\s", "" );
             } else {
                 log.warn( "ProlinksServer: initializing failed "
                            + "because of ncbiProxyAddress is not set. " );
@@ -62,37 +59,6 @@ public class ProlinksServer extends RemoteServerImpl {
             }
         }
     }
-    
-
-    public NativeRecord getNative( String provider, String service, String ns,
-                                   String ac, int timeOut ) throws ProxyFault 
-    {
-
-        if( prolinksRestServer == null ) {
-            log.warn( "getNative: prolinksRestServer is not initialized. " );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-        }
-        /*
-        NativeRecord record = prolinksRestServer.getNative ( provider, 
-                                                service, ns, ac, timeOut );
-
-        String retVal = record.getNativeXml();
-
-        if( retVal.contains( "<faultCode>97</faultCode>" ) ) {
-            log.info( "query: return faultCode 97. " );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-        } else if ( retVal.contains( "<faultCode>5</faultCode>" ) ) {
-            log.info( "query: return faultCode 5. " );
-            throw FaultFactory.newInstance( Fault.NO_RECORD );
-        } else if ( retVal.contains( "</faultCode>") ) {
-            log.warn( "query: return faultCode=" + retVal );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-        } else {
-            return record;
-        }*/
-        return super.getNative( provider, service, ns, ac, timeOut );
-    }
-
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
                                  String detail, String service, 

@@ -40,9 +40,6 @@ import uk.ac.ebi.picr.model.*;
 
 public class EbiServer extends RemoteServerImpl {
 
-//public class EbiServer extends NativeRestServer {
-
-    private NativeRestServer uniprotRestServer = null;
     List<String> searchDB;
 
     String picrEndpoint = null;
@@ -91,7 +88,9 @@ public class EbiServer extends RemoteServerImpl {
         Map<String, Object> context = getContext();
         
         if( context != null ){
-            
+    
+            super.initialize(); // initializing uniprot rest server        
+
             picrEndpoint = (String) getContext().get( "picrEndpoint" );
             
             if( picrEndpoint != null && picrEndpoint.length() > 0 ) {
@@ -115,9 +114,6 @@ public class EbiServer extends RemoteServerImpl {
                     searchDB.add( db );
                 }            
             }
-
-            //*** initialize uniprot rest server
-            uniprotRestServer = (NativeRestServer) context.get( "uniprot" );
         }
 
         //*** call EBI PICR utility
@@ -144,88 +140,22 @@ public class EbiServer extends RemoteServerImpl {
     //-------------------------------------------------------------------------
     
     public NativeRecord getNative( String provider, String service, 
-                                   String ns, String ac, int timeOut 
+                                   String ns, String ac, int timeout 
                                    ) throws ProxyFault {
         
         Log log = LogFactory.getLog( EbiServer.class );
-
-        NativeRecord record = null;
-        String retVal = null;
-
         log.info( "NS=" + ns + " AC=" + ac + " SRV=" + service );
 
         if ( service.equals( "uniprot" ) ) {
 
-            // call EBI WSDbfetch utility: REST version
-            /*
-            String url = getRestUrl();
-            String acTag = getRestAcTag();
+            return super.getNative( provider, service, ns, ac, timeout );            
 
-            log.info( " restURL=" + url );
-            log.info( " restTag=" + acTag );
+        } else if ( service.equals( "picr" ) ) {
 
-            url = url.replaceAll( acTag, ac );
-
-            try {
-                retVal = NativeURL.query( url, timeOut );
-            } catch ( ProxyFault fault ) {
-                throw fault;
-            } catch ( Exception e ) {
-                log.info( "EbiServer:" + 
-                          " getUniprot: exception: " + e.toString() );
-                if ( e.toString().contains( "No result found" ) ) {
-                    log.warn( "EbiServer: getNative:" +
-                              " uniprot service for AC " + ac +
-                              ": no record found." );
-                    throw FaultFactory.newInstance( Fault.NO_RECORD );
-                } else if ( e.toString().contains( "Read timeout" ) ) {
-                    log.warn( "EbiServer: getNative:" +
-                              " uniprot service for AC " + ac +
-                              ": remote server timeout." );
-                    throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT );
-                } else {
-                    log.warn("EbiServer: getNative:" +
-                             " uniprot service for AC " + ac +
-                             ": get exception: " + e.toString() + ". ");
-                    throw FaultFactory.newInstance( Fault.UNKNOWN );
-                }
-            }*/
-            /*
-            if( uniprotRestServer == null ) {
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            }
+            NativeRecord record = null;
+            String retVal = null;
             
             try {
-                record = uniprotRestServer.getNative( provider, service, ns, ac, timeOut );
-            } catch ( ProxyFault fault ) {
-                throw fault;
-            }*/
-            return super.getNative(  provider, service, ns, ac, timeOut );
-           
-        }
-
-        //----------------------------------------------------------------------
-
-        if ( service.equals( "picr" ) ) {
-            try {
-                /*
-                // call EBI PICR utility
-
-                AccessionMapperInterface port = null;
-                
-                try{
-                    AccessionMapperService amSrv = 
-                        new AccessionMapperService( new URL( picrEndpoint 
-                                                             + "?wsdl" ),
-                                                    new QName( nsPicr, nmPicr ) 
-                                                    );
-                    port = amSrv.getAccessionMapperPort();
-
-                } catch(Exception ex){
-                    log.warn( "EbiServer: picr endpoint not set.");
-                    throw FaultFactory.newInstance( Fault.UNKNOWN );
-                }
-                */
 
                 List<UPEntry> entries =
                         picrPort.getUPIForAccession( ac, "", searchDB, "", true );
@@ -302,10 +232,13 @@ public class EbiServer extends RemoteServerImpl {
 
             record = new NativeRecord( provider, service, ns, ac);
             record.setNativeXml( retVal );
+
+            return record;
+
+        } else {
+            log.warn( "getNative: service=" + service + " does not exist. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
-        
-        //NativeRecord record = new NativeRecord( provider, service, ns, ac);
-        //record.setNativeXml( retVal );
-        return record;
+
     }
 }

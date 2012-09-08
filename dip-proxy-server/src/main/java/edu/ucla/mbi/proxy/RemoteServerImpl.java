@@ -30,20 +30,19 @@ import java.util.Map;
 
 public class RemoteServerImpl implements RemoteServer {
 
-    private static Map<String,Object> context;
-    //private NativeServer natSrv;
+    private Log log = LogFactory.getLog( RemoteServerImpl.class );
+    public static Map<String,Object> context;
+    private NativeServer natSrv;
     
-    public boolean isNative(){
+    public boolean isNative() {
         return true;
     }
     
-    public String getAddress(){
+    public String getAddress() {
         return null;
-    };
+    }
     
-
     public void setContext( Map<String,Object> context ) {
-        //RemoteNativeServer.context = context;
         this.context = context;
     }
 
@@ -52,29 +51,29 @@ public class RemoteServerImpl implements RemoteServer {
     }
 
     public void initialize() {
-	    Log log = LogFactory.getLog( RemoteServer.class );
 	    log.info("Initializing: " + this );
+        if( getContext() != null ) {
+            natSrv = (NativeRestServer) getContext().get( "restServer" );
+        }
     }
-
-    /*
-    public void setNativeServer(NativeServer server) {
-        natSrv = server;
-    }*/
 
     // Remore Native Server 
     //---------------------
 
     public NativeRecord getNative( String provider, String service,
                                    String ns, String ac, int timeout 
-                                   ) throws ProxyFault{
+                                   ) throws ProxyFault {
 
-        // gets  NativeServer instance (eg NativeRestServer) from the context 
-        // and gets native record from the remore native server by calling
-        //  nrc.getNative(....);  
-        //return natSrv.getNative( provider, service, ns, ac, timeout);
-        NativeServer natSrv = (NativeServer) context.get( service );
-        
-        return natSrv.getNative( provider, service, ns, ac, timeout);
+        if( natSrv == null ) {
+            log.warn( "getNative: natSrv is null. " );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        } 
+
+        try {
+            return natSrv.getNative( provider, service, ns, ac, timeout );
+        } catch ( ProxyFault fault ) {
+            throw fault;
+        }
     }
     
     
@@ -86,19 +85,19 @@ public class RemoteServerImpl implements RemoteServer {
 	    Log log = LogFactory.getLog( RemoteServer.class );
 	    
         try {
-	        // native data in string representationa as input
+	        //*** native data in string representationa as input
 	    
 	        ByteArrayInputStream bisNative =
 		    new ByteArrayInputStream( strNative.getBytes( "UTF-8" ) );
 	        StreamSource ssNative = new StreamSource( bisNative );
 	    
-	        // dxf as JAXBResult result of the transformation
+	        //*** dxf as JAXBResult result of the transformation
 	    
 	        JAXBContext dxfJc = DxfJAXBContext.getDxfContext();
 	        //JAXBContext.newInstance( "edu.ucla.mbi.dxf14" );
 	        JAXBResult result = new JAXBResult( dxfJc );
 	    
-	        //transform into DXF
+	        //*** transform into DXF
 	    
 	        pTrans.setTransformer( service );
     	    pTrans.setParameters( detail, ns, ac );
@@ -107,7 +106,7 @@ public class RemoteServerImpl implements RemoteServer {
 	        DatasetType dxfResult  = 
 		    (DatasetType) ( (JAXBElement) result.getResult() ).getValue();
 	    
-            //test if dxfResult is empty
+            //*** test if dxfResult is empty
 	        if ( dxfResult.getNode().isEmpty() ) {
 		        throw FaultFactory.newInstance( Fault.NO_RECORD );  // no hits
 	        }	    

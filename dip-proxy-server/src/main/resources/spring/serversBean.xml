@@ -116,7 +116,7 @@
 
   <property name="context">
     <map>
-      <entry key="uniprot">
+      <entry key="restServer">
         <ref bean="uniprotRestServer"/>
       </entry>
       
@@ -146,7 +146,7 @@
 
  <!-- NCBI proxy services -->
  
- <bean id="ncbiReferenceServer" init-method="initialize"
+ <bean id="ncbiReferenceServer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.ncbi.NcbiServer">
 
   <property name="context">
@@ -180,7 +180,7 @@
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="context">
     <map>
-        <entry key="prolinks">
+        <entry key="restServer">
             <ref bean="prolinksRestServer"/>
         </entry>
         <entry key="ncbiProxyAddress">
@@ -211,13 +211,12 @@
  </bean>
 
  <!-- YeastMine proxy services -->
- 
+  
  <bean id="yeastMineReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.RemoteServerImpl">
-
   <property name="context">
     <map>
-        <entry key="yeastmine">
+        <entry key="restServer">
             <ref bean="yeastMineRestServer"/>
         </entry>
     </map>
@@ -231,14 +230,14 @@
 
   <property name="restUrl">
    <value>
-    <!-- http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=&lt;query+name=""+model="genomic"+view="Gene.symbol+Gene.secondaryIdentifier+Gene.proteins.secondaryIdentifier+Gene.proteins.symbol"&gt;&lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;&lt;/query&gt;&amp;format=xml  -->
      
     http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query
         =&lt;query+name=""+model="genomic"
             +view="Gene.name+Gene.symbol+Gene.secondaryIdentifier
                     +Gene.organism.name+Gene.organism.taxonId
                     +Gene.organism.species"&gt;
-         &lt;constraint+path="Gene.symbol"+op="="+value="%%ACTAG%%"/&gt;
+            &lt;constraint+path="Gene.secondaryIdentifier"+op="="
+                +value="%%ACTAG%%"/&gt;
          &lt;/query&gt;&amp;format=xml
 
    </value>
@@ -268,7 +267,6 @@
        class="edu.ucla.mbi.proxy.NativeRestServer">
     <property name="restUrl">
         <value>
-            <!--http://codd.mbi.ucla.edu/prolinks/query_prolinks.php?pid=%%ACTAG%% -->
             http://prl.mbi.ucla.edu/prlbeta/php_dip_service?id=%%ACTAG%%
         </value>
     </property>
@@ -283,7 +281,8 @@
        class="edu.ucla.mbi.proxy.NativeRestServer">
     <property name="restUrl">
         <value>
-            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&amp;retmode=xml&amp;id=%%ACTAG%%
+            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed
+                &amp;retmode=xml&amp;id=%%ACTAG%%
         </value>
     </property>
     <property name="restAcTag">
@@ -297,7 +296,8 @@
        class="edu.ucla.mbi.proxy.NativeRestServer">
     <property name="restUrl">
         <value>
-            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&amp;id=%%ACTAG%%&amp;rettype=gpc&amp;retmode=xml
+            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein
+                &amp;id=%%ACTAG%%&amp;rettype=gpc&amp;retmode=xml
         </value>
     </property>
     <property name="restAcTag">
@@ -311,7 +311,8 @@
        class="edu.ucla.mbi.proxy.NativeRestServer">
     <property name="restUrl">
         <value>
-            "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene&amp;id=%%ACTAG%%&amp;retmode=xml
+            "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene
+                &amp;id=%%ACTAG%%&amp;retmode=xml
         </value>
     </property>
     <property name="restAcTag">
@@ -325,7 +326,8 @@
        class="edu.ucla.mbi.proxy.NativeRestServer">
     <property name="restUrl">
         <value>
-            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&amp;id=%%ACTAG%%&amp;retmode=xml
+            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy
+                &amp;id=%%ACTAG%%&amp;retmode=xml
         </value>
     </property>
     <property name="restAcTag">
@@ -339,7 +341,8 @@
        class="edu.ucla.mbi.proxy.NativeRestServer">
     <property name="restUrl">
         <value>
-            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nlmcatalog&amp;retmode=xml&amp;term=%%ACTAG%%[nlmid]
+            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?
+                db=nlmcatalog&amp;retmode=xml&amp;term=%%ACTAG%%[nlmid]
         </value>
     </property>
     <property name="restAcTag">
@@ -353,7 +356,8 @@
        class="edu.ucla.mbi.proxy.NativeRestServer">
     <property name="restUrl">
         <value>
-            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nlmcatalog&amp;retmode=xml&amp;id=%%ACTAG%%
+            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?
+                db=nlmcatalog&amp;retmode=xml&amp;id=%%ACTAG%%
         </value>
     </property>
     <property name="restAcTag">

@@ -31,54 +31,50 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import java.net.URL;
 
-//public class NcbiServer extends RemoteNativeServer implements NativeServer{
-public class NcbiServer extends RemoteServerImpl implements NativeServer{
+public class NcbiServer extends RemoteServerImpl {
 
     private Log log = LogFactory.getLog( NcbiServer.class );
+     
     private NativeRestServer nlmEsearchRestServer = null;
     private NativeRestServer nlmEfetchRestServer = null;
     private NativeRestServer pubmedRestServer = null;
     private NativeRestServer refseqRestServer = null;
     private NativeRestServer entrezgeneRestServer = null;
     private NativeRestServer taxonRestServer = null;
-
+    
     public void initialize() {
 
-        Log log = LogFactory.getLog( NcbiServer.class );
-        log.info( "initialize service" );
+        log.info( "initialize service=" + this );
 
         if( getContext() != null ){
 
-            nlmEsearchRestServer = (NativeRestServer) getContext().get(
-                                                    "nlmEsearch" );
+            nlmEsearchRestServer = 
+                (NativeRestServer) getContext().get( "nlmEsearch" );
 
-            nlmEfetchRestServer = (NativeRestServer) getContext().get(
-                                                    "nlmEfetch" );
+            nlmEfetchRestServer = 
+                (NativeRestServer) getContext().get( "nlmEfetch" );
 
-            pubmedRestServer = (NativeRestServer) getContext().get(
-                                                   "pubmed" );
+            pubmedRestServer = 
+                (NativeRestServer) getContext().get( "pubmed" );
 
-            
+            refseqRestServer = 
+                (NativeRestServer) getContext().get( "refseq" );
 
-            refseqRestServer = (NativeRestServer) getContext().get(
-                                                    "refseq" );
+            entrezgeneRestServer = 
+                (NativeRestServer) getContext().get( "entrezgene" );
 
-            entrezgeneRestServer = (NativeRestServer) getContext().get(
-                                                    "entrezgene" );
-
-            taxonRestServer = (NativeRestServer) getContext().get(
-                                                    "taxon" );
-
-        }
+            taxonRestServer = 
+                (NativeRestServer) getContext().get( "taxon" );
+        } 
     }
 
     public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeOut ) throws ProxyFault {
+            String ac, int timeout ) throws ProxyFault {
 
+        log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
         NativeRecord record = null;
         String retVal = null;
-        log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
-            
+    
         if ( service.equals( "nlm" ) ) {
 
             if( nlmEsearchRestServer == null || nlmEfetchRestServer == null ) {
@@ -88,6 +84,7 @@ public class NcbiServer extends RemoteServerImpl implements NativeServer{
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
             }
 
+            
             XPathFactory xpf = XPathFactory.newInstance();
             XPath xPath = xpf.newXPath();
             DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();
@@ -256,7 +253,7 @@ public class NcbiServer extends RemoteServerImpl implements NativeServer{
                         //extract xml string
                         try {
                             record = nlmEfetchRestServer.getNative( provider, 
-                                                    service, ns, ncbi_nlmid, timeOut );
+                                                    service, ns, ncbi_nlmid, timeout );
                         } catch ( ProxyFault fault ) {
                             throw fault;
                         }
@@ -303,30 +300,24 @@ public class NcbiServer extends RemoteServerImpl implements NativeServer{
                           "getService Exception:\n" + e.toString() + ". ");
                 throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
-        }
 
-        if ( service.equals( "pubmed" ) ) {
+        } else if ( service.equals( "pubmed" ) ) {
+            
             if( pubmedRestServer == null ) {
                 log.warn( "getNative: pubmedRestServer is null. " );
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                
             }
 
             try {
-                record = ((NativeRestServer) 
-                    getContext().get(service)).getNative( provider, service,
-                                                          ns, ac, timeOut );
-            
-            //                                    "pubmedRestServer" );
-            //                                       "pubmed"
-            //record = pubmedRestServer.getNative( provider, service, 
-            //                                         ns, ac, timeOut );
+                record = pubmedRestServer.getNative( provider, service, 
+                                                        ns, ac, timeout );
+
             } catch ( ProxyFault fault ) {
                 throw fault;
             } 
             
-        }
-        
-        if ( service.equals( "refseq" ) ) {
+        } else if ( service.equals( "refseq" ) ) {
             if( refseqRestServer == null ) {
                 log.warn( "getNative: refseqRestServer is null. " );
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
@@ -334,7 +325,7 @@ public class NcbiServer extends RemoteServerImpl implements NativeServer{
 
             try {
                 record = refseqRestServer.getNative( provider, service, 
-                                                     ns, ac, timeOut );
+                                                     ns, ac, timeout );
             } catch ( ProxyFault fault ) {
                 throw fault;
             }
@@ -348,9 +339,7 @@ public class NcbiServer extends RemoteServerImpl implements NativeServer{
                           ac + "." );
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
             } 
-        }
-        
-        if ( service.equals( "entrezgene" ) ) {
+        } else if ( service.equals( "entrezgene" ) ) {
             if( entrezgeneRestServer == null ) {
                 log.warn( "getNative: entrezgeneRestServer is null. " );
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
@@ -358,14 +347,12 @@ public class NcbiServer extends RemoteServerImpl implements NativeServer{
 
             try {
                 record = entrezgeneRestServer.getNative( provider, service, 
-                                                         ns, ac, timeOut );
+                                                         ns, ac, timeout );
             } catch ( ProxyFault fault ) {
                 throw fault;
             }
 
-        }
-        
-        if ( service.equals( "taxon" ) ) {
+        } else if ( service.equals( "taxon" ) ) {
             if( taxonRestServer == null ) {
                 log.warn( "getNative: taxonRestServer is null. " );
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
@@ -373,12 +360,15 @@ public class NcbiServer extends RemoteServerImpl implements NativeServer{
 
             try {
                 record = taxonRestServer.getNative( provider, service,
-                                                    ns, ac, timeOut );
+                                                    ns, ac, timeout );
             } catch ( ProxyFault fault ) {
                 throw fault;
             }
+        } else {
+            log.warn ( "getNative: service=" + service + " does not exist. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
-        return record;   
+        return record;
     }
 }
