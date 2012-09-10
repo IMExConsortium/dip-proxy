@@ -58,7 +58,7 @@ public class NativeRestServer implements NativeServer {
             String ac, int timeOut ) throws ProxyFault {
 
         String retVal = null;
-        log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
+        log.info( "getNative: NS=" + ns + " AC=" + ac + " OP=" + service );
 
         String real_restUrl = restUrl.replaceAll( restAcTag, ac );
         try {
@@ -79,6 +79,26 @@ public class NativeRestServer implements NativeServer {
             throw FaultFactory.newInstance( Fault.NO_RECORD );
         }
 
+        if( retVal.contains("<INSDSet><Error>")
+                    || retVal.contains( "<TSeqSet/>" ) ) {
+
+            //*** this fault for NCBI refseq
+            log.warn( "getNative: refseq get wrong retVal for ac " + ac + "." );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        }
+
+        //** this fault for MBI prolinks
+        if( retVal.contains( "<faultCode>97</faultCode>" ) ) {
+            log.info( "getNative: return faultCode 97. " );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        } else if ( retVal.contains( "<faultCode>5</faultCode>" ) ) {
+            log.info( "getNative: return faultCode 5. " );
+            throw FaultFactory.newInstance( Fault.NO_RECORD );
+        } else if ( retVal.contains( "</faultCode>") ) {
+            log.warn( "getNative: return faultCode=" + retVal );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        }
+
         NativeRecord record = new NativeRecord( provider, service, ns, ac );
         record.setNativeXml( retVal );
         return record;
@@ -92,7 +112,13 @@ public class NativeRestServer implements NativeServer {
             java.net.URL xmlURL = new URL( url );
             java.net.HttpURLConnection conn
                     = (HttpURLConnection) xmlURL.openConnection();
-
+            
+            if( conn.getResponseCode() == 404 ) {
+                //*** this fault for EBI uniprot
+                log.warn( "query: connection get 404 code ( Not Found). " );
+                throw FaultFactory.newInstance( Fault.NO_RECORD );
+            }
+            
             if( conn.getResponseCode() != 200 ) {
                 log.warn ( "query: connectin get response message: "
                            + conn.getResponseMessage() );
@@ -120,6 +146,8 @@ public class NativeRestServer implements NativeServer {
             in.close();
             conn.disconnect();
 
+        } catch ( ProxyFault fault ) {
+            throw fault;
         } catch ( Exception e ) {
             log.info( "query: exception: " + e.toString());
             if( e.toString().contains( "TimeoutException" )

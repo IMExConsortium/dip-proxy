@@ -31,8 +31,7 @@ import java.util.Map;
 public class RemoteServerImpl implements RemoteServer {
 
     private Log log = LogFactory.getLog( RemoteServerImpl.class );
-    public static Map<String,Object> context;
-    private NativeServer natSrv;
+    public Map<String,Object> context;
     
     public boolean isNative() {
         return true;
@@ -52,9 +51,6 @@ public class RemoteServerImpl implements RemoteServer {
 
     public void initialize() {
 	    log.info("Initializing: " + this );
-        if( getContext() != null ) {
-            natSrv = (NativeRestServer) getContext().get( "restServer" );
-        }
     }
 
     // Remore Native Server 
@@ -64,16 +60,16 @@ public class RemoteServerImpl implements RemoteServer {
                                    String ns, String ac, int timeout 
                                    ) throws ProxyFault {
 
-        if( natSrv == null ) {
-            log.warn( "getNative: natSrv is null. " );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-        } 
+        NativeServer restServer = (NativeServer) getContext().get( service );
+        
+        if( restServer == null ) {
+            log.warn ( "getNative:restServer is not configured " + 
+                       "for the service=" + service );
 
-        try {
-            return natSrv.getNative( provider, service, ns, ac, timeout );
-        } catch ( ProxyFault fault ) {
-            throw fault;
-        }
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );      
+        } 
+        
+        return restServer.getNative( provider, service, ns, ac, timeout );
     }
     
     
@@ -117,7 +113,6 @@ public class RemoteServerImpl implements RemoteServer {
 	        throw fault;
         } catch ( Exception e ) {
 	        throw FaultFactory.newInstance( Fault.UNKNOWN );  
-	    
 	    }   
     }
     

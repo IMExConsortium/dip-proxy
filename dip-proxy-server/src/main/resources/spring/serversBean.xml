@@ -116,7 +116,8 @@
 
   <property name="context">
     <map>
-      <entry key="restServer">
+    <!--  <entry key="restServer">  -->
+      <entry key="uniprot">
         <ref bean="uniprotRestServer"/>
       </entry>
       
@@ -146,7 +147,7 @@
 
  <!-- NCBI proxy services -->
  
- <bean id="ncbiReferenceServer" init-method="initialize" 
+ <bean id="ncbiReferenceServer"  
        class="edu.ucla.mbi.proxy.ncbi.NcbiServer">
 
   <property name="context">
@@ -176,11 +177,11 @@
 
  <!-- Prolinks proxy services -->
  
- <bean id="prlReferenceServer" init-method="initialize"
+ <bean id="prlReferenceServer" 
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="context">
     <map>
-        <entry key="restServer">
+        <entry key="prolinks">
             <ref bean="prolinksRestServer"/>
         </entry>
         <entry key="ncbiProxyAddress">
@@ -212,11 +213,11 @@
 
  <!-- YeastMine proxy services -->
   
- <bean id="yeastMineReferenceServer" init-method="initialize"
+ <bean id="yeastMineReferenceServer" 
        class="edu.ucla.mbi.proxy.RemoteServerImpl">
   <property name="context">
     <map>
-        <entry key="restServer">
+        <entry key="yeastmine">
             <ref bean="yeastMineRestServer"/>
         </entry>
     </map>

@@ -35,39 +35,6 @@ public class NcbiServer extends RemoteServerImpl {
 
     private Log log = LogFactory.getLog( NcbiServer.class );
      
-    private NativeRestServer nlmEsearchRestServer = null;
-    private NativeRestServer nlmEfetchRestServer = null;
-    private NativeServer pubmedRestServer = null;
-    private NativeServer refseqRestServer = null;
-    private NativeServer entrezgeneRestServer = null;
-    private NativeServer taxonRestServer = null;
-    
-    public void initialize() {
-
-        log.info( "initialize service=" + this );
-
-        if( getContext() != null ){
-
-            nlmEsearchRestServer = 
-                (NativeRestServer) getContext().get( "nlmEsearch" );
-
-            nlmEfetchRestServer = 
-                (NativeRestServer) getContext().get( "nlmEfetch" );
-
-            pubmedRestServer = 
-                (NativeServer) getContext().get( "pubmed" );
-
-            refseqRestServer = 
-                (NativeServer) getContext().get( "refseq" );
-
-            entrezgeneRestServer = 
-                (NativeServer) getContext().get( "entrezgene" );
-
-            taxonRestServer = 
-                (NativeServer) getContext().get( "taxon" );
-        } 
-    }
-
     public NativeRecord getNative( String provider, String service, String ns,
             String ac, int timeout ) throws ProxyFault {
 
@@ -76,6 +43,12 @@ public class NcbiServer extends RemoteServerImpl {
         String retVal = null;
     
         if ( service.equals( "nlm" ) ) {
+
+            NativeRestServer nlmEsearchRestServer = 
+                    (NativeRestServer) getContext().get( "nlmEsearch" );
+
+            NativeRestServer nlmEfetchRestServer = 
+                    (NativeRestServer) getContext().get( "nlmEfetch" );
 
             if( nlmEsearchRestServer == null || nlmEfetchRestServer == null ) {
                 log.warn( "getNative: nlmEsearchRestServer "
@@ -301,74 +274,11 @@ public class NcbiServer extends RemoteServerImpl {
                 throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
 
-        } else if ( service.equals( "pubmed" ) ) {
-            
-            if( pubmedRestServer == null ) {
-                log.warn( "getNative: pubmedRestServer is null. " );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                
-            }
-
-            try {
-                record = pubmedRestServer.getNative( provider, service, 
-                                                        ns, ac, timeout );
-
-            } catch ( ProxyFault fault ) {
-                throw fault;
-            } 
-            
-        } else if ( service.equals( "refseq" ) ) {
-            if( refseqRestServer == null ) {
-                log.warn( "getNative: refseqRestServer is null. " );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            }
-
-            try {
-                record = refseqRestServer.getNative( provider, service, 
-                                                     ns, ac, timeout );
-            } catch ( ProxyFault fault ) {
-                throw fault;
-            }
-
-            retVal = record.getNativeXml();
-
-            if( retVal.contains("<INSDSet><Error>") 
-                    || retVal.contains( "<TSeqSet/>" ) ) {
-
-                log.warn( "NcbiServer: refseq get wrong retVal for ac " + 
-                          ac + "." );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            } 
-        } else if ( service.equals( "entrezgene" ) ) {
-            if( entrezgeneRestServer == null ) {
-                log.warn( "getNative: entrezgeneRestServer is null. " );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            }
-
-            try {
-                record = entrezgeneRestServer.getNative( provider, service, 
-                                                         ns, ac, timeout );
-            } catch ( ProxyFault fault ) {
-                throw fault;
-            }
-
-        } else if ( service.equals( "taxon" ) ) {
-            if( taxonRestServer == null ) {
-                log.warn( "getNative: taxonRestServer is null. " );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            }
-
-            try {
-                record = taxonRestServer.getNative( provider, service,
-                                                    ns, ac, timeout );
-            } catch ( ProxyFault fault ) {
-                throw fault;
-            }
         } else {
-            log.warn ( "getNative: service=" + service + " does not exist. " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            return super.getNative( provider, service, ns, ac, timeout );
+     
         }
-
+        
         return record;
     }
 }

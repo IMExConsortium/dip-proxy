@@ -89,7 +89,7 @@ public class EbiServer extends RemoteServerImpl {
         
         if( context != null ){
     
-            super.initialize(); // initializing uniprot rest server        
+            //super.initialize(); // initializing uniprot rest server        
 
             picrEndpoint = (String) getContext().get( "picrEndpoint" );
             
@@ -146,11 +146,11 @@ public class EbiServer extends RemoteServerImpl {
         Log log = LogFactory.getLog( EbiServer.class );
         log.info( "NS=" + ns + " AC=" + ac + " SRV=" + service );
 
-        if ( service.equals( "uniprot" ) ) {
+        if ( !service.equals( "picr" ) ) {
 
             return super.getNative( provider, service, ns, ac, timeout );            
 
-        } else if ( service.equals( "picr" ) ) {
+        } else {
 
             NativeRecord record = null;
             String retVal = null;
@@ -235,10 +235,7 @@ public class EbiServer extends RemoteServerImpl {
 
             return record;
 
-        } else {
-            log.warn( "getNative: service=" + service + " does not exist. " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
+        } 
 
     }
 }

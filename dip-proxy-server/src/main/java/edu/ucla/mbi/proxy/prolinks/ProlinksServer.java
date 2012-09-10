@@ -37,29 +37,6 @@ public class ProlinksServer extends RemoteServerImpl {
 
     private Log log = LogFactory.getLog( ProlinksServer.class );
 
-    private String ncbiProxyAddress = null;
-
-    public void initialize() {
-
-        Log log = LogFactory.getLog( ProlinksServer.class );
-        log.info( "initialize service=" + this );
-
-        if( getContext() != null ){
-            
-            super.initialize(); // used for prolinks rest server initializing
-            
-            ncbiProxyAddress = ( String ) getContext().get( "ncbiProxyAddress" );
-            
-            if( ncbiProxyAddress != null &&  ncbiProxyAddress.length() > 0 ) {
-                ncbiProxyAddress = ncbiProxyAddress.replaceAll( "\\s", "" );
-            } else {
-                log.warn( "ProlinksServer: initializing failed "
-                           + "because of ncbiProxyAddress is not set. " );
-                ncbiProxyAddress = null;
-            }
-        }
-    }
-    
     public DatasetType buildDxf( String strNative, String ns, String ac,
                                  String detail, String service, 
                                  ProxyTransformer pTrans 
@@ -68,7 +45,11 @@ public class ProlinksServer extends RemoteServerImpl {
         Log log = LogFactory.getLog( ProlinksServer.class );
         log.info( " buildDxf called: " + ac );
 
-        if( ncbiProxyAddress == null ) {
+        String ncbiProxyAddress = ( String ) getContext().get( "ncbiProxyAddress" );
+
+        if( ncbiProxyAddress != null &&  ncbiProxyAddress.length() > 0 ) {
+            ncbiProxyAddress = ncbiProxyAddress.replaceAll( "\\s", "" );
+        } else {
             log.warn( "buildDxf: ncbiProxyAddress is not initialized. " );
             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
