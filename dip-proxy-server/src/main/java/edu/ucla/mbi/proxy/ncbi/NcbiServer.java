@@ -37,10 +37,10 @@ public class NcbiServer extends RemoteServerImpl {
      
     private NativeRestServer nlmEsearchRestServer = null;
     private NativeRestServer nlmEfetchRestServer = null;
-    private NativeRestServer pubmedRestServer = null;
-    private NativeRestServer refseqRestServer = null;
-    private NativeRestServer entrezgeneRestServer = null;
-    private NativeRestServer taxonRestServer = null;
+    private NativeServer pubmedRestServer = null;
+    private NativeServer refseqRestServer = null;
+    private NativeServer entrezgeneRestServer = null;
+    private NativeServer taxonRestServer = null;
     
     public void initialize() {
 
@@ -55,16 +55,16 @@ public class NcbiServer extends RemoteServerImpl {
                 (NativeRestServer) getContext().get( "nlmEfetch" );
 
             pubmedRestServer = 
-                (NativeRestServer) getContext().get( "pubmed" );
+                (NativeServer) getContext().get( "pubmed" );
 
             refseqRestServer = 
-                (NativeRestServer) getContext().get( "refseq" );
+                (NativeServer) getContext().get( "refseq" );
 
             entrezgeneRestServer = 
-                (NativeRestServer) getContext().get( "entrezgene" );
+                (NativeServer) getContext().get( "entrezgene" );
 
             taxonRestServer = 
-                (NativeRestServer) getContext().get( "taxon" );
+                (NativeServer) getContext().get( "taxon" );
         } 
     }
 
