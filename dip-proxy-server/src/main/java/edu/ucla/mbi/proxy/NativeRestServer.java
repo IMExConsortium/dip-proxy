@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.net.*;
 import java.io.*;
+import java.util.Map;
 
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
@@ -26,41 +27,38 @@ public class NativeRestServer implements NativeServer {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
 
-    private String restUrl = null;
-    private String restAcTag = null;
-   
-    public void setRestUrl( String url ) {
-        url = url.replaceAll("\\s", "");
-        this.restUrl=url;
+    public Map<String,Object> restServerContext;   
+    
+    public void setRestServerContext( Map<String,Object> context ) {
+        this.restServerContext = context;
     }
 
-    public String getRestUrl(){
-        return restUrl;
+    public Map<String,Object> getRestServerContext() {
+        return restServerContext;
     }
 
-    public void setRestAcTag( String tag ) {
-        tag = tag.replaceAll("^\\s+","");
-        tag = tag.replaceAll("\\s+$","");
-
-        this.restAcTag = tag ;
-    }
-
-    public String getRestAcTag(){
-        return restAcTag;
-    }
-
-    public void initialize() {
-        Log log = LogFactory.getLog( NativeRestServer.class );
-        log.info( "initializing: " );
-    }
-     
-    public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeOut ) throws ProxyFault {
-
+    public NativeRecord getNative( String provider, String service, 
+                                   String ns, String ac, int timeOut 
+                                   ) throws ProxyFault 
+    {
         String retVal = null;
         log.info( "getNative: NS=" + ns + " AC=" + ac + " OP=" + service );
+        
+        String restAcTag = (String) getRestServerContext().get( "restAcTag" );        
+        String restUrl = (String) getRestServerContext().get( "restUrl" );
+
+        if( restAcTag == null || restUrl == null ) {
+            log.warn( "getNative: restAcTag or restUrl is not configured. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+    
+        restAcTag = restAcTag.replaceAll( "^\\s+", "" );
+        restAcTag = restAcTag.replaceAll( "\\s+$", "" );
+
+        restUrl = restUrl.replaceAll( "\\s", "" );
 
         String real_restUrl = restUrl.replaceAll( restAcTag, ac );
+
         try {
             retVal = query( real_restUrl, timeOut );
         } catch( ProxyFault fault ) {

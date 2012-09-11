@@ -226,144 +226,179 @@
 
  <!-- yeastmine rest server -->
  
- <bean id="yeastMineRestServer" init-method="initialize"
+ <bean id="yeastMineRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
 
-  <property name="restUrl">
-   <value>
-     
-    http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query
-        =&lt;query+name=""+model="genomic"
-            +view="Gene.name+Gene.symbol+Gene.secondaryIdentifier
+  <property name="restServerContext">
+    <map>
+        <entry key="restUrl">
+          <value>
+            http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query
+                =&lt;query+name=""+model="genomic"
+                +view="Gene.name+Gene.symbol+Gene.secondaryIdentifier
                     +Gene.organism.name+Gene.organism.taxonId
                     +Gene.organism.species"&gt;
-            &lt;constraint+path="Gene.secondaryIdentifier"+op="="
-                +value="%%ACTAG%%"/&gt;
-         &lt;/query&gt;&amp;format=xml
+                &lt;constraint+path="Gene.secondaryIdentifier"+op="="
+                    +value="%%ACTAG%%"/&gt;
+                &lt;/query&gt;&amp;format=xml
 
-   </value>
-  </property>
-  <property name="restAcTag">
-     <value>%%ACTAG%%</value>
+          </value>
+        </entry>
+        <entry key="restAcTag">
+          <value>%%ACTAG%%</value>
+        </entry>
+    </map>
   </property>
  </bean>
 
  <!-- uniprot rest server -->
 
- <bean id="uniprotRestServer" init-method="initialize"
+ <bean id="uniprotRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-    <property name="restUrl">
-        <value>
+  <property name="restServerContext">
+    <map>    
+        <entry key="restUrl">
+          <value>
             http://www.uniprot.org/uniprot/%%ACTAG%%.xml
-        </value>
-    </property>
-    <property name="restAcTag">
-        <value>%%ACTAG%%</value>
-    </property>
+          </value>
+        </entry>
+        <entry key="restAcTag">
+          <value>%%ACTAG%%</value>
+        </entry>
+    </map>
+  </property>
  </bean>
 
  <!-- prolinks rest server -->
  
- <bean id="prolinksRestServer" init-method="initialize"
+ <bean id="prolinksRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-    <property name="restUrl">
-        <value>
+  <property name="restServerContext">
+    <map>
+        <entry key="restUrl">
+          <value>
             http://prl.mbi.ucla.edu/prlbeta/php_dip_service?id=%%ACTAG%%
-        </value>
-    </property>
-    <property name="restAcTag">
-        <value>%%ACTAG%%</value>
-    </property>
-  </bean>
+          </value>
+        </entry>
+        <entry key="restAcTag">
+          <value>%%ACTAG%%</value>
+        </entry>
+    </map>
+  </property>
+ </bean>
 
  <!-- pubmed rest server -->
 
- <bean id="pubmedRestServer" init-method="initialize"
+ <bean id="pubmedRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-    <property name="restUrl">
-        <value>
+  <property name="restServerContext">
+    <map>
+        <entry key="restUrl">
+          <value>
             http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed
                 &amp;retmode=xml&amp;id=%%ACTAG%%
-        </value>
-    </property>
-    <property name="restAcTag">
-        <value>%%ACTAG%%</value>
-    </property>
-  </bean>
+          </value>
+        </entry>
+        <entry key="restAcTag">
+          <value>%%ACTAG%%</value>
+        </entry>
+    </map>
+  </property>
+ </bean>
 
  <!-- refseq rest server -->
 
- <bean id="refseqRestServer" init-method="initialize"
+ <bean id="refseqRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-    <property name="restUrl">
-        <value>
+  <property name="restServerContext">
+    <map>
+        <entry key="restUrl">
+          <value>
             http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein
                 &amp;id=%%ACTAG%%&amp;rettype=gpc&amp;retmode=xml
-        </value>
-    </property>
-    <property name="restAcTag">
-        <value>%%ACTAG%%</value>
-    </property>
-  </bean>
+          </value>
+        </entry>
+        <entry key="restAcTag">
+          <value>%%ACTAG%%</value>
+        </entry>
+    </map>
+  </property>
+ </bean>
 
  <!-- entrezgene rest server -->
 
- <bean id="entrezgeneRestServer" init-method="initialize"
+ <bean id="entrezgeneRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-    <property name="restUrl">
-        <value>
+  <property name="restServerContext">
+    <map>
+        <entry key="restUrl">
+          <value>
             "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene
                 &amp;id=%%ACTAG%%&amp;retmode=xml
-        </value>
-    </property>
-    <property name="restAcTag">
-        <value>%%ACTAG%%</value>
-    </property>
+          </value>
+        </entry>
+        <entry key="restAcTag">
+          <value>%%ACTAG%%</value>
+        </entry>
+    </map>
+  </property>
  </bean>
 
  <!-- taxon rest server -->
 
- <bean id="taxonRestServer" init-method="initialize"
+ <bean id="taxonRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-    <property name="restUrl">
-        <value>
+  <property name="restServerContext">
+    <map>
+        <entry key="restUrl">
+          <value>
             http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy
                 &amp;id=%%ACTAG%%&amp;retmode=xml
-        </value>
-    </property>
-    <property name="restAcTag">
-        <value>%%ACTAG%%</value>
-    </property>
+          </value>
+        </entry>
+        <entry key="restAcTag">
+          <value>%%ACTAG%%</value>
+        </entry>
+    </map>
+  </property>
  </bean>
 
  <!-- nlm esearch rest server -->
 
- <bean id="nlmEsearchRestServer" init-method="initialize"
+ <bean id="nlmEsearchRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-    <property name="restUrl">
-        <value>
+  <property name="restServerContext">
+    <map>
+        <entry key="restUrl">
+          <value>
             http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?
                 db=nlmcatalog&amp;retmode=xml&amp;term=%%ACTAG%%[nlmid]
-        </value>
-    </property>
-    <property name="restAcTag">
-        <value>%%ACTAG%%</value>
-    </property>
+          </value>
+        </entry>
+        <entry key="restAcTag">
+          <value>%%ACTAG%%</value>
+        </entry>
+    </map>
+  </property>
  </bean>
 
  <!-- nlm efetch rest server -->
 
- <bean id="nlmEfetchRestServer" init-method="initialize"
+ <bean id="nlmEfetchRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-    <property name="restUrl">
-        <value>
+  <property name="restServerContext">
+    <map>
+        <entry key="restUrl">
+          <value>
             http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?
                 db=nlmcatalog&amp;retmode=xml&amp;id=%%ACTAG%%
-        </value>
-    </property>
-    <property name="restAcTag">
-        <value>%%ACTAG%%</value>
-    </property>
+          </value>
+        </entry>
+        <entry key="restAcTag">
+          <value>%%ACTAG%%</value>
+        </entry>
+    </map>
+  </property>
  </bean>
 
 </beans>

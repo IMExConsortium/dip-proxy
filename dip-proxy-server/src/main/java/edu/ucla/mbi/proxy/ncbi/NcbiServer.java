@@ -39,11 +39,12 @@ public class NcbiServer extends RemoteServerImpl {
             String ac, int timeout ) throws ProxyFault {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
-        NativeRecord record = null;
-        String retVal = null;
     
-        if ( service.equals( "nlm" ) ) {
-
+        if ( !service.equals( "nlm" ) ) {
+            return super.getNative( provider, service, ns, ac, timeout );
+        } else {
+            NativeRecord record = null;
+            String retVal = null;
             NativeRestServer nlmEsearchRestServer = 
                     (NativeRestServer) getContext().get( "nlmEsearch" );
 
@@ -69,10 +70,20 @@ public class NcbiServer extends RemoteServerImpl {
             try{
                 DocumentBuilder builder = fct.newDocumentBuilder();
 
-                String url_esearch_string = nlmEsearchRestServer.getRestUrl();
+                String url_esearch_string = (String)nlmEsearchRestServer
+                                    .getRestServerContext().get( "restUrl" );
+                String esearch_restAcTag = (String)nlmEsearchRestServer
+                                    .getRestServerContext().get( "restAcTag" );
+            
+                if( esearch_restAcTag == null || url_esearch_string == null ) {
+                    log.warn( "getNative: esearch_restAcTag or " + 
+                              "url_esearch_string is not configured. " );
+                    throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+                }
+
 
                 url_esearch_string = url_esearch_string.replaceAll( 
-                                    nlmEsearchRestServer.getRestAcTag(), ac );
+                                                    esearch_restAcTag, ac );
  
                 URL url_esearch = new URL( url_esearch_string );
                 
@@ -142,6 +153,8 @@ public class NcbiServer extends RemoteServerImpl {
                             throw FaultFactory.newInstance( Fault.NO_RECORD );
                         } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
                             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                        } else if ( e.getMessage().equals( "UNSUPPORTED_OP" ) ) {
+                            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
                         } else {
                             throw FaultFactory.newInstance( Fault.UNKNOWN );
                         }
@@ -154,15 +167,24 @@ public class NcbiServer extends RemoteServerImpl {
 
                 log.info( "NcbiServer: nlm: ncbi_nlmid is " + ncbi_nlmid );
 
-                String url_efetch_string = nlmEfetchRestServer.getRestUrl();
+                String url_efetch_string = (String)nlmEfetchRestServer
+                                    .getRestServerContext().get( "restUrl" );
 
-                log.info( "NcbiServer: nlm: url_efetch_string=" 
-                          +  url_efetch_string );
+                String efetch_restAcTag = (String)nlmEfetchRestServer
+                                    .getRestServerContext().get( "restAcTag" );
+
+                
+                if( efetch_restAcTag == null || url_efetch_string == null ) {
+                    log.warn( "getNative: efetch_restAcTag or " +
+                              "url_efetch_string is not configured. " );
+                    throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+                }
 
                 url_efetch_string = url_efetch_string.replaceAll( 
-                            nlmEfetchRestServer.getRestAcTag(), ncbi_nlmid );
+                                            efetch_restAcTag, ncbi_nlmid );
 
-                log.info( "NcbiServer: after replace url_efetch_string=" + url_efetch_string );
+                log.info( "NcbiServer: after replace url_efetch_string=" + 
+                          url_efetch_string );
 
                 URL url_efetch = new URL( url_efetch_string );
 
@@ -273,12 +295,7 @@ public class NcbiServer extends RemoteServerImpl {
                           "getService Exception:\n" + e.toString() + ". ");
                 throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
-
-        } else {
-            return super.getNative( provider, service, ns, ac, timeout );
-     
-        }
-        
-        return record;
+            return record;
+        } 
     }
 }

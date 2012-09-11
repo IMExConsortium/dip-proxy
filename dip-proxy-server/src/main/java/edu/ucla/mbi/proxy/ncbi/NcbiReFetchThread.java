@@ -79,9 +79,17 @@ public class NcbiReFetchThread extends Thread {
                 // esearch ncbi internal id of the nlmid
                 //--------------------------------------
             
-                String url_esearch_string = nlmEsearchRestServer.getRestUrl();
-                url_esearch_string = url_esearch_string.replaceAll(
-                                    nlmEsearchRestServer.getRestAcTag(), ac );
+                String url_esearch_string = 
+                        (String)nlmEsearchRestServer.getRestServerContext().get("restUrl");
+                String esearch_restAcTag = 
+                        (String)nlmEsearchRestServer.getRestServerContext().get( "restAcTag" );
+
+                if( url_esearch_string == null || esearch_restAcTag == null ) {
+                     throw new RuntimeException("UNSUPPORTED_OP");
+                }
+
+                url_esearch_string = url_esearch_string.replaceAll( 
+                                                    esearch_restAcTag, ac );
                 /*
                     "http://eutils.ncbi.nlm.nih.gov"
                     + "/entrez/eutils/esearch.fcgi"
@@ -135,9 +143,18 @@ public class NcbiReFetchThread extends Thread {
             log.info( "NcbiReFetchThread: after esearch: nlmid is " + nlmid );
             startTime = System.currentTimeMillis();            
             boolean emptySet = true;
-            String url_efetch_string = nlmEfetchRestServer.getRestUrl();
+            String url_efetch_string = 
+                    (String)nlmEfetchRestServer.getRestServerContext().get( "restUrl" );
+            String efetch_restAcTag = 
+                    (String)nlmEfetchRestServer.getRestServerContext().get ( "restAcTag" );
+
+            if( url_efetch_string == null || efetch_restAcTag == null ) {
+                throw new RuntimeException("UNSUPPORTED_OP");
+            }
+
             url_efetch_string = url_efetch_string.replaceAll(
-                                    nlmEfetchRestServer.getRestAcTag(), nlmid );
+                                            efetch_restAcTag, nlmid );
+
             /*
                         "http://eutils.ncbi.nlm.nih.gov"
                         + "/entrez/eutils/efetch.fcgi?db=nlmcatalog&retmode=xml&id="
