@@ -26,12 +26,12 @@ import edu.ucla.mbi.dxf14.DxfJAXBContext;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
-import java.util.Map;
+import java.util.*;
 
 public class RemoteServerImpl implements RemoteServer {
 
     private Log log = LogFactory.getLog( RemoteServerImpl.class );
-    public Map<String,Object> context;
+    private Map<String,Object> context = new HashMap();
     
     public boolean isNative() {
         return true;
