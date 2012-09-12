@@ -31,7 +31,7 @@ import java.util.*;
 public class RemoteServerImpl implements RemoteServer {
 
     private Log log = LogFactory.getLog( RemoteServerImpl.class );
-    private Map<String,Object> context = new HashMap();
+    protected Map<String,Object> context = new HashMap();
     
     public boolean isNative() {
         return true;

@@ -285,8 +285,7 @@ public class CachingService extends Observable {
 
             if ( rsc.getDebugLevel() == 1 ) {
                 log.info( " dropping native record = " + cacheRecord );
-                DipProxyDAO.getNativeRecordDAO()
-                    .delete( cacheRecord );
+                DipProxyDAO.getNativeRecordDAO().delete( cacheRecord );
             }
             
             // notify interested parties (router) about new record
@@ -420,7 +419,6 @@ public class CachingService extends Observable {
             } 
         } 
         
-        //RemoteServer rs = selectRemoteServer( rsc );
         RemoteServer rs = selectRemoteServer( rsc, service );
 
         DatasetType dxfResult = null;
@@ -535,19 +533,9 @@ public class CachingService extends Observable {
             return router.getNextProxyServer( service, 
                                               namespace, accession );
         }
-        //return router.getNativeServer();
         return router.getNativeServer(service);
     }
     
-    /*
-    private RemoteServer selectRemoteServer( RemoteServerContext rsc ) {
-
-        if ( rsc.isRemoteProxyOn() ) {
-            return router.getLastProxyServer();
-        }
-        return router.getNativeServer();
-    } */
-
     private RemoteServer selectRemoteServer( RemoteServerContext rsc, 
                                              String service ) 
     {
@@ -555,7 +543,6 @@ public class CachingService extends Observable {
         if ( rsc.isRemoteProxyOn() ) {
             return router.getLastProxyServer( service );
         }
-        //return router.getNativeServer();
         return router.getNativeServer( service );
     } 
 

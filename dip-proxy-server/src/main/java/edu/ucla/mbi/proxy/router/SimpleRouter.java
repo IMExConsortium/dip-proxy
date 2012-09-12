@@ -101,7 +101,6 @@ public class SimpleRouter implements Router {
                                             String accession,
                                             String operation ){
         
-        //return this.getNextProxyServer( );
         return this.getNextProxyServer( operation );
     }
 
@@ -109,7 +108,6 @@ public class SimpleRouter implements Router {
     //--------------------
 
     public void update( Observable o, Object arg ) {
-
 
     }
             

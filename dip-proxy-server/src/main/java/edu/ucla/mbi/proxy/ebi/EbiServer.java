@@ -40,17 +40,17 @@ import uk.ac.ebi.picr.model.*;
 
 public class EbiServer extends RemoteServerImpl {
 
-    List<String> searchDB;
+    private List<String> searchDB;
 
-    String picrEndpoint = null;
-    AccessionMapperInterface picrPort;    
+    private String picrEndpoint = null;
+    private AccessionMapperInterface picrPort;    
     
     private final String 
         nsPicr = "http://www.ebi.ac.uk/picr/AccessionMappingService";
 
     private final String
         nmPicr = "AccessionMapperService";
-    
+
     /*
      * generate static instance of JAXBContext see
      * https://jaxb.dev.java.net/faq/index.html#threadSafety for details.

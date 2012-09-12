@@ -144,7 +144,6 @@
  <!-- EBI proxy services -->
  
  <bean id="ebiReferenceServer" init-method="initialize" 
-       parent="remoteServerImpl"
        class="edu.ucla.mbi.proxy.ebi.EbiServer">
 
   <property name="context">
@@ -175,7 +174,7 @@
 
  <!-- NCBI proxy services -->
  
- <bean id="ncbiReferenceServer" parent="remoteServerImpl" 
+ <bean id="ncbiReferenceServer"  
        class="edu.ucla.mbi.proxy.ncbi.NcbiServer">
 
   <property name="context">
@@ -193,7 +192,7 @@
 
  <!-- Prolinks proxy services -->
  
- <bean id="prlReferenceServer" parent="remoteServerImpl"
+ <bean id="prlReferenceServer" 
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="context">
     <map>
@@ -208,7 +207,6 @@
  <!-- DIP proxy services -->
 
  <bean id="dipReferenceServer" init-method="initialize"
-       parent="remoteServerImpl"
        class="edu.ucla.mbi.proxy.dip.DipServer">
 
   <property name="context">
@@ -224,8 +222,9 @@
   </property>
  </bean>
 
- <!-- yeastmine rest server -->
- 
+ <!-- REST SERVER -->
+
+ <!-- yeastmine rest server --> 
  <bean id="yeastMineRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
 
@@ -252,7 +251,6 @@
  </bean>
 
  <!-- uniprot rest server -->
-
  <bean id="uniprotRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
   <property name="restServerContext">
@@ -270,7 +268,6 @@
  </bean>
 
  <!-- prolinks rest server -->
- 
  <bean id="prolinksRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
   <property name="restServerContext">
@@ -288,7 +285,6 @@
  </bean>
 
  <!-- pubmed rest server -->
-
  <bean id="pubmedRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
   <property name="restServerContext">
@@ -307,7 +303,6 @@
  </bean>
 
  <!-- refseq rest server -->
-
  <bean id="refseqRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
   <property name="restServerContext">
@@ -326,7 +321,6 @@
  </bean>
 
  <!-- entrezgene rest server -->
-
  <bean id="entrezgeneRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
   <property name="restServerContext">
@@ -345,7 +339,6 @@
  </bean>
 
  <!-- taxon rest server -->
-
  <bean id="taxonRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
   <property name="restServerContext">
@@ -364,7 +357,6 @@
  </bean>
 
  <!-- nlm esearch rest server -->
-
  <bean id="nlmEsearchRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
   <property name="restServerContext">
@@ -383,7 +375,6 @@
  </bean>
 
  <!-- nlm efetch rest server -->
-
  <bean id="nlmEfetchRestServer" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
   <property name="restServerContext">
