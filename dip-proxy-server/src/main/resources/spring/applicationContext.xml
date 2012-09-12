@@ -76,9 +76,15 @@
        <entry key="ttl" value="14"/>  <!-- NOTE: default unit days --> 
 
        <entry key="nativeServer"> 
-        <ref bean="ebiReferenceServer"/>
+            <map>
+                <entry key="uniprot">
+                    <ref bean="remoteServerImpl"/>
+                </entry>
+                <entry key="picr">
+                    <ref bean="ebiReferenceServer"/>
+                </entry>
+            </map>
        </entry>      
-
        
        <entry key="proxyProto"> 
         <ref bean="referenceProxy"/>
@@ -104,8 +110,24 @@
        </entry>
        <entry key="ttl" value="30"/>
 
-       <entry key="nativeServer"> 
-        <ref bean="ncbiReferenceServer"/>
+       <entry key="nativeServer">
+        <map>
+            <entry key="nlm">
+                <ref bean="ncbiReferenceServer"/>
+            </entry>
+            <entry key="pubmed">
+                <ref bean="remoteServerImpl"/>
+            </entry>
+            <entry key="refseq">
+                <ref bean="remoteServerImpl"/>
+            </entry>
+            <entry key="entrezgene">
+                <ref bean="remoteServerImpl"/>
+            </entry>
+            <entry key="taxon">
+                <ref bean="remoteServerImpl"/>
+            </entry>
+        </map>
        </entry>      
 
        
@@ -131,10 +153,13 @@
        <ref bean="prlTransformer"/>
        </entry>
        <entry key="ttl"     value="14"/>
-
        
        <entry key="nativeServer">  
-        <ref bean="prlReferenceServer"/>
+         <map>
+            <entry key="prolinks">
+                <ref bean="prlReferenceServer"/>
+            </entry>
+         </map>
        </entry>      
         
        <entry key="proxyProto"> 
@@ -162,7 +187,14 @@
        <entry key="ttl" value="14"/>
 
        <entry key="nativeServer"> 
-        <ref bean="dipReferenceServer"/>
+            <map>
+                <entry key="dip">
+                    <ref bean="dipReferenceServer"/>
+                </entry>
+                <entry key="diplegacy">
+                    <ref bean="dipReferenceServer"/>
+                </entry>
+            </map>
        </entry>      
 
        
@@ -188,7 +220,11 @@
        <entry key="ttl" value="14"/>
 
        <entry key="nativeServer">
-        <ref bean="yeastMineReferenceServer"/>
+            <map>
+                <entry key="yeastmine">
+                    <ref bean="remoteServerImpl"/>
+                </entry>
+            </map>
        </entry>
 
 

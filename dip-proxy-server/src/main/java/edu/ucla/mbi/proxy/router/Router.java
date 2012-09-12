@@ -23,14 +23,18 @@ import edu.ucla.mbi.proxy.RemoteServer;
 public interface Router extends Observer {
 
     public Router createRouter();
-
+    
     public void setRemoteServerContext( RemoteServerContext rsc );
     public RemoteServerContext getRemoteServerContext();
     
-    public RemoteServer getNativeServer();
-    
-    public RemoteServer getLastProxyServer();
-    public RemoteServer getNextProxyServer();
+    //public RemoteServer getNativeServer();
+    public RemoteServer getNativeServer( String service );
+
+    //public RemoteServer getLastProxyServer();
+    public RemoteServer getLastProxyServer( String service );
+
+    //public RemoteServer getNextProxyServer();
+    public RemoteServer getNextProxyServer( String service );
 
     public RemoteServer getNextProxyServer( String namespace, 
                                             String accession,

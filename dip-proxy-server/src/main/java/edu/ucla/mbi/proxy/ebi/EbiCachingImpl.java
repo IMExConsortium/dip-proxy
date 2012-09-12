@@ -81,6 +81,7 @@ public class EbiCachingImpl implements EbiProxyPort {
         try {
             Router router = 
                 WSContext.getServerContext( provider ).createRouter();
+
             CachingService cachingSrv = 
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
@@ -163,8 +164,12 @@ public class EbiCachingImpl implements EbiProxyPort {
         }
 
         try {
-            Router router = WSContext.getServerContext( provider ).createRouter();
-            CachingService cachingSrv = new CachingService( provider, router, WSContext.getServerContext( provider ) );
+            Router router = 
+                WSContext.getServerContext( provider ).createRouter();
+
+            CachingService cachingSrv = 
+                new CachingService( provider, router, 
+                                    WSContext.getServerContext( provider ) );
 
             if ( format == null || format.equals( "" )
                     || format.equalsIgnoreCase( "dxf" )

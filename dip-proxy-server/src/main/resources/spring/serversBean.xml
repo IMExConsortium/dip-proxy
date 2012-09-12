@@ -94,7 +94,7 @@
     <value>3</value>
   </property>
  </bean>
- 
+
  <!-- reference proxy -->
  <bean id="referenceProxy" init-method="initialize"
        class="edu.ucla.mbi.proxy.RemoteProxyServer">
@@ -108,19 +108,47 @@
   </property>
  </bean>
 
+ <bean id="remoteServerImpl" 
+       class="edu.ucla.mbi.proxy.RemoteServerImpl">
+
+  <property name="context">
+    <map>
+        <entry key="pubmed">
+            <ref bean="pubmedRestServer"/>
+        </entry>
+        <entry key="refseq">
+            <ref bean="refseqRestServer"/>
+        </entry>
+        <entry key="entrezgene">
+            <ref bean="entrezgeneRestServer"/>
+        </entry>
+        <entry key="taxon">
+            <ref bean="taxonRestServer"/>
+        </entry>
+        <entry key="yeastmine">
+            <ref bean="yeastMineRestServer"/>
+        </entry>
+        <entry key="prolinks">
+            <ref bean="prolinksRestServer"/>
+        </entry>
+        <entry key="uniprot">
+            <ref bean="uniprotRestServer"/>
+        </entry>
+        <entry key="yeastmine">
+            <ref bean="yeastMineRestServer"/>
+        </entry>
+    </map>
+  </property>
+ </bean>
 
  <!-- EBI proxy services -->
  
- <bean id="ebiReferenceServer" init-method="initialize"
+ <bean id="ebiReferenceServer" init-method="initialize" 
+       parent="remoteServerImpl"
        class="edu.ucla.mbi.proxy.ebi.EbiServer">
 
   <property name="context">
     <map>
-    <!--  <entry key="restServer">  -->
-      <entry key="uniprot">
-        <ref bean="uniprotRestServer"/>
-      </entry>
-      
       <entry key="picrEndpoint">  
         <value>http://www.ebi.ac.uk/Tools/picr/service</value>
       </entry>
@@ -147,7 +175,7 @@
 
  <!-- NCBI proxy services -->
  
- <bean id="ncbiReferenceServer"  
+ <bean id="ncbiReferenceServer" parent="remoteServerImpl" 
        class="edu.ucla.mbi.proxy.ncbi.NcbiServer">
 
   <property name="context">
@@ -158,18 +186,6 @@
       <entry key="nlmEfetch">
         <ref bean="nlmEfetchRestServer"/>
       </entry>
-      <entry key="pubmed">
-        <ref bean="pubmedRestServer"/>
-      </entry>
-      <entry key="refseq">
-        <ref bean="refseqRestServer"/>
-      </entry>
-      <entry key="entrezgene">
-        <ref bean="entrezgeneRestServer"/>
-      </entry>
-      <entry key="taxon">
-        <ref bean="taxonRestServer"/>
-      </entry>
     </map>
   </property>
  </bean>
@@ -177,13 +193,10 @@
 
  <!-- Prolinks proxy services -->
  
- <bean id="prlReferenceServer" 
+ <bean id="prlReferenceServer" parent="remoteServerImpl"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="context">
     <map>
-        <entry key="prolinks">
-            <ref bean="prolinksRestServer"/>
-        </entry>
         <entry key="ncbiProxyAddress">
             <!--<value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> -->
             <value> http://10.1.1.201:8080/dip-proxy-server/proxy-service</value>
@@ -195,6 +208,7 @@
  <!-- DIP proxy services -->
 
  <bean id="dipReferenceServer" init-method="initialize"
+       parent="remoteServerImpl"
        class="edu.ucla.mbi.proxy.dip.DipServer">
 
   <property name="context">
@@ -206,20 +220,6 @@
       <entry key="dipEndpoint">
         <value>http://10.1.1.203:8080/dip-database-server/dxf-service</value>
       </entry>
-    </map>
-  </property>
-
- </bean>
-
- <!-- YeastMine proxy services -->
-  
- <bean id="yeastMineReferenceServer" 
-       class="edu.ucla.mbi.proxy.RemoteServerImpl">
-  <property name="context">
-    <map>
-        <entry key="yeastmine">
-            <ref bean="yeastMineRestServer"/>
-        </entry>
     </map>
   </property>
  </bean>
@@ -400,5 +400,4 @@
     </map>
   </property>
  </bean>
-
 </beans>

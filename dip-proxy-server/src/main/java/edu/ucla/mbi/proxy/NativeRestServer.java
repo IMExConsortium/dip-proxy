@@ -77,6 +77,12 @@ public class NativeRestServer implements NativeServer {
             throw FaultFactory.newInstance( Fault.NO_RECORD );
         }
 
+        if( retVal.endsWith( "<TaxaSet></TaxaSet>" ) ) {
+             //**** this fault for NCBI taxon server
+            log.warn( "getNative: return an empty set. " );
+            throw FaultFactory.newInstance( Fault.NO_RECORD );
+        }
+
         if( retVal.contains("<INSDSet><Error>")
                     || retVal.contains( "<TSeqSet/>" ) ) {
 

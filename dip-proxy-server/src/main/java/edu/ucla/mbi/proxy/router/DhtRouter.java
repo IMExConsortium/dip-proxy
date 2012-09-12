@@ -44,11 +44,11 @@ public class DhtRouter implements Router {
         this.proxyDht = dht;
         this.maxRetry = maxRetry;
     }
-
+    
     public Router createRouter(){
         return new DhtRouter( this.rsc, this.proxyDht, this.maxRetry );
     }
-    
+
     public void setDht( Dht dht ){
         this.proxyDht = dht;
     }
@@ -71,13 +71,13 @@ public class DhtRouter implements Router {
         return rsc;
     }
  
-    public RemoteServer getNativeServer(){
+    public RemoteServer getNativeServer( String service ){
         
         Log log = LogFactory.getLog(DhtRouter.class);
         log.info("getNativeServer(native server= " + 
-                 rsc.getNativeServer() + ")" );
-        return rsc.getNativeServer();
-    }
+                 (RemoteServer)rsc.getNativeServerMap().get( service) + ")" );
+        return (RemoteServer)rsc.getNativeServerMap().get(service);
+    } 
     
     public ID getRecordID( String provider,
                            String service,
@@ -99,21 +99,21 @@ public class DhtRouter implements Router {
         
         return ID.getSHA1BasedID( recordStrId.getBytes() );
     }
-    
-    public RemoteServer getLastProxyServer() {
-        
+
+    public RemoteServer getLastProxyServer( String service ) {
+
         Log log = LogFactory.getLog(DhtRouter.class);
-        log.info("getLastProxyServer (last proxy server= " + 
+        log.info("getLastProxyServer (last proxy server= " +
                  currentServer + ")" );
 
         if (currentServer != null  ) {
             return currentServer;
-        } 
+        }
         log.info("  falling back to native" );
-        return this.getNativeServer();
+        return this.getNativeServer( service );
     }
 
-    public RemoteServer getNextProxyServer() {
+    public RemoteServer getNextProxyServer( String service ) {
         
         Log log = LogFactory.getLog(DhtRouter.class);
         log.info( "getNextProxyServer() (provider=" + 
@@ -121,7 +121,7 @@ public class DhtRouter implements Router {
         return currentServer       ;
         
     }
-    
+  
     public RemoteServer getNextProxyServer( String service, 
                                             String namespace,
                                             String accession ) {
@@ -134,10 +134,10 @@ public class DhtRouter implements Router {
         
         ID rid = this.getRecordID( service, namespace, accession );
         
-        return this.getNextProxyServer( rid );
+        return this.getNextProxyServer( rid, service );
     }
     
-    public RemoteServer getNextProxyServer( ID rid ) {
+    public RemoteServer getNextProxyServer( ID rid, String service ) {
         
         Log log = LogFactory.getLog(DhtRouter.class);
         log.info( "  rid=" + rid.toString(16) + " @ " + proxyDht );        
@@ -159,13 +159,13 @@ public class DhtRouter implements Router {
             //    remote = rsc.getNativeServer();
             //}
         } else {
-            remote = rsc.getNativeServer();
+            remote = rsc.getNativeServerMap().get( service );
             log.info( "   remote==native " + remote );
         }
         
         currentServer = remote;
         return remote;
-    }
+    }   
 
 
     // statistics-related function

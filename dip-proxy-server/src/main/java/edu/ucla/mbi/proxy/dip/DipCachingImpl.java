@@ -71,8 +71,9 @@ public class DipCachingImpl implements DipProxyPort {
             detail = "full";
         }
         try {
-            Router router = WSContext.getServerContext( provider )
-                    .createRouter();
+            Router router = 
+                WSContext.getServerContext( provider ).createRouter();
+
             CachingService cachingSrv = 
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );

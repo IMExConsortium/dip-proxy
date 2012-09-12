@@ -53,42 +53,42 @@ public class SimpleRouter implements Router {
         return maxRetry;
     }
 
-    public RemoteServer getNativeServer(){
+    public RemoteServer getNativeServer( String service ){
         
         Log log = LogFactory.getLog(SimpleRouter.class);
-        return rsc.getNativeServer();
-    }
+        return rsc.getNativeServerMap().get( service );
+    } 
         
     
-    public RemoteServer getLastProxyServer() {
+    public RemoteServer getLastProxyServer( String service ) {
         
         /*
-	Log log = LogFactory.getLog(SimpleRouter.class);
+	    Log log = LogFactory.getLog(SimpleRouter.class);
         List<RemoteProxyServer> servers = rsc.getProxyServers();
 	
         RemoteServer server = servers.get( currentServer );
         log.info("server # "+currentServer);
-	*/
+	    */
         
-	return null;
+	    return null;
     }
     
-    public RemoteServer getNextProxyServer() {
+    public RemoteServer getNextProxyServer( String service ) {
 	
         /*
-	Log log = LogFactory.getLog(SimpleRouter.class);
+	    Log log = LogFactory.getLog(SimpleRouter.class);
  
         List<RemoteProxyServer> servers = rsc.getProxyServers();
 	
-	// rotate servers
-	//---------------
+	    // rotate servers
+	    //---------------
         
-	currentServer++;
+	    currentServer++;
 	
-	if ( currentServer == servers.size() || 
-	     currentServer < 0 ) {
-	    currentServer = 0;
-	}
+	    if ( currentServer == servers.size() || 
+	        currentServer < 0 ) {
+	        currentServer = 0;
+	    }
 	
         log.info("server # "+currentServer);
         RemoteServer server = servers.get( currentServer );
@@ -101,7 +101,8 @@ public class SimpleRouter implements Router {
                                             String accession,
                                             String operation ){
         
-        return this.getNextProxyServer();
+        //return this.getNextProxyServer( );
+        return this.getNextProxyServer( operation );
     }
 
     // observer intereface

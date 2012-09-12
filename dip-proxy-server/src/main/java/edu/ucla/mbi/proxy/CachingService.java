@@ -420,8 +420,9 @@ public class CachingService extends Observable {
             } 
         } 
         
-        RemoteServer rs = selectRemoteServer( rsc );
-        
+        //RemoteServer rs = selectRemoteServer( rsc );
+        RemoteServer rs = selectRemoteServer( rsc, service );
+
         DatasetType dxfResult = null;
         
         try {
@@ -534,16 +535,29 @@ public class CachingService extends Observable {
             return router.getNextProxyServer( service, 
                                               namespace, accession );
         }
-        return router.getNativeServer();
+        //return router.getNativeServer();
+        return router.getNativeServer(service);
     }
     
+    /*
     private RemoteServer selectRemoteServer( RemoteServerContext rsc ) {
 
         if ( rsc.isRemoteProxyOn() ) {
             return router.getLastProxyServer();
         }
         return router.getNativeServer();
-    }
+    } */
+
+    private RemoteServer selectRemoteServer( RemoteServerContext rsc, 
+                                             String service ) 
+    {
+
+        if ( rsc.isRemoteProxyOn() ) {
+            return router.getLastProxyServer( service );
+        }
+        //return router.getNativeServer();
+        return router.getNativeServer( service );
+    } 
 
     private String marshall( DatasetType record ) throws ProxyFault {
 

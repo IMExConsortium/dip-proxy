@@ -73,6 +73,7 @@ public class ProlinksCachingImpl implements ProlinksProxyPort {
         try {
             Router router = 
                 WSContext.getServerContext( provider ).createRouter();
+
             CachingService cachingSrv = 
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );

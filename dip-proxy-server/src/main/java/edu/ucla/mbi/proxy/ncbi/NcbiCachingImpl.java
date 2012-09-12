@@ -81,6 +81,7 @@ public class NcbiCachingImpl implements NcbiProxyPort {
         try {
             Router router = 
                 WSContext.getServerContext( provider ).createRouter() ;
+
             CachingService cachingSrv = 
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
@@ -178,6 +179,7 @@ public class NcbiCachingImpl implements NcbiProxyPort {
         try {
             Router router = 
                 WSContext.getServerContext( provider ).createRouter() ;
+
             CachingService cachingSrv = 
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
@@ -271,6 +273,7 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 	    try {
             Router router = 
                 WSContext.getServerContext( provider ).createRouter() ;
+
             CachingService cachingSrv = 
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
@@ -363,6 +366,7 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 	    try {
             Router router = 
                 WSContext.getServerContext( provider ).createRouter() ;
+
             CachingService cachingSrv = 
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
@@ -458,6 +462,7 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 	    try {
             Router router = 
                 WSContext.getServerContext( provider ).createRouter() ;
+
             CachingService cachingSrv = 
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );

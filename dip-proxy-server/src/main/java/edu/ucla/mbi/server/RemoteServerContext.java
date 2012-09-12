@@ -37,7 +37,9 @@ public class RemoteServerContext {
     
     private Map properties = new HashMap();
 
-    private RemoteServer nativeServer = null;
+    //private RemoteServer nativeServer = null;
+    private Map<String, RemoteServer> nativeServerMap = new HashMap();
+
     private RemoteProxyServer proxyServer = null;
 
     private Router router = null;
@@ -74,14 +76,14 @@ public class RemoteServerContext {
         return provider;
     }
 
-    public RemoteServer getNativeServer(){
-        return nativeServer;
+    public Map<String, RemoteServer> getNativeServerMap(){
+        return nativeServerMap;
     }
 
     public RemoteProxyServer getProxyProto(){
         return proxyServer;
     }
-    
+     
     public Router createRouter(){
       	return router.createRouter();
     }
@@ -97,7 +99,12 @@ public class RemoteServerContext {
     public Object getProperty(String name){
 	    return properties.get(name);
     }
-    
+   
+    public void setNativeServerMap( Map<String, RemoteServer> nativeMap ) {
+        this.nativeServerMap = nativeMap;
+    } 
+
+
     public void init( String provider ) {
        	Log log = LogFactory.getLog( RemoteServerContext.class );
 
@@ -131,9 +138,8 @@ public class RemoteServerContext {
         
         log.info( "  servers:" );
 
-        log.info( "   nativeServer=" + context.get( "nativeServer" ) );
-        nativeServer = (RemoteServer) context.get( "nativeServer" );
-
+        
+        nativeServerMap = (Map<String, RemoteServer>) context.get( "nativeServer" );
         
         log.info( "   proxyProto=" + context.get( "proxyProto" ) );
         proxyServer = (RemoteProxyServer) context.get( "proxyProto" );
