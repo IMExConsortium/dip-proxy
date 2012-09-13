@@ -47,9 +47,12 @@ public class NcbiReFetchThread extends Thread {
     private long waitMillis = threadRunMinutes * 60 * 1000;  
     private String provider = "NCBI";
     private String service = "nlm";
+    private NativeRestServer nativeRestServer = null;
+
+    /*
     private NativeRestServer nlmEsearchRestServer = null;
     private NativeRestServer nlmEfetchRestServer = null;
-
+    
     public NcbiReFetchThread( String ns, String ac, String nlmid, 
                               NativeRestServer nlmEsearchRestServer, 
                               NativeRestServer nlmEfetchRestServer ) {
@@ -58,6 +61,15 @@ public class NcbiReFetchThread extends Thread {
         this.nlmid = nlmid;
         this.nlmEsearchRestServer = nlmEsearchRestServer;
         this.nlmEfetchRestServer = nlmEfetchRestServer;        
+    }
+    */
+
+    public NcbiReFetchThread( String ns, String ac, String nlmid, 
+                              NativeRestServer nativeRestServer ) {
+        this.ns = ns;
+        this.ac = ac;
+        this.nlmid = nlmid;
+        this.nativeRestServer = nativeRestServer;
     }
 
     public void run() {
@@ -78,7 +90,7 @@ public class NcbiReFetchThread extends Thread {
                 //------------------------------------------------------------------
                 // esearch ncbi internal id of the nlmid
                 //--------------------------------------
-            
+                /*
                 String url_esearch_string = 
                         (String)nlmEsearchRestServer.getRestServerContext().get("restUrl");
                 String esearch_restAcTag = 
@@ -94,12 +106,20 @@ public class NcbiReFetchThread extends Thread {
                 
                 url_esearch_string = url_esearch_string.replaceAll( 
                                                     esearch_restAcTag, ac );
+                
+                String url_esearch_string = 
+                        nativeRestServer.getRealUrl( provider, "nlmesearch", ac );
+                */                
+
                 /*
                     "http://eutils.ncbi.nlm.nih.gov"
                     + "/entrez/eutils/esearch.fcgi"
                     + "?db=nlmcatalog&retmode=xml&term=" + ac + "[nlmid]";
                 */
                 try {
+                    String url_esearch_string =
+                        nativeRestServer.getRealUrl( provider, "nlmesearch", ac );
+        
                     DocumentBuilder builder = fct.newDocumentBuilder();
 
                     URL url_esearch = new URL( url_esearch_string );
@@ -147,6 +167,7 @@ public class NcbiReFetchThread extends Thread {
             log.info( "NcbiReFetchThread: after esearch: nlmid is " + nlmid );
             startTime = System.currentTimeMillis();            
             boolean emptySet = true;
+            /*
             String url_efetch_string = 
                     (String)nlmEfetchRestServer.getRestServerContext().get( "restUrl" );
             String efetch_restAcTag = 
@@ -162,6 +183,11 @@ public class NcbiReFetchThread extends Thread {
 
             url_efetch_string = url_efetch_string.replaceAll(
                                             efetch_restAcTag, nlmid );
+            
+
+            String url_efetch_string = 
+                nativeRestServer.getRealUrl( provider, "nlmefetch", nlmid );        
+            */
 
             /*
                         "http://eutils.ncbi.nlm.nih.gov"
@@ -171,6 +197,9 @@ public class NcbiReFetchThread extends Thread {
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
 
                 try { 
+                    String url_efetch_string =
+                        nativeRestServer.getRealUrl( provider, "nlmefetch", nlmid );
+
                     URL url_efetch = new URL( url_efetch_string );
                     InputSource xml_efetch = new InputSource(
                                                 url_efetch.openStream() );
@@ -196,9 +225,15 @@ public class NcbiReFetchThread extends Thread {
                         } else {
                             //retVal = NativeURL.query( url_efetch_string, timeOut );
                             try {
+                                /*
                                 record = nlmEfetchRestServer.getNative( 
                                                         provider, service,
                                                         ns, nlmid, timeOut );
+                                */
+                                record = nativeRestServer.getNative(
+                                                        provider, "nlmefetch",
+                                                        ns, nlmid, timeOut );
+
                             } catch ( ProxyFault fault ) {
                                 throw fault;
                             }

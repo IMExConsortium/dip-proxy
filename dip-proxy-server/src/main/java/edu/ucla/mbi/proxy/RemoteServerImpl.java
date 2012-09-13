@@ -32,7 +32,8 @@ public class RemoteServerImpl implements RemoteServer {
 
     private Log log = LogFactory.getLog( RemoteServerImpl.class );
     protected Map<String,Object> context = new HashMap();
-    
+    protected NativeRestServer nativeRestServer = null;
+
     public boolean isNative() {
         return true;
     }
@@ -43,6 +44,14 @@ public class RemoteServerImpl implements RemoteServer {
     
     public void setContext( Map<String,Object> context ) {
         this.context = context;
+    }
+
+    public void setNativeRestServer ( NativeRestServer server ) {
+        this.nativeRestServer = server;
+    }
+
+    public NativeRestServer getNativeRestServer() {
+        return nativeRestServer;
     }
 
     public Map<String,Object> getContext() {
@@ -60,16 +69,15 @@ public class RemoteServerImpl implements RemoteServer {
                                    String ns, String ac, int timeout 
                                    ) throws ProxyFault {
 
-        NativeServer restServer = (NativeServer) getContext().get( service );
         
-        if( restServer == null ) {
+        if( nativeRestServer == null ) {
             log.warn ( "getNative:restServer is not configured " + 
                        "for the service=" + service );
 
             throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );      
         } 
         
-        return restServer.getNative( provider, service, ns, ac, timeout );
+        return nativeRestServer.getNative( provider, service, ns, ac, timeout );
     }
     
     

@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.net.*;
 import java.io.*;
-import java.util.Map;
+import java.util.*;
 
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
@@ -27,7 +27,7 @@ public class NativeRestServer implements NativeServer {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
 
-    public Map<String,Object> restServerContext;   
+    private  Map<String,Object> restServerContext;   
     
     public void setRestServerContext( Map<String,Object> context ) {
         this.restServerContext = context;
@@ -37,30 +37,44 @@ public class NativeRestServer implements NativeServer {
         return restServerContext;
     }
 
-    public NativeRecord getNative( String provider, String service, 
-                                   String ns, String ac, int timeOut 
-                                   ) throws ProxyFault 
+    public String getRealUrl ( String provider, String service, String ac ) 
+                                                            throws ProxyFault 
     {
-        String retVal = null;
-        log.info( "getNative: NS=" + ns + " AC=" + ac + " OP=" + service );
-        
-        String restAcTag = (String) getRestServerContext().get( "restAcTag" );        
-        String restUrl = (String) getRestServerContext().get( "restUrl" );
+
+        String restAcTag =
+            (String) ( (Map<String, String>) (
+                            (Map<String, Map>)restServerContext.get(provider) )
+                                             .get(service) ).get("restAcTag");
+
+        String restUrl =
+            (String) ( (Map<String, String>) (
+                            (Map<String, Map>)restServerContext.get(provider) )
+                                            .get(service)).get( "restUrl" );
 
         if( restAcTag == null || restUrl == null ) {
-            log.warn( "getNative: restAcTag or restUrl is not configured. " );
+            log.warn( "getRealUrl: restAcTag or restUrl is not configured. " );
             throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
-    
+
         restAcTag = restAcTag.replaceAll( "^\\s+", "" );
         restAcTag = restAcTag.replaceAll( "\\s+$", "" );
 
         restUrl = restUrl.replaceAll( "\\s", "" );
 
-        String real_restUrl = restUrl.replaceAll( restAcTag, ac );
+        return restUrl.replaceAll( restAcTag, ac );
+    }
+
+    public NativeRecord getNative( String provider, String service, 
+                                   String ns, String ac, int timeout 
+                                   ) throws ProxyFault 
+    {
+        String retVal = null;
+        log.info( "getNative: NS=" + ns + " AC=" + ac + " OP=" + service );
+        
+        String real_restUrl = getRealUrl( provider, service, ac );
 
         try {
-            retVal = query( real_restUrl, timeOut );
+            retVal = query( real_restUrl, timeout );
         } catch( ProxyFault fault ) {
             throw fault;
         }
@@ -109,7 +123,7 @@ public class NativeRestServer implements NativeServer {
 
     }
 
-    private String query( String url, int timeOut ) throws ProxyFault {
+    private String query( String url, int timeout ) throws ProxyFault {
         String retVal = "";
 
         try {
@@ -131,8 +145,8 @@ public class NativeRestServer implements NativeServer {
 
             // setting timeout ensure the client does not deadlock indefinitely
             // -----------------------------------------------------------------
-            conn.setConnectTimeout( timeOut ); // uTimeout is int as milliseconds
-            conn.setReadTimeout( timeOut );
+            conn.setConnectTimeout( timeout ); // uTimeout is int as milliseconds
+            conn.setReadTimeout( timeout );
 
 
             BufferedReader in =

@@ -45,23 +45,11 @@ public class NcbiServer extends RemoteServerImpl {
         } else {
             NativeRecord record = null;
             String retVal = null;
-            NativeRestServer nlmEsearchRestServer = 
-                    (NativeRestServer) getContext().get( "nlmEsearch" );
-
-            NativeRestServer nlmEfetchRestServer = 
-                    (NativeRestServer) getContext().get( "nlmEfetch" );
-
-            if( nlmEsearchRestServer == null || nlmEfetchRestServer == null ) {
-                log.warn( "getNative: nlmEsearchRestServer "
-                          + "or nlmEfetchRestServer is null. " );
-
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            }
-
             
             XPathFactory xpf = XPathFactory.newInstance();
             XPath xPath = xpf.newXPath();
             DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();
+
 
             //------------------------------------------------------------------
             // esearch ncbi internal id of the nlmid
@@ -70,41 +58,27 @@ public class NcbiServer extends RemoteServerImpl {
             try{
                 DocumentBuilder builder = fct.newDocumentBuilder();
 
-                String url_esearch_string = (String)nlmEsearchRestServer
-                                    .getRestServerContext().get( "restUrl" );
-                String esearch_restAcTag = (String)nlmEsearchRestServer
-                                    .getRestServerContext().get( "restAcTag" );
-            
-                if( esearch_restAcTag == null || url_esearch_string == null ) {
-                    log.warn( "getNative: esearch_restAcTag or " + 
-                              "url_esearch_string is not configured. " );
-                    throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-                }
-                 
-                esearch_restAcTag = esearch_restAcTag.replaceAll( "^\\s+", "" );
-                esearch_restAcTag = esearch_restAcTag.replaceAll( "\\s+$", "" );
-                url_esearch_string = url_esearch_string.replaceAll( "\\s", "" );
+                String url_esearch_string = 
+                    nativeRestServer.getRealUrl( provider, "nlmesearch", ac );
 
-                url_esearch_string = url_esearch_string.replaceAll( 
-                                                    esearch_restAcTag, ac );
- 
+                log.info( "getNative: url_esearch_string=" + url_esearch_string );
+
                 URL url_esearch = new URL( url_esearch_string );
                 
-                log.info( "getNative: url_esearch=" + url_esearch ); 
                 InputSource xml_esearch = new InputSource( 
                                                 url_esearch.openStream() );
 
                 Document docEsearch = builder.parse( xml_esearch );
                 Element rootElementEsearch = docEsearch.getDocumentElement();
              
-                if( rootElementEsearch.getChildNodes().getLength() ==  0 ) {
+                if( rootElementEsearch.getChildNodes().getLength() ==  0  ) {
                     log.warn("getNative: nlm esearch: return an empty result." ); 
                     
                     try {    
+
                         NcbiReFetchThread thread = new NcbiReFetchThread(
                                                         ns, ac, "", 
-                                                        nlmEsearchRestServer,
-                                                        nlmEfetchRestServer);
+                                                        nativeRestServer );
 
                         thread.start();
                         log.info( "getNative: nlm: ncbi fetch thread starting... " );
@@ -140,10 +114,10 @@ public class NcbiServer extends RemoteServerImpl {
                     log.warn("getNative: nlm esearch: return wrong xml style. ");
                   
                     try { 
+
                         NcbiReFetchThread thread = new NcbiReFetchThread( 
                                                         ns, ac, "",
-                                                        nlmEsearchRestServer,
-                                                        nlmEfetchRestServer);
+                                                        nativeRestServer);
 
                         thread.start();
 
@@ -170,25 +144,9 @@ public class NcbiServer extends RemoteServerImpl {
 
                 log.info( "NcbiServer: nlm: ncbi_nlmid is " + ncbi_nlmid );
 
-                String url_efetch_string = (String)nlmEfetchRestServer
-                                    .getRestServerContext().get( "restUrl" );
-
-                String efetch_restAcTag = (String)nlmEfetchRestServer
-                                    .getRestServerContext().get( "restAcTag" );
-
-                
-                if( efetch_restAcTag == null || url_efetch_string == null ) {
-                    log.warn( "getNative: efetch_restAcTag or " +
-                              "url_efetch_string is not configured. " );
-                    throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-                }
-
-                efetch_restAcTag = efetch_restAcTag.replaceAll( "^\\s+", "" );
-                efetch_restAcTag = efetch_restAcTag.replaceAll( "\\s+$", "" );
-                url_efetch_string = url_efetch_string.replaceAll( "\\s", "" );
-
-                url_efetch_string = url_efetch_string.replaceAll( 
-                                            efetch_restAcTag, ncbi_nlmid );
+                String url_efetch_string =
+                        nativeRestServer.getRealUrl( provider, "nlmefetch", 
+                                                     ncbi_nlmid );
 
                 log.info( "NcbiServer: after replace url_efetch_string=" + 
                           url_efetch_string );
@@ -208,10 +166,10 @@ public class NcbiServer extends RemoteServerImpl {
                 if( testNode == null ) {
                     log.warn( "getNative: nlm: native server return empty set. " );
                     try { 
+
                         NcbiReFetchThread thread = new NcbiReFetchThread( 
                                                         ns, ac, ncbi_nlmid,
-                                                        nlmEsearchRestServer,
-                                                        nlmEfetchRestServer);
+                                                        nativeRestServer);
 
                         thread.start();
 
@@ -254,8 +212,11 @@ public class NcbiServer extends RemoteServerImpl {
                     } else {
                         //extract xml string
                         try {
-                            record = nlmEfetchRestServer.getNative( provider, 
-                                                    service, ns, ncbi_nlmid, timeout );
+
+                            record = nativeRestServer.getNative( 
+                                                        provider, "nlmefetch",
+                                                        ns, ncbi_nlmid, timeout );
+
                         } catch ( ProxyFault fault ) {
                             throw fault;
                         }
@@ -269,11 +230,11 @@ public class NcbiServer extends RemoteServerImpl {
                             log.info( "getNative: nlm: retVal is empty set. " );
                             
                             try {    
+
                                 NcbiReFetchThread thread 
                                     = new NcbiReFetchThread ( 
                                                         ns, ac, ncbi_nlmid,
-                                                        nlmEsearchRestServer,
-                                                        nlmEfetchRestServer);
+                                                        nativeRestServer);
 
                                 thread.start();
 
