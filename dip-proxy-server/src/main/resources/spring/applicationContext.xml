@@ -140,7 +140,7 @@
        </entry>
 
        <entry key="cache" value="on"/>
-       <entry key="remoteProxy" value="off"/>
+       <entry key="remoteProxy" value="on"/>
        <entry key="monitor" value="on"/>
        <entry key="debug" value="0"/> 
       </map>
