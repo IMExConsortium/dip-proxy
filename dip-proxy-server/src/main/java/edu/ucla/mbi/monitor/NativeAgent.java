@@ -77,8 +77,8 @@ public class NativeAgent implements Agent {
                             NativeRecord natRec = rsc.getNativeServerMap()
                                     .get( service).getNative( prv, service, 
                                                               ns, ac, 
-                                                              rsc.getTimeout() 
-                                                              );
+                                                              rsc.getTimeout(),
+                                                              1 );
 
                             NativeRecord oldRecord =
                                     ndo.find( prv, service, ns, ac );

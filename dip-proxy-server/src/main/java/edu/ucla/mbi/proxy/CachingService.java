@@ -107,8 +107,8 @@ public class CachingService extends Observable {
             int retry = router.getMaxRetry();            
             NativeRecord expiredRemoteRec = null;
 
-            while ( retry > 0 && natXml == null ) {
-                
+            //while ( retry > 0 && natXml == null ) {
+            while ( retry > 0 && remoteRec == null ) {    
                 // no valid local copy - try remote source(s)
                 
                 RemoteServer rs = 
@@ -120,7 +120,7 @@ public class CachingService extends Observable {
                 
                 try {
                     remoteRec = rs.getNative( provider, service, ns, ac, 
-                                              rsc.getTimeout() );
+                                              rsc.getTimeout(), retry );
                     log.info( "getNative: remoteRec=" + remoteRec );
                 } catch( ProxyFault fault ) {
                     log.warn("getNative: RemoteServer getNative() fault: " 
@@ -128,7 +128,7 @@ public class CachingService extends Observable {
 
                     throw fault;
                 }
-		     
+		        /* 
                 if( remoteRec == null && service.equals( "nlm" ) ) {
                     //*** check if ncbi refetch thread already saved the record
                     cacheRecord = DipProxyDAO.getNativeRecordDAO()
@@ -137,7 +137,7 @@ public class CachingService extends Observable {
                     if( cacheRecord != null ) {
                         return cacheRecord;
                     }
-                } 
+                } */
 
                 if( remoteRec != null ) {      
                     Date queryTime = remoteRec.getCreateTime();  // primary query

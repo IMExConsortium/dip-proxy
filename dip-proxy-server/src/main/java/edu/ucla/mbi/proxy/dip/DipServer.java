@@ -18,6 +18,7 @@ import java.net.URL;
 
 import javax.xml.bind.*;
 import javax.xml.ws.BindingProvider;
+import com.sun.xml.ws.developer.JAXWSProperties;
 import javax.xml.namespace.QName;
 
 import java.util.List;
@@ -127,8 +128,9 @@ public class DipServer extends RemoteServerImpl {
     // ---------------------------------------------------------------------
 
     public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeOut ) throws ProxyFault {
-
+                                   String ac, int timeout, int retry 
+                                   ) throws ProxyFault 
+    {
         Log log = LogFactory.getLog( DipServer.class );
         log.info( "srv=" + service + " ns=" + ns + " ac=" + ac );
 
@@ -145,7 +147,13 @@ public class DipServer extends RemoteServerImpl {
             if( dipPort == null ) {
                 log.warn( "getNative: dipPort initailizing fault." );
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            } else if( ac.substring( ac.length()-2, ac.length()-1 )
+            } else {
+                ((BindingProvider) dipPort).getRequestContext()
+                            .put( JAXWSProperties.CONNECT_TIMEOUT,
+                                  timeout );
+            } 
+
+            if( ac.substring( ac.length()-2, ac.length()-1 )
                                                             .equals( "L" ) ) 
             {
                 //*** link ac with format DIP-\d+LP
@@ -212,7 +220,13 @@ public class DipServer extends RemoteServerImpl {
             if( dipLegacyPort == null ) {
                 log.warn( "getNative: dipLegacyPort initailizing fault." );
                 throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-            } else if( ac.matches( "DIP-\\d+E" ) ) {
+            } else {
+                ((BindingProvider) dipLegacyPort).getRequestContext()
+                            .put( JAXWSProperties.CONNECT_TIMEOUT,
+                                  timeout );
+            }
+
+            if( ac.matches( "DIP-\\d+E" ) ) {
                 try {
                     retList = dipLegacyPort.getLink( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {

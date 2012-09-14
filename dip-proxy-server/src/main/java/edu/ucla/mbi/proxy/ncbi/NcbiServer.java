@@ -36,12 +36,14 @@ public class NcbiServer extends RemoteServerImpl {
     private Log log = LogFactory.getLog( NcbiServer.class );
      
     public NativeRecord getNative( String provider, String service, String ns,
-            String ac, int timeout ) throws ProxyFault {
+                                   String ac, int timeout, int retry 
+                                   ) throws ProxyFault 
+    {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
     
         if ( !service.equals( "nlm" ) ) {
-            return super.getNative( provider, service, ns, ac, timeout );
+            return super.getNative( provider, service, ns, ac, timeout, retry );
         } else {
             NativeRecord record = null;
             String retVal = null;
@@ -71,30 +73,38 @@ public class NcbiServer extends RemoteServerImpl {
                 Document docEsearch = builder.parse( xml_esearch );
                 Element rootElementEsearch = docEsearch.getDocumentElement();
              
-                if( rootElementEsearch.getChildNodes().getLength() ==  0  ) {
-                    log.warn("getNative: nlm esearch: return an empty result." ); 
-                    
-                    try {    
+                if( rootElementEsearch.getChildNodes().getLength() ==  0 ) {
+                    if( retry > 0 ) {
+                        log.info( "getNative: nlm esearch get empty return." + 
+                                  "retry=" + retry + ", continue to try. ");
+                        return null; // try again
+                    } else {
+                        try {    
 
-                        NcbiReFetchThread thread = new NcbiReFetchThread(
-                                                        ns, ac, "", 
-                                                        nativeRestServer );
+                            NcbiReFetchThread thread = new NcbiReFetchThread(
+                                                            ns, ac, "", 
+                                                            nativeRestServer );
 
-                        thread.start();
-                        log.info( "getNative: nlm: ncbi fetch thread starting... " );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                    } catch ( ProxyFault fault ) {
-                        throw fault;
-                    } catch ( RuntimeException e ) {
-                        if( e.getMessage().equals( "NO_RECORD" ) ) {
-                            throw FaultFactory.newInstance( Fault.NO_RECORD );
-                        } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                            thread.start();
+                            log.warn( "getNative: nlm esearch return " +
+                                      "an empty set." );
+                            log.info( "getNative: nlm esearch thread starting." );
+
                             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                        } else {
-                            throw FaultFactory.newInstance( Fault.UNKNOWN );
+
+                        } catch ( ProxyFault fault ) {
+                            throw fault;
+                        } catch ( RuntimeException e ) {
+                            if( e.getMessage().equals( "NO_RECORD" ) ) {
+                                throw FaultFactory.newInstance( Fault.NO_RECORD );
+                            } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                            } else {
+                                throw FaultFactory.newInstance( Fault.UNKNOWN );
+                            }
                         }
                     }
-                }
+                } 
 
                 String ncbi_error = xPath.evaluate(
                                             "/eSearchResult/ErrorList" + 
@@ -111,29 +121,34 @@ public class NcbiServer extends RemoteServerImpl {
                                             rootElementEsearch );
 
                 if( ncbi_nlmid.equals("") ){
-                    log.warn("getNative: nlm esearch: return wrong xml style. ");
-                  
-                    try { 
+                    if( retry > 0 ) {
+                        log.info( "getNative: nlm esearch return wrong xml " +
+                                  "style." + " retry=" + retry + 
+                                  ", continue to try. ");
+                        return null; // try again
+                    } else {
+                        try { 
 
-                        NcbiReFetchThread thread = new NcbiReFetchThread( 
-                                                        ns, ac, "",
-                                                        nativeRestServer);
+                            NcbiReFetchThread thread = new NcbiReFetchThread( 
+                                                            ns, ac, "",
+                                                            nativeRestServer);
 
-                        thread.start();
+                            thread.start();
 
-                        log.info( "getNative: nlm: ncbi fetch thread starting... " );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                    } catch ( ProxyFault fault ) {
-                        throw fault;
-                    } catch ( RuntimeException e ) {
-                        if( e.getMessage().equals( "NO_RECORD" ) ) {
-                            throw FaultFactory.newInstance( Fault.NO_RECORD );
-                        } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                            log.info( "getNative: nlm: ncbi fetch thread starting... " );
                             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                        } else if ( e.getMessage().equals( "UNSUPPORTED_OP" ) ) {
-                            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-                        } else {
-                            throw FaultFactory.newInstance( Fault.UNKNOWN );
+                        } catch ( ProxyFault fault ) {
+                                throw fault;
+                        } catch ( RuntimeException e ) {
+                            if( e.getMessage().equals( "NO_RECORD" ) ) {
+                                throw FaultFactory.newInstance( Fault.NO_RECORD );
+                            } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                            } else if ( e.getMessage().equals( "UNSUPPORTED_OP" ) ) {
+                                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+                            } else {
+                                throw FaultFactory.newInstance( Fault.UNKNOWN );
+                            }
                         }
                     }
                 }
@@ -164,26 +179,32 @@ public class NcbiServer extends RemoteServerImpl {
                                rootElementEfetch, XPathConstants.NODE );
 
                 if( testNode == null ) {
-                    log.warn( "getNative: nlm: native server return empty set. " );
-                    try { 
+                    if( retry > 0 ) {
+                        log.info( "getNative: nlm native server return " +
+                                  "empty set. " + " retry=" + retry +
+                                  ", continue to try. ");
+                        return null; // try again
+                    } else {
+                        try { 
 
-                        NcbiReFetchThread thread = new NcbiReFetchThread( 
-                                                        ns, ac, ncbi_nlmid,
-                                                        nativeRestServer);
+                            NcbiReFetchThread thread = new NcbiReFetchThread( 
+                                                            ns, ac, ncbi_nlmid,
+                                                            nativeRestServer);
 
-                        thread.start();
+                            thread.start();
 
-                        log.info( "getNative: nlm: ncbi fetch thread starting..." );                     
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                    } catch ( ProxyFault fault ) {
-                        throw fault;
-                    } catch ( RuntimeException e ) {
-                        if( e.getMessage().equals( "NO_RECORD" ) ) {
-                            throw FaultFactory.newInstance( Fault.NO_RECORD );
-                        } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
-                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );            
-                        } else {
-                            throw FaultFactory.newInstance( Fault.UNKNOWN );
+                            log.info( "getNative: nlm: ncbi fetch thread starting..." );                     
+                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                        } catch ( ProxyFault fault ) {
+                            throw fault;
+                        } catch ( RuntimeException e ) {
+                            if( e.getMessage().equals( "NO_RECORD" ) ) {
+                                throw FaultFactory.newInstance( Fault.NO_RECORD );
+                            } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );            
+                            } else {
+                                throw FaultFactory.newInstance( Fault.UNKNOWN );
+                            }
                         }
                     }
                 } else {
@@ -229,28 +250,36 @@ public class NcbiServer extends RemoteServerImpl {
 
                             log.info( "getNative: nlm: retVal is empty set. " );
                             
-                            try {    
+                            if( retry > 0 ) {
+                                log.info( "getNative: nlm retVal is empty set. " +
+                                          " retry=" + retry + 
+                                          ", continue to try. ");
+                                return null; // try again
+                            } else {
 
-                                NcbiReFetchThread thread 
-                                    = new NcbiReFetchThread ( 
+                                try {    
+
+                                    NcbiReFetchThread thread 
+                                        = new NcbiReFetchThread ( 
                                                         ns, ac, ncbi_nlmid,
                                                         nativeRestServer);
 
-                                thread.start();
+                                    thread.start();
 
-                                log.info( "getNative: ncbi fetch thread starting." );
+                                    log.info( "getNative: ncbi fetch thread starting." );
 
-                                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-
-                            } catch ( ProxyFault fault ) {
-                                throw fault;
-                            } catch ( RuntimeException e ) {
-                                if( e.getMessage().equals( "NO_RECORD" ) ) {
-                                    throw FaultFactory.newInstance( Fault.NO_RECORD );
-                                } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
                                     throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                                } else {
-                                    throw FaultFactory.newInstance( Fault.UNKNOWN );
+
+                                } catch ( ProxyFault fault ) {
+                                    throw fault;
+                                } catch ( RuntimeException e ) {
+                                    if( e.getMessage().equals( "NO_RECORD" ) ) {
+                                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                                    } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                                    } else {
+                                        throw FaultFactory.newInstance( Fault.UNKNOWN );
+                                    }
                                 }
                             }
                         }

@@ -24,6 +24,8 @@ import java.util.Iterator;
 
 import javax.xml.bind.*;
 import javax.xml.ws.BindingProvider;
+import com.sun.xml.ws.developer.JAXWSProperties;
+
 import javax.xml.namespace.QName;
 
 import edu.ucla.mbi.proxy.*;
@@ -140,20 +142,28 @@ public class EbiServer extends RemoteServerImpl {
     //-------------------------------------------------------------------------
     
     public NativeRecord getNative( String provider, String service, 
-                                   String ns, String ac, int timeout 
-                                   ) throws ProxyFault {
-        
+                                   String ns, String ac, int timeout, int retry 
+                                   ) throws ProxyFault 
+    {
         Log log = LogFactory.getLog( EbiServer.class );
         log.info( "NS=" + ns + " AC=" + ac + " SRV=" + service );
 
         if ( !service.equals( "picr" ) ) {
 
-            return super.getNative( provider, service, ns, ac, timeout );            
+            return super.getNative( provider, service, ns, ac, timeout, retry );            
 
         } else {
 
             NativeRecord record = null;
             String retVal = null;
+            
+            if( picrPort == null ) {
+                log.warn( "getNative: picrPort initailizing fault." );
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            } else {
+                 ((BindingProvider) picrPort).getRequestContext()
+                            .put( JAXWSProperties.CONNECT_TIMEOUT, timeout );
+            }
             
             try {
 

@@ -66,8 +66,8 @@ public class RemoteServerImpl implements RemoteServer {
     //---------------------
 
     public NativeRecord getNative( String provider, String service,
-                                   String ns, String ac, int timeout 
-                                   ) throws ProxyFault {
+                                   String ns, String ac, int timeout, 
+                                   int retry ) throws ProxyFault {
 
         
         if( nativeRestServer == null ) {
