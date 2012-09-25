@@ -96,8 +96,8 @@
 
   <distributionManagement>
     <repository>
-      <id>public</id>
-      <name>IMEx Public Maven Reopsitory</name>
+      <id>internal</id>
+      <name>Archiva Managed Internal Repository</name>
       <url>http://imex.mbi.ucla.edu/archiva/repository/internal/</url>
     </repository>
 
