@@ -53,8 +53,8 @@
   <modules>
     <module>dip-proxy-api</module>
     <module>picr-client</module>
-    <module>dip-proxy-server</module>
     <module>dip-proxy-client</module>
+    <module>dip-proxy-server</module>
   </modules>
 
   <dependencies>
