@@ -41,6 +41,19 @@ public class NativeRestServer implements NativeServer {
                                                             throws ProxyFault 
     {
 
+        if( restServerContext.get(provider) == null ) {
+            log.warn( "getRealUrl: provider=" + provider + " does not exist. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+        
+        if( ( (Map<String, Map>)restServerContext.get(provider) ).get(service)
+                == null ) 
+        { 
+            log.warn( "getRealUrl: service=" + service + " does not exist. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+
         String restAcTag =
             (String) ( (Map<String, String>) (
                             (Map<String, Map>)restServerContext.get(provider) )
@@ -54,7 +67,7 @@ public class NativeRestServer implements NativeServer {
         if( restAcTag == null || restUrl == null ) {
             log.warn( "getRealUrl: restAcTag or restUrl is not configured. " );
             throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
+        } 
 
         restAcTag = restAcTag.replaceAll( "^\\s+", "" );
         restAcTag = restAcTag.replaceAll( "\\s+$", "" );
@@ -69,12 +82,16 @@ public class NativeRestServer implements NativeServer {
                                    ) throws ProxyFault 
     {
         String retVal = null;
-        log.info( "getNative: NS=" + ns + " AC=" + ac + " OP=" + service );
+        log.info( "getNative: PROVIDER=" + provider + " and SERVICE=" + 
+                  service + " and NS=" + ns + " AC=" + ac );
         
         String real_restUrl = getRealUrl( provider, service, ac );
 
+        log.info( "getNative: real_restUrl=" + real_restUrl );
+
         try {
             retVal = query( real_restUrl, timeout );
+            
         } catch( ProxyFault fault ) {
             throw fault;
         }
