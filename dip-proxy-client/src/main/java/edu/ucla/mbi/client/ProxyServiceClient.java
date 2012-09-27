@@ -136,7 +136,7 @@ public class ProxyServiceClient {
                 String message = "getRecord: remote server returns null.";
                 ServiceFault sf = new ServiceFault();
                 sf.setMessage(message);
-                sf.setFaultCode(13);
+                sf.setFaultCode(13); //remote server fault
                 log.warn( "getRecord: throw fault: " +
                           "remote server returns null.");
                 ProxyFault fault = new ProxyFault(message, sf);
@@ -145,8 +145,9 @@ public class ProxyServiceClient {
         } catch ( ProxyFault fault ) {
             if( ++testNum < proxyReQueryTimes ) {
                 getRecordWithDxf ( provider, service, ns, ac, detail, testNum );
+            } else {
+                throw fault;
             }
-            throw fault;
         }
 
         return node;
