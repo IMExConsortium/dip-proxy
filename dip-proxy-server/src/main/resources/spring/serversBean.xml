@@ -330,40 +330,4 @@
     </map>
   </property>       
  </bean>
- 
- <!-- nlm esearch rest server -->
- <bean id="nlmEsearchRestServer" 
-       class="edu.ucla.mbi.proxy.NativeRestServer">
-  <property name="restServerContext">
-    <map>
-        <entry key="restUrl">
-          <value>
-            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?
-                db=nlmcatalog&amp;retmode=xml&amp;term=%%ACTAG%%[nlmid]
-          </value>
-        </entry>
-        <entry key="restAcTag">
-          <value>%%ACTAG%%</value>
-        </entry>
-    </map>
-  </property>
- </bean>
-
- <!-- nlm efetch rest server -->
- <bean id="nlmEfetchRestServer" 
-       class="edu.ucla.mbi.proxy.NativeRestServer">
-  <property name="restServerContext">
-    <map>
-        <entry key="restUrl">
-          <value>
-            http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?
-                db=nlmcatalog&amp;retmode=xml&amp;id=%%ACTAG%%
-          </value>
-        </entry>
-        <entry key="restAcTag">
-          <value>%%ACTAG%%</value>
-        </entry>
-    </map>
-  </property>
- </bean>
 </beans>
