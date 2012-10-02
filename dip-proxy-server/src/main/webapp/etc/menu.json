@@ -32,7 +32,12 @@
             {label:"Configure",
              link:"page?id=configure",
              "disabled":"false",
-             menu:[]
+             menu:[
+                {label:"Native Rest Server",
+                 link:"native-configure?id=restserver",
+                 "disabled":"false",
+                 menu:[]
+                }]
             }]
         }]
     }]

@@ -27,6 +27,12 @@
         viewtype:"file-html",
         viewpath:"/pages/configure.html"
       },
+      restserver:{
+        active:true,
+        title:"Native Rest Server Configure",
+        menudef:"0:1",
+        menusel:"1:2:1"
+      },
       cache:{
         active:true,
         title:"dip-proxy Status",

@@ -117,6 +117,15 @@
 
      <result name="success" type="tiles">nodestatus</result>
    </action>
+
+   <!-- native rest server configure -->
+   <action name="native-rest-server-configure" class="nativeConfigureAction" >
+     <interceptor-ref name="defaultStack"/>
+     <interceptor-ref name="timer"/>
+     <interceptor-ref name="menu"/>
+
+     <result name="success" type="tiles">restserver</result>
+   </action>
    
    <!-- anything else --> 
 
