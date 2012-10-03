@@ -81,32 +81,35 @@ public class NativeConfigureAction extends PageSupport {
         return SUCCESS;
     }
 
+    
      /**
      * Provide default value for Message property.
      */
-    public static final String MESSAGE = "foo.message";
+    //public static final String MESSAGE = "foo.message";
 
     /**
      * Field for Message property.
      */
-    private String message;
+    //private String message;
 
     /**
      * Return Message property.
      *
      * @return Message property
      */
+    /*
     public String getMessage() {
         return message;
-    }
+    }*/
 
     /**
      * Set Message property.
      *
      * @param message Text to display on HelloWorld page.
      */
+    /*
     public void setMessage(String message) {
         this.message = message;
     }
-
+    */
 }

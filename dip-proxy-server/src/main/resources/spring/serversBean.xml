@@ -186,9 +186,10 @@
  </bean>
 
  <!-- REST SERVER -->
- <bean id="nativeRestServer" 
+ <bean id="nativeRestServer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-  <property name="restServerContext">
+  <property name="restServerContext" ref="restServerContext"/>
+    <!--
     <map>
         <entry key="NCBI">
             <map>
@@ -328,6 +329,7 @@
             </map>
         </entry>
     </map>
-  </property>       
+    
+  </property> -->      
  </bean>
 </beans>

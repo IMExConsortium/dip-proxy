@@ -22,31 +22,72 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
 import edu.ucla.mbi.fault.*;
+import edu.ucla.mbi.util.*;
 
-public class NativeRestServer implements NativeServer {
+import javax.servlet.ServletContext;
+import org.springframework.web.context.ServletContextAware;
+
+public class NativeRestServer implements NativeServer, ServletContextAware {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
+    private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
+    private JsonContext restServerContext;
+    private ServletContext servletContext;
+    private String restServerJFP;
+ 
+    /*
+    public void setRestServerMap( Map<String,Object> map ) {
+        this.restServerMap = map;
+    } */
 
-    private  Map<String,Object> restServerContext;   
-    
-    public void setRestServerContext( Map<String,Object> context ) {
+    public Map<String,Object> getRestServerMap() {
+        return restServerMap;
+    }
+
+    public void setRestServerContext( JsonContext context ) {
         this.restServerContext = context;
     }
 
-    public Map<String,Object> getRestServerContext() {
+    public JsonContext getRestServerContext() {
         return restServerContext;
+    }
+
+    public void setServletContext ( ServletContext servletContext ) {
+        this.servletContext = servletContext;
+    }
+
+    public void initialize() throws ProxyFault {
+        restServerConfigInitialize();
+    }
+
+    public String getRestServerJFP () {
+        return restServerJFP;
+    }
+
+    private void restServerConfigInitialize() throws ProxyFault {
+
+        try {
+            restServerJFP = GetPathFromJsonContext.getPath ( 
+                                    restServerContext, servletContext );
+        } catch( Exception e ) {
+            throw FaultFactory.newInstance ( 27 );
+        }
+
+        log.info( "restServerConfigInitialize: restServerJFP=" + restServerJFP );
+        
+        
     }
 
     public String getRealUrl ( String provider, String service, String ac ) 
                                                             throws ProxyFault 
     {
 
-        if( restServerContext.get(provider) == null ) {
+        if( restServerMap.get(provider) == null ) {
             log.warn( "getRealUrl: provider=" + provider + " does not exist. " );
             throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
         
-        if( ( (Map<String, Map>)restServerContext.get(provider) ).get(service)
+        if( ( (Map<String, Map>)restServerMap.get(provider) ).get(service)
                 == null ) 
         { 
             log.warn( "getRealUrl: service=" + service + " does not exist. " );
@@ -56,12 +97,12 @@ public class NativeRestServer implements NativeServer {
 
         String restAcTag =
             (String) ( (Map<String, String>) (
-                            (Map<String, Map>)restServerContext.get(provider) )
+                            (Map<String, Map>)restServerMap.get(provider) )
                                              .get(service) ).get("restAcTag");
 
         String restUrl =
             (String) ( (Map<String, String>) (
-                            (Map<String, Map>)restServerContext.get(provider) )
+                            (Map<String, Map>)restServerMap.get(provider) )
                                             .get(service)).get( "restUrl" );
 
         if( restAcTag == null || restUrl == null ) {

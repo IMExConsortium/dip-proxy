@@ -56,6 +56,14 @@
         </property>
     </bean>
 
+    <bean id="restServerContext" class="edu.ucla.mbi.util.JsonContext">
+        <property name="config">
+            <map>
+                <entry key="json-config" value="/etc/restserver.json"/>
+            </map>
+        </property>
+    </bean>
+
     <bean id="aclContext" class="edu.ucla.mbi.util.JsonContext">
         <property name="config">
             <map>
