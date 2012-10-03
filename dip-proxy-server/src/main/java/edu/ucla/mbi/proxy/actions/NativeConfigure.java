@@ -1,9 +1,9 @@
 package edu.ucla.mbi.proxy.actions;
 
 /*===========================================================================
- * $HeadURL:: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/dip-#$
- * $Id:: NativeStatus.java 2609 2012-08-01 00:04:54Z wyu                    $
- * Version: $Rev:: 2609                                                     $
+ * $HeadURL$
+ * $Id$
+ * Version: $Rev$
  *===========================================================================
  *
  * NativeStatus Action:
@@ -32,7 +32,8 @@ import edu.ucla.mbi.util.struts2.action.PageSupport;
 import org.json.*;
 
 public class NativeConfigure extends PageSupport {
-    private Log log = LogFactory.getLog( NativeStatus.class );
+
+    private Log log = LogFactory.getLog( NativeConfigure.class );
 
     private NativeRestServer nativeRestServer;
     
@@ -44,8 +45,10 @@ public class NativeConfigure extends PageSupport {
         return nativeRestServer;
     }
 
-    public String exceute() throws Exception {
+    public String execute() throws Exception {
+
         log.info( " NativeConfigureAction execute..." );
+
         Map<String,Object> jpd = super.getPageContext().getJsonConfig();
 
         if ( getId() != null && getId().length() > 0 ) {
