@@ -35,11 +35,6 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
     private ServletContext servletContext;
     private String restServerJFP;
  
-    /*
-    public void setRestServerMap( Map<String,Object> map ) {
-        this.restServerMap = map;
-    } */
-
     public Map<String,Object> getRestServerMap() {
         return restServerMap;
     }
@@ -57,6 +52,7 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
     }
 
     public void initialize() throws ProxyFault {
+        log.info( "initialize starting... " );
         restServerConfigInitialize();
     }
 
@@ -66,16 +62,69 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
 
     private void restServerConfigInitialize() throws ProxyFault {
 
+        log.info( "restServerConfigInitialize starting ... " );
+
         try {
             restServerJFP = GetPathFromJsonContext.getPath ( 
                                     restServerContext, servletContext );
         } catch( Exception e ) {
-            throw FaultFactory.newInstance ( 27 );
+            throw FaultFactory.newInstance ( 27 ); // json configuration
         }
 
         log.info( "restServerConfigInitialize: restServerJFP=" + restServerJFP );
+       
+        Map<String, Object> jrs = restServerContext.getJsonConfig(); 
         
+        ArrayList serverList = (ArrayList) jrs.get( "restServer" );
+
+        log.info( "restServerConIni ... after get restSerer . " );
+
+        for( int i = 0; i < serverList.size(); i++ ) {
+            String provider, service, restUrl, restAcTg;
+            Map<String, Object> serverMap = (Map) serverList.get(i);
+            
+            provider = (String) serverMap.get( "label" );       
+            ArrayList serviceList = (ArrayList)serverMap.get( "value" );
         
+            Map<String, Object> providerMap = new HashMap<String, Object>();
+            
+            Map<String, Object> serviceCMap = new HashMap<String, Object>();
+
+            for( int j = 0; j < serviceList.size(); j++ ) {
+                Map<String, Object> serviceMap = (Map) serviceList.get( j );
+                service = (String) serviceMap.get( "label" );
+                
+                ArrayList restServerList = (ArrayList) serviceMap.get( "value" );
+
+                Map<String, String> restCMap = new HashMap<String, String>();
+
+                for( int k = 0; k < restServerList.size(); k++ ) {
+                    Map<String, String> restMap = 
+                                        (Map) restServerList.get( k );
+    
+                    String label = restMap.get( "label" );
+                    String value = restMap.get( "value" );
+
+                    if( label.equals( "restUrl" ) ) {
+                        //restUrl = value;
+                        log.info( "restUrl value=" + value );
+                        restCMap.put( "restUrl", value );
+                    }
+
+                    if ( label.equals( "restAcTag" ) ) {
+                        //restAcTg = value;
+                        log.info( "restAcTag value=" + value );
+                        restCMap.put( "restAcTag", value );
+                    } 
+                }
+
+                serviceCMap.put( service, restCMap );
+            }
+
+            restServerMap.put( provider, serviceCMap );
+
+        }   
+           
     }
 
     public String getRealUrl ( String provider, String service, String ac ) 
@@ -198,7 +247,13 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
             if( conn.getResponseCode() != 200 ) {
                 log.warn ( "query: connectin get response message: "
                            + conn.getResponseMessage() );
-                throw new IOException( conn.getResponseMessage() );
+
+                if( conn.getResponseMessage().equals( "Bad Request" ) ) {
+                    //*** this fault for NCBI refseq
+                    throw FaultFactory.newInstance( Fault.NO_RECORD );
+                } else {
+                    throw new IOException( conn.getResponseMessage() );
+                }
             }
 
             // setting timeout ensure the client does not deadlock indefinitely

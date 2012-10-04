@@ -66,7 +66,7 @@
  </bean>
 
  <bean id="nativeConfigureAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.NativeConfigureAction">
+       class="edu.ucla.mbi.proxy.actions.NativeConfigure">
   <property name="nativeRestServer">
     <ref bean="nativeRestServer"/>
   </property>

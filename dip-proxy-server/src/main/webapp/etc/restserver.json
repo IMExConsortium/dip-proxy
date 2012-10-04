@@ -1,5 +1,5 @@
 {
-    restserver:[
+    restServer:[
         {label:"NCBI",
          value:[
                 {label:"pubmed",
@@ -7,23 +7,23 @@
                     {label:"restUrl",
                      value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id=%%ACTAG%%"
                     },
-                    {label:"restAcTg",
+                    {label:"restAcTag",
                      value:"%%ACTAG%%"
                     }]
                 },
                 {label:"refseq",
                  value:[
                     {label:"restUrl",
-                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&amp;id=%%ACTAG%%&amp;rettype=gpc&amp;retmode=xml"
+                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&id=%%ACTAG%%&rettype=gpc&retmode=xml"
                     },
-                    {label:"restAcTg",
+                    {label:"restAcTag",
                      value:"%%ACTAG%%"
                     }]
                 },
                 {label:"entrezgene",
                  value:[
                     {label:"restUrl",
-                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene&amp;id=%%ACTAG%%&amp;retmode=xml"
+                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene&id=%%ACTAG%%&retmode=xml"
                     },
                     {label:"restAcTag",
                      value:"%%ACTAG%%"
@@ -32,7 +32,7 @@
                 {label:"taxon",
                  value:[
                     {label:"restUrl",
-                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&amp;id=%%ACTAG%%&amp;retmode=xml"
+                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&id=%%ACTAG%%&retmode=xml"
                     },
                     {label:"restAcTag",
                      value:"%%ACTAG%%"
@@ -41,21 +41,21 @@
                 {label:"nlmesearch",
                  value:[
                     {label:"restUrl",
-                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nlmcatalog&amp;retmode=xml&amp;term=%%ACTAG%%[nlmid]"
+                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nlmcatalog&retmode=xml&term=%%ACTAG%%[nlmid]"
                     },
                     {label:"restAcTag",
                      value:"%%ACTAG%%"
                     }]
                 },
-                {label:"nlmefetch,
+                {label:"nlmefetch",
                  value:[
                     {label:"restUrl",
-                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nlmcatalog&amp;retmode=xml&amp;id=%%ACTAG%%"
+                     value:"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nlmcatalog&retmode=xml&id=%%ACTAG%%"
                     },
                     {label:"restAcTag",
                      value:"%%ACTAG%%"
                     }]
-                }]        
+                }]
         },
         {label:"EBI",
          value:[
@@ -67,7 +67,7 @@
                     {label:"restAcTag",
                      value:"%%ACTAG%%"
                     }]
-                }]                
+                }]
         },
         {label:"MBI",
          value:[
@@ -86,14 +86,7 @@
                {label:"yeastmine",
                 value:[
                     {label:"restUrl",
-                     value:"http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query
-                                    =&lt;query+name=""+model="genomic"
-                                    +view="Gene.name+Gene.symbol+Gene.secondaryIdentifier
-                                            +Gene.organism.name+Gene.organism.taxonId
-                                            +Gene.organism.species"&gt;
-                                        &lt;constraint+path="Gene.secondaryIdentifier"+op="="
-                                            +value="%%ACTAG%%"/&gt;
-                                     &lt;/query&gt;&amp;format=xml"
+                     value:"http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=<query+name=\"\"+model=\"genomic\"+view=\"Gene.name+Gene.symbol+Gene.secondaryIdentifier+Gene.organism.name+Gene.organism.taxonId+Gene.organism.species\"><constraint+path=\"Gene.secondaryIdentifier\"+op=\"=\"+value=\"%%ACTAG%%\"/></query>&format=xml"
                     },
                     {label:"restAcTag",
                      value:"%%ACTAG%%"

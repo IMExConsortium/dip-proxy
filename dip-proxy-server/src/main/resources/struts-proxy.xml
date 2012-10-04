@@ -124,7 +124,7 @@
      <interceptor-ref name="timer"/>
      <interceptor-ref name="menu"/>
 
-     <result name="success" type="tiles">restserver</result>
+     <result name="success" type="tiles">restserver</result> 
    </action>
    
    <!-- anything else --> 
