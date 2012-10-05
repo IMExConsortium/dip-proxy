@@ -65,8 +65,8 @@
   <property name="menuContext" ref="menuContext"/>
  </bean>
 
- <bean id="nativeConfigureAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.NativeConfigure">
+ <bean id="nativeServerConfigureAction" scope="prototype"
+       class="edu.ucla.mbi.proxy.actions.NativeServerConfigure">
   <property name="nativeRestServer">
     <ref bean="nativeRestServer"/>
   </property>

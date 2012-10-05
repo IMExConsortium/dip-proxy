@@ -119,12 +119,12 @@
    </action>
 
    <!-- native rest server configure -->
-   <action name="native-configure" class="nativeConfigureAction" >
+   <action name="native-configure" class="nativeServerConfigureAction" >
      <interceptor-ref name="defaultStack"/>
      <interceptor-ref name="timer"/>
      <interceptor-ref name="menu"/>
 
-     <result name="success" type="tiles">restserver</result> 
+     <result name="success" type="tiles">restserverconfig</result> 
    </action>
    
    <!-- anything else --> 

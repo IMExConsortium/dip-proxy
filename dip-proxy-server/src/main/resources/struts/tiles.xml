@@ -50,26 +50,24 @@
 
  <definition name="cache" template="/tiles/cache.jsp"/>
 
- <definition name="status" template="/tiles/status.jsp"/>
+ <definition name="proxy" template="/tiles/proxy.jsp"/>
 
- <definition name="nodestatus" extends="status">
+ <definition name="restserver" template="/tiles/restserver.jsp"/>
+
+ <definition name="nodestatus" extends="proxy">
    <put-attribute name="body" value="node" />
  </definition>
 
- <definition name="nativestatus" extends="status">
+ <definition name="nativestatus" extends="proxy">
    <put-attribute name="body" value="native" />
  </definition>
 
- <definition name="cachestatus" extends="status">
+ <definition name="cachestatus" extends="proxy">
    <put-attribute name="body" value="cache" />
  </definition>
 
- <definition name="configure" template="/tiles/configure.jsp"/>
-
- <definition name="restserver" extends="configure">
+ <definition name="restserverconfig" extends="proxy">
    <put-attribute name="body" value="restserver" />
  </definition>
-
- <definition name="restserver" template="/tiles/restserver.jsp"/>
 
 </tiles-definitions>

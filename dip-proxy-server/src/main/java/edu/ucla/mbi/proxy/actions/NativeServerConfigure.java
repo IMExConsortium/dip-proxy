@@ -33,7 +33,7 @@ import org.json.*;
 
 public class NativeServerConfigure extends PageSupport {
 
-    private Log log = LogFactory.getLog( NativeConfigure.class );
+    private Log log = LogFactory.getLog( NativeServerConfigure.class );
 
     private NativeRestServer nativeRestServer;
     
