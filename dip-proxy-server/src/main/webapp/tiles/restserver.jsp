@@ -9,69 +9,38 @@
             Update Json Configuration File for Rest Server
         </caption>
         <tr><td><br></td></tr>
-        
-        <s:if test='nativeRestServer.restServerContext.jsonConfig.restServer.size > 0'>
-            <s:iterator value="nativeRestServer.restServerContext.jsonConfig.restServer" id="server">
-                <s:set name="provider" value="#server.label"/>
-                <s:set name="serviceMap" value="#server.value"/>
-                <tr><td colspan="4" align="left"/><s:property value="#provider"/>:</td></tr>
-                
-                <s:if test='#serviceMap.size >  0 ' >
-                    <s:iterator value="#serviceMap" id="service">
-                        <s:set name="service" value="#service.label"/>
-                        <s:set name="restMap" value="#service.value"/>
+           <s:if test='nativeRestServer.restServerContext.jsonConfig.restServer.size > 0'> 
+             <s:iterator value="nativeRestServer.restServerContext.jsonConfig.restServer" status="serverMap">
+                <s:set name="provider" value="key"/>
+                <tr><td colspan="4" align="left"/><s:property value="#provider"/>:
+                </td></tr> 
+               
+                <s:if test='value.size > 0'>    
+                    <s:iterator value="value" status="serviceMap">
+                        <s:set name="service" value="key"/>
+                        
                         <tr><td colspan="4" align="left"/><s:property value="#service"/>:</td></tr>
-                        <tr>
-                        <s:if test='#restMap.size > 0 '>  
-                            <s:iterator value="#restMap" id="rest">
-                                <s:set name="label" value="#rest.label"/>
-                                <s:set name="value" value="#rest.value"/>
-                            
-                                <s:if test="#label=='restUrl'">
-                                    <s:set name="restUrl" value="#value"/>
-                                    <td align="left"/><s:property value="#restUrl"/>:</td>
-                                    <td align="left"/><s:textfield theme="simple"
-                                                                   name="%{#restUrl}"
-                                                                   value="%{#restUrl}"
-                                                                   size="200"/>
-                                    </td>    
-                                </s:if>
+                        
+                        <tr><td colspan="4" align="left"/><s:property value="key"/>?<s:property value="value"/></td></tr> 
 
-                                <s:if test="#label=='restAcTag'">
-                                    <s:set name="restAcTag" value="#value"/>
-                                    <td align="left"/>restAcTag:</td>
-                                    <td align="left"/><s:textfield theme="simple"
-                                                                   name="%{#restAcTag}"
-                                                                   value="%{#restAcTag}"
-                                                                   size="200"/>
-                                    </td>
-                                </s:if>
-                            </s:iterator>
-                        </s:if>  
-                    </s:iterator>
-                </s:if>
+                        <s:if test='value.size > 0'>
+                          <s:iterator value="value" status="restMap">
+                            <tr>
+                                <td align="left"/><s:property value="key"/>:</td>
+                                <td align="left"/><s:textfield theme="simple"
+                                                name="%{key}"
+                                                value="%{value}"
+                                                size="200"/>
+                                </td>    
+                                    
+                          </s:iterator>  
+                        </s:if>
+                    </s:iterator> 
+              </s:if>  
             </s:iterator>
-        </s:if>
+         </s:if> 
         <tr><td colspan="4"><br></td></tr>
         
-        <%--
-        <s:if test='nativeRestServer.serverContext.jsonConfig.serverLocation.size > 0'>
-         <s:iterator value="wSConfig.serverContext.jsonConfig.serverLocation" id="location">
-          <s:set name="label" value="#location.label"/>
-          <s:set name="value" value="#location.value"/>
-          <s:set name="propname" value="'wSConfig.' + #label"/>
-            <tr><td align="right">
-                <s:property value="#label"/>:</td>
-            <td align="left">
-                <s:textfield    theme="simple"
-                                name="%{#propname}"
-                                value="%{#value}"
-                                size="40"/>
-
-            </td>
-         </s:iterator>
-        </s:if>
-        --%>
         <tr><td colspan="4"><br><br></td></tr>
         <tr>
             <td align="center" colspan="4">

@@ -75,12 +75,13 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
        
         Map<String, Object> jrs = restServerContext.getJsonConfig(); 
         
-        ArrayList serverList = (ArrayList) jrs.get( "restServer" );
+        //ArrayList serverList = (ArrayList) jrs.get( "restServer" );
+        restServerMap = (Map) jrs.get( "restServer" );
 
         log.info( "restServerConIni ... after get restSerer . " );
-
+        /*
         for( int i = 0; i < serverList.size(); i++ ) {
-            String provider, service, restUrl, restAcTg;
+            String provider ;
             Map<String, Object> serverMap = (Map) serverList.get(i);
             
             provider = (String) serverMap.get( "label" );       
@@ -92,19 +93,33 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
 
             for( int j = 0; j < serviceList.size(); j++ ) {
                 Map<String, Object> serviceMap = (Map) serviceList.get( j );
-                service = (String) serviceMap.get( "label" );
+                String service = (String) serviceMap.get( "label" );
                 
-                ArrayList restServerList = (ArrayList) serviceMap.get( "value" );
-
+                Map<String, String> restMap = (Map) serviceMap.get( "value" );
+                
                 Map<String, String> restCMap = new HashMap<String, String>();
 
+                String restUrl = restMap.get( "restUrl" );
+                String restAcTag = restMap.get( "restAcTag" );
+
+                restCMap.put( "restUrl", restUrl );
+                restCMap.put( "restAcTag", restAcTag );
+                */    
+                //ArrayList restServerList = (ArrayList) serviceMap.get( "value" );
+                
+                //Map<String, String> restCMap = new HashMap<String, String>();
+                /*
                 for( int k = 0; k < restServerList.size(); k++ ) {
                     Map<String, String> restMap = 
                                         (Map) restServerList.get( k );
     
-                    String label = restMap.get( "label" );
-                    String value = restMap.get( "value" );
+                    String restUrl = restMap.get( "restUrl" );
+                    String restAcTag = restMap.get( "restAcTag" );
 
+                    restCMap.put( "restUrl", restUrl );
+                    restCMap.put( "restAcTag", restAcTag );
+                    */
+                    /*
                     if( label.equals( "restUrl" ) ) {
                         //restUrl = value;
                         log.info( "restUrl value=" + value );
@@ -115,15 +130,15 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
                         //restAcTg = value;
                         log.info( "restAcTag value=" + value );
                         restCMap.put( "restAcTag", value );
-                    } 
-                }
+                    } */
+                //}
 
-                serviceCMap.put( service, restCMap );
-            }
+                //serviceCMap.put( service, restCMap );
+            //}
 
-            restServerMap.put( provider, serviceCMap );
+            //restServerMap.put( provider, serviceCMap );
 
-        }   
+        //}   
            
     }
 
