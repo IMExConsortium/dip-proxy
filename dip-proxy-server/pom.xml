@@ -43,7 +43,7 @@
         <!--- using JNDI -->
         <hibernate.connection.datasource>${tomcat.datasource}jdbc/proxyws</hibernate.connection.datasource>
         <hibernate.connection.dbname>proxyws</hibernate.connection.dbname>
-        <hibernate.connection.servername>10.1.1.114</hibernate.connection.servername>
+        <hibernate.connection.servername>10.1.200.1</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
       </properties>
       <build>
