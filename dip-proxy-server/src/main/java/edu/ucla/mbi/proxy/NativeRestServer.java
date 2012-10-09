@@ -33,7 +33,7 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
     private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
     private JsonContext restServerContext;
     private ServletContext servletContext;
-    private String restServerJFP;
+    public static  String restServerJFP;
  
     public Map<String,Object> getRestServerMap() {
         return restServerMap;
@@ -53,14 +53,14 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
 
     public void initialize() throws ProxyFault {
         log.info( "initialize starting... " );
-        restServerConfigInitialize();
+        configInitialize();
     }
 
     public String getRestServerJFP () {
         return restServerJFP;
     }
 
-    private void restServerConfigInitialize() throws ProxyFault {
+    public void configInitialize() throws ProxyFault {
 
         log.info( "restServerConfigInitialize starting ... " );
 
@@ -177,8 +177,9 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
         restAcTag = restAcTag.replaceAll( "^\\s+", "" );
         restAcTag = restAcTag.replaceAll( "\\s+$", "" );
 
-        restUrl = restUrl.replaceAll( "\\s", "" );
-
+        restUrl = restUrl.replaceAll( "^\\s+", "" );
+        restUrl = restUrl.replaceAll( "\\s+$", "" );
+       
         return restUrl.replaceAll( restAcTag, ac );
     }
 

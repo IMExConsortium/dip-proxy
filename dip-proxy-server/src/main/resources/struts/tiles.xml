@@ -52,7 +52,9 @@
 
  <definition name="proxy" template="/tiles/proxy.jsp"/>
 
- <definition name="restserver" template="/tiles/restserver.jsp"/>
+ <definition name="rest-server" template="/tiles/restServer.jsp"/>
+
+ <definition name="rest-server-clear" template="/tiles/restServerClear.jsp"/>
 
  <definition name="nodestatus" extends="proxy">
    <put-attribute name="body" value="node" />
@@ -66,8 +68,13 @@
    <put-attribute name="body" value="cache" />
  </definition>
 
- <definition name="restserverconfig" extends="proxy">
-   <put-attribute name="body" value="restserver" />
+ <definition name="rest-server-config" extends="proxy">
+   <put-attribute name="body" value="rest-server" />
  </definition>
+
+ <definition name="rest-server-clear" extends="proxy">
+   <put-attribute name="body" value="rest-server-clear" />
+ </definition>
+
 
 </tiles-definitions>

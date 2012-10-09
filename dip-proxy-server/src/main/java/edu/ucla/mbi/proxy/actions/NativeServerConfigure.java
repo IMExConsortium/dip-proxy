@@ -16,6 +16,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
+import java.io.*;
+
+import edu.ucla.mbi.fault.*;
 
 /*
 import edu.ucla.mbi.server.WSContext;
@@ -25,7 +28,7 @@ import edu.ucla.mbi.orm.*;
 import edu.ucla.mbi.cache.orm.*;
 */
 
-import edu.ucla.mbi.proxy.NativeRestServer;
+import edu.ucla.mbi.proxy.*;
 
 import edu.ucla.mbi.util.JsonContext;
 import edu.ucla.mbi.util.struts2.action.PageSupport;
@@ -36,14 +39,25 @@ public class NativeServerConfigure extends PageSupport {
     private Log log = LogFactory.getLog( NativeServerConfigure.class );
 
     private NativeRestServer nativeRestServer;
+
+    private String buttonName = "View";
     
     public void setNativeRestServer( NativeRestServer server ) {
         this.nativeRestServer = server;
     }    
 
+    public void setButtonName ( String name ) {
+        this.buttonName = name;
+    }
+
     public NativeRestServer getNativeRestServer() {
         return nativeRestServer;
     }
+
+    public String getButtonName () {
+        return buttonName;
+    }
+
 
     public String execute() throws Exception {
 
@@ -80,10 +94,41 @@ public class NativeServerConfigure extends PageSupport {
         }  else {
             addActionError( "No page id" );
         }
+        
+        if( buttonName.equals( "Update" ) ) {
+            doRestServerUpdate();
+        } else if( buttonName.equals( "Clear" ) ) {
+            return "rest-server-clear";
+        } else {
+            addActionError( "No page id" );
+        }
 
         return SUCCESS;
     }
 
+    public void doRestServerUpdate() throws ProxyFault {
+        JsonContext restServerContext = nativeRestServer.getRestServerContext();
+        PrintWriter pw = null;
+
+        try {
+            pw = new PrintWriter ( new File ( nativeRestServer.getRestServerJFP() ) );
+            synchronized(this) {
+                log.info( "doRestServerUpdate: before write JsonConfigDef. " );
+                restServerContext.writeJsonConfigDef( pw );
+            }
+
+            pw.flush();
+        } catch ( Exception e ) {
+            log.info ( "JSON printting error: " + e.toString() );
+            throw FaultFactory.newInstance ( Fault.JSON_CONFIGURATION );//json configure file fault
+        } finally {
+            if( pw != null ){
+                pw.close();
+            }
+        }
+        
+        nativeRestServer.configInitialize();
+    }
     
      /**
      * Provide default value for Message property.

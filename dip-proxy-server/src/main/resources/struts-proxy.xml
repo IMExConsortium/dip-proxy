@@ -124,7 +124,9 @@
      <interceptor-ref name="timer"/>
      <interceptor-ref name="menu"/>
 
-     <result name="success" type="tiles">restserverconfig</result> 
+     <result name="success" type="tiles">rest-server-config</result> 
+     <result name="rest-server-clear" type="tiles">rest-server-clear</result>
+     
    </action>
    
    <!-- anything else --> 
