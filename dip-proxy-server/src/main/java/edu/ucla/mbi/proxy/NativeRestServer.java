@@ -160,14 +160,14 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
 
 
         String restAcTag =
-            (String) ( (Map<String, String>) (
+           (String) ( (ArrayList) ( (Map<String, Map>) (
                             (Map<String, Map>)restServerMap.get(provider) )
-                                             .get(service) ).get("restAcTag");
+                                             .get(service) ).get("restAcTag") ).get(0);
 
         String restUrl =
-            (String) ( (Map<String, String>) (
+            (String) ( (ArrayList) ( (Map<String, Map>) (
                             (Map<String, Map>)restServerMap.get(provider) )
-                                            .get(service)).get( "restUrl" );
+                                            .get(service) ).get( "restUrl" ) ).get(0);
 
         if( restAcTag == null || restUrl == null ) {
             log.warn( "getRealUrl: restAcTag or restUrl is not configured. " );

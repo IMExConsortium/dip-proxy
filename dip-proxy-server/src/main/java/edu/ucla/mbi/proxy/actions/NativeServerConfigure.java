@@ -107,7 +107,17 @@ public class NativeServerConfigure extends PageSupport {
     }
 
     public void doRestServerUpdate() throws ProxyFault {
+        
         JsonContext restServerContext = nativeRestServer.getRestServerContext();
+        /*
+        Map<String, Object> restServerMap = restServerContext.getJsonConfig();
+
+        Map<String, Object> providerMap = (Map)restServerMap.get("restServer");
+
+        String[] prolinksAcTag = (String[]) ((Map)((Map)providerMap.get("MBI")).get("prolinks")).get("restAcTag");
+
+        log.info( "doRestSererUpdate: prolinksAcTag=" + prolinksAcTag[0] );
+        */
         PrintWriter pw = null;
 
         try {

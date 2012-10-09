@@ -10,8 +10,9 @@
         </caption>
         <tr><td><br></td></tr>
         <ul>
-           <s:if test='nativeRestServer.restServerContext.jsonConfig.restServer.size > 0'> 
-             <s:iterator value="nativeRestServer.restServerContext.jsonConfig.restServer" status="serverMap">
+           <s:set name="restServer" value="nativeRestServer.restServerContext.jsonConfig.restServer"/>
+           <s:if test='#restServer.size > 0'> 
+             <s:iterator value="#restServer" status="serverMap">
                 <s:set name="provider" value="key"/>
                 <tr><td colspan="2" align="left"/><li><s:property value="#provider"/></li>
                 </td></tr> 
@@ -29,6 +30,10 @@
                         
                         <s:if test='value.size > 0'>
                           <s:iterator value="value" status="restMap">
+                            <s:set name="propName" 
+                                   value="'nativeRestServer.restServerContext.jsonConfig.restServer.'+ 
+                                          #provider + '.'+ #service + '.' + key"/>
+
                             <tr>
                                 <td align="left"/><s:property value="key"/>:</td>
                                 
@@ -36,16 +41,16 @@
                                 <s:if test="#service=='yeastmine' && key=='restUrl'">
                                     
                                     <s:textarea theme="simple"
-                                                name="%{key}"
-                                                value="%{value}"
+                                                name="%{#propName}"
+                                                value="%{value[0]}"
                                                 cols="90"
                                                 rows="4"
                                                 wrap="no"/>
                                 </s:if>
                                 <s:else>
                                     <s:textfield theme="simple"
-                                                name="%{key}"
-                                                value="%{value}"
+                                                name="%{#propName}"
+                                                value="%{value[0]}"
                                                 size="90"/>
 
                                 </s:else>
