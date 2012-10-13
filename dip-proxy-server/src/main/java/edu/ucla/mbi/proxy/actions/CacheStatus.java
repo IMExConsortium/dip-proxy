@@ -51,38 +51,8 @@ public class CacheStatus extends PageSupport {
         Log log = LogFactory.getLog( CacheStatus.class );
         log.info("CacheStatus execute ...");
 
-        Map<String,Object> jpd = super.getPageContext().getJsonConfig();
-
-        if ( getId() != null && getId().length() > 0 ) {
-
-            Map pages = (Map) ((Map) jpd.get("pageConfig") ).get( "pages" );
-            page = (Map) pages.get( getId() );
-
-            log.info("PageSupport: id=" + getId() );
-
-            if ( page != null ) {
-                log.info( "page=" + page );
-
-                log.info(" PageAction: title=" + page.get( "title" ) +
-                         " menusel=" + page.get( "menusel" ) +
-                         " menudef=" + page.get( "menudef" ) );
-
-                // default tab selection
-                //----------------------
-
-                if ( getMst() == null || getMst().length() == 0 ) {
-                    setMst( (String) page.get( "menusel" ) );
-                    if ( getMst() == null || getMst().length() == 0 ) {
-                        setMst( "" );
-                    }
-                }
-            } else {
-                addActionError( "No page found" );
-            }
-        } else {
-            addActionError( "No page id" );
-        }
-        
+        super.findMenuPage();
+ 
         counts = new TreeMap<String,Map>();
         
         try {

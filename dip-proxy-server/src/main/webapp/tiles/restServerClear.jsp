@@ -80,6 +80,9 @@
                                 label="UPDATE" name="buttonName"/>
             </td>
         </tr>
+
+        <tr><td colspan="2"/><br></td></tr>
+
       </s:form>
     </table>
 

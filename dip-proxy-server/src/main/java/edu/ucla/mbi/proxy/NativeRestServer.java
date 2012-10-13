@@ -65,7 +65,8 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
         log.info( "restServerConfigInitialize starting ... " );
 
         try {
-            restServerJFP = GetPathFromJsonContext.getPath ( 
+            restServerJFP = 
+                    JsonUnderServletContext.getPathAfterReadJson ( 
                                     restServerContext, servletContext );
         } catch( Exception e ) {
             throw FaultFactory.newInstance ( 27 ); // json configuration
@@ -75,71 +76,9 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
        
         Map<String, Object> jrs = restServerContext.getJsonConfig(); 
         
-        //ArrayList serverList = (ArrayList) jrs.get( "restServer" );
         restServerMap = (Map) jrs.get( "restServer" );
 
         log.info( "restServerConIni ... after get restSerer . " );
-        /*
-        for( int i = 0; i < serverList.size(); i++ ) {
-            String provider ;
-            Map<String, Object> serverMap = (Map) serverList.get(i);
-            
-            provider = (String) serverMap.get( "label" );       
-            ArrayList serviceList = (ArrayList)serverMap.get( "value" );
-        
-            Map<String, Object> providerMap = new HashMap<String, Object>();
-            
-            Map<String, Object> serviceCMap = new HashMap<String, Object>();
-
-            for( int j = 0; j < serviceList.size(); j++ ) {
-                Map<String, Object> serviceMap = (Map) serviceList.get( j );
-                String service = (String) serviceMap.get( "label" );
-                
-                Map<String, String> restMap = (Map) serviceMap.get( "value" );
-                
-                Map<String, String> restCMap = new HashMap<String, String>();
-
-                String restUrl = restMap.get( "restUrl" );
-                String restAcTag = restMap.get( "restAcTag" );
-
-                restCMap.put( "restUrl", restUrl );
-                restCMap.put( "restAcTag", restAcTag );
-                */    
-                //ArrayList restServerList = (ArrayList) serviceMap.get( "value" );
-                
-                //Map<String, String> restCMap = new HashMap<String, String>();
-                /*
-                for( int k = 0; k < restServerList.size(); k++ ) {
-                    Map<String, String> restMap = 
-                                        (Map) restServerList.get( k );
-    
-                    String restUrl = restMap.get( "restUrl" );
-                    String restAcTag = restMap.get( "restAcTag" );
-
-                    restCMap.put( "restUrl", restUrl );
-                    restCMap.put( "restAcTag", restAcTag );
-                    */
-                    /*
-                    if( label.equals( "restUrl" ) ) {
-                        //restUrl = value;
-                        log.info( "restUrl value=" + value );
-                        restCMap.put( "restUrl", value );
-                    }
-
-                    if ( label.equals( "restAcTag" ) ) {
-                        //restAcTg = value;
-                        log.info( "restAcTag value=" + value );
-                        restCMap.put( "restAcTag", value );
-                    } */
-                //}
-
-                //serviceCMap.put( service, restCMap );
-            //}
-
-            //restServerMap.put( provider, serviceCMap );
-
-        //}   
-           
     }
 
     public String getRealUrl ( String provider, String service, String ac ) 
@@ -157,7 +96,6 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
             log.warn( "getRealUrl: service=" + service + " does not exist. " );
             throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
-
 
         String restAcTag =
            (String) ( (ArrayList) ( (Map<String, Map>) (
