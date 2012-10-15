@@ -53,7 +53,7 @@
                                     <s:textfield theme="simple"
                                                 name="%{#propName}"
                                                 value="%{value[0]}"
-                                                size="90"/>
+                                                size="95"/>
 
                                 </s:else>
                                 </td>    

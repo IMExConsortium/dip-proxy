@@ -48,7 +48,7 @@
                                     <s:textfield theme="simple"
                                                 name="%{key}"
                                                 value=""
-                                                size="90"/>
+                                                size="95"/>
 
                                 </s:else>
                                 </td>    
