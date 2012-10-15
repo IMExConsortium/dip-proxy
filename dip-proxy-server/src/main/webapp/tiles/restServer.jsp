@@ -6,7 +6,7 @@
       <s:form theme="simple" action="native-configure">
         <s:hidden name="id" value="%{id}"/>
         <caption>
-            <center>Update Json Configuration File for Rest Server</center>
+            <center>Update Json Configuration File for Native Rest Server</center>
         </caption>
         <tr><td><br></td></tr>
         <ul>
