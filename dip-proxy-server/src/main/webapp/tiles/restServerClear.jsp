@@ -6,9 +6,11 @@
       <s:form theme="simple" action="native-configure">
         <s:hidden name="id" value="%{id}"/>
         <caption>
-            <center>Update Json Configuration File for Rest Server</center>
+            <center>Update Json Configuration File for Native Rest Server</center>
         </caption>
-        <tr><td><br></td></tr>
+
+        <tr><td colspan="2"/><br></td></tr>
+
         <ul>
            <s:if test='nativeRestServer.restServerContext.jsonConfig.restServer.size > 0'> 
              <s:iterator value="nativeRestServer.restServerContext.jsonConfig.restServer" status="serverMap">
@@ -38,7 +40,7 @@
                                     <s:textarea theme="simple"
                                                 name="%{key}"
                                                 value=""
-                                                cols="90"
+                                                cols="100"
                                                 rows="4"
                                                 wrap="no"/>
                                 </s:if>

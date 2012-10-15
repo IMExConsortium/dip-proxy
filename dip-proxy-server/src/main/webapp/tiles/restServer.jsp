@@ -8,7 +8,9 @@
         <caption>
             <center>Update Json Configuration File for Native Rest Server</center>
         </caption>
-        <tr><td><br></td></tr>
+
+        <tr><td colspan="2"/><br></td></tr>
+
         <ul>
            <s:set name="restServer" value="nativeRestServer.restServerContext.jsonConfig.restServer"/>
            <s:if test='#restServer.size > 0'> 
@@ -43,7 +45,7 @@
                                     <s:textarea theme="simple"
                                                 name="%{#propName}"
                                                 value="%{value[0]}"
-                                                cols="90"
+                                                cols="100"
                                                 rows="4"
                                                 wrap="no"/>
                                 </s:if>
