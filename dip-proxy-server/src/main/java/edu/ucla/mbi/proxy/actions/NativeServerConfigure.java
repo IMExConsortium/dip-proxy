@@ -47,10 +47,26 @@ public class NativeServerConfigure extends PageSupport {
     }
 
 
+
+    public Object getJsonConfig(){
+        // LS
+        return   nativeRestServer.restServerContext.jsonConfig;
+    }
+
+    
+    private String format;
+
+    public void setFormat(){
+        //LS
+        return format;
+    }
+
+
+
     public String execute() throws Exception {
 
         log.info( " NativeConfigureAction execute..." );
-
+        
         super.findMenuPage();
 
         if( buttonName.equals( "Update" ) ) {
@@ -70,6 +86,12 @@ public class NativeServerConfigure extends PageSupport {
             return "rest-server";
         }
 
+        // if called as native-configure?format=json should return configuration data as json
+        
+        if(format != null && format.equals("json") ){
+            return "json";
+        }
+        
         return "fault";
     }
 }

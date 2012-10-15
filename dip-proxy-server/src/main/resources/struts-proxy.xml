@@ -126,7 +126,16 @@
 
      <result name="rest-server" type="tiles">rest-server-config</result> 
      <result name="rest-server-clear" type="tiles">rest-server-clear</result>
-     <result name="fault" type="tiles">fault</result>  
+     <result name="fault" type="tiles">fault</result>
+
+     <result name="json"  type="json">
+       <param name="includeProperties"> //LS
+        jsonConfig.*
+       </param>
+       <param name="noCache">true</param>
+     </result>
+
+
    </action>
    
    <!-- anything else --> 
