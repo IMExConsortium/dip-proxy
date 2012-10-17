@@ -64,6 +64,34 @@ public class NativeServerConfigure {
         return restServer;
     }
 
+    //---------------------------------------------------------------------
+    // operations: op.xxx
+    //----------- 
+
+    private Map<String,String> opm;
+
+    public void setOp( Map<String,String> op ) {
+        this.opm = op;
+    }
+
+    public Map<String,String> getOp(){
+        return opm;
+    }
+
+    //---------------------------------------------------------------------
+
+    private Map<String,String> opp;  // params
+
+    public void setOpp( Map<String,String> opp ) {
+        this.opp = opp;
+    }
+
+    public Map<String,String> getOpp(){
+        return opp;
+    }
+
+    //---------------------------------------------------------------------
+
     public String execute() throws Exception {
 
         log.info( " NativeConfigureAction execute..." );
@@ -71,6 +99,15 @@ public class NativeServerConfigure {
         //super.findMenuPage();
 
         /*
+
+        if( opm != null & opm.get("update") != null ){
+            // update config
+
+
+            
+        }
+
+
         if( buttonName.equals( "Update" ) ) {
             if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
                                         nativeRestServer.getRestServerJFP() ) ) 
@@ -79,7 +116,16 @@ public class NativeServerConfigure {
                 return "rest-server";
             } 
         } 
-        
+
+
+
+       // <input type="submit" name="op.clear" value="XXXX" />
+      
+        if( opm != null & opm.get("clear") != null ){  
+            // do somethin  
+            return "rest-server-clear";
+        }
+
         if( buttonName.equals( "Clear" ) ) {
             return "rest-server-clear";
         } 
