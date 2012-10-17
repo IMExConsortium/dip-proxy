@@ -22,14 +22,27 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.util.JsonContext;
 import edu.ucla.mbi.util.struts2.action.PageSupport;
 
-public class NativeServerConfigure extends PageSupport {
+//public class NativeServerConfigure extends PageSupport {
+
+public class NativeServerConfigure {
 
     private Log log = LogFactory.getLog( NativeServerConfigure.class );
 
     private NativeRestServer nativeRestServer;
-
     private String buttonName = "View";
-    
+
+    private String format;
+    private Map<String, Object> restServer = new HashMap<String, Object>();
+ 
+    //*** setter 
+    public void setFormat( String format ) {
+        this.format = format;
+    }
+
+    public void setRestServer ( Map<String, Object> map ) {
+        this.restServer = map;
+    }
+
     public void setNativeRestServer( NativeRestServer server ) {
         this.nativeRestServer = server;
     }    
@@ -38,6 +51,7 @@ public class NativeServerConfigure extends PageSupport {
         this.buttonName = name;
     }
 
+    //*** getter
     public NativeRestServer getNativeRestServer() {
         return nativeRestServer;
     }
@@ -46,29 +60,17 @@ public class NativeServerConfigure extends PageSupport {
         return buttonName;
     }
 
-
-
-    public Object getJsonConfig(){
-        // LS
-        return   nativeRestServer.restServerContext.jsonConfig;
+    public Map<String,Object> getRestServer() {
+        return restServer;
     }
-
-    
-    private String format;
-
-    public void setFormat(){
-        //LS
-        return format;
-    }
-
-
 
     public String execute() throws Exception {
 
         log.info( " NativeConfigureAction execute..." );
         
-        super.findMenuPage();
+        //super.findMenuPage();
 
+        /*
         if( buttonName.equals( "Update" ) ) {
             if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
                                         nativeRestServer.getRestServerJFP() ) ) 
@@ -85,10 +87,16 @@ public class NativeServerConfigure extends PageSupport {
         if( buttonName.equals( "View" ) ) {
             return "rest-server";
         }
-
-        // if called as native-configure?format=json should return configuration data as json
+        */
+        //*** if called as native-configure?format=json should return configuration data as json
         
         if(format != null && format.equals("json") ){
+            log.info( "format is json. "); 
+            
+            restServer = (Map<String, Object>)nativeRestServer
+                            .getRestServerContext().getJsonConfig()
+                                                    .get("restServer");
+            
             return "json";
         }
         
