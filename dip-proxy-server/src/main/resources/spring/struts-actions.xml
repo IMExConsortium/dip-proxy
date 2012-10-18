@@ -70,11 +70,10 @@
   <property name="nativeRestServer">
     <ref bean="nativeRestServer"/>
   </property>
-  <property name="format" value="json"/>
- <!-- 
+  <!-- <property name="format" value="json"/> -->
   <property name="pageContext" ref="pageContext"/>
   <property name="menuContext" ref="menuContext"/>
-  -->
+  
  </bean>
 
  <bean id="pageAction" scope="prototype"

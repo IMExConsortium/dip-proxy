@@ -33,6 +33,12 @@
         menudef:"0:1",
         menusel:"1:2:1"
       },
+      json:{
+        active:true,
+        title:"Native Rest Server Configure",
+        menudef:"0:1",
+        menusel:"1:2:2"
+      },
       cache:{
         active:true,
         title:"dip-proxy Status",

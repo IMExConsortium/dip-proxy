@@ -79,12 +79,12 @@
         <tr>
             <td align="center" colspan="2">
                     <s:submit theme="simple"
-                             type="button" value="Clear" 
-                              label="CLEAR" name="buttonName"/>
+                              type="button" value="Clear" 
+                              label="CLEAR" name="opm.clear"/>
 
-                    <s:submit   theme="simple"
-                                type="button" value="Update" 
-                                label="UPDATE" name="buttonName"/>
+                    <s:submit theme="simple"
+                              type="button" value="Update" 
+                              label="UPDATE" name="opm.update"/>
             </td>
         </tr>
 

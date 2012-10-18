@@ -37,6 +37,11 @@
                  link:"native-configure?id=restserver",
                  "disabled":"false",
                  menu:[]
+                },
+                {label:"Native Rest Server Json Format",
+                 link:"native-configure?id=json",
+                 "disabled":"false",
+                 menu:[]
                 }]
             }]
         }]

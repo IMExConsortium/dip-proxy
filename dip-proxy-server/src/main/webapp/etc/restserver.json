@@ -6,7 +6,7 @@
                 restAcTag:["%%ACTAG%%"]
             },
             refseq:{
-                restUrk:["http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&id=%%ACTAG%%&rettype=gpc&retmode=xml"],
+                restUrl:["http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&id=%%ACTAG%%&rettype=gpc&retmode=xml"],
                 restAcTag:["%%ACTAG%%"]
             },
             entrezgene:{

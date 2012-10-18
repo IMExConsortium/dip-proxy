@@ -22,23 +22,13 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.util.JsonContext;
 import edu.ucla.mbi.util.struts2.action.PageSupport;
 
-//public class NativeServerConfigure extends PageSupport {
-
-public class NativeServerConfigure {
+public class NativeServerConfigure extends PageSupport {
 
     private Log log = LogFactory.getLog( NativeServerConfigure.class );
-
     private NativeRestServer nativeRestServer;
-    private String buttonName = "View";
-
-    private String format;
     private Map<String, Object> restServer = new HashMap<String, Object>();
  
     //*** setter 
-    public void setFormat( String format ) {
-        this.format = format;
-    }
-
     public void setRestServer ( Map<String, Object> map ) {
         this.restServer = map;
     }
@@ -47,17 +37,9 @@ public class NativeServerConfigure {
         this.nativeRestServer = server;
     }    
 
-    public void setButtonName ( String name ) {
-        this.buttonName = name;
-    }
-
     //*** getter
     public NativeRestServer getNativeRestServer() {
         return nativeRestServer;
-    }
-
-    public String getButtonName () {
-        return buttonName;
     }
 
     public Map<String,Object> getRestServer() {
@@ -68,13 +50,13 @@ public class NativeServerConfigure {
     // operations: op.xxx
     //----------- 
 
-    private Map<String,String> opm;
+    private Map<String,String> opm = new HashMap<String, String>();
 
-    public void setOp( Map<String,String> op ) {
+    public void setOpm( Map<String,String> op ) {
         this.opm = op;
     }
 
-    public Map<String,String> getOp(){
+    public Map<String,String> getOpm(){
         return opm;
     }
 
@@ -95,57 +77,59 @@ public class NativeServerConfigure {
     public String execute() throws Exception {
 
         log.info( " NativeConfigureAction execute..." );
+        log.info( "execute: opm=" + opm + " and opp=" + opp );
         
-        //super.findMenuPage();
+        super.findMenuPage();
 
-        /*
+        if( getId() != null && getId().equals("json") ){
+            log.info( "format is json. ");
 
-        if( opm != null & opm.get("update") != null ){
-            // update config
-
-
-            
-        }
-
-
-        if( buttonName.equals( "Update" ) ) {
-            if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
-                                        nativeRestServer.getRestServerJFP() ) ) 
-            {
-                nativeRestServer.configInitialize();
-                return "rest-server";
-            } 
-        } 
-
-
-
-       // <input type="submit" name="op.clear" value="XXXX" />
-      
-        if( opm != null & opm.get("clear") != null ){  
-            // do somethin  
-            return "rest-server-clear";
-        }
-
-        if( buttonName.equals( "Clear" ) ) {
-            return "rest-server-clear";
-        } 
-
-        if( buttonName.equals( "View" ) ) {
-            return "rest-server";
-        }
-        */
-        //*** if called as native-configure?format=json should return configuration data as json
-        
-        if(format != null && format.equals("json") ){
-            log.info( "format is json. "); 
-            
             restServer = (Map<String, Object>)nativeRestServer
                             .getRestServerContext().getJsonConfig()
                                                     .get("restServer");
-            
+
             return "json";
         }
         
+        if( opm.isEmpty() ) {
+            log.info( "execute: enter op=view.");
+            opm.put("view", "View");
+            return "rest-server";
+        } else if( opm.get("clear") != null ){
+            log.info( "execute: opm.clear hit." );
+
+            Map<String, Object> jrs =
+                (Map)nativeRestServer.getRestServerContext().getJsonConfig()
+                                                            .get( "restServer");
+            for( String provider:jrs.keySet() ) {
+                for( String service: 
+                     ((Map<String, Object>)jrs.get(provider)).keySet() ) 
+                {
+                    //*** set value using ""
+                    ( (Map<String, Object>) ( (Map<String, Object>) jrs
+                            .get(provider) ).get(service) )
+                            .put( "restAcTag", Arrays.asList("") );
+
+                    ( (Map<String, Object>) ( (Map<String, Object>) jrs
+                            .get(provider) ).get(service) )
+                            .put( "restUrl", Arrays.asList("") );
+                }
+            }
+
+            return "rest-server";
+        } else if( opm.get("update") != null ){
+            //*** update config
+            log.info( "execute: opm.update hit." );
+            if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
+                                        nativeRestServer.getRestServerJFP() ) )
+            {
+                nativeRestServer.configInitialize();
+                return "rest-server";
+            }            
+        }
+
+        log.info( "execute: return fault.");
+
         return "fault";
     }
 }
