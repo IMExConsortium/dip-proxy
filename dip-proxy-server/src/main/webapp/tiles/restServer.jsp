@@ -5,6 +5,7 @@
     <table>
       <s:form theme="simple" action="native-configure">
         <s:hidden name="id" value="%{id}"/>
+
         <caption>
             <center>Update Json Configuration File for Native Rest Server</center>
         </caption>
@@ -78,14 +79,10 @@
         
         <tr>
             <td align="center" colspan="2">
-                    <s:submit theme="simple"
-                              type="button" value="Clear" 
-                              label="CLEAR" name="opm.clear"/>
-
-                    <s:submit theme="simple"
-                              type="button" value="Update" 
-                              label="UPDATE" name="opm.update"/>
+                    <s:submit name="op.clear" value="Clear" />
+                    <s:submit name="op.update" value="Update"/>
             </td>
+
         </tr>
 
         <tr><td colspan="2"/><br></td></tr>

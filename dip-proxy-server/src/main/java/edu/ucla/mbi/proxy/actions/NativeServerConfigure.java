@@ -50,13 +50,13 @@ public class NativeServerConfigure extends PageSupport {
     // operations: op.xxx
     //----------- 
 
-    private Map<String,String> opm = new HashMap<String, String>();
+    private Map<String,String> opm ; //LS
 
-    public void setOpm( Map<String,String> op ) {
+    public void setOp( Map<String,String> op ) {
         this.opm = op;
     }
 
-    public Map<String,String> getOpm(){
+    public Map<String,String> getOp(){
         return opm;
     }
 
@@ -91,43 +91,59 @@ public class NativeServerConfigure extends PageSupport {
             return "json";
         }
         
-        if( opm.isEmpty() ) {
+        if( getOp() == null ) {
             log.info( "execute: enter op=view.");
-            opm.put("view", "View");
             return "rest-server";
-        } else if( opm.get("clear") != null ){
-            log.info( "execute: opm.clear hit." );
+        } 
 
-            Map<String, Object> jrs =
-                (Map)nativeRestServer.getRestServerContext().getJsonConfig()
-                                                            .get( "restServer");
-            for( String provider:jrs.keySet() ) {
-                for( String service: 
-                     ((Map<String, Object>)jrs.get(provider)).keySet() ) 
-                {
-                    //*** set value using ""
-                    ( (Map<String, Object>) ( (Map<String, Object>) jrs
-                            .get(provider) ).get(service) )
-                            .put( "restAcTag", Arrays.asList("") );
+        for( Iterator<String> i = getOp().keySet().iterator();
+             i.hasNext(); ) {
 
-                    ( (Map<String, Object>) ( (Map<String, Object>) jrs
-                            .get(provider) ).get(service) )
-                            .put( "restUrl", Arrays.asList("") );
+            String key = i.next();
+            String val = getOp().get(key);
+
+            log.debug(  "op=" + key + "  val=" + val );
+
+            if ( val != null && val.length() > 0 ) {
+
+                if( key.equalsIgnoreCase( "clear" ) ) {
+                    log.info( "execute: op.clear hit." );
+
+                    Map<String, Object> jrs =
+                        (Map)nativeRestServer.getRestServerContext().getJsonConfig()
+                                                                .get( "restServer");
+                    for( String provider:jrs.keySet() ) {
+                        for( String service: 
+                            ((Map<String, Object>)jrs.get(provider)).keySet() ) 
+                        {
+                            //*** set value using ""
+                            ( (Map<String, Object>) ( (Map<String, Object>) jrs
+                                    .get(provider) ).get(service) )
+                                    .put( "restAcTag", Arrays.asList("") );
+
+                            ( (Map<String, Object>) ( (Map<String, Object>) jrs
+                                .get(provider) ).get(service) )
+                                .put( "restUrl", Arrays.asList("") );
+                        }
+                    }
+
+                    return "rest-server";
                 }
+            
+                if( key.equalsIgnoreCase( "update" ) ) {
+                    //*** update config
+                    log.info( "execute: op.update hit." );
+                    if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
+                                                nativeRestServer.getRestServerJFP() ) )
+                    {
+                        nativeRestServer.configInitialize();
+                        return "rest-server";
+                    }            
+                }
+
             }
-
-            return "rest-server";
-        } else if( opm.get("update") != null ){
-            //*** update config
-            log.info( "execute: opm.update hit." );
-            if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
-                                        nativeRestServer.getRestServerJFP() ) )
-            {
-                nativeRestServer.configInitialize();
-                return "rest-server";
-            }            
+        
         }
-
         log.info( "execute: return fault.");
 
         return "fault";
