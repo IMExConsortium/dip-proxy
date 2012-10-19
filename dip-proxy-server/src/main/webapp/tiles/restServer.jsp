@@ -33,27 +33,41 @@
                         
                         <s:if test='value.size > 0'>
                           <s:iterator value="value" status="restMap">
-                            <s:set name="propName" 
+
+                            <%--<s:set name="propName" 
                                    value="'nativeRestServer.restServerContext.jsonConfig.restServer.'+ 
-                                          #provider + '.'+ #service + '.' + key"/>
+                                          #provider + '.'+ #service + '.' + key"/> --%>
+                            
+
+                            <s:set name="oppKey" value=" #provider + '_' +
+                                                         #service + '_' +  key"/>
+
+                            <s:set name="oppPropName" value="'opp.' + #oppKey"/>
+
+                            <s:if test='getOpp() == null'>
+                                <s:set name="textValue" value="value[0]"/>
+                            </s:if>
+                            <s:else>
+                                <s:set name="textValue" value="opp.get(#oppKey)"/> 
+                            </s:else>
+                            
 
                             <tr>
                                 <td align="left"/><s:property value="key"/>:</td>
                                 
                                 <td align="left"/>
                                 <s:if test="#service=='yeastmine' && key=='restUrl'">
-                                    
                                     <s:textarea theme="simple"
-                                                name="%{#propName}"
-                                                value="%{value[0]}"
+                                                name="%{#oppPropName}"
+                                                value="%{#textValue}"
                                                 cols="100"
                                                 rows="4"
                                                 wrap="no"/>
                                 </s:if>
                                 <s:else>
                                     <s:textfield theme="simple"
-                                                name="%{#propName}"
-                                                value="%{value[0]}"
+                                                name="%{#oppPropName}"
+                                                value="%{#textValue}"
                                                 size="95"/>
 
                                 </s:else>

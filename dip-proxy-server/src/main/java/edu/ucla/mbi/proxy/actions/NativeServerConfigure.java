@@ -108,7 +108,8 @@ public class NativeServerConfigure extends PageSupport {
 
                 if( key.equalsIgnoreCase( "clear" ) ) {
                     log.info( "execute: op.clear hit." );
-
+                        
+                    /*
                     Map<String, Object> jrs =
                         (Map)nativeRestServer.getRestServerContext().getJsonConfig()
                                                                 .get( "restServer");
@@ -126,19 +127,29 @@ public class NativeServerConfigure extends PageSupport {
                                 .put( "restUrl", Arrays.asList("") );
                         }
                     }
+                    */
 
+                    if( getOpp() != null ) {
+                        for( String oppKey: getOpp().keySet() ) {
+                            log.info( "execute: oppKey=" + oppKey );
+                            getOpp().put(oppKey, ""); 
+                        }
+                    }
                     return "rest-server";
                 }
             
                 if( key.equalsIgnoreCase( "update" ) ) {
                     //*** update config
+                    /*
                     log.info( "execute: op.update hit." );
                     if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
                                                 nativeRestServer.getRestServerJFP() ) )
                     {
                         nativeRestServer.configInitialize();
                         return "rest-server";
-                    }            
+                    } 
+                    */
+                    return "rest-server";           
                 }
 
             }
