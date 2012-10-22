@@ -146,28 +146,71 @@ public class NativeServerConfigure extends PageSupport {
                 (Map)nativeRestServer.getRestServerContext()
                                         .getJsonConfig().get( "restServer");
 
-        for( String provider:jrs.keySet() ) {
+        for( String oppKey:opp.keySet() ) {
+            
+            String[] oppKeyArray = oppKey.split( "_" );
+            String provider= oppKeyArray[0];
+            String service = oppKeyArray[1];
+            String serverKey = oppKeyArray[2];
 
-            Map<String, Object> providerMap =
+            Map<String, Object> jsonProviderMap = 
                     (Map<String, Object>)jrs.get(provider);
 
-            for( String service: providerMap.keySet() ) {
+            if( jsonProviderMap != null ) {
 
-                Map<String, Object> serviceMap =
-                        (Map<String, Object>) providerMap.get(service);
+                Map<String, Object> jsonServiceMap =
+                    (Map<String, Object>) jsonProviderMap.get(service);
 
-                for( String serverKey: serviceMap.keySet() ) {
+                if( jsonServiceMap != null ) {
 
-                    String oppKey = provider + "_" +
-                                    service + "_" + serverKey;
+                    String jsonServerValue = 
+                        (String)(((ArrayList)jsonServiceMap
+                                                .get(serverKey)).get(0));
 
-                    ( (Map<String, Object>) ( (Map<String, Object>)
+                    if( jsonServerValue != null ) {
+                        //*** update serverValue in Json object
+                        ( (Map<String, Object>) ( (Map<String, Object>)
                             jrs.get(provider) ).get(service) )
                                 .put( serverKey, Arrays.asList(
                                                 getOpp().get( oppKey) ) );
+                    } else {
+                        //*** add new server Key/value pair in Json object
+                        ArrayList<String> serverValueList = new ArrayList();
+                        serverValueList.add( getOpp().get( oppKey ) );
+
+                        Map<String, ArrayList> jsonServerMap = new HashMap();
+
+                        jsonServerMap.put( serverKey, serverValueList );
+
+                        jsonServiceMap.put( service, jsonServerMap );
+                    } 
+                } else {
+                    //*** add new service in Json object
+                    ArrayList<String> serverValueList = new ArrayList();
+                    serverValueList.add( getOpp().get( oppKey ) );
+
+                    Map<String, ArrayList> jsonServerMap = new HashMap();
+
+                    jsonServerMap.put( serverKey, serverValueList );
+
+                    jsonServiceMap.put( service, jsonServerMap );
                 }
+            } else {
+                //*** add new provider in Json object        
+                ArrayList<String> serverValueList = new ArrayList();
+                serverValueList.add( getOpp().get( oppKey ) );
+
+                Map<String, ArrayList> jsonServerMap = new HashMap();
+
+                jsonServerMap.put( serverKey, serverValueList );
+
+                Map<String, Object>  jsonServiceMap = new HashMap();
+                jsonServiceMap.put( service, jsonServerMap );
+            
+                jrs.put( provider, jsonServiceMap);
+                
             }
-        }
+        }        
 
         nativeRestServer.getRestServerContext().getJsonConfig()
                                                 .put("restServer", jrs );

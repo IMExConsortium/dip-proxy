@@ -81,6 +81,16 @@
             </s:iterator>
 
          </s:if> 
+
+         <tr><td><li>addNewServiceTest</li></td>
+             <td>
+                <s:textfield theme="simple"
+                             name="opp.testProvider_testService_testURL"
+                             value=""
+                             size="95"/>
+            </td>
+         </tr>
+        
          </ul>
         
         <tr>
