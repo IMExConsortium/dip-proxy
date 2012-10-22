@@ -108,55 +108,75 @@ public class NativeServerConfigure extends PageSupport {
 
                 if( key.equalsIgnoreCase( "clear" ) ) {
                     log.info( "execute: op.clear hit." );
-                        
-                    /*
-                    Map<String, Object> jrs =
-                        (Map)nativeRestServer.getRestServerContext().getJsonConfig()
-                                                                .get( "restServer");
-                    for( String provider:jrs.keySet() ) {
-                        for( String service: 
-                            ((Map<String, Object>)jrs.get(provider)).keySet() ) 
-                        {
-                            //*** set value using ""
-                            ( (Map<String, Object>) ( (Map<String, Object>) jrs
-                                    .get(provider) ).get(service) )
-                                    .put( "restAcTag", Arrays.asList("") );
-
-                            ( (Map<String, Object>) ( (Map<String, Object>) jrs
-                                .get(provider) ).get(service) )
-                                .put( "restUrl", Arrays.asList("") );
-                        }
-                    }
-                    */
-
+                    
                     if( getOpp() != null ) {
                         for( String oppKey: getOpp().keySet() ) {
                             log.info( "execute: oppKey=" + oppKey );
-                            getOpp().put(oppKey, ""); 
+                            getOpp().put(oppKey, "");  
                         }
+                        parseAndUpdateJsonWithOpp();
                     }
+                    
                     return "rest-server";
                 }
-            
+        
                 if( key.equalsIgnoreCase( "update" ) ) {
-                    //*** update config
-                    /*
+                    
                     log.info( "execute: op.update hit." );
-                    if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
-                                                nativeRestServer.getRestServerJFP() ) )
-                    {
-                        nativeRestServer.configInitialize();
-                        return "rest-server";
-                    } 
-                    */
+
+                    if( getOpp() != null ) {
+                        parseAndUpdateJsonWithOpp();
+                    }
+
                     return "rest-server";           
                 }
 
             }
         
         }
+
         log.info( "execute: return fault.");
 
         return "fault";
+    }
+
+    private void parseAndUpdateJsonWithOpp () throws ProxyFault {
+
+        Map<String, Object> jrs =
+                (Map)nativeRestServer.getRestServerContext()
+                                        .getJsonConfig().get( "restServer");
+
+        for( String provider:jrs.keySet() ) {
+
+            Map<String, Object> providerMap =
+                    (Map<String, Object>)jrs.get(provider);
+
+            for( String service: providerMap.keySet() ) {
+
+                Map<String, Object> serviceMap =
+                        (Map<String, Object>) providerMap.get(service);
+
+                for( String serverKey: serviceMap.keySet() ) {
+
+                    String oppKey = provider + "_" +
+                                    service + "_" + serverKey;
+
+                    ( (Map<String, Object>) ( (Map<String, Object>)
+                            jrs.get(provider) ).get(service) )
+                                .put( serverKey, Arrays.asList(
+                                                getOpp().get( oppKey) ) );
+                }
+            }
+        }
+
+        nativeRestServer.getRestServerContext().getJsonConfig()
+                                                .put("restServer", jrs );
+
+        //*** update config
+        if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
+                                    nativeRestServer.getRestServerJFP() ) )
+        {
+            nativeRestServer.configInitialize();
+        }
     }
 }

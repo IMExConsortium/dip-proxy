@@ -44,14 +44,6 @@
 
                             <s:set name="oppPropName" value="'opp.' + #oppKey"/>
 
-                            <s:if test='getOpp() == null'>
-                                <s:set name="textValue" value="value[0]"/>
-                            </s:if>
-                            <s:else>
-                                <s:set name="textValue" value="opp.get(#oppKey)"/> 
-                            </s:else>
-                            
-
                             <tr>
                                 <td align="left"/><s:property value="key"/>:</td>
                                 
@@ -59,7 +51,7 @@
                                 <s:if test="#service=='yeastmine' && key=='restUrl'">
                                     <s:textarea theme="simple"
                                                 name="%{#oppPropName}"
-                                                value="%{#textValue}"
+                                                value="%{value[0]}"
                                                 cols="100"
                                                 rows="4"
                                                 wrap="no"/>
@@ -67,7 +59,7 @@
                                 <s:else>
                                     <s:textfield theme="simple"
                                                 name="%{#oppPropName}"
-                                                value="%{#textValue}"
+                                                value="%{value[0]}"
                                                 size="95"/>
 
                                 </s:else>
