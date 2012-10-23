@@ -193,10 +193,37 @@ public class NativeServerConfigure extends PageSupport {
                                                 .put("restServer", jrs );
 
         //*** update config
+        /*
         if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
                                     nativeRestServer.getRestServerJFP() ) )
         {
             nativeRestServer.configInitialize();
+            }
+        */
+        try{ 
+            saveNativeServerConfigure();
+            nativeRestServer.configInitialize();
+        } catch( IOException iox ){
+            log.error( " Exception: saveNativeServerConfigure\n" +  iox);
         }
     }
+    
+    
+    private void saveNativeServerConfigure()
+        throws IOException {
+        
+        String jsonConfigFile = (String) nativeRestServer
+            .getRestServerContext().getConfig().get( "json-config" );
+
+        String srcPath =
+            getServletContext().getRealPath( jsonConfigFile );
+        log.info( " srcPath=" + srcPath );
+        
+        File sf = new File( srcPath );
+        PrintWriter spw = new PrintWriter( sf );
+        nativeRestServer.getRestServerContext().writeJsonConfigDef( spw );
+        spw.close();
+    }
+        
 }
+    
