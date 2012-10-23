@@ -208,7 +208,6 @@ public class NativeServerConfigure extends PageSupport {
         }
     }
     
-    
     private void saveNativeServerConfigure()
         throws IOException {
         
@@ -219,9 +218,10 @@ public class NativeServerConfigure extends PageSupport {
             getServletContext().getRealPath( jsonConfigFile );
         log.info( " srcPath=" + srcPath );
         
-        File sf = new File( srcPath );
-        PrintWriter spw = new PrintWriter( sf );
-        nativeRestServer.getRestServerContext().writeJsonConfigDef( spw );
+        //File sf = new File( srcPath  );
+        //PrintWriter spw = new PrintWriter( sf );
+       
+        nativeRestServer.getRestServerContext().writeJsonConfigDef( srcPath  );
         spw.close();
     }
         
