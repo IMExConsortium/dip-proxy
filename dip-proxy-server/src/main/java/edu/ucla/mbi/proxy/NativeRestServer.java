@@ -33,7 +33,6 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
     private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
     private JsonContext restServerContext;
     private ServletContext servletContext;
-    public static  String restServerJFP;
  
     public Map<String,Object> getRestServerMap() {
         return restServerMap;
@@ -56,24 +55,22 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
         configInitialize();
     }
 
-    public String getRestServerJFP () {
-        return restServerJFP;
-    }
-
     public void configInitialize() throws ProxyFault {
 
         log.info( "restServerConfigInitialize starting ... " );
 
+        String jsonConfigFile = 
+                (String) restServerContext.getConfig().get( "json-config" );
+
+        String srcPath = servletContext.getRealPath( jsonConfigFile );
+
         try {
-            restServerJFP = 
-                    JsonUnderServletContext.getPathAfterReadJson ( 
-                                    restServerContext, servletContext );
+            restServerContext.readJsonConfigDef( srcPath );       
         } catch( Exception e ) {
+            log.info( "configInitialize exception: " + e.toString() );
             throw FaultFactory.newInstance ( 27 ); // json configuration
         }
 
-        log.info( "restServerConfigInitialize: restServerJFP=" + restServerJFP );
-       
         Map<String, Object> jrs = restServerContext.getJsonConfig(); 
         
         restServerMap = (Map) jrs.get( "restServer" );

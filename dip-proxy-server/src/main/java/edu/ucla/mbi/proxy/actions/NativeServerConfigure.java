@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import edu.ucla.mbi.fault.*;
 import java.util.*;
 import java.io.*;
 
@@ -193,36 +194,27 @@ public class NativeServerConfigure extends PageSupport {
                                                 .put("restServer", jrs );
 
         //*** update config
-        /*
-        if( super.doJsonFileUpdate( nativeRestServer.getRestServerContext(),
-                                    nativeRestServer.getRestServerJFP() ) )
-        {
-            nativeRestServer.configInitialize();
-            }
-        */
-        try{ 
-            saveNativeServerConfigure();
-            nativeRestServer.configInitialize();
-        } catch( IOException iox ){
-            log.error( " Exception: saveNativeServerConfigure\n" +  iox);
-        }
+        saveNativeServerConfigure();
+        nativeRestServer.configInitialize();
     }
     
-    private void saveNativeServerConfigure()
-        throws IOException {
+    private void saveNativeServerConfigure() throws ProxyFault {
         
         String jsonConfigFile = (String) nativeRestServer
             .getRestServerContext().getConfig().get( "json-config" );
 
         String srcPath =
             getServletContext().getRealPath( jsonConfigFile );
+
         log.info( " srcPath=" + srcPath );
-        
-        //File sf = new File( srcPath  );
-        //PrintWriter spw = new PrintWriter( sf );
        
-        nativeRestServer.getRestServerContext().writeJsonConfigDef( srcPath  );
-        spw.close();
+        try { 
+            nativeRestServer.getRestServerContext()
+                                .writeJsonConfigDef( srcPath  );
+        } catch ( Exception e ) {
+            log.info( " saveNativeServerConfigure exception: " + e.toString() );
+            throw FaultFactory.newInstance ( 27 ); // json configuration         
+        }
     }
         
 }
