@@ -39,7 +39,7 @@
                  menu:[]
                 },
                 {label:"Native Rest Server Json Format",
-                 link:"native-configure?id=json",
+                 link:"native-configure-json?ret=rest-config",
                  "disabled":"false",
                  menu:[]
                 }]

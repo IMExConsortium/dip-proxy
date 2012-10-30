@@ -41,8 +41,15 @@ public class ProxyPortImpl implements ProxyPort {
                            Holder<String> nativerecord
                            ) throws ProxyFault {
  
-        log.info( "provider=" + provider + " and service=" + service
-                  + " and ac=" + ac + " and ns=" + ns ); 
+        
+        if ( provider == null || provider.equals( "" )
+                || service == null || service.equals( "" ) ) {
+            log.info( "provider or server is missed" );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        log.info( "provider=" + provider + " and service=" + service + ". " );        
+
         //*** validation of ac 
         if ( ac == null || ac.equals( "" ) ) {
             log.info( "missing accession" );
@@ -88,9 +95,14 @@ public class ProxyPortImpl implements ProxyPort {
                 ns = "refseq";
             } else if ( service.equals( "entrezgene" ) ) {
                 ns = "entrezgene";
-            } else {
+            }
+            /*
+            //*** for adding a new rest server, sometimes the ns is not 
+            //*** restricted
+            else {
                 throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
+            */
         } else if ( provider.equals( "EBI" ) ) {
             if( service.equals( "uniprot" ) ) { 
                 log.info( "getRecord: forcing uniprot as ns" );
@@ -99,36 +111,51 @@ public class ProxyPortImpl implements ProxyPort {
                 if( detail.equalsIgnoreCase( "stub" ) ) {
                     detail = "base"; // picr cann't support detail with stub
                 }
-            } else {
-                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
+            /* 
+            else {
+                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
+            }*/
         } else if ( provider.equals( "DIP" ) ) {
             log.info( "getRecord: provider is DIP. and service=" + service );
             if( service.equals( "dip" ) || service.equals( "diplegacy" ) ) {
                 log.info( "getRecord: forcing dip as ns. " );
                 ns = "dip";
-            } else {
-                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
+            /* 
+            else {
+                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
+            }*/
         } else if ( provider.equals( "MBI" ) ) {
             if( service.equals( "prolinks" ) ) {
                 ns = "refseq";
-            } else {
-                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
             }
+            /* 
+            else {
+                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
+            } */
         } else if ( provider.equals( "SGD" ) ) {
             if( service.equals( "yeastmine" ) ) {
                 ns= "sgd";
-            } else {
+            } 
+            /*
+            else {
                 throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-            }
-        } else {
+            } */
+        }
+        /* 
+        else {
             throw FaultFactory.newInstance( 4 ); //unsupported operation
+        } */
+
+
+        if( ns == null || ns.equals( "" ) ) {
+            log.info( " ns is missed. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
-        log.info( "getRecord: provider=" + provider 
-                  + " and service=" + service + " ac=" + ac 
-                  + " and detail=" + detail + " format=" + format );
+        log.info( "getRecord: ns= " + ns + " and ac=" + ac +
+                  " and detail=" + detail + " format=" + format + "." );
         
         try {
             Router router =

@@ -40,7 +40,7 @@
 
  <definition name="page" template="/tiles/page.jsp"/>
 
- <definition name="fault" template="/tiles/fault.jsp"/>
+ <definition name="error" template="/tiles/fault.jsp"/>
 
  <definition name="main" template="/tiles/main.jsp"/>
 

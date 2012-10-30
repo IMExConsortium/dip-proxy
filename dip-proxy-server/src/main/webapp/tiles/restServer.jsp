@@ -56,12 +56,17 @@
                                                 rows="4"
                                                 wrap="no"/>
                                 </s:if>
-                                <s:else>
+                                <s:elseif test="key=='restUrl'">
                                     <s:textfield theme="simple"
                                                 name="%{#oppPropName}"
                                                 value="%{value[0]}"
                                                 size="95"/>
-
+                                </s:elseif>
+                                <s:else>
+                                    <s:textfield theme="simple"
+                                                name="%{#oppPropName}"
+                                                value="%{value[0]}"
+                                                size="20"/>
                                 </s:else>
                                 </td>    
                                     
@@ -82,14 +87,37 @@
 
          </s:if> 
 
-         <tr><td><li>addNewServiceTest</li></td>
-             <td>
-                <s:textfield theme="simple"
-                             name="opp.testProvider_testService_testURL"
+         <tr><td><li>addNewService</li></td>
+             <td><s:submit name="op.add" value="Add"/></td>
+         </tr>
+         <tr><td>newProvider</td>
+             <td><s:textfield theme="simple"
+                             name="opp.newProvider"
+                             value=""
+                             size="20"/>
+            </td>
+         </tr>     
+         <tr><td>newService</td>
+             <td><s:textfield theme="simple"
+                             name="opp.newService"
+                             value=""
+                             size="20"/>
+            </td>    
+         </tr> 
+         <tr><td>newRestUrl</td>
+             <td><s:textfield theme="simple"
+                             name="opp.newRestUrl"
                              value=""
                              size="95"/>
-            </td>
-         </tr>
+            </td>    
+         </tr> 
+         <tr><td>newRestAcTag</td>
+             <td><s:textfield theme="simple"
+                             name="opp.newRestAcTag"
+                             value=""
+                             size="20"/>
+            </td>    
+         </tr>           
         
          </ul>
         
