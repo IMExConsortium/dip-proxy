@@ -80,6 +80,9 @@
                 <entry key="uniprot">
                     <ref bean="remoteServerImpl"/>
                 </entry>
+                <entry key="ols">
+                    <ref bean="remoteServerImpl"/>
+                </entry>
                 <entry key="picr">
                     <ref bean="ebiReferenceServer"/>
                 </entry>

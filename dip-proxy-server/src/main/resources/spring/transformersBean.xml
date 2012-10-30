@@ -16,6 +16,9 @@
         <!-- key is the web service name -->
      <value>/xsl/ebi/uniprot2dxf.xsl</value>
     </entry>
+    <entry key="ols">
+      <value>/xsl/ebi/ols2dxf.xsl</value>
+    </entry>
     <entry key="picr">
      <value>/xsl/ebi/picr2dxf.xsl</value>
     </entry>
