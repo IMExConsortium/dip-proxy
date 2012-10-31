@@ -171,7 +171,7 @@ public class NativeServerConfigure extends PageSupport {
 
         log.info( "execute: return fault.");
 
-        return ERROR;
+        return SUCCESS;
     }
 
     private void addNewServiceToJson( boolean writeToJson ) throws ProxyFault {

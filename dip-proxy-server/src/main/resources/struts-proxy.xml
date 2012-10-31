@@ -121,11 +121,8 @@
      <interceptor-ref name="timer"/>
      <interceptor-ref name="menu"/> 
 
-    <result name="success" type="tiles">page</result>
-      <result name="input" type="tiles">page</result>
-
+     <result name="success" type="tiles">page</result>
      <result name="rest-server" type="tiles">rest-server-config</result> 
-     <result name="error" type="tiles">error</result>
 
      <result name="json"  type="json">
        <param name="includeProperties"> 
@@ -139,8 +136,7 @@
    <!-- native rest server json configure -->
    <action name="native-configure-json" class="nativeServerConfigureJsonAction" >
       
-      <result name="error" type="tiles">error</result>
-      <result name="input" type="tiles">page</result>
+      <result name="success" type="tiles">page</result>
       <result name="json"  type="json">
        <param name="includeProperties">
             restServer.*
