@@ -129,7 +129,7 @@
             restServer.*
        </param>
        <param name="noCache">true</param>
-       <param name="contentType">text/html</param>
+       <param name="contentType">application/json</param>
      </result>
    </action>
   
