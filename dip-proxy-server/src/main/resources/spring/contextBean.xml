@@ -64,17 +64,11 @@
         </property>
     </bean>
 
-    <bean id="aclContext" class="edu.ucla.mbi.util.JsonContext">
+    <bean id="transformerContext" class="edu.ucla.mbi.util.JsonContext">
         <property name="config">
             <map>
-                <entry key="json-config" value="/etc/acl.json"/>
-                <entry key="json-source">
-                    <bean class="edu.ucla.mbi.util.SpringFileResource">
-                        <property name="file" value="etc/acl.json"/>
-                    </bean>
-                </entry>
+                <entry key="json-config" value="/etc/transformer.json"/>
             </map>
         </property>
     </bean>
-
 </beans>

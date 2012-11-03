@@ -49,6 +49,7 @@ public class NcbiCachingImpl implements NcbiProxyPort {
         
         String provider = "NCBI";
 	    String service = "nlm";
+        String transformerType = "xslt";
        
 	    Log log = LogFactory.getLog( NcbiCachingImpl.class );
 	    log.info( "getJournal " +
@@ -91,7 +92,8 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                  format.equalsIgnoreCase( "both" ) ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                    cachingSrv.getDxf( provider, service, ns, ac, 
+                                       detail,  transformerType );
                 if ( result != null ) {
                     dataset.value = result ;
                 } else {
@@ -150,7 +152,8 @@ public class NcbiCachingImpl implements NcbiProxyPort {
         
         String provider = "NCBI";
 	    String service = "pubmed";
-       
+        String transformerType = "xslt";       
+
 	    Log log = LogFactory.getLog( NcbiCachingImpl.class );
 	    log.info( "getPubmedArticle " +
 		            " NS=" + ns + " AC=" + ac + " DT=" + detail );
@@ -189,7 +192,9 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                  format.equalsIgnoreCase( "both" ) ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                    cachingSrv.getDxf( provider, service, ns, ac, 
+                                       detail, transformerType );
+
                 if ( result != null ) {
                     dataset.value = result ;
                 } else {
@@ -241,6 +246,7 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 	
         String provider = "NCBI";
         String service = "refseq";
+        String transformerType = "xslt";
         
 	    Log log = LogFactory.getLog( NcbiCachingImpl.class );
 	    log.info( "getRefseq " + 
@@ -284,7 +290,8 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                  ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                    cachingSrv.getDxf( provider, service, ns, ac, 
+                                       detail, transformerType );
                 if ( result != null ) {
                     dataset.value = result;     
                 } else {
@@ -334,7 +341,8 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 	
         String provider = "NCBI";
         String service = "entrezgene";
- 
+        String transformerType = "xslt";
+
         Log log = LogFactory.getLog( NcbiCachingImpl.class );
 	    log.info( "getGene " + 
 		    "NS=" + ns + " AC=" + ac + " DT=" + detail );
@@ -377,7 +385,8 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                  ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                    cachingSrv.getDxf( provider, service, ns, ac, 
+                                       detail, transformerType );
                 if ( result != null ) {
                     dataset.value = result;
                 } else {
@@ -430,6 +439,7 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 	
         String provider = "NCBI";
         String service = "taxon";
+        String transformerType = "xslt";
 
 	    Log log = LogFactory.getLog( NcbiCachingImpl.class );
 	    log.info( "getTaxon " + 
@@ -473,7 +483,8 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                  ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                    cachingSrv.getDxf( provider, service, ns, ac, 
+                                       detail, transformerType );
                 if ( result != null ) {
                     dataset.value = result;
                 } else {  

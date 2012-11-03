@@ -25,6 +25,7 @@ import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.dxf14.DxfJAXBContext;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.cache.NativeRecord;
+import edu.ucla.mbi.server.WSContext;
 
 import java.util.*;
 
@@ -83,7 +84,8 @@ public class RemoteServerImpl implements RemoteServer {
     
     public DatasetType transform( String strNative,
 				                  String ns, String ac, String detail,
-				                  String service, ProxyTransformer pTrans 
+				                  String provider, String service, 
+                                  String tfType
                                   ) throws ProxyFault {
 
 	    Log log = LogFactory.getLog( RemoteServer.class );
@@ -102,8 +104,10 @@ public class RemoteServerImpl implements RemoteServer {
 	        JAXBResult result = new JAXBResult( dxfJc );
 	    
 	        //*** transform into DXF
-	    
-	        pTrans.setTransformer( service );
+	        ProxyTransformer pTrans = WSContext.getTransformer();
+
+	        //pTrans.setTransformer( service );
+            pTrans.setTransformer( provider, service, tfType );
     	    pTrans.setParameters( detail, ns, ac );
     	    pTrans.transform( ssNative, result );
 	    
@@ -125,14 +129,15 @@ public class RemoteServerImpl implements RemoteServer {
     }
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
-				                 String detail, String service, 
-				                 ProxyTransformer pTrans  
+				                 String detail, String provider, 
+                                 String service, String tfType 
 	                             ) throws ProxyFault {
 	
     	// NOTE: overload if dxf building more complex than
 	    //       a simple xslt transformation
 	
-	    return this.transform( strNative, ns, ac, detail, service, pTrans );
+	    return this.transform( strNative, ns, ac, detail, provider, 
+                               service, tfType );
     }
 }
 

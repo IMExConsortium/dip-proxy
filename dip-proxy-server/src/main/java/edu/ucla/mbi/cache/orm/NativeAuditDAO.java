@@ -168,7 +168,8 @@ public class NativeAuditDAO extends AbstractDAO {
             //-------------
             log.info("delayAll: before wsContext.");
             Set<String> services = WSContext.getServerContext( provider )
-                                            .getTransformer().getTransfMap()
+            //                                .getTransformer().getTransfMap()
+                                            .getNativeServerMap()
                                             .keySet();
             log.info("delayAll: afer wsContext.");
             // get newest entries

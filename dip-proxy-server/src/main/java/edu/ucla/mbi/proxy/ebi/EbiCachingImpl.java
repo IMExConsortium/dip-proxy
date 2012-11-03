@@ -48,6 +48,7 @@ public class EbiCachingImpl implements EbiProxyPort {
         
         String provider = "EBI";
         String service = "uniprot";
+        String transformerType = "xslt";
         
         Log log = LogFactory.getLog( EbiCachingImpl.class );
         log.info( "EbiCaching: getUniprot " + " NS=" + ns + " AC=" + ac
@@ -92,7 +93,7 @@ public class EbiCachingImpl implements EbiProxyPort {
                 
                 DatasetType result = 
                     cachingSrv.getDxf( provider, service, ns,
-                                       ac, detail );
+                                       ac, detail, transformerType );
                 if ( result != null ) {
                     dataset.value = result;
                 } else {
@@ -141,6 +142,7 @@ public class EbiCachingImpl implements EbiProxyPort {
 
         String provider = "EBI";
         String service = "picr";
+        String transformerType = "xslt";
 
         Log log = LogFactory.getLog( EbiCachingImpl.class );
         log.info( "getPicrList " + "NS=" + ns + " AC=" + ac + " DT=" + detail );
@@ -176,7 +178,9 @@ public class EbiCachingImpl implements EbiProxyPort {
                     || format.equalsIgnoreCase( "both" ) ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                    cachingSrv.getDxf( provider, service, ns, ac, 
+                                       detail, transformerType );
+
                 if ( result != null ) {
                     dataset.value = result;
                 } else {

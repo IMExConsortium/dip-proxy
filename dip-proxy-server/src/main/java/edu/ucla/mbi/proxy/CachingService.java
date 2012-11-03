@@ -299,7 +299,7 @@ public class CachingService extends Observable {
     //--------------------------------------------------------------------------
 
     public DatasetType getDxf( String provider, String service, String ns,
-                               String ac, String detail 
+                               String ac, String detail, String tfType 
                                ) throws ProxyFault 
     {
         log.info( "getDxf(prv=" + provider + " srv=" + service + " det="
@@ -413,11 +413,10 @@ public class CachingService extends Observable {
         DatasetType dxfResult = null;
         
         try {
-            log.info( "getDxf: before buildDxf. transformer=" 
-                      + rsc.getTransformer() );
 
             dxfResult = rs.buildDxf( nativeXml, ns, ac, 
-                                     detail, service, rsc.getTransformer() );            
+                                     detail, provider, service, 
+                                     tfType );
             log.info( "getDxf: after buildDxf. dxfResult=" + dxfResult );
         } catch( ProxyFault se ) {
             log.info( "getDxf: get Exception: " + se.toString() );
@@ -469,10 +468,7 @@ public class CachingService extends Observable {
                 
                 // mashall DatasetType object into a string representation
                 // --------------------------------------------------------
-                //log.info( "getDxf: before marshall. ");                
                 String dxfString = marshall( dxfResult );
-                //log.info( "getDxf: after marshall. dxfString=" + dxfString );
-                //log.info( "getDxf: after marshall. dxfRecord=" + dxfRecord );
 
                 if ( dxfRecord == null ) {
                     dxfRecord =

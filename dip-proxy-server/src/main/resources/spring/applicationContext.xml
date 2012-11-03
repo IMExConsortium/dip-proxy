@@ -30,10 +30,6 @@
 
  <import resource="serversBean.xml" />
 
-<!-- ======================================================= TRANSFORMERS -->
-
- <import resource="transformersBean.xml" />
-
 <!-- ========================================================== SCHEDULER -->
 
  <import resource="schedulerBean.xml" />
@@ -45,6 +41,13 @@
 <!-- ========================================================== DAO -->
 
  <import resource="daoBean.xml"/>
+
+ <!--========================================================  TRANSFORMER -->
+
+ <bean id="proxyTransformer" init-method="initialize" 
+       class="edu.ucla.mbi.proxy.ProxyTransformer">
+  <property name="transformerContext" ref="transformerContext"/>
+ </bean>
 
 <!-- ===================================================== PROXY SERVICES -->
 
@@ -65,14 +68,15 @@
 
   <property name="threadRunMinutes" value="10"/>
 
-  <property name="services">
+  <property name="transformer">
+    <ref bean="proxyTransformer"/>
+  </property>
+
+<property name="services">
    <map>
      <entry key="EBI"> 
       <map>
        <entry key="timeout" value="600"/> <!-- NOTE: default unit seconds -->
-       <entry key="transformer">
-        <ref bean="ebiTransformer"/>
-       </entry> 
        <entry key="ttl" value="14"/>  <!-- NOTE: default unit days --> 
 
        <entry key="nativeServer"> 
@@ -109,9 +113,6 @@
      <entry key="NCBI"> 
       <map> 
        <entry key="timeout" value="600"/>
-       <entry key="transformer">
-        <ref bean="ncbiTransformer"/>
-       </entry>
        <entry key="ttl" value="30"/>
 
        <entry key="nativeServer">
@@ -153,9 +154,6 @@
      <entry key="MBI"> 
       <map>
        <entry key="timeout" value="600"/>
-       <entry key="transformer">
-       <ref bean="prlTransformer"/>
-       </entry>
        <entry key="ttl"     value="14"/>
        
        <entry key="nativeServer">  
@@ -185,9 +183,6 @@
      <entry key="DIP"> 
       <map>
        <entry key="timeout" value="600"/>
-       <entry key="transformer">
-        <ref bean="dipTransformer"/>
-       </entry>
        <entry key="ttl" value="14"/>
 
        <entry key="nativeServer"> 
@@ -218,9 +213,6 @@
      <entry key="SGD">
       <map>
        <entry key="timeout" value="600"/>
-       <entry key="transformer">
-        <ref bean="yeastMineTransformer"/>
-       </entry>
        <entry key="ttl" value="14"/>
 
        <entry key="nativeServer">

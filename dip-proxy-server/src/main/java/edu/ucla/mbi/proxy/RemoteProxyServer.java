@@ -32,7 +32,7 @@ import com.sun.xml.ws.developer.JAXWSProperties;
 
 import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.dxf14.DxfJAXBContext;
-
+import edu.ucla.mbi.server.WSContext;
 import edu.ucla.mbi.fault.*;
 
 import edu.ucla.mbi.cache.NativeRecord;
@@ -141,7 +141,9 @@ public class RemoteProxyServer implements RemoteServer {
     
     public DatasetType transform( String strNative,
 				                  String ns, String ac, String detail,
-				                  String service, ProxyTransformer pTrans 
+	        			          String provider, 
+                                  String service,
+                                  String tfType
                                   ) throws ProxyFault {
 	
 	    try {
@@ -158,8 +160,9 @@ public class RemoteProxyServer implements RemoteServer {
 	        JAXBResult result = new JAXBResult( dxfJc );
 	    
 	        //transform into DXF
-	    
-	        pTrans.setTransformer( service );
+            ProxyTransformer pTrans = WSContext.getTransformer();
+	        pTrans.setTransformer( provider, service, tfType );
+
     	    pTrans.setParameters( detail, ns, ac );
             log.info( "transform: before transform.");
     	    pTrans.transform( ssNative, result );
@@ -184,14 +187,16 @@ public class RemoteProxyServer implements RemoteServer {
     }
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
-				                 String detail, String service, 
-				                 ProxyTransformer pTrans 
+				                 String detail, String provider, 
+                                 String service, String tfType
                                  ) throws ProxyFault {
 	
     	// NOTE: overload if dxf building more complex than
 	    //       a simple xslt transformation
         log.info( "buildDxf entering ... " );	
-	    return this.transform( strNative, ns, ac, detail, service, pTrans );
+
+        return this.transform( strNative, ns, ac, detail, provider, 
+                               service, tfType );
     }
 }
 

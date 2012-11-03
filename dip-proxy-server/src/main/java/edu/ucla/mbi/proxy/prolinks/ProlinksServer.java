@@ -38,8 +38,9 @@ public class ProlinksServer extends RemoteServerImpl {
     private Log log = LogFactory.getLog( ProlinksServer.class );
 
     public DatasetType buildDxf( String strNative, String ns, String ac,
-                                 String detail, String service, 
-                                 ProxyTransformer pTrans 
+                                 String detail, String provider, 
+                                 String service, String tfType
+                               //  ProxyTransformer pTrans 
                                  ) throws ProxyFault 
     {
         Log log = LogFactory.getLog( ProlinksServer.class );
@@ -55,7 +56,9 @@ public class ProlinksServer extends RemoteServerImpl {
         }
 
         edu.ucla.mbi.dxf14.DatasetType dxfResult = 
-                super.buildDxf ( strNative, ns, ac, detail, service, pTrans );
+                super.buildDxf ( strNative, ns, ac, detail, provider, 
+                           //      service, tfType, pTrans );
+                                service, tfType );
        
         if( detail.equals( "full" ) ) {
             //*** take detail info of refseq node from NCBI service    

@@ -3,49 +3,59 @@
         NCBI:{
             pubmed:{
                 type:"xslt",
-                xslt:"/xsl/ncbi/pubmed2dxf.xsl"
+                xslt:"\/xsl\/ncbi\/pubmed2dxf.xsl"
             },
             refseq:{
                 type:"xslt",
-                xslt:"/xsl/ncbi/refseq2dxf.xsl"
+                xslt:"\/xsl\/ncbi\/refseq2dxf.xsl"
             },
             nlm:{
                 type:"xslt",
-                xslt:"/xsl/ncbi/nlm2dxf.xsl"
+                xslt:"\/xsl\/ncbi\/nlm2dxf.xsl"
             },
             entrezgene:{
                 type:"xslt",
-                xslt:"/xsl/ncbi/gene2dxf.xsl"
+                xslt:"\/xsl\/ncbi\/gene2dxf.xsl"
             },
             taxon:{
                 type:"xslt",
-                xslt:"/xsl/ncbi/taxon2dxf.xsl"
+                xslt:"\/xsl\/ncbi\/taxon2dxf.xsl"
             }
         },
         EBI:{
             uniprot:{
                 type:"xslt",
-                xslt:"/xsl/ebi/uniprot2dxf.xsl"
+                xslt:"\/xsl\/ebi\/uniprot2dxf.xsl"
             },
             picr:{
                 type:"xslt",
-                xslt:"/xsl/ebi/picr2dxf.xsl"
+                xslt:"\/xsl\/ebi\/picr2dxf.xsl"
             },
             ols:{
                 type:"xslt",
-                xslt:"/xsl/ebi/ols2dxf.xsl"
+                xslt:"\/xsl\/ebi\/ols2dxf.xsl"
             }
         },
         MBI:{
             prolinks:{
                 type:"xslt",
-                xslt:"/xsl/dxf2dxf.xsl"
+                xslt:"\/xsl\/dxf2dxf.xsl"
+            }
+        },
+        DIP:{
+            dip:{
+                type:"xslt",
+                xslt:"\/xsl\/dxf2dxf.xsl"
+            },
+            diplegacy:{
+                type:"xslt",
+                xslt:"\/xsl\/dxf2dxf.xsl"
             }
         },
         SGD:{
             yeastmine:{
                 type:"xslt",
-                xslt:"/xsl/intermine2dxf.xsl"
+                xslt:"\/xsl\/intermine2dxf.xsl"
             }
         }
     }

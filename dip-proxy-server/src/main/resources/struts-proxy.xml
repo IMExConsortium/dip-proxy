@@ -31,7 +31,7 @@
      <interceptor name="menu"
                   class="edu.ucla.mbi.util.struts2.interceptor.MenuInterceptor"/>
 
-     
+     <!-- 
      <interceptor name="acl" class="aclInterceptor"/> 
      
      <interceptor-stack name="mgrStack">
@@ -66,7 +66,7 @@
                 <param name="excludeMethods">input,back,cancel,browse</param>
             </interceptor-ref>
      </interceptor-stack>
-     
+     -->
     </interceptors>
 
     

@@ -198,6 +198,8 @@
                 <include>EbiService14.wsdl</include>
                 <include>ProlinksService14.wsdl</include>
                 <include>DipService14.wsdl</include>
+                <include>DipWS.wsdl</include>
+                <include>DipLegacyService.wsdl</include>
               </includes>
             </resource>
 

@@ -89,11 +89,11 @@
  </bean>
 
  <!-- access control list/interceptor -->
-
+ <!--
  <bean id="aclInterceptor"
        class="edu.ucla.mbi.util.struts2.interceptor.AclInterceptor">
 
     <property name="aclContext" ref="aclContext"/>
- </bean>
+ </bean> -->
 
 </beans>

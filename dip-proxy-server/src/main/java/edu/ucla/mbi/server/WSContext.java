@@ -44,20 +44,19 @@ public class WSContext{
     
     private static int threadRunMinutes = 10; // 10 minutes
 
+    private static ProxyTransformer transformer;
+
+    //*** setter
     public void setPort( int port ) {
         this.port = port;
     }
     
-    public static int getPort() {
-        return port;
+    public void setTransformer ( ProxyTransformer tf ) {
+        this.transformer = tf;
     }
 
     public void setDht( Dht dht ) {
         proxyDht = dht;
-    }
-    
-    public static Dht getDht() {
-        return proxyDht;
     }
 
     public void setScheduler( Scheduler scheduler) {
@@ -67,13 +66,26 @@ public class WSContext{
     public void setWaitMillis( long time ){
         waitMillis = time;
     }
-    
+
     public void setThreadRunMinutes ( int time ) {
         threadRunMinutes = time;
     }
 
     public void setServices( Map<String,Map> services ) {
-	    this.services = services;
+        this.services = services;
+    }
+
+    //*** getter
+    public static int getPort() {
+        return port;
+    }
+
+    public static ProxyTransformer getTransformer () {
+        return transformer;
+    }
+
+    public static Dht getDht() {
+        return proxyDht;
     }
 
     public Map<String,Map> getServices() {

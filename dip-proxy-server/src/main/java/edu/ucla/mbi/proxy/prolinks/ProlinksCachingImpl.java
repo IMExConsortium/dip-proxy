@@ -46,6 +46,7 @@ public class ProlinksCachingImpl implements ProlinksProxyPort {
         
         String provider = "MBI";
         String service = "prolinks";
+        String transformerType = "xslt";
 
         Log log = LogFactory.getLog( ProlinksCachingImpl.class );
         log.info( "getProlinks " + 
@@ -83,7 +84,8 @@ public class ProlinksCachingImpl implements ProlinksProxyPort {
                  || format.equalsIgnoreCase( "both" ) ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                    cachingSrv.getDxf( provider, service, ns, ac, 
+                                       detail, transformerType );
                 if ( result != null ) {
                     dataset.value = result;
                 } else {
