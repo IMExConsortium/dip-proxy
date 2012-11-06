@@ -47,7 +47,6 @@ public class DipCachingImpl implements DipProxyPort {
         
         String provider = "DIP";
         String service = "dip";
-        String transformerType = "xslt";
 
         Log log = LogFactory.getLog( DipCachingImpl.class );
         log.info( "getPubmedArticle " + " NS=" + ns + " AC=" + ac + " DT="
@@ -84,8 +83,7 @@ public class DipCachingImpl implements DipProxyPort {
                  || format.equalsIgnoreCase( "both" ) ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns,
-                                       ac, detail, transformerType );
+                    cachingSrv.getDxf( provider, service, ns, ac, detail );
                 if ( result != null ) {
                     dataset.value = result;
 

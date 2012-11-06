@@ -36,10 +36,7 @@ public class ProxyTransformer implements ServletContextAware {
     private ServletContext servletContext;
 
     private Transformer tf;
-    //private Map<String, Resource> transfMap;
     private Map<String, Object> transfMap;
-
-    //private Map<String, Object> context;
 
     //*** setter
     public void setTransformerContext ( JsonContext context ) {
@@ -50,15 +47,6 @@ public class ProxyTransformer implements ServletContextAware {
         this.servletContext = servletContext;
     }
 
-    /*
-    public void setTransfMap(Map<String,Resource> transfMap){
-	    this.transfMap = transfMap;
-    }
-
-    public void setContext(Map<String,Object> context){
-	    this.context=context;
-    } */
-
     //*** getter
     public JsonContext getTransformerContext () {
         return transformerContext;
@@ -68,11 +56,6 @@ public class ProxyTransformer implements ServletContextAware {
 	    return tf;
     }
    
-   /* 
-    public Map<String, Resource> getTransfMap() {
-        return transfMap;
-    }*/  
-
     public Map<String, Object> getTransfMap() {
         return transfMap;
     }
@@ -99,10 +82,7 @@ public class ProxyTransformer implements ServletContextAware {
 
     }
 
-    //public void setTransformer( String service ) { 
-    public void setTransformer( String provider, 
-                                String service, 
-                                String tfType ) {
+    public void setTransformer( String provider, String service ) {
 
         Log log = LogFactory.getLog( ProxyTransformer.class );
         try {
@@ -121,26 +101,35 @@ public class ProxyTransformer implements ServletContextAware {
             Document xslDoc = db.parse( xslFile.getFile() );
             */
 
-            String xslFilePath = (String)((Map)((Map) transfMap.get(provider))
-                                                    .get(service)).get(tfType);
+            String tfType = (String)((Map)((Map) transfMap.get(provider))
+                                                    .get(service)).get("type");
 
-            String xslRealPath = servletContext.getRealPath( xslFilePath );
+            if( tfType != null && tfType.equals( "xslt" ) ) {
+                String xslFilePath = (String)((Map)((Map) transfMap.get(provider))
+                                                    .get(service)).get("xslt");
 
-            log.info( "setTransformer: xslRealPath=" + xslRealPath );
+                String xslRealPath = servletContext.getRealPath( xslFilePath );
 
-            Document xslDoc = db.parse ( new File( xslRealPath ) );
+                log.info( "setTransformer: xslRealPath=" + xslRealPath );
 
-            DOMSource xslDomSource = new DOMSource( xslDoc );
+                Document xslDoc = db.parse ( new File( xslRealPath ) );
 
-            TransformerFactory 
-                tFactory = TransformerFactory.newInstance();
+                DOMSource xslDomSource = new DOMSource( xslDoc );
+
+                TransformerFactory 
+                    tFactory = TransformerFactory.newInstance();
 	    
-            ErrorListener logErrorListener = new TransformLogErrorListener();	    
-            tFactory.setErrorListener( logErrorListener );
+                ErrorListener logErrorListener = new TransformLogErrorListener();	    
+                tFactory.setErrorListener( logErrorListener );
 	    
-            this.tf = tFactory.newTransformer( xslDomSource );                                  
-            tf.setErrorListener( logErrorListener );
-	    
+                this.tf = tFactory.newTransformer( xslDomSource );                                  
+                tf.setErrorListener( logErrorListener );
+            } else {
+                throw FaultFactory.newInstance( 27 ); //json configuration
+            }
+        } catch ( ProxyFault fault ) {
+            log.info( "setTransformer: transformer.json doesn't have transformer type xslt. " );
+            this.tf = null;
         } catch( Exception e ) {
             log.info( e.toString() );
             this.tf = null;

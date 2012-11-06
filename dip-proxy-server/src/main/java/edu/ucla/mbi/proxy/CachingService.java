@@ -299,7 +299,7 @@ public class CachingService extends Observable {
     //--------------------------------------------------------------------------
 
     public DatasetType getDxf( String provider, String service, String ns,
-                               String ac, String detail, String tfType 
+                               String ac, String detail 
                                ) throws ProxyFault 
     {
         log.info( "getDxf(prv=" + provider + " srv=" + service + " det="
@@ -415,8 +415,8 @@ public class CachingService extends Observable {
         try {
 
             dxfResult = rs.buildDxf( nativeXml, ns, ac, 
-                                     detail, provider, service, 
-                                     tfType );
+                                     detail, provider, service );
+
             log.info( "getDxf: after buildDxf. dxfResult=" + dxfResult );
         } catch( ProxyFault se ) {
             log.info( "getDxf: get Exception: " + se.toString() );

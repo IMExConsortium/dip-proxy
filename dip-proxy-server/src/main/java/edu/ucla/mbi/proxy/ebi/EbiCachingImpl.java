@@ -48,7 +48,6 @@ public class EbiCachingImpl implements EbiProxyPort {
         
         String provider = "EBI";
         String service = "uniprot";
-        String transformerType = "xslt";
         
         Log log = LogFactory.getLog( EbiCachingImpl.class );
         log.info( "EbiCaching: getUniprot " + " NS=" + ns + " AC=" + ac
@@ -92,8 +91,7 @@ public class EbiCachingImpl implements EbiProxyPort {
                  || format.equalsIgnoreCase( "both" ) ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns,
-                                       ac, detail, transformerType );
+                    cachingSrv.getDxf( provider, service, ns, ac, detail );
                 if ( result != null ) {
                     dataset.value = result;
                 } else {
@@ -142,7 +140,6 @@ public class EbiCachingImpl implements EbiProxyPort {
 
         String provider = "EBI";
         String service = "picr";
-        String transformerType = "xslt";
 
         Log log = LogFactory.getLog( EbiCachingImpl.class );
         log.info( "getPicrList " + "NS=" + ns + " AC=" + ac + " DT=" + detail );
@@ -178,8 +175,7 @@ public class EbiCachingImpl implements EbiProxyPort {
                     || format.equalsIgnoreCase( "both" ) ) {
                 
                 DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, 
-                                       detail, transformerType );
+                    cachingSrv.getDxf( provider, service, ns, ac, detail );
 
                 if ( result != null ) {
                     dataset.value = result;
@@ -189,12 +185,17 @@ public class EbiCachingImpl implements EbiProxyPort {
                 }
             }
             
-            if ( format != null && (format.equalsIgnoreCase( "native" ) || format.equalsIgnoreCase( "both" )) ) {
+            if ( format != null 
+                    && (format.equalsIgnoreCase( "native" ) 
+                            || format.equalsIgnoreCase( "both" ) ) ) 
+            {
                 
                 NativeRecord natRec = 
                     cachingSrv.getNative( provider, service, ns, ac );
                 
-                if ( natRec != null && natRec.getNativeXml() != null && natRec.getNativeXml().length() > 0 ) {
+                if ( natRec != null && natRec.getNativeXml() != null 
+                        && natRec.getNativeXml().length() > 0 ) 
+                {
                     nativerecord.value = natRec.getNativeXml();
                     timestamp.value = 
                         TimeStamp.toXmlDate( natRec.getQueryTime() );

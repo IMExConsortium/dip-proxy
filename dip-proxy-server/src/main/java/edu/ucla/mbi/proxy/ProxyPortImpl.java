@@ -41,8 +41,6 @@ public class ProxyPortImpl implements ProxyPort {
                            Holder<String> nativerecord
                            ) throws ProxyFault {
  
-        String transformerType = "xslt";
-        
         if ( provider == null || provider.equals( "" )
                 || service == null || service.equals( "" ) ) {
             log.info( "provider or server is missed" );
@@ -174,8 +172,7 @@ public class ProxyPortImpl implements ProxyPort {
                     || format.equalsIgnoreCase( "both" ) ) 
             {
                 DatasetType result =
-                    cachingSrv.getDxf( provider, service, ns, ac, 
-                                       detail, transformerType );
+                    cachingSrv.getDxf( provider, service, ns, ac, detail );
                 
                 if ( result != null ) {
                     dataset.value = result ;

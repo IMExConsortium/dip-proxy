@@ -142,8 +142,7 @@ public class RemoteProxyServer implements RemoteServer {
     public DatasetType transform( String strNative,
 				                  String ns, String ac, String detail,
 	        			          String provider, 
-                                  String service,
-                                  String tfType
+                                  String service
                                   ) throws ProxyFault {
 	
 	    try {
@@ -161,7 +160,7 @@ public class RemoteProxyServer implements RemoteServer {
 	    
 	        //transform into DXF
             ProxyTransformer pTrans = WSContext.getTransformer();
-	        pTrans.setTransformer( provider, service, tfType );
+	        pTrans.setTransformer( provider, service );
 
     	    pTrans.setParameters( detail, ns, ac );
             log.info( "transform: before transform.");
@@ -187,16 +186,15 @@ public class RemoteProxyServer implements RemoteServer {
     }
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
-				                 String detail, String provider, 
-                                 String service, String tfType
-                                 ) throws ProxyFault {
+				                 String detail, String provider, String service 
+                                 ) throws ProxyFault 
+    {
 	
     	// NOTE: overload if dxf building more complex than
 	    //       a simple xslt transformation
         log.info( "buildDxf entering ... " );	
 
-        return this.transform( strNative, ns, ac, detail, provider, 
-                               service, tfType );
+        return this.transform( strNative, ns, ac, detail, provider, service );
     }
 }
 
