@@ -23,13 +23,19 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.util.JsonContext;
 import edu.ucla.mbi.util.struts2.action.PageSupport;
 
-public class NativeServerConfigure extends PageSupport {
+public class NativeServerConfigure extends ManagerSupport {
 
     private Log log = LogFactory.getLog( NativeServerConfigure.class );
-    private NativeRestServer nativeRestServer;
-    private Map<String, Object> restServer = new HashMap<String, Object>();
- 
-    //*** setter 
+    
+    //private NativeRestServer nativeRestServer;
+    //private Map<String, Object> restServer = new HashMap<String, Object>();
+
+    
+    // add json context getter/setter here
+    //-------------------------------------
+    
+
+    /*
     public void setRestServer ( Map<String, Object> map ) {
         this.restServer = map;
     }
@@ -38,7 +44,7 @@ public class NativeServerConfigure extends PageSupport {
         this.nativeRestServer = server;
     }    
 
-    //*** getter
+    
     public NativeRestServer getNativeRestServer() {
         return nativeRestServer;
     }
@@ -46,11 +52,12 @@ public class NativeServerConfigure extends PageSupport {
     public Map<String,Object> getRestServer() {
         return restServer;
     }
-
+    
+    */
     //---------------------------------------------------------------------
     // operations: op.xxx
     //----------- 
-
+    /*
     private Map<String,String> opm ; //LS
 
     public void setOp( Map<String,String> op ) {
@@ -72,7 +79,7 @@ public class NativeServerConfigure extends PageSupport {
     public Map<String,String> getOpp(){
         return opp;
     }
-
+    */
     //---------------------------------------------------------------------
 
     public String execute() throws Exception {
