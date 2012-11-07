@@ -1,9 +1,9 @@
 package edu.ucla.mbi.proxy.actions;
 
 /*===========================================================================
- * $HeadURL::                                                               $
- * $Id::                                                                    $
- * Version: $Rev::                                                          $
+ * $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/dip-prox#$
+ * $Id:: NativeServerConfigure.java 2812 2012-11-07 23:14:55Z lukasz        $
+ * Version: $Rev:: 2812                                                     $
  *===========================================================================
  *
  * NativeServerConfigure Action:
@@ -23,13 +23,15 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.util.JsonContext;
 import edu.ucla.mbi.util.struts2.action.PageSupport;
 
-public class NativeServerConfigure extends ManagerSupport {
+public class JsonContextConfigAction extends ManagerSupport {
 
-    private Log log = LogFactory.getLog( NativeServerConfigure.class );
+    private Log log = LogFactory.getLog( JsonContextConfigAction.class );
     
     //private NativeRestServer nativeRestServer;
     //private Map<String, Object> restServer = new HashMap<String, Object>();
-
+    
+    private Map<String, Object> jsonContext; 
+    
     
     // add json context getter/setter here
     //-------------------------------------
@@ -175,7 +177,9 @@ public class NativeServerConfigure extends ManagerSupport {
                 if( key.equalsIgnoreCase( "show" ) ) {
                 
 
-                    // prepare confing file view
+                    // prepare 
+
+                    
 
                     return JSON;
 
