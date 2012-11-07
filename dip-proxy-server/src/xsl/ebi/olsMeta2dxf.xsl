@@ -31,9 +31,12 @@
                 <xsl:attribute name="ns">dxf</xsl:attribute>
             </xsl:element>
 
+            <xsl:element name="dxf:label">
+                <xsl:value-of select="item[name='preferred name']/value/text()"/>
+            </xsl:element>
+
             <xsl:choose>
             <xsl:when test="item/name/text()='obsolete'">
-                <xsl:element name="dxf:label">obsolete</xsl:element>
 
                 <xsl:if test="$edu.ucla.mbi.services.detail != 'stub'">
                     <xsl:if test="item/name/text()='replaced by'">
@@ -67,10 +70,6 @@
                 </xsl:if>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:element name="dxf:label">
-                    <xsl:value-of select="item[name='preferred name']/value/text()"/>
-                </xsl:element>
-
                 <xsl:if test="$edu.ucla.mbi.services.detail != 'stub'">
                     <xsl:element name="dxf:attrList">
                         <xsl:element name="dxf:attr">
