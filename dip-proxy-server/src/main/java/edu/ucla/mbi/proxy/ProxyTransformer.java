@@ -36,7 +36,7 @@ public class ProxyTransformer implements ServletContextAware {
     private ServletContext servletContext;
 
     private Transformer tf;
-    private Map<String, Object> transfMap;
+    private static Map<String, Object> transfMap;
 
     //*** setter
     public void setTransformerContext ( JsonContext context ) {
@@ -56,7 +56,7 @@ public class ProxyTransformer implements ServletContextAware {
 	    return tf;
     }
    
-    public Map<String, Object> getTransfMap() {
+    public static Map<String, Object> getTransfMap() {
         return transfMap;
     }
 
@@ -105,8 +105,10 @@ public class ProxyTransformer implements ServletContextAware {
                                                     .get(service)).get("type");
 
             if( tfType != null && tfType.equals( "xslt" ) ) {
-                String xslFilePath = (String)((Map)((Map) transfMap.get(provider))
-                                                    .get(service)).get("xslt");
+                String xslFilePath = (String)((Map)((Map) transfMap
+                                                            .get(provider))
+                                                                .get(service))
+                                                                    .get("xslt");
 
                 String xslRealPath = servletContext.getRealPath( xslFilePath );
 
@@ -125,10 +127,12 @@ public class ProxyTransformer implements ServletContextAware {
                 this.tf = tFactory.newTransformer( xslDomSource );                                  
                 tf.setErrorListener( logErrorListener );
             } else {
+                log.info( "setTransformer: tfType == null or tfType != 'xslt' " );
                 throw FaultFactory.newInstance( 27 ); //json configuration
             }
         } catch ( ProxyFault fault ) {
-            log.info( "setTransformer: transformer.json doesn't have transformer type xslt. " );
+            log.info( "setTransformer: transformer.json doesn't have " + 
+                      "transformer type xslt. " );
             this.tf = null;
         } catch( Exception e ) {
             log.info( e.toString() );

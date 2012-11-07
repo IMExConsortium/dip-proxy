@@ -92,7 +92,7 @@ public class WSContext{
 	    return services;
     }
     
-    public static Map getService( String provider ) {
+    public static Map getProvider( String provider ) {
         return (Map) services.get( provider );
     }
 

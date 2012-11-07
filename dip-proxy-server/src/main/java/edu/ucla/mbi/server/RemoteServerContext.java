@@ -114,7 +114,7 @@ public class RemoteServerContext {
 
 	    this.provider = provider;
 	
-	    Map context = WSContext.getService( provider );
+	    Map context = WSContext.getProvider( provider );
                                                                            	
 	    log.info( "  timeout=" + context.get( "timeout" ) );
 	    timeout = (Integer) context.get( "timeout" );

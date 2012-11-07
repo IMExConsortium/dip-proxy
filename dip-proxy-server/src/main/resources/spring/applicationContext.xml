@@ -85,9 +85,13 @@
                     <ref bean="remoteServerImpl"/>
                 </entry>
                 
-                <entry key="ols">
+                <entry key="ols-meta">
                     <ref bean="remoteServerImpl"/>
                 </entry> 
+                <entry key="ols-name">
+                    <ref bean="remoteServerImpl"/>
+                </entry>
+
                 <entry key="picr">
                     <ref bean="ebiReferenceServer"/>
                 </entry>

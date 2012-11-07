@@ -19,6 +19,7 @@ import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.proxy.router.Router;
 import edu.ucla.mbi.server.WSContext;
 
+import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -41,12 +42,46 @@ public class ProxyPortImpl implements ProxyPort {
                            Holder<String> nativerecord
                            ) throws ProxyFault {
  
+        //*** validation of provider and service
         if ( provider == null || provider.equals( "" )
                 || service == null || service.equals( "" ) ) {
             log.info( "provider or server is missed" );
             throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
+        provider = provider.toUpperCase();
+
+        /*
+        if( (Map)ProxyTransformer.getTransfMap().get(provider) == null ) {
+            log.info( "This provider(" + provider + ") doesn't exist " + 
+                      "in the server. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        } */
+
+        if( WSContext.getProvider( provider ) == null) {
+            log.info( "This provider(" + provider + ") doesn't exist " +
+                      "in the server. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        if( !WSContext.getServerContext( provider )
+                        .getNativeServerMap().containsKey( service ) ) 
+        {
+            log.info( "This service(" + service + ") doesn't exist " +
+                      "in the server. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        /*
+        if( (Map) ((Map)ProxyTransformer.getTransfMap().get(provider))
+                                                        .get(service) == null ) 
+        {
+            log.info( "This service(" + service + ") doesn't exist " + 
+                      "in the server. " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }*/
+
+        
         log.info( "provider=" + provider + " and service=" + service + ". " );        
 
         //*** validation of ac 
@@ -95,13 +130,6 @@ public class ProxyPortImpl implements ProxyPort {
             } else if ( service.equals( "entrezgene" ) ) {
                 ns = "entrezgene";
             }
-            /*
-            //*** for adding a new rest server, sometimes the ns is not 
-            //*** restricted
-            else {
-                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
-            }
-            */
         } else if ( provider.equals( "EBI" ) ) {
             if( service.equals( "uniprot" ) ) { 
                 log.info( "getRecord: forcing uniprot as ns" );
@@ -111,42 +139,21 @@ public class ProxyPortImpl implements ProxyPort {
                     detail = "base"; // picr cann't support detail with stub
                 }
             }
-            /* 
-            else {
-                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
-            }*/
         } else if ( provider.equals( "DIP" ) ) {
             log.info( "getRecord: provider is DIP. and service=" + service );
             if( service.equals( "dip" ) || service.equals( "diplegacy" ) ) {
                 log.info( "getRecord: forcing dip as ns. " );
                 ns = "dip";
             }
-            /* 
-            else {
-                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
-            }*/
         } else if ( provider.equals( "MBI" ) ) {
             if( service.equals( "prolinks" ) ) {
                 ns = "refseq";
             }
-            /* 
-            else {
-                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
-            } */
         } else if ( provider.equals( "SGD" ) ) {
             if( service.equals( "yeastmine" ) ) {
                 ns= "sgd";
             } 
-            /*
-            else {
-                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-            } */
         }
-        /* 
-        else {
-            throw FaultFactory.newInstance( 4 ); //unsupported operation
-        } */
-
 
         if( ns == null || ns.equals( "" ) ) {
             log.info( " ns is missed. " );
