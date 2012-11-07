@@ -33,11 +33,11 @@
             },
             "ols-meta":{
                 "type":"xslt",
-                "xslt":"/xsl/ebi/ols2dxf.xsl"
+                "xslt":"/xsl/ebi/olsMeta2dxf.xsl"
             },
             "ols-name":{
                 "type":"xslt",
-                "xslt":"/xsl/ebi/ols2dxf.xsl"
+                "xslt":"/xsl/ebi/olsName2dxf.xsl"
             }
         },
         "MBI":{
