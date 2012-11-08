@@ -60,6 +60,27 @@
                         </xsl:element>
                     </xsl:if>
 
+                    <xsl:if test="item/name/text()='consider replacement'">
+                        <xsl:element name="dxf:xrefList">
+                            <xsl:element name="dxf:xref">
+
+                                <xsl:variable name="relatedTerm">
+                                    <xsl:value-of select="item[name='consider replacement']/value/text()"/>
+                                </xsl:variable>
+
+                                <xsl:attribute name="ns">
+                                    <xsl:value-of select="substring($relatedTerm, 1, 2)"/>
+                                </xsl:attribute>
+                                <xsl:attribute name="ac">
+                                    <xsl:value-of select="substring($relatedTerm, 1, 10)"/>
+                                </xsl:attribute>
+                                <xsl:attribute name="typeNs">dxf</xsl:attribute>
+                                <xsl:attribute name="typeAc">dxf:0018</xsl:attribute>
+                                <xsl:attribute name="type">related-to</xsl:attribute>
+                            </xsl:element>
+                        </xsl:element>
+                    </xsl:if>
+
                     <xsl:element name="dxf:attrList">
                         <xsl:element name="dxf:attr">
                             <xsl:attribute name="ns">dxf</xsl:attribute>
