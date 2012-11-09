@@ -92,7 +92,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                     if( getOpp() != null ) {
                         for( String oppKey: getOpp().keySet() ) {
                             log.info( "execute: oppKey=" + oppKey );
-                            getOpp().put(oppKey, "");  
+                            getOpp().put( oppKey, "" );  
                         }
                         parseAndUpdateJsonWithOpp();
                     }
@@ -108,8 +108,8 @@ public class JsonContextConfigAction extends ManagerSupport {
                    
                     if( getOpp().get("newProvider") != null
                         && getOpp().get("newService") != null
-                        && getOpp().get("newRestUrl") != null
-                        && getOpp().get("newRestAcTag") != null ){
+                        && getOpp().get("newProperty") != null
+                        && getOpp().get("newValue") != null ){
                         
                         log.info( "update, but add needed. " );
                         addNewServiceToJson( false ); //XXX
@@ -126,7 +126,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                 if( key.equalsIgnoreCase( "add" ) ) {
                     log.info( "execute: op.add hit. " );
 
-                     if( getOpp() != null ) {
+                    if( getOpp() != null ) {
                         if( getOpp().get("newProvider") != null
                             && getOpp().get("newService") != null )
                             {
