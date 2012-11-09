@@ -31,11 +31,11 @@
                 "restUrl":["http://www.uniprot.org/uniprot/%%ACTAG%%.xml"],
                 "restAcTag":["%%ACTAG%%"]
             },
-            "ols-meta":{
+            "olsmeta":{
                 "restUrl":["http://www.ebi.ac.uk/ontology-lookup/ajax.view?q=termmetadata&termid=%%ACTAG%%"],
                 "restAcTag":["%%ACTAG%%"]
             },
-            "ols-name":{
+            "olsname":{
                 "restUrl":["http://www.ebi.ac.uk/ontology-lookup/ajax.view?q=termname&termid=%%ACTAG%%"],
                 "restAcTag":["%%ACTAG%%"]
             }

@@ -115,6 +115,24 @@
      <result name="success" type="tiles">nodestatus</result>
    </action>
 
+   <!-- JsonContextConfig -->
+   <action name="json-configure" class="jsonContextAction" >
+     <interceptor-ref name="defaultStack"/>
+     <interceptor-ref name="timer"/>
+     <interceptor-ref name="menu"/> 
+
+     <result name="success" type="tiles">page</result>
+     <result name="rest-server" type="tiles">json-rest-server-config</result> 
+
+     <result name="json"  type="json">
+       <param name="includeProperties"> 
+            restServer.*
+       </param>
+       <param name="noCache">true</param>
+       <param name="contentType">text/html</param>
+     </result>
+   </action>
+ 
    <!-- native rest server configure -->
    <action name="native-configure" class="nativeServerConfigureAction" >
      <interceptor-ref name="defaultStack"/>

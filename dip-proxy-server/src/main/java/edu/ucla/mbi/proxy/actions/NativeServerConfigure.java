@@ -23,19 +23,13 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.util.JsonContext;
 import edu.ucla.mbi.util.struts2.action.PageSupport;
 
-public class NativeServerConfigure extends ManagerSupport {
+public class NativeServerConfigure extends PageSupport {
 
     private Log log = LogFactory.getLog( NativeServerConfigure.class );
-    
-    //private NativeRestServer nativeRestServer;
-    //private Map<String, Object> restServer = new HashMap<String, Object>();
-
-    
-    // add json context getter/setter here
-    //-------------------------------------
-    
-
-    /*
+    private NativeRestServer nativeRestServer;
+    private Map<String, Object> restServer = new HashMap<String, Object>();
+ 
+    //*** setter 
     public void setRestServer ( Map<String, Object> map ) {
         this.restServer = map;
     }
@@ -44,7 +38,7 @@ public class NativeServerConfigure extends ManagerSupport {
         this.nativeRestServer = server;
     }    
 
-    
+    //*** getter
     public NativeRestServer getNativeRestServer() {
         return nativeRestServer;
     }
@@ -52,12 +46,11 @@ public class NativeServerConfigure extends ManagerSupport {
     public Map<String,Object> getRestServer() {
         return restServer;
     }
-    
-    */
+
     //---------------------------------------------------------------------
     // operations: op.xxx
     //----------- 
-    /*
+
     private Map<String,String> opm ; //LS
 
     public void setOp( Map<String,String> op ) {
@@ -79,7 +72,7 @@ public class NativeServerConfigure extends ManagerSupport {
     public Map<String,String> getOpp(){
         return opp;
     }
-    */
+
     //---------------------------------------------------------------------
 
     public String execute() throws Exception {
@@ -87,7 +80,7 @@ public class NativeServerConfigure extends ManagerSupport {
         log.info( " NativeConfigureAction execute..." );
         log.info( "execute: opm=" + opm + " and opp=" + opp );
         
-        //super.findMenuPage();
+        super.findMenuPage();
 
         if( getId() != null && getId().equals("json") ){
             log.info( "format is json. ");
@@ -171,16 +164,6 @@ public class NativeServerConfigure extends ManagerSupport {
                     }
                 }
 
-
-                if( key.equalsIgnoreCase( "show" ) ) {
-                
-
-                    // prepare confing file view
-
-                    return JSON;
-
-
-                }
 
             }
         
