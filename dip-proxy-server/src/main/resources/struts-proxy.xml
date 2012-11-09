@@ -121,12 +121,12 @@
      <interceptor-ref name="timer"/>
      <interceptor-ref name="menu"/> 
 
-     <result name="success" type="tiles">page</result>
-     <result name="rest-server" type="tiles">json-rest-server-config</result> 
+     <result name="error" type="tiles">page</result>
+     <result name="sucess" type="tiles">json-rest-server-config</result> 
 
      <result name="json"  type="json">
        <param name="includeProperties"> 
-            restServer.*
+            jasonContext.*
        </param>
        <param name="noCache">true</param>
        <param name="contentType">text/html</param>

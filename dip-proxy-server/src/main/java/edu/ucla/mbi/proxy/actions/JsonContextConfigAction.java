@@ -26,29 +26,24 @@ import edu.ucla.mbi.util.struts2.action.ManagerSupport;
 public class JsonContextConfigAction extends ManagerSupport {
 
     private Log log = LogFactory.getLog( JsonContextConfigAction.class );
+
+    //private final String SUCCESS = "json"; 
+    //private final String ERROR = "json"; 
+
+    private final String JSON = "json"; 
+     
+    private JsonContext jsonContext;
     
-   
-    private JsonContext restServerContext;
-    private NativeRestServer nativeRestServer;
-   
-    private Map<String, Object> jsonContext; 
- 
+    private Map<String, Object> contextMap; 
+    private String contextTop; 
+    
     //*** setter
     public void setRestServerContext( JsonContext context ) {
-        this.restServerContext = context;
+        this.jsonContext = context;
     }
-
-    public void setNativeRestServer( NativeRestServer nativeRestServer ) {
-        this.nativeRestServer = nativeRestServer;
-    }
-
-    //*** getter
-    public Map<String,Object> getRestServer() {
-        return (Map<String, Object>)jsonContext.get("restServer");
-    }
-     
+    
     public Map<String, Object> getJsonContext() {
-        return jsonContext;
+        return contextMap;
     } 
 
     //---------------------------------------------------------------------
@@ -57,38 +52,40 @@ public class JsonContextConfigAction extends ManagerSupport {
 
         log.info( " JsonContextConfigAction execute..." );
         
-        //super.findMenuPage();
-
         //*** read json file
         String jsonConfigFile =
-                (String) restServerContext.getConfig().get( "json-config" );
-
+            (String) jsonContext.getConfig().get( "json-config" );
         String srcPath = getServletContext().getRealPath( jsonConfigFile );
 
         try {
-            restServerContext.readJsonConfigDef( srcPath );
+            jsonContext.readJsonConfigDef( srcPath );
         } catch( Exception e ) {
             log.info( "configInitialize exception: " + e.toString() );
             throw FaultFactory.newInstance ( 27 ); // json configuration
         }
-
-        jsonContext = restServerContext.getJsonConfig();
-
+        
+        contextMap = jsonContext.getJsonConfig();
+        Set<String> cmKeySet = contextMap.keySet();
+        if( cmKeySet!= null && cmKeySet.size() == 1 ){
+            String[] cmka = cmKeySet.toArray();
+            contextTop = cmka[0];
+        }
+        
         if( getOp() == null ) {
             log.info( "execute: enter op=view.");
-            return "rest-server";
+            return SUCCESS;  //XXX
         } 
 
         for( Iterator<String> i = getOp().keySet().iterator();
              i.hasNext(); ) {
-
+            
             String key = i.next();
             String val = getOp().get(key);
-
+            
             log.debug(  "op=" + key + "  val=" + val );
 
             if ( val != null && val.length() > 0 ) {
-
+                
                 if( key.equalsIgnoreCase( "clear" ) ) {
                     log.info( "execute: op.clear hit." );
                     
@@ -100,68 +97,75 @@ public class JsonContextConfigAction extends ManagerSupport {
                         parseAndUpdateJsonWithOpp();
                     }
                     
-                    return "rest-server";
+                    return SUCCESS;
                 }
-       
-                 
+                
                 if( key.equalsIgnoreCase( "update" ) ) {
                     
                     log.info( "execute: op.update hit." );
 
                     // check if there is a new service added
+                   
                     if( getOpp().get("newProvider") != null
-                            && getOpp().get("newService") != null
-                            && getOpp().get("newRestUrl") != null
-                            && getOpp().get("newRestAcTag") != null )
-                    {
+                        && getOpp().get("newService") != null
+                        && getOpp().get("newRestUrl") != null
+                        && getOpp().get("newRestAcTag") != null ){
+                        
                         log.info( "update, but add needed. " );
-                        addNewServiceToJson( false );
+                        addNewServiceToJson( false ); //XXX
                     } else {
                         log.warn( "The new service info is not complete. " );
                         addActionError( "the new service info is not " +
-                                            "complete, please fill fully." );
+                                        "complete, please fill fully." );
                     }
 
                     parseAndUpdateJsonWithOpp();
-
-                    return "rest-server";           
+                    return SUCCESS;           
                 }
 
                 if( key.equalsIgnoreCase( "add" ) ) {
                     log.info( "execute: op.add hit. " );
 
-                    if( getOpp() != null ) {
+                     if( getOpp() != null ) {
                         if( getOpp().get("newProvider") != null
-                                && getOpp().get("newService") != null
-                                && getOpp().get("newRestUrl") != null
-                                && getOpp().get("newRestAcTag") != null )
-                        {
-                            addNewServiceToJson( true );
-                            return "rest-server";
-                        } else {
-                            log.warn( "The new service info is not complete. " );
-                            addActionError( "the new service info is not " +
-                                            "complete, please fill fully." );
+                            && getOpp().get("newService") != null )
+                            {
+                                addNewServiceToJson( true );
+                                //return SUCCESS;
+                            }
+                        
+                        if( getOpp().get( "newProvider" ) != null
+                            && getOpp().get( "newService") != null
+                            && getOpp().get( "newProp" ) != null
+                            && getOpp().get( "newValue" ) != null )
+                            {
+                                return addNewServicePropertyToJson( true );
+                            } else {
+                            return SUCCESS;
                         }
-                    }
+                     }
+                    
+                    //else {
+                    //    log.warn( "The new service info is not complete. " );
+                    //    addActionError( "the new service info is not " +
+                    //                    "complete, please fill fully." );
+                    //}
                 }
 
                 if( key.equalsIgnoreCase( "show" ) ) {
                     // prepare
                     log.info( "execute: op.show hit. " );
-                    return "json";
+                    return JSON;
                 }
 
             } else {
-                return "rest-server";
-            }
-            
-        
+                return SUCCESS;
+            }        
         }
 
         log.info( "execute: return fault.");
 
-        return SUCCESS;
+        return ERROR;
     }
 
     private void addNewServiceToJson( boolean writeToJson ) throws ProxyFault {
@@ -171,9 +175,9 @@ public class JsonContextConfigAction extends ManagerSupport {
         log.info( " enter addNewServiceToJson. " );
     
         Map<String, Object> jsonProviderMap = 
-            (Map<String, Object>)( (Map<String, Object>) jsonContext
-                                        .get("restServer") )
-                                            .get( getOpp().get("newProvider") ) ;
+            (Map<String, Object>)( (Map<String, Object>) contextMap
+                                   .get( contextTop) )
+            .get( getOpp().get("newProvider") ) ;
 
         if( jsonProviderMap == null ) {
             //*** create new provider in Json object        
@@ -182,104 +186,130 @@ public class JsonContextConfigAction extends ManagerSupport {
         }
 
         Map<String, Object> jsonServiceMap =
-                (Map<String, Object>) jsonProviderMap
-                            .get( getOpp().get("newService") );
+            (Map<String, Object>) jsonProviderMap
+            .get( getOpp().get("newService") );
 
         if( jsonServiceMap == null ) {
             //*** create new service in Json object
             jsonServiceMap = new HashMap();
             isNew = true;
         }
-
-        ArrayList<String> jsonRestUrl =
-                (ArrayList)jsonServiceMap.get("restUrl");
-
-        if( jsonRestUrl == null ) {
-            jsonRestUrl = new ArrayList();
-            jsonRestUrl.add( getOpp().get("newRestUrl") );
-            jsonServiceMap.put( "restUrl", jsonRestUrl );
-            isNew = true;
-        } else {
-            if( !jsonRestUrl.get(0).equals( getOpp().get("newRestUrl") ) ) {
-                jsonRestUrl.set( 0,  getOpp().get("newRestUrl") );
-                isNew = true; // actually it's a update
-            }
-        }
         
-        ArrayList<String> jsonRestAcTag =
-                (ArrayList)jsonServiceMap.get("restAcTag");
-
-        if( jsonRestAcTag == null ) {
-            jsonRestAcTag = new ArrayList();
-            jsonRestAcTag.add( getOpp().get("newRestAcTag") );
-            jsonServiceMap.put( "restAcTag", jsonRestAcTag );
-            isNew = true;
-        } else {
-            if( !jsonRestAcTag.get(0).equals( getOpp().get("newRestAcTag") ) ) {
-                jsonRestAcTag.set( 0, getOpp().get("newRestAcTag") );
-                isNew = true; // actually it's a update
-            }
-        }
-
         log.info( "addNew: isNew=" + isNew );
 
         if( isNew ) {
             jsonProviderMap.put( getOpp().get("newService"),
                                  jsonServiceMap );
-
             
-            ((Map<String, Object>)jsonContext.get("restServer"))
-                                    .put( getOpp().get("newProvider"),
-                                          jsonProviderMap );
-
+            ((Map<String, Object>) contextMap.get( contextTop))
+                .put( getOpp().get( "newProvider" ),
+                      jsonProviderMap );
+            
             log.info( "addNew: writeToJson=" + writeToJson );
 
             if( writeToJson ) {
                 //*** save to json file
-                saveNativeServerConfigure();
-
-                //*** reinitializing nativeRestServer using the updated json file
-                nativeRestServer.configInitialize();
+                saveJsonContext();
             }
         }
+    }
     
+    private String  addNewServicePropertyToJson( boolean writeToJson ) 
+        throws ProxyFault {
+        
+        boolean isNew = false;
+
+        log.info( " enter addNewServiceToJson. " );
+    
+        Map<String, Object> jsonProviderMap = 
+            (Map<String, Object>)( (Map<String, Object>) contextMap
+                                   .get( contextTop) )
+            .get( getOpp().get("newProvider") ) ;
+
+        if( jsonProviderMap == null ) {
+            return ERROR;
+        }
+
+        Map<String, Object> jsonServiceMap =
+            (Map<String, Object>) jsonProviderMap
+            .get( getOpp().get( "newService" ) );
+
+        if( jsonServiceMap == null ) {
+            return ERROR;
+        }
+
+        ArrayList<String> property =
+            (ArrayList) jsonServiceMap.get(getOpp().get( "newProperty" ) );
+        
+        if( property == null ) {
+            property = new ArrayList();
+        }
+        property.add( getOpp().get( "newValue" ) );
+        jsonServiceMap.put( getOpp().get( "newProperty" ), 
+                            property );
+        
+        log.info( "addNew: isNew=" + isNew );
+
+        if( isNew ) {
+            jsonProviderMap.put( getOpp().get("newService"),
+                                 jsonServiceMap );
+            
+            ((Map<String, Object>) contextMap.get( contextTop))
+                .put( getOpp().get( "newProvider" ),
+                      jsonProviderMap );
+            
+            log.info( "addNew: writeToJson=" + writeToJson );
+
+            if( writeToJson ) {
+                //*** save to json file
+                saveJsonContext();
+            }
+        }    
+        return SUCCESS;
     }
 
     
     private void parseAndUpdateJsonWithOpp () throws ProxyFault {
 
+        // { restServer:{
+        //    EBI:{
+        //       picr:{ 
+        //            xxx:"XXX"
+        //       }
+        //    }
+        // }
+
         for( String oppKey:getOpp().keySet() ) {
-           
+            
             if( !oppKey.contains( "_" ) ) {
                 continue;
             } 
 
             String[] oppKeyArray = oppKey.split( "_" );
-            String provider= oppKeyArray[0];
+            String provider = oppKeyArray[0];
             String service = oppKeyArray[1];
             String serverKey = oppKeyArray[2];
-
+            
             Map<String, Object> jsonProviderMap = 
-                (Map<String, Object>) ( (Map<String, Object>)jsonContext
-                                                .get("restServer") )
-                                                    .get( "provider") ;
-
+                (Map<String, Object>) ( (Map<String, Object>) contextMap
+                                        .get( contextTop ) ).get( provider ) ;
+            
             if( jsonProviderMap == null ) {
                 //*** create new provider in Json object        
                 jsonProviderMap = new HashMap();
             }
 
             Map<String, Object> jsonServiceMap =
-                    (Map<String, Object>) jsonProviderMap.get(service);
-
+                (Map<String, Object>) jsonProviderMap.get( service );
+            
             if( jsonServiceMap == null ) {
                 //*** create new service in Json object
                 jsonServiceMap = new HashMap();
             }
-                    
+            
             ArrayList<String> jsonServerValue = 
-                            (ArrayList)jsonServiceMap.get(serverKey);
-
+                (ArrayList) jsonServiceMap.get( serverKey );
+            
             if( jsonServerValue == null ) {
                 //*** create new jsonServerValue List in Json object
                 jsonServerValue = new ArrayList();
@@ -288,36 +318,35 @@ public class JsonContextConfigAction extends ManagerSupport {
                 //*** update jsonServerValue using opp value    
                 jsonServerValue.set( 0, getOpp().get( oppKey ) );
             }
-
+            
             jsonServiceMap.put( serverKey, jsonServerValue );
-
             jsonProviderMap.put( service, jsonServiceMap );
-
-            ((Map<String, Object>) jsonContext.get("restServer") )
-                                        .put( provider, jsonProviderMap);
-
+            
+            ((Map<String, Object>) contextMap.get( contexTop) )
+                .put( provider, jsonProviderMap);
+            
         }        
         
         //*** update config
-        saveNativeServerConfigure();
-        nativeRestServer.configInitialize();
+        saveJsonContext();
+        //nativeRestServer.configInitialize();
     
     }
-    
-    private void saveNativeServerConfigure() throws ProxyFault {
-            
-        String jsonConfigFile = (String) restServerContext.getConfig()
-                                                        .get( "json-config" );
 
-        log.info( "saveNativeServerConfig: jsonConfigFile=" + jsonConfigFile );
+    private void saveJsonContext() throws ProxyFault {
+            
+        String jsonConfigFile = (String) jsonContext.getConfig()
+            .get( "json-config" );
+        
+        log.info( "saveJsonContext: jsonConfigFile=" + jsonConfigFile );
 
         String srcPath =
             getServletContext().getRealPath( jsonConfigFile );
-
-        log.info( "saveNativeServerConfig:  srcPath=" + srcPath );
-
+        
+        log.info( "saveJsonContext:  srcPath=" + srcPath );
+        
         try { 
-            restServerContext.writeJsonConfigDef( srcPath  );
+            jsonContext.writeJsonConfigDef( srcPath  );
             
         } catch ( Exception e ) {
             log.info( " saveNativeServerConfigure exception: " + e.toString() );
