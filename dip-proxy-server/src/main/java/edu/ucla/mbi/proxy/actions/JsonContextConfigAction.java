@@ -58,22 +58,8 @@ public class JsonContextConfigAction extends ManagerSupport {
         log.info( " JsonContextConfigAction execute..." );
         
         //super.findMenuPage();
-        /*
-        if( getId() != null && getId().equals("restserver") ){
-            return "rest-server";
-        }*/
-        /*
-        if( getId() != null && getId().equals("json") ){
-            log.info( "format is json. ");
 
-            restServer = (Map<String, Object>)nativeRestServer
-                            .getRestServerContext().getJsonConfig()
-                                                    .get("restServer");
-
-            return "json";
-        }
-        */
-
+        //*** read json file
         String jsonConfigFile =
                 (String) restServerContext.getConfig().get( "json-config" );
 
@@ -162,7 +148,6 @@ public class JsonContextConfigAction extends ManagerSupport {
 
                 if( key.equalsIgnoreCase( "show" ) ) {
                     // prepare
-                    //setRet("rest-config"); 
                     log.info( "execute: op.show hit. " );
                     return "json";
                 }
@@ -243,16 +228,10 @@ public class JsonContextConfigAction extends ManagerSupport {
                                  jsonServiceMap );
 
             
-            //jrs.put( getOpp().get("newProvider"),
-            //         jsonProviderMap);
-           
             ((Map<String, Object>)jsonContext.get("restServer"))
                                     .put( getOpp().get("newProvider"),
                                           jsonProviderMap );
 
-            //nativeRestServer.getRestServerContext()
-            //                    .getJsonConfig().put("restServer", jrs );
-            
             log.info( "addNew: writeToJson=" + writeToJson );
 
             if( writeToJson ) {
@@ -281,7 +260,6 @@ public class JsonContextConfigAction extends ManagerSupport {
             String serverKey = oppKeyArray[2];
 
             Map<String, Object> jsonProviderMap = 
-            //        (Map<String, Object>)jrs.get(provider);
                 (Map<String, Object>) ( (Map<String, Object>)jsonContext
                                                 .get("restServer") )
                                                     .get( "provider") ;
