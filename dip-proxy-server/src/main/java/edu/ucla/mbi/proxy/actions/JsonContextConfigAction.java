@@ -46,17 +46,16 @@ public class JsonContextConfigAction extends ManagerSupport {
     public Map<String,Object> getRestServer() {
         return (Map<String, Object>)jsonContext.get("restServer");
     }
-    
+     
     public Map<String, Object> getJsonContext() {
         return jsonContext;
-    }
+    } 
 
     //---------------------------------------------------------------------
 
     public String execute() throws Exception {
 
         log.info( " JsonContextConfigAction execute..." );
-        //log.info( "execute: opm=" + opm + " and opp=" + opp );
         
         //super.findMenuPage();
         /*
@@ -88,8 +87,6 @@ public class JsonContextConfigAction extends ManagerSupport {
         }
 
         jsonContext = restServerContext.getJsonConfig();
-
-        //restServerMap = (Map)jsonContext.get("restServer");
 
         if( getOp() == null ) {
             log.info( "execute: enter op=view.");
@@ -164,7 +161,8 @@ public class JsonContextConfigAction extends ManagerSupport {
                 }
 
                 if( key.equalsIgnoreCase( "show" ) ) {
-                    // prepare 
+                    // prepare
+                    //setRet("rest-config"); 
                     log.info( "execute: op.show hit. " );
                     return "json";
                 }
@@ -187,15 +185,6 @@ public class JsonContextConfigAction extends ManagerSupport {
 
         log.info( " enter addNewServiceToJson. " );
     
-        /*    
-        Map<String, Object> jrs =
-                (Map)nativeRestServer.getRestServerContext()
-                                        .getJsonConfig().get("restServer");
-        
-        Map<String, Object> jsonProviderMap =
-                (Map<String, Object>)jrs.get( getOpp().get("newProvider") );
-        */
-
         Map<String, Object> jsonProviderMap = 
             (Map<String, Object>)( (Map<String, Object>) jsonContext
                                         .get("restServer") )
@@ -264,16 +253,14 @@ public class JsonContextConfigAction extends ManagerSupport {
             //nativeRestServer.getRestServerContext()
             //                    .getJsonConfig().put("restServer", jrs );
             
-            log.info( "writeToJson=" + writeToJson );
+            log.info( "addNew: writeToJson=" + writeToJson );
 
             if( writeToJson ) {
-                //*** update config
+                //*** save to json file
                 saveNativeServerConfigure();
-                //nativeRestServer.configInitialize();
-                //NativeRestServer.getRestServerContext()
-                //                .getJsonConfig().put("restServer", restServerMap );
+
+                //*** reinitializing nativeRestServer using the updated json file
                 nativeRestServer.configInitialize();
-                
             }
         }
     
@@ -281,11 +268,7 @@ public class JsonContextConfigAction extends ManagerSupport {
 
     
     private void parseAndUpdateJsonWithOpp () throws ProxyFault {
-        /* 
-        Map<String, Object> jrs =
-                (Map)nativeRestServer.getRestServerContext()
-                                        .getJsonConfig().get( "restServer");
-        */
+
         for( String oppKey:getOpp().keySet() ) {
            
             if( !oppKey.contains( "_" ) ) {
@@ -332,14 +315,11 @@ public class JsonContextConfigAction extends ManagerSupport {
 
             jsonProviderMap.put( service, jsonServiceMap );
 
-            //jrs.put( provider, jsonProviderMap);
             ((Map<String, Object>) jsonContext.get("restServer") )
                                         .put( provider, jsonProviderMap);
 
         }        
         
-        //nativeRestServer.getRestServerContext().getJsonConfig()
-        //                                        .put("restServer", jrs );
         //*** update config
         saveNativeServerConfigure();
         nativeRestServer.configInitialize();
@@ -348,9 +328,6 @@ public class JsonContextConfigAction extends ManagerSupport {
     
     private void saveNativeServerConfigure() throws ProxyFault {
             
-        //String jsonConfigFile = (String) nativeRestServer
-        //    .getRestServerContext().getConfig().get( "json-config" );
-
         String jsonConfigFile = (String) restServerContext.getConfig()
                                                         .get( "json-config" );
 
@@ -362,16 +339,14 @@ public class JsonContextConfigAction extends ManagerSupport {
         log.info( "saveNativeServerConfig:  srcPath=" + srcPath );
 
         try { 
-            
-            //nativeRestServer.getRestServerContext()
-            //                  .writeJsonConfigDef( srcPath  );
             restServerContext.writeJsonConfigDef( srcPath  );
             
         } catch ( Exception e ) {
             log.info( " saveNativeServerConfigure exception: " + e.toString() );
             throw FaultFactory.newInstance ( 27 ); // json configuration         
         }
-    
+
+        log.info( "saveNativeServerConfigure: after writing to json file. " ); 
     }
         
 }

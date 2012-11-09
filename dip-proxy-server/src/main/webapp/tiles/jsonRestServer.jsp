@@ -4,7 +4,7 @@
     <br><br>
     <table>
       <s:form theme="simple" action="json-configure">
-        <s:hidden name="id" value="%{id}"/>
+        <s:hidden name="ret" value="%{ret}"/>
 
         <caption>
             <center>Update Json Configuration File for Native Rest Server</center>
@@ -13,7 +13,7 @@
         <tr><td colspan="2"/><br></td></tr>
 
         <ul>
-           <s:set name="restServer" value="jsonContext.restServer"/>
+           <s:set name="restServer" value="%{jsonContext.restServer}"/>
            <s:if test='#restServer.size > 0'> 
              <s:iterator value="#restServer" status="serverMap">
                 <s:set name="provider" value="key"/>
