@@ -43,8 +43,13 @@
                  "disabled":"false",
                  menu:[]
                 },
-                {label:"Native Json Configure",
+                {label:"Json Configure",
                  link:"json-configure",
+                 "disabled":"false",
+                 menu:[]
+                },
+                {label:"Json Configure Test",
+                 link:"json-configure-test",
                  "disabled":"false",
                  menu:[]
                 }]

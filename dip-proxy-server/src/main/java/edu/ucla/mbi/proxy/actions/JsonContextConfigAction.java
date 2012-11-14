@@ -27,24 +27,26 @@ public class JsonContextConfigAction extends ManagerSupport {
 
     private Log log = LogFactory.getLog( JsonContextConfigAction.class );
 
-    //private final String SUCCESS = "json"; 
-    //private final String ERROR = "json"; 
-
     private final String JSON = "json"; 
      
     private JsonContext jsonContext;
     
     private Map<String, Object> contextMap; 
     private String contextTop; 
-    
+
     //*** setter
-    public void setRestServerContext( JsonContext context ) {
+    public void setJsonContext( JsonContext context ) {
         this.jsonContext = context;
     }
-    
-    public Map<String, Object> getJsonContext() {
+
+    //*** getter    
+    public Map<String, Object> getContextMap() {
         return contextMap;
     } 
+
+    public String getContextTop() {
+        return contextTop;
+    }
 
     //---------------------------------------------------------------------
 
@@ -65,10 +67,14 @@ public class JsonContextConfigAction extends ManagerSupport {
         }
         
         contextMap = jsonContext.getJsonConfig();
-        Set<String> cmKeySet = contextMap.keySet();
-        if( cmKeySet!= null && cmKeySet.size() == 1 ){
-            String[] cmka = cmKeySet.toArray();
+
+        log.info( "execute: contextMap=" + contextMap );
+
+        Set<String> cmKeySet = (Set<String>) contextMap.keySet();
+        if( cmKeySet != null && cmKeySet.size() == 1 ) {
+            String[] cmka = cmKeySet.toArray( new String[0] );
             contextTop = cmka[0];
+            log.info( " execute: contextTop=" + contextTop );
         }
         
         if( getOp() == null ) {
@@ -94,7 +100,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                             log.info( "execute: oppKey=" + oppKey );
                             getOpp().put( oppKey, "" );  
                         }
-                        parseAndUpdateJsonWithOpp();
+                        //parseAndUpdateJsonWithOpp();
                     }
                     
                     return SUCCESS;
@@ -128,19 +134,16 @@ public class JsonContextConfigAction extends ManagerSupport {
 
                     if( getOpp() != null ) {
                         if( getOpp().get("newProvider") != null
-                            && getOpp().get("newService") != null )
+                                && getOpp().get("newService") != null )
+                        {
+                            if( getOpp().get( "newProperty" ) != null 
+                                    && getOpp().get("newValue") != null ) 
                             {
                                 addNewServiceToJson( true );
-                                //return SUCCESS;
-                            }
-                        
-                        if( getOpp().get( "newProvider" ) != null
-                            && getOpp().get( "newService") != null
-                            && getOpp().get( "newProp" ) != null
-                            && getOpp().get( "newValue" ) != null )
-                            {
                                 return addNewServicePropertyToJson( true );
                             } else {
+                                addNewServiceToJson( true );
+                            }
                             return SUCCESS;
                         }
                      }
@@ -153,9 +156,8 @@ public class JsonContextConfigAction extends ManagerSupport {
                 }
 
                 if( key.equalsIgnoreCase( "show" ) ) {
-                    // prepare
                     log.info( "execute: op.show hit. " );
-                    return JSON;
+                    return "json";
                 }
 
             } else {
@@ -243,8 +245,14 @@ public class JsonContextConfigAction extends ManagerSupport {
         
         if( property == null ) {
             property = new ArrayList();
+            property.add( getOpp().get( "newValue" ) );
+            isNew = true;
+        } else {
+            addActionError("the property(" + getOpp().get( "newProperty" ) +
+                           ") has been existed. Please update it. ");
+            return ERROR;
         }
-        property.add( getOpp().get( "newValue" ) );
+
         jsonServiceMap.put( getOpp().get( "newProperty" ), 
                             property );
         
@@ -322,7 +330,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             jsonServiceMap.put( serverKey, jsonServerValue );
             jsonProviderMap.put( service, jsonServiceMap );
             
-            ((Map<String, Object>) contextMap.get( contexTop) )
+            ((Map<String, Object>) contextMap.get( contextTop) )
                 .put( provider, jsonProviderMap);
             
         }        

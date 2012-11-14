@@ -2,20 +2,19 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
     <br><br>
-    <table>
-      <s:form theme="simple" action="json-configure">
-        <s:hidden name="ret" value="%{ret}"/>
-
+    <table align="center">
+      <s:form theme="simple" action="json-configure-test">
         <caption>
-            <center>Update Json Configuration File for Native Rest Server</center>
+            <center>Update Json Configuration File</center>
         </caption>
 
         <tr><td colspan="2"/><br></td></tr>
 
         <ul>
-           <s:set name="restServer" value="%{jsonContext.restServer}"/>
-           <s:if test='#restServer.size > 0'> 
-             <s:iterator value="#restServer" status="serverMap">
+            <s:set name="contextTopMap" value="contextMap.get(contextTop)"/>  
+
+           <s:if test='#contextTopMap.size > 0'> 
+             <s:iterator value="#contextTopMap" status="serverMap">
                 <s:set name="provider" value="key"/>
                 <tr><td colspan="2" align="left"/><li><s:property value="#provider"/></li>
                 </td></tr> 
@@ -44,7 +43,7 @@
                             <s:set name="oppPropName" value="'opp.' + #oppKey"/>
 
                             <tr>
-                                <td align="left"/><s:property value="key"/>:</td>
+                                <td align="right"/><s:property value="key"/>:</td>
                                 
                                 <td align="left"/>
                                 <s:if test="#service=='yeastmine' && key=='restUrl'">
@@ -55,17 +54,19 @@
                                                 rows="4"
                                                 wrap="no"/>
                                 </s:if>
+                                <%--
                                 <s:elseif test="key=='restUrl'">
                                     <s:textfield theme="simple"
                                                 name="%{#oppPropName}"
                                                 value="%{value[0]}"
                                                 size="95"/>
                                 </s:elseif>
+                                --%>
                                 <s:else>
                                     <s:textfield theme="simple"
                                                 name="%{#oppPropName}"
                                                 value="%{value[0]}"
-                                                size="20"/>
+                                                size="90"/>
                                 </s:else>
                                 </td>    
                                     
@@ -86,38 +87,42 @@
 
          </s:if> 
 
-         <tr><td><li>addNewService</li></td>
+         <tr><td align="left"><li>Add New</li></td>
              <td><s:submit name="op.add" value="Add"/></td>
          </tr>
-         <tr><td>newProvider</td>
+
+         <tr><td align="right">newProvider:</td>
              <td><s:textfield theme="simple"
                              name="opp.newProvider"
                              value=""
                              size="20"/>
             </td>
          </tr>     
-         <tr><td>newService</td>
+
+         <tr><td align="right">newService:</td>
              <td><s:textfield theme="simple"
                              name="opp.newService"
                              value=""
                              size="20"/>
             </td>    
          </tr> 
-         <tr><td>newRestUrl</td>
+
+         <tr><td align="right">newProperty:</td>
              <td><s:textfield theme="simple"
-                             name="opp.newRestUrl"
+                             name="opp.newProperty"
                              value=""
-                             size="95"/>
+                             size="90"/>
             </td>    
          </tr> 
-         <tr><td>newRestAcTag</td>
+
+         <tr><td align="right">newPropertyValue:</td>
              <td><s:textfield theme="simple"
-                             name="opp.newRestAcTag"
+                             name="opp.newValue"
                              value=""
-                             size="20"/>
-            </td>    
-         </tr>           
-        
+                             size="90"/>
+            </td>
+         </tr>
+
          </ul>
         
         <tr>

@@ -82,6 +82,8 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
                                                             throws ProxyFault 
     {
 
+        configInitialize(); //JsonContextConfigAction may update restserver.json
+
         if( restServerMap.get(provider) == null ) {
             log.warn( "getRealUrl: provider=" + provider + " does not exist. " );
             throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );

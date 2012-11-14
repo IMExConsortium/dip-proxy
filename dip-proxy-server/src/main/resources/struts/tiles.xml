@@ -54,7 +54,7 @@
 
  <definition name="rest-server" template="/tiles/restServer.jsp"/>
  
- <definition name="json-rest-server" template="/tiles/jsonRestServer.jsp"/>
+ <definition name="json-config" template="/tiles/jsonConfig.jsp"/>
 
  <definition name="nodestatus" extends="proxy">
    <put-attribute name="body" value="node" />
@@ -73,7 +73,7 @@
  </definition>
 
  <definition name="json-rest-server-config" extends="proxy">
-   <put-attribute name="body" value="json-rest-server" />
+   <put-attribute name="body" value="json-config" />
  </definition>
 
 

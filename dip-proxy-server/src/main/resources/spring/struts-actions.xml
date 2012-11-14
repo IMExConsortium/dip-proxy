@@ -68,10 +68,7 @@
  <bean id="jsonContextAction" scope="prototype"
        class="edu.ucla.mbi.proxy.actions.JsonContextConfigAction">
 
-  <property name="restServerContext" ref="restServerContext"/>
-  <property name="nativeRestServer">
-    <ref bean="nativeRestServer"/>
-  </property>
+  <property name="jsonContext" ref="restServerContext"/>
   <property name="menuContext" ref="menuContext"/>
    
  </bean>
