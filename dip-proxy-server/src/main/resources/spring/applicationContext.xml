@@ -85,10 +85,10 @@
                     <ref bean="remoteServerImpl"/>
                 </entry>
                 
-                <entry key="ols-meta">
+                <entry key="olsmeta">
                     <ref bean="remoteServerImpl"/>
                 </entry> 
-                <entry key="ols-name">
+                <entry key="olsname">
                     <ref bean="remoteServerImpl"/>
                 </entry>
 

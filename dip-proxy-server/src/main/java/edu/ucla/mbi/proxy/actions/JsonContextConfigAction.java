@@ -113,17 +113,18 @@ public class JsonContextConfigAction extends ManagerSupport {
                     // check if there is a new service added
                    
                     if( getOpp().get("newProvider") != null
-                        && getOpp().get("newService") != null
-                        && getOpp().get("newProperty") != null
-                        && getOpp().get("newValue") != null ){
-                        
-                        log.info( "update, but add needed. " );
+                            && getOpp().get("newService") != null 
+                            && getOpp().get("newProperty") != null
+                            && getOpp().get("newValue") != null )
+                    {
+                        log.info( "update, but add needed also. " );
                         addNewServiceToJson( false ); //XXX
-                    } else {
-                        log.warn( "The new service info is not complete. " );
-                        addActionError( "the new service info is not " +
-                                        "complete, please fill fully." );
-                    }
+                        if( addNewServicePropertyToJson( true )
+                                                    .equals( "ERROR" ) ) 
+                        {
+                            log.warn( "update: adding failed. " );
+                        }
+                    } 
 
                     parseAndUpdateJsonWithOpp();
                     return SUCCESS;           
@@ -139,20 +140,12 @@ public class JsonContextConfigAction extends ManagerSupport {
                             if( getOpp().get( "newProperty" ) != null 
                                     && getOpp().get("newValue") != null ) 
                             {
-                                addNewServiceToJson( true );
+                                // note: don't add provider/service w/o a property 
+                                addNewServiceToJson( false );
                                 return addNewServicePropertyToJson( true );
-                            } else {
-                                addNewServiceToJson( true );
                             }
-                            return SUCCESS;
                         }
                      }
-                    
-                    //else {
-                    //    log.warn( "The new service info is not complete. " );
-                    //    addActionError( "the new service info is not " +
-                    //                    "complete, please fill fully." );
-                    //}
                 }
 
                 if( key.equalsIgnoreCase( "show" ) ) {
@@ -179,7 +172,7 @@ public class JsonContextConfigAction extends ManagerSupport {
         Map<String, Object> jsonProviderMap = 
             (Map<String, Object>)( (Map<String, Object>) contextMap
                                    .get( contextTop) )
-            .get( getOpp().get("newProvider") ) ;
+                                    .get( getOpp().get("newProvider") ) ;
 
         if( jsonProviderMap == null ) {
             //*** create new provider in Json object        
@@ -189,7 +182,7 @@ public class JsonContextConfigAction extends ManagerSupport {
 
         Map<String, Object> jsonServiceMap =
             (Map<String, Object>) jsonProviderMap
-            .get( getOpp().get("newService") );
+                    .get( getOpp().get("newService") );
 
         if( jsonServiceMap == null ) {
             //*** create new service in Json object
@@ -279,14 +272,6 @@ public class JsonContextConfigAction extends ManagerSupport {
     
     private void parseAndUpdateJsonWithOpp () throws ProxyFault {
 
-        // { restServer:{
-        //    EBI:{
-        //       picr:{ 
-        //            xxx:"XXX"
-        //       }
-        //    }
-        // }
-
         for( String oppKey:getOpp().keySet() ) {
             
             if( !oppKey.contains( "_" ) ) {
@@ -337,7 +322,6 @@ public class JsonContextConfigAction extends ManagerSupport {
         
         //*** update config
         saveJsonContext();
-        //nativeRestServer.configInitialize();
     
     }
 

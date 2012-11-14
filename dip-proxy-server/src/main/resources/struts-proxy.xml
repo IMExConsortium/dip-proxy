@@ -134,17 +134,35 @@
    </action>
 
 
-   <!-- JsonContextConfig  Test-->
-   <action name="json-configure-test" class="jsonContextAction" >
+   <!-- rest server config new -->
+   <action name="rest-server-config" class="restServerConfigAction" >
      <interceptor-ref name="defaultStack"/>
      <interceptor-ref name="timer"/>
      <interceptor-ref name="menu"/> 
 
      <result name="error" type="tiles">page</result>
-     <result name="success" type="tiles">json-rest-server-config</result> 
+     <result name="success" type="tiles">json-context-config</result> 
 
      <result name="json"  type="json">
        <param name="includeProperties"> 
+            contextMap.*
+       </param>
+       <param name="noCache">true</param>
+       <param name="contentType">text/html</param>
+     </result>
+   </action>
+
+  <!-- transformer config new -->
+  <action name="transformer-config" class="transformerConfigAction" >
+     <interceptor-ref name="defaultStack"/>
+     <interceptor-ref name="timer"/>
+     <interceptor-ref name="menu"/>
+
+     <result name="error" type="tiles">page</result>
+     <result name="success" type="tiles">json-context-config</result>
+
+     <result name="json"  type="json">
+       <param name="includeProperties">
             contextMap.*
        </param>
        <param name="noCache">true</param>

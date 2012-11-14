@@ -3,7 +3,8 @@
 
     <br><br>
     <table align="center">
-      <s:form theme="simple" action="json-configure-test">
+      <s:set name="retAction" value="ret"/>
+      <s:form theme="simple" action="%{ret}">
         <caption>
             <center>Update Json Configuration File</center>
         </caption>
@@ -16,7 +17,7 @@
            <s:if test='#contextTopMap.size > 0'> 
              <s:iterator value="#contextTopMap" status="serverMap">
                 <s:set name="provider" value="key"/>
-                <tr><td colspan="2" align="left"/><li><s:property value="#provider"/></li>
+                <tr><td colspan="2" align="left"/><li>provider:<s:property value="#provider"/></li>
                 </td></tr> 
                
                 <s:if test='value.size > 0'>    
@@ -26,47 +27,34 @@
                     <s:iterator value="value" status="serviceMap">
                         <s:set name="service" value="key"/>
                         
-                        <tr><td colspan="2" align="center"/>
-                            <s:property value="#service"/>
+                        <tr><td colspan="2" align="left"/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service:<s:property value="#service"/>
                         </td></tr>
                         
                         <s:if test='value.size > 0'>
                           <s:iterator value="value" status="restMap">
 
-                            <%--<s:set name="propName" 
-                                   value="'nativeRestServer.restServerContext.jsonConfig.restServer.'+ 
-                                          #provider + '.'+ #service + '.' + key"/> --%>
-                            
-
                             <s:set name="oppKey" value=" #provider + '_' + #service + '_' +  key"/>
 
                             <s:set name="oppPropName" value="'opp.' + #oppKey"/>
-
                             <tr>
                                 <td align="right"/><s:property value="key"/>:</td>
-                                
+                                 
                                 <td align="left"/>
-                                <s:if test="#service=='yeastmine' && key=='restUrl'">
+                                <s:if test="value[0].length() > 110 ">
+                                    <s:set name="colNum" value="value[0].length() / 100 + 1 "/>
                                     <s:textarea theme="simple"
                                                 name="%{#oppPropName}"
                                                 value="%{value[0]}"
                                                 cols="100"
-                                                rows="4"
+                                                rows="%{#colNum}"
                                                 wrap="no"/>
                                 </s:if>
-                                <%--
-                                <s:elseif test="key=='restUrl'">
-                                    <s:textfield theme="simple"
-                                                name="%{#oppPropName}"
-                                                value="%{value[0]}"
-                                                size="95"/>
-                                </s:elseif>
-                                --%>
                                 <s:else>
                                     <s:textfield theme="simple"
                                                 name="%{#oppPropName}"
                                                 value="%{value[0]}"
-                                                size="90"/>
+                                                size="%{value[0].length()+ 2}"/>
                                 </s:else>
                                 </td>    
                                     

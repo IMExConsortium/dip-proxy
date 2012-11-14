@@ -48,8 +48,13 @@
                  "disabled":"false",
                  menu:[]
                 },
-                {label:"Json Configure Test",
-                 link:"json-configure-test",
+                {label:"Rest Server Config",
+                 link:"rest-server-config",
+                 "disabled":"false",
+                 menu:[]
+                },
+                {label:"Transformer Config",
+                 link:"transformer-config",
                  "disabled":"false",
                  menu:[]
                 }]

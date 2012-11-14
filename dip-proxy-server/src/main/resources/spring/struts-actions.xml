@@ -65,12 +65,22 @@
   <property name="menuContext" ref="menuContext"/>
  </bean>
 
- <bean id="jsonContextAction" scope="prototype"
+ <!-- rest server config new -->
+ <bean id="restServerConfigAction" scope="prototype"
        class="edu.ucla.mbi.proxy.actions.JsonContextConfigAction">
 
   <property name="jsonContext" ref="restServerContext"/>
   <property name="menuContext" ref="menuContext"/>
-   
+  <property name="ret" value="rest-server-config"/>
+ </bean>
+
+ <!-- transformer config new -->
+ <bean id="transformerConfigAction" scope="prototype"
+       class="edu.ucla.mbi.proxy.actions.JsonContextConfigAction">
+
+  <property name="jsonContext" ref="transformerContext"/>
+  <property name="menuContext" ref="menuContext"/>
+  <property name="ret" value="transformer-config"/>
  </bean>
 
  <bean id="nativeServerConfigureAction" scope="prototype"

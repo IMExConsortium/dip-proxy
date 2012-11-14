@@ -72,7 +72,7 @@
    <put-attribute name="body" value="rest-server" />
  </definition>
 
- <definition name="json-rest-server-config" extends="proxy">
+ <definition name="json-context-config" extends="proxy">
    <put-attribute name="body" value="json-config" />
  </definition>
 
