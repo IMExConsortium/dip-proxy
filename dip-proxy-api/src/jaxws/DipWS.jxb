@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+ !===========================================================================
+ ! $HeadURL:: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/dip-database/trunk/d#$
+ ! $Id:: DipWS.jxb 2477 2012-06-26 18:59:33Z wyu                            $
+ ! Version: $Rev:: 2477                                                     $
+ !===========================================================================
+ !
+ ! Dip Web Services:  dxf service
+ !
+ !======================================================================= -->
+
+<bindings wsdlLocation="../wsdl/DipWS.wsdl"
+    xmlns="http://java.sun.com/xml/ns/jaxws"
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" >
+
+ <package name="edu.ucla.mbi.dip.dbservice"/>
+
+ <bindings node="wsdl:definitions/wsdl:service[@name='dipDxfService']">
+  <class name="DipDxfService"/>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']">
+  <class name="DipDxfPort"/>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='query']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='setRecord']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+ 
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='getLink']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='setLink']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='getNode']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='setNode']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='getSource']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='setSource']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='getEvidence']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='setEvidence']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+<bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='getCvterm']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+
+ <bindings node="wsdl:definitions/wsdl:portType[@name='DipDxfPortType']/wsdl:operation[@name='addCvterm']/wsdl:fault">
+  <class name="DipDbFault">
+    <javadoc>DipDb exception</javadoc>
+  </class>
+ </bindings>
+ 
+</bindings>
+
+

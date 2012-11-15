@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- 
+ !===========================================================================
+ ! $HeadURL:: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/dip-database/trunk/d#$
+ ! $Id:: DipWS.wsdl 2504 2012-06-30 00:01:18Z wyu                           $
+ ! Version: $Rev:: 2504                                                     $
+ !===========================================================================
+ !
+ ! Dip Web Services:  dxf service
+ !
+ !======================================================================= -->
+                                                                           
+ <definitions xmlns="http://schemas.xmlsoap.org/wsdl/" 
+              targetNamespace="http://mbi.ucla.edu/dip/dbservice" 
+              xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+              xmlns:dsv="http://dip.doe-mbi.ucla.edu/services" 
+              xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" 
+              xmlns:dip="http://mbi.ucla.edu/dip/dbservice" 
+              xmlns:dipfault="http://dip.doe-mbi.ucla.edu/fault"
+              xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+              xmlns:xs="http://www.w3.org/2001/XMLSchema">	   
+  <types>
+
+   <xs:schema targetNamespace="http://mbi.ucla.edu/dip/dbservice"
+         attributeFormDefault="unqualified" elementFormDefault="qualified">
+
+    <xs:import namespace="http://dip.doe-mbi.ucla.edu/fault"
+               schemaLocation="Fault.xsd"/>
+
+    <xs:import namespace="http://dip.doe-mbi.ucla.edu/services/dxf14"
+               schemaLocation="DXF1.4.xsd"/>
+     
+    <xs:element name="query">
+     <xs:annotation>
+      <xs:documentation>query</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="query"  type="xs:string"/>
+       <xs:element name="type"   type="xs:string"/>
+       <xs:element name="detail" type="xs:string" default="stub" />
+       <xs:element name="format" type="xs:string" default="dxf"  />
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element> 
+
+    <xs:element name="setRecord">
+     <xs:annotation>
+      <xs:documentation>Set Record</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="dataset" type="dxf:datasetType" minOccurs="1" />
+       <xs:element name="create" type="xs:string" default="top"/>
+       <xs:element name="update" type="xs:string" default="top"/>
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element>   
+
+    <xs:element name="getLink">
+     <xs:annotation>
+      <xs:documentation>Get Link</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="ns"     type="xs:string" default="dip" />
+       <xs:element name="ac"     type="xs:string"/>
+       <xs:element name="match"  type="xs:string" default="exact"/>
+       <xs:element name="detail" type="xs:string" default="stub" />
+       <xs:element name="format" type="xs:string" default="dxf"  />
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element>
+    
+    
+    <xs:element name="setLink">
+     <xs:annotation>
+      <xs:documentation>Set Link</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="dataset" type="dxf:datasetType" minOccurs="1" />  
+       <xs:element name="create" type="xs:string" default="top"/>
+       <xs:element name="update" type="xs:string" default="top"/>
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getNode">
+     <xs:annotation>
+      <xs:documentation>Get Node</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="ns"     type="xs:string" default="dip" />
+       <xs:element name="ac"     type="xs:string"/>
+       <xs:element name="match"  type="xs:string" default="exact"/>
+       <xs:element name="detail" type="xs:string" default="stub" />
+       <xs:element name="format" type="xs:string" default="dxf"  />
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element> 
+      
+    <xs:element name="setNode">
+     <xs:annotation>
+      <xs:documentation>Set Node</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence> 
+       <xs:element name="dataset" type="dxf:datasetType" minOccurs="1" />
+       <xs:element name="create" type="xs:string" default="top"/>
+       <xs:element name="update" type="xs:string" default="top"/>
+      </xs:sequence>  
+     </xs:complexType> 
+    </xs:element> 
+
+    <xs:element name="getSource">
+     <xs:annotation>
+      <xs:documentation>Get Source</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="ns"     type="xs:string" default="dip" />
+       <xs:element name="ac"     type="xs:string"/>
+       <xs:element name="match"  type="xs:string" default="exact"/>
+       <xs:element name="detail" type="xs:string" default="stub" />
+       <xs:element name="format" type="xs:string" default="dxf"  />
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element>
+
+    <xs:element name="setSource">
+     <xs:annotation>
+      <xs:documentation>Set Source</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="dataset" type="dxf:datasetType" minOccurs="1" />
+       <xs:element name="create" type="xs:string" default="top"/>
+       <xs:element name="update" type="xs:string" default="top"/>
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element>
+     
+    <xs:element name="getEvidence">
+     <xs:annotation>
+      <xs:documentation>Get Evidence</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="ns"     type="xs:string" default="dip" />
+       <xs:element name="ac"     type="xs:string"/>
+       <xs:element name="match"  type="xs:string" default="exact"/>
+       <xs:element name="detail" type="xs:string" default="stub" />
+       <xs:element name="format" type="xs:string" default="dxf"  />
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element>
+
+    <xs:element name="setEvidence">
+     <xs:annotation>
+      <xs:documentation>Set Evidence</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="dataset" type="dxf:datasetType" minOccurs="1" />
+       <xs:element name="create" type="xs:string" default="top"/>
+       <xs:element name="update" type="xs:string" default="top"/> 
+     </xs:sequence>
+     </xs:complexType>
+    </xs:element>
+     
+    <xs:element name="getCvterm">
+     <xs:annotation>
+      <xs:documentation>Get CV term </xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="dbname" type="xs:string"/>	  
+       <xs:element name="ns" type="xs:string"/>
+       <xs:element name="ac" type="xs:string"/>
+       <xs:element name="acversion" type="xs:string" default=""/>
+       <xs:element name="name" type="xs:string" default="" />
+       <xs:element name="is_obsolete" type="xs:int" default="0"/>
+      </xs:sequence>
+     </xs:complexType>
+    </xs:element> 
+      
+    <xs:element name="addCvterm">
+     <xs:annotation>
+      <xs:documentation>Add CV term </xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:element name="forceupdate" type="xs:boolean" default="false"/>		
+       <xs:element name="dbname" type="xs:string"/>
+       <xs:element name="ns" type="xs:string"/>	    
+       <xs:element name="ac" type="xs:string"/>
+       <xs:element name="acversion" type="xs:string" default=""/>
+       <xs:element name="name" type="xs:string" default="" />
+       <xs:element name="definition" type="xs:string" default="" />
+       <xs:element name="synonymlist" type="xs:string" default=""/>	   
+       <xs:element name="relationshiplist" type="xs:string" default=""/> 
+       <xs:element name="is_obsolete" type="xs:int" default="0"/>
+       <xs:element name="is_relationshiptype" type="xs:int" default="0"/> 
+      </xs:sequence>  
+     </xs:complexType> 
+    </xs:element> 
+  </xs:schema>
+  </types>
+  
+  <message name="queryReq">
+    <part element="dip:query" name="request"/>
+  </message>
+
+  <message name="queryRes">
+    <part element="dxf:dataset" name="response"/>
+  </message>  
+
+  <message name="setRecordReq">
+   <part element="dip:setRecord" name="request" />
+  </message>
+
+  <message name="setRecordRes">
+   <part element="dxf:dataset" name="response"/>
+  </message>
+
+  <message name="getLinkReq">
+   <part element="dip:getLink" name="request"/>
+  </message>
+
+  <message name="getLinkRes">
+   <part element="dxf:dataset" name="response"/>
+  </message>
+
+  <message name="setLinkReq">
+   <part element="dip:setLink" name="request" />
+  </message>
+	       	       
+  <message name="setLinkRes">
+   <part element="dxf:dataset" name="response"/> 
+  </message>
+
+  <message name="getNodeReq">
+   <part element="dip:getNode" name="request"/>
+  </message>
+
+  <message name="getNodeRes">
+   <part element="dxf:dataset" name="response"/>
+  </message>
+
+  <message name="setNodeReq">
+   <part element="dip:setNode" name="request" /> 
+  </message>
+
+  <message name="setNodeRes">
+   <part element="dxf:dataset" name="response"/>
+  </message>
+
+  <message name="getSourceReq">
+   <part element="dip:getSource" name="request"/>
+  </message>
+
+  <message name="getSourceRes">
+   <part element="dxf:dataset" name="response"/>
+  </message>
+
+  <message name="setSourceReq">
+   <part element="dip:setSource" name="request" />
+  </message>
+
+  <message name="setSourceRes">
+   <part element="dxf:dataset" name="response"/>
+  </message>
+
+  <message name="getEvidenceReq">
+   <part element="dip:getEvidence" name="request"/>
+  </message>
+
+  <message name="getEvidenceRes">
+   <part element="dxf:dataset" name="response"/>
+  </message>
+
+  <message name="setEvidenceReq">
+   <part element="dip:setEvidence" name="request" />
+  </message>
+
+  <message name="setEvidenceRes">
+   <part element="dxf:dataset" name="response"/>
+  </message>
+
+
+  <message name="getCvtermReq">
+   <part element="dip:getCvterm" name="request"/>
+  </message>
+
+  <message name="getCvtermRes">
+   <part element="dxf:dataset" name="response" /> 
+  </message>
+
+  <message name="addCvtermReq">
+   <part element="dip:addCvterm" name="request"/>
+  </message>
+
+  <message name="addCvtermRes">
+   <part element="dxf:dataset" name="response"/>
+  </message>
+
+  <message name="dipDbFault">
+   <part element="dipfault:serviceFault" name="fault"/>
+  </message>
+		
+  <portType name="DipDxfPortType">
+	  
+   <operation name="query">
+    <input  message="dip:queryReq"/>
+    <output message="dip:queryRes"/>
+    <fault name="queryFault" message="dip:dipDbFault"/>
+   </operation>  
+
+   <operation name="setRecord">
+    <input  message="dip:setRecordReq"/>
+    <output message="dip:setRecordRes"/>
+    <fault name="setRecordFault" message="dip:dipDbFault"/>
+   </operation>
+
+   <operation name="getLink">
+    <input  message="dip:getLinkReq"/>
+    <output message="dip:getLinkRes"/>
+    <fault name="getLinkFault" message="dip:dipDbFault"/>
+   </operation>
+
+   <operation name="setLink">
+    <input  message="dip:setLinkReq"/>
+    <output message="dip:setLinkRes"/>
+    <fault name="setLinkFault" message="dip:dipDbFault"/>
+   </operation>
+	  
+   <operation name="getNode">
+    <input  message="dip:getNodeReq"/>
+    <output message="dip:getNodeRes"/>
+    <fault name="getNodeFault" message="dip:dipDbFault"/>
+   </operation>
+
+   <operation name="setNode">
+    <input  message="dip:setNodeReq"/>
+    <output message="dip:setNodeRes"/>
+    <fault name="setNodeFault" message="dip:dipDbFault"/>
+   </operation>
+
+   <operation name="getSource">
+    <input  message="dip:getSourceReq"/>
+    <output message="dip:getSourceRes"/>
+    <fault name="getSourceFault" message="dip:dipDbFault"/>
+   </operation>
+
+   <operation name="setSource">
+    <input  message="dip:setSourceReq"/>
+    <output message="dip:setSourceRes"/>
+    <fault name="setSourceFault" message="dip:dipDbFault"/>
+   </operation>
+
+   <operation name="getEvidence">
+    <input  message="dip:getEvidenceReq"/>
+    <output message="dip:getEvidenceRes"/>
+    <fault name="getEvidenceFault" message="dip:dipDbFault"/>
+   </operation>
+
+   <operation name="setEvidence">
+    <input  message="dip:setEvidenceReq"/>
+    <output message="dip:setEvidenceRes"/>
+    <fault name="setEvidenceFault" message="dip:dipDbFault"/>
+   </operation>
+
+   <operation name="getCvterm">
+    <input  message="dip:getCvtermReq"/>
+    <output message="dip:getCvtermRes"/>
+    <fault name="getCvtermFault" message="dip:dipDbFault"/>
+   </operation>
+
+   <operation name="addCvterm">
+    <input  message="dip:addCvtermReq"/>
+    <output message="dip:addCvtermRes"/>
+    <fault name="addCvtermFault" message="dip:dipDbFault"/>
+   </operation>
+
+  </portType>
+
+  <binding name="DipDxfBinding" type="dip:DipDxfPortType">
+
+   <soap:binding style="document" 
+      transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <operation name="query">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/query"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="queryFault">
+            <soap:fault name="queryFault" use="literal"/>
+        </fault>			    
+    </operation>  
+
+    <operation name="setRecord">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/setRecord"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="setRecordFault">
+            <soap:fault name="setRecordFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="getLink">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/getLink"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="getLinkFault">
+            <soap:fault name="getLinkFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="setLink">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/setLink"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="setLinkFault">
+            <soap:fault name="setLinkFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="getNode">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/getNode"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="getNodeFault">
+            <soap:fault name="getNodeFault" use="literal"/>
+        </fault>			    
+    </operation>
+
+    <operation name="setNode">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/setNode"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="setNodeFault">
+            <soap:fault name="setNodeFault" use="literal"/>
+        </fault>	
+    </operation>
+
+    <operation name="getSource">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/getSource"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="getSourceFault">
+            <soap:fault name="getSourceFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="setSource">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/setSource"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="setSourceFault">
+            <soap:fault name="setSourceFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="getEvidence">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/getEvidence"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="getEvidenceFault">
+            <soap:fault name="getEvidenceFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="setEvidence">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/setEvidence"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="setEvidenceFault">
+            <soap:fault name="setEvidenceFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="getCvterm">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/getCvterm"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="getCvtermFault">
+            <soap:fault name="getCvtermFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="addCvterm">
+        <soap:operation 
+            soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/addCvterm"/>
+        <input><soap:body use="literal"/></input>
+        <output><soap:body use="literal"/></output>
+        <fault name="addCvtermFault">
+            <soap:fault name="addCvtermFault" use="literal"/>
+        </fault>
+    </operation>
+
+  </binding>
+
+  <service name="dipDxfService">
+        <port binding="dip:DipDxfBinding" name="DipDxfPort">
+            <soap:address  location=""/>
+        </port>
+  </service>
+
+</definitions>
