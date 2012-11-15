@@ -38,14 +38,28 @@ public class JsonContextConfigAction extends ManagerSupport {
     public void setJsonContext( JsonContext context ) {
         this.jsonContext = context;
     }
-
+ 
     //*** getter    
     public Map<String, Object> getContextMap() {
         return contextMap;
     } 
 
+    public void setContextTop( String top) {
+        contextTop = top;
+    }
+    
     public String getContextTop() {
         return contextTop;
+    }
+
+    int contextDepth = 1;
+
+    public void setContextDepth( int depth) {
+        contextDepth = depth;
+    }
+    
+    public int getContextDepth() {
+        return contextDepth;
     }
 
     //---------------------------------------------------------------------
