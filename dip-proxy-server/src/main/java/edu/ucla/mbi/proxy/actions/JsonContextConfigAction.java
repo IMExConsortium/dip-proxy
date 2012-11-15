@@ -111,21 +111,25 @@ public class JsonContextConfigAction extends ManagerSupport {
                     log.info( "execute: op.update hit." );
 
                     // check if there is a new service added
-                   
                     if( getOpp().get("newProvider") != null
                             && getOpp().get("newService") != null 
                             && getOpp().get("newProperty") != null
-                            && getOpp().get("newValue") != null )
+                            && getOpp().get("newValue") != null
+                            && !getOpp().get("newProvider").equals( "" ) 
+                            && !getOpp().get("newProperty").equals( "" )
+                            && !getOpp().get("newProperty").equals( "" )
+                            && !getOpp().get("newValue").equals( "" ) )
                     {
                         log.info( "update, but add needed also. " );
+
                         addNewServiceToJson( false ); //XXX
+
                         if( addNewServicePropertyToJson( true )
                                                     .equals( "ERROR" ) ) 
                         {
                             log.warn( "update: adding failed. " );
                         }
                     } 
-
                     parseAndUpdateJsonWithOpp();
                     return SUCCESS;           
                 }
@@ -134,6 +138,21 @@ public class JsonContextConfigAction extends ManagerSupport {
                     log.info( "execute: op.add hit. " );
 
                     if( getOpp() != null ) {
+                        if( getOpp().get("newProvider") != null
+                            && getOpp().get("newService") != null
+                            && getOpp().get("newProperty") != null
+                            && getOpp().get("newValue") != null
+                            && !getOpp().get("newProvider").equals( "" )
+                            && !getOpp().get("newProperty").equals( "" )
+                            && !getOpp().get("newProperty").equals( "" )
+                            && !getOpp().get("newValue").equals( "" ) )
+                        {
+                            // note: don't add provider/service w/o a property 
+                            addNewServiceToJson( false );
+                            return addNewServicePropertyToJson( true);
+                        }
+
+                        /*
                         if( getOpp().get("newProvider") != null
                                 && getOpp().get("newService") != null )
                         {
@@ -144,7 +163,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                                 addNewServiceToJson( false );
                                 return addNewServicePropertyToJson( true );
                             }
-                        }
+                        }*/
                      }
                 }
 

@@ -3,7 +3,6 @@
 
     <br><br>
     <table align="center">
-      <s:set name="retAction" value="ret"/>
       <s:form theme="simple" action="%{ret}">
         <caption>
             <center>Update Json Configuration File</center>
