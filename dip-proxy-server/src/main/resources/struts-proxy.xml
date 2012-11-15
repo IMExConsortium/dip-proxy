@@ -148,7 +148,6 @@
             contextMap.*
        </param>
        <param name="noCache">true</param>
-       <param name="contentType">text/html</param>
      </result>
    </action>
 
@@ -166,7 +165,6 @@
             contextMap.*
        </param>
        <param name="noCache">true</param>
-       <param name="contentType">text/html</param>
      </result>
    </action>
 
