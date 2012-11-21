@@ -40,11 +40,11 @@
                                 <td align="right"/><s:property value="key"/>:</td>
                                  
                                 <td align="left"/>
-                                <s:if test="value[0].length() > 110 ">
-                                    <s:set name="colNum" value="value[0].length() / 100 + 1 "/>
+                                <s:if test="value.length() > 110 ">
+                                    <s:set name="colNum" value="value.length() / 100 + 1 "/>
                                     <s:textarea theme="simple"
                                                 name="%{#oppPropName}"
-                                                value="%{value[0]}"
+                                                value="%{value}"
                                                 cols="100"
                                                 rows="%{#colNum}"
                                                 wrap="no"/>
@@ -52,8 +52,8 @@
                                 <s:else>
                                     <s:textfield theme="simple"
                                                 name="%{#oppPropName}"
-                                                value="%{value[0]}"
-                                                size="%{value[0].length()+ 2}"/>
+                                                value="%{value}"
+                                                size="%{value.length()+ 2}"/>
                                 </s:else>
                                 </td>    
                                     

@@ -28,15 +28,25 @@ public class JsonContextConfigAction extends ManagerSupport {
     private Log log = LogFactory.getLog( JsonContextConfigAction.class );
 
     private final String JSON = "json"; 
+    private Map<String, Object> topMap;
      
     private JsonContext jsonContext;
     
     private Map<String, Object> contextMap; 
     private String contextTop; 
+    private int contextDepth = 1;
 
     //*** setter
     public void setJsonContext( JsonContext context ) {
         this.jsonContext = context;
+    }
+
+    public void setContextTop( String top ) {
+        contextTop = top;
+    }
+
+    public void setContextDepth( int depth ) {
+        contextDepth = depth;
     }
  
     //*** getter    
@@ -44,20 +54,10 @@ public class JsonContextConfigAction extends ManagerSupport {
         return contextMap;
     } 
 
-    public void setContextTop( String top) {
-        contextTop = top;
-    }
-    
     public String getContextTop() {
         return contextTop;
     }
 
-    int contextDepth = 1;
-
-    public void setContextDepth( int depth) {
-        contextDepth = depth;
-    }
-    
     public int getContextDepth() {
         return contextDepth;
     }
@@ -81,15 +81,10 @@ public class JsonContextConfigAction extends ManagerSupport {
         }
         
         contextMap = jsonContext.getJsonConfig();
+        topMap = (Map<String, Object>)contextMap.get( contextTop );
 
         log.info( "execute: contextMap=" + contextMap );
-
-        Set<String> cmKeySet = (Set<String>) contextMap.keySet();
-        if( cmKeySet != null && cmKeySet.size() == 1 ) {
-            String[] cmka = cmKeySet.toArray( new String[0] );
-            contextTop = cmka[0];
-            log.info( " execute: contextTop=" + contextTop );
-        }
+        log.info( "contextDepth=" + contextDepth );
         
         if( getOp() == null ) {
             log.info( "execute: enter op=view.");
@@ -105,7 +100,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             log.debug(  "op=" + key + "  val=" + val );
 
             if ( val != null && val.length() > 0 ) {
-                
+                /* 
                 if( key.equalsIgnoreCase( "clear" ) ) {
                     log.info( "execute: op.clear hit." );
                     
@@ -115,7 +110,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                     
                     return SUCCESS;
                 }
-                
+          
                 if( key.equalsIgnoreCase( "update" ) 
                     || key.equalsIgnoreCase( "add" ) ) 
                 {
@@ -144,6 +139,25 @@ public class JsonContextConfigAction extends ManagerSupport {
                     } 
                     parseAndUpdateJsonWithOpp();
                     return SUCCESS;           
+                } */
+
+                if( key.equals( "add" ) && val.equals( "map" ) ) {
+                    log.info( "execute: op.add map hit. " );
+                    return operationAction ( key + val );
+                }
+
+                if( key.equals( "set" ) && val.equals( "prop" ) ) {
+                    log.info( "execute: op.set prop hit. " );
+                    return operationAction ( key + val );
+                }
+
+                if( key.equals( "drop" )  && val.equals( "prop" ) ) {
+                    return operationAction ( key + val );
+                }
+
+                if( key.equals( "drop" ) && val.equals( "map" ) ) { 
+                    log.info( "execute: op.drop map hit. " );
+                    return operationAction ( key + val );
                 }
 
                 if( key.equalsIgnoreCase( "show" ) ) {
@@ -158,6 +172,100 @@ public class JsonContextConfigAction extends ManagerSupport {
 
         log.info( "execute: return fault.");
 
+        return ERROR;
+    }
+  
+    private String operationAction ( String op ) throws ProxyFault {
+        
+        SortedSet<String> levelSSet = new TreeSet();
+        String propKey = null;
+        String propValue = null;
+
+        for( String oppKey:getOpp().keySet() ) {
+            if( oppKey.startsWith( "l" ) ) {
+                Integer level = Integer.valueOf(
+                                    oppKey.substring(1) );
+
+                if( level.intValue() <= contextDepth ) {
+                    levelSSet.add( oppKey );
+                } else {
+                    log.warn( "op.drop prop: level > contextDepth. " );
+                    return ERROR;      
+                }
+            } 
+                
+            if ( oppKey.equals( "key" ) ) {
+                propKey = getOpp().get(oppKey);
+            } 
+
+            if ( oppKey.equals( "value" ) ) {
+                propValue = getOpp().get(oppKey);
+            }
+
+        }
+        
+        String[] levelArray = levelSSet.toArray( new String[0] );
+        boolean isNew = false; // for new add map
+        Map<String, Object> currentMap = new HashMap();
+        Map<String, Object> parentMap = new HashMap();
+
+        currentMap = (Map<String, Object>) contextMap.get(contextTop);
+
+        for( int i = 0; i < levelArray.length; i++ ) {
+            log.info( "operationAction: level=" + levelArray[i] ) ;
+            log.info( "operationAction: level value=" + getOpp().get(levelArray[i]) );
+            log.info( "operationAction: currentMap=" + currentMap );
+
+            parentMap = currentMap;
+
+            if( isNew || currentMap.get( getOpp().get(levelArray[i])) == null ) {
+                log.info( "operationAction: isNew=" + isNew );
+                Map<String, Object> levelMap = new HashMap();
+                currentMap.put( getOpp().get(levelArray[i]), levelMap );
+                isNew = true;
+            }
+
+            currentMap = (Map<String, Object>)currentMap.get(
+                                            getOpp().get(levelArray[i]));
+           
+            log.info( "operationAction: after get i: currentMap=" + currentMap ); 
+
+            if( i == levelArray.length - 1 ) {
+                if( op.equals( "addmap" ) && isNew ) {
+                    log.info( "operationAction: add map... " );
+                    saveJsonContext();
+                    return SUCCESS;
+                }
+
+                if( op.equals( "setprop" ) && (
+                        currentMap.get(propKey) == null  
+                        ||  !currentMap.get(propKey).equals( propValue ) ) )
+                { 
+                    log.info( "operationAction: set prop.." );
+                    currentMap.put( propKey, propValue ); //add or update property
+                    saveJsonContext();
+                    return SUCCESS;
+                }
+
+                if( op.equals( "dropmap" ) && !isNew && currentMap != null ) {
+                    log.info( "operationAction: drop map... ");
+                    parentMap.remove( getOpp().get(levelArray[i]) );    
+                    saveJsonContext();
+                    return SUCCESS;      
+                }
+
+                if( op.equals( "dropprop" ) && !isNew 
+                    && currentMap.get(propKey) != null ) 
+                {
+                    log.info( "operationAction: drop prop: key=" + propKey );
+                    currentMap.remove(propKey); //remove property
+                    saveJsonContext();
+                    return SUCCESS;
+                } 
+                
+            }
+
+        }
         return ERROR;
     }
 
@@ -224,12 +332,11 @@ public class JsonContextConfigAction extends ManagerSupport {
             return ERROR;
         }
 
-        ArrayList<String> property =
-            (ArrayList) jsonServiceMap.get(getOpp().get( "newProperty" ) );
+        String property =
+            (String) jsonServiceMap.get(getOpp().get( "newProperty" ) );
         
         if( property == null ) {
-            property = new ArrayList();
-            property.add( getOpp().get( "newValue" ) );
+            property = getOpp().get( "newValue" ) ;
             isNew = true;
         } else {
             addActionError("the property(" + getOpp().get( "newProperty" ) +
@@ -290,17 +397,10 @@ public class JsonContextConfigAction extends ManagerSupport {
                 jsonServiceMap = new HashMap();
             }
             
-            ArrayList<String> jsonServerValue = 
-                (ArrayList) jsonServiceMap.get( serverKey );
+            String jsonServerValue = 
+                (String)jsonServiceMap.get( serverKey );
             
-            if( jsonServerValue == null ) {
-                //*** create new jsonServerValue List in Json object
-                jsonServerValue = new ArrayList();
-                jsonServerValue.add( "" ) ;
-            } else {
-                //*** update jsonServerValue using opp value    
-                jsonServerValue.set( 0, "" ) ;
-            }
+            jsonServerValue = ""  ;
             
             jsonServiceMap.put( serverKey, jsonServerValue );
             jsonProviderMap.put( service, jsonServiceMap );
@@ -342,17 +442,10 @@ public class JsonContextConfigAction extends ManagerSupport {
                 jsonServiceMap = new HashMap();
             }
             
-            ArrayList<String> jsonServerValue = 
-                (ArrayList) jsonServiceMap.get( serverKey );
+            String jsonServerValue = 
+                (String) jsonServiceMap.get( serverKey );
             
-            if( jsonServerValue == null ) {
-                //*** create new jsonServerValue List in Json object
-                jsonServerValue = new ArrayList();
-                jsonServerValue.add( getOpp().get( oppKey ) );
-            } else {
-                //*** update jsonServerValue using opp value    
-                jsonServerValue.set( 0, getOpp().get( oppKey ) );
-            }
+            jsonServerValue =  getOpp().get( oppKey ) ;
             
             jsonServiceMap.put( serverKey, jsonServerValue );
             jsonProviderMap.put( service, jsonServiceMap );

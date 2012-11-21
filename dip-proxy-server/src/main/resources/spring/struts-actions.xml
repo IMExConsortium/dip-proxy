@@ -73,7 +73,6 @@
   <property name="menuContext" ref="menuContext"/>
   <property name="ret" value="rest-server-config"/>
 
-
   <property name="contextTop" value="restServer"/>
   <property name="contextDepth" value="2"/>
  </bean>
@@ -88,7 +87,6 @@
 
   <property name="contextTop" value="transformer"/>
   <property name="contextDepth" value="2"/>
-
  </bean>
 
  <bean id="nativeServerConfigureAction" scope="prototype"
