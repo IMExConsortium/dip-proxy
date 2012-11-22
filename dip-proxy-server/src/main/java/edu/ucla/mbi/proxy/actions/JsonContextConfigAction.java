@@ -100,47 +100,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             log.debug(  "op=" + key + "  val=" + val );
 
             if ( val != null && val.length() > 0 ) {
-                /* 
-                if( key.equalsIgnoreCase( "clear" ) ) {
-                    log.info( "execute: op.clear hit." );
-                    
-                    if( getOpp() != null ) {
-                        clearJsonWithOpp();
-                    }
-                    
-                    return SUCCESS;
-                }
-          
-                if( key.equalsIgnoreCase( "update" ) 
-                    || key.equalsIgnoreCase( "add" ) ) 
-                {
-                    
-                    log.info( "execute: op.update hit." );
-
-                    // check if there is a new service added
-                    if( getOpp().get("newProvider") != null
-                            && getOpp().get("newService") != null 
-                            && getOpp().get("newProperty") != null
-                            && getOpp().get("newValue") != null
-                            && !getOpp().get("newProvider").equals( "" ) 
-                            && !getOpp().get("newProperty").equals( "" )
-                            && !getOpp().get("newProperty").equals( "" )
-                            && !getOpp().get("newValue").equals( "" ) )
-                    {
-                        log.info( "update, but add needed also. " );
-
-                        addNewServiceToJson(); //XXX
-
-                        if(  key.equalsIgnoreCase( "add" ) ) {
-                            return addNewServicePropertyToJson( true);
-                        } else {
-                            addNewServicePropertyToJson( false );
-                        }
-                    } 
-                    parseAndUpdateJsonWithOpp();
-                    return SUCCESS;           
-                } */
-
+                 
                 if( key.equals( "add" ) && val.equals( "map" ) ) {
                     log.info( "execute: op.add map hit. " );
                     return operationAction ( key + val );
@@ -160,9 +120,17 @@ public class JsonContextConfigAction extends ManagerSupport {
                     return operationAction ( key + val );
                 }
 
-                if( key.equalsIgnoreCase( "show" ) ) {
+                if( key.equals( "show" ) ) {
                     log.info( "execute: op.show hit. " );
                     return "json";
+                }
+
+                if( key.equals( "clear" ) ) {
+                    log.info( "execute: op.clear hit." );
+                    if( getOpp() != null ) {
+                        clearJsonWithOpp();
+                    }
+                    return SUCCESS;
                 }
 
             } else {
@@ -269,104 +237,6 @@ public class JsonContextConfigAction extends ManagerSupport {
         return ERROR;
     }
 
-    private void addNewServiceToJson( ) throws ProxyFault {
-   
-        boolean isNew = false;
-
-        log.info( " enter addNewServiceToJson. " );
-    
-        Map<String, Object> jsonProviderMap = 
-            (Map<String, Object>)( (Map<String, Object>) contextMap
-                                   .get( contextTop) )
-                                    .get( getOpp().get("newProvider") ) ;
-
-        if( jsonProviderMap == null ) {
-            //*** create new provider in Json object        
-            jsonProviderMap = new HashMap();
-            isNew = true;
-        }
-
-        Map<String, Object> jsonServiceMap =
-            (Map<String, Object>) jsonProviderMap
-                    .get( getOpp().get("newService") );
-
-        if( jsonServiceMap == null ) {
-            //*** create new service in Json object
-            jsonServiceMap = new HashMap();
-            isNew = true;
-        }
-        
-        log.info( "addNew: isNew=" + isNew );
-
-        if( isNew ) {
-            jsonProviderMap.put( getOpp().get("newService"),
-                                 jsonServiceMap );
-            
-            ((Map<String, Object>) contextMap.get( contextTop))
-                .put( getOpp().get( "newProvider" ),
-                      jsonProviderMap );
-        }
-    }
-    
-    private String  addNewServicePropertyToJson( boolean writeToJson ) 
-        throws ProxyFault {
-        
-        boolean isNew = false;
-
-        log.info( " enter addNewServiceToJson. " );
-    
-        Map<String, Object> jsonProviderMap = 
-            (Map<String, Object>)( (Map<String, Object>) contextMap
-                                   .get( contextTop) )
-            .get( getOpp().get("newProvider") ) ;
-
-        if( jsonProviderMap == null ) {
-            return ERROR;
-        }
-
-        Map<String, Object> jsonServiceMap =
-            (Map<String, Object>) jsonProviderMap
-            .get( getOpp().get( "newService" ) );
-
-        if( jsonServiceMap == null ) {
-            return ERROR;
-        }
-
-        String property =
-            (String) jsonServiceMap.get(getOpp().get( "newProperty" ) );
-        
-        if( property == null ) {
-            property = getOpp().get( "newValue" ) ;
-            isNew = true;
-        } else {
-            addActionError("the property(" + getOpp().get( "newProperty" ) +
-                           ") has been existed. Please update it. ");
-            return ERROR;
-        }
-
-        jsonServiceMap.put( getOpp().get( "newProperty" ), 
-                            property );
-        
-        log.info( "addNew: isNew=" + isNew );
-
-        if( isNew ) {
-            jsonProviderMap.put( getOpp().get("newService"),
-                                 jsonServiceMap );
-            
-            ((Map<String, Object>) contextMap.get( contextTop))
-                .put( getOpp().get( "newProvider" ),
-                      jsonProviderMap );
-            
-            log.info( "addNew: writeToJson=" + writeToJson );
-
-            if( writeToJson ) {
-                //*** save to json file
-                saveJsonContext();
-            }
-        }    
-        return SUCCESS;
-    }
-
     private void clearJsonWithOpp () throws ProxyFault {
  
         for( String oppKey:getOpp().keySet() ) {
@@ -412,54 +282,6 @@ public class JsonContextConfigAction extends ManagerSupport {
         
     }
     
-    private void parseAndUpdateJsonWithOpp () throws ProxyFault {
-
-        for( String oppKey:getOpp().keySet() ) {
-            
-            if( !oppKey.contains( "_" ) ) {
-                continue;
-            } 
-
-            String[] oppKeyArray = oppKey.split( "_" );
-            String provider = oppKeyArray[0];
-            String service = oppKeyArray[1];
-            String serverKey = oppKeyArray[2];
-            
-            Map<String, Object> jsonProviderMap = 
-                (Map<String, Object>) ( (Map<String, Object>) contextMap
-                                        .get( contextTop ) ).get( provider ) ;
-            
-            if( jsonProviderMap == null ) {
-                //*** create new provider in Json object        
-                jsonProviderMap = new HashMap();
-            }
-
-            Map<String, Object> jsonServiceMap =
-                (Map<String, Object>) jsonProviderMap.get( service );
-            
-            if( jsonServiceMap == null ) {
-                //*** create new service in Json object
-                jsonServiceMap = new HashMap();
-            }
-            
-            String jsonServerValue = 
-                (String) jsonServiceMap.get( serverKey );
-            
-            jsonServerValue =  getOpp().get( oppKey ) ;
-            
-            jsonServiceMap.put( serverKey, jsonServerValue );
-            jsonProviderMap.put( service, jsonServiceMap );
-            
-            ((Map<String, Object>) contextMap.get( contextTop) )
-                .put( provider, jsonProviderMap);
-            
-        }        
-        
-        //*** update config
-        saveJsonContext();
-    
-    }
-
     private void saveJsonContext() throws ProxyFault {
             
         String jsonConfigFile = (String) jsonContext.getConfig()

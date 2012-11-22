@@ -74,48 +74,11 @@
 
          </s:if> 
 
-         <tr><td align="left"><li>Add New</li></td>
-             <td><s:submit name="op.add" value="Add"/></td>
-         </tr>
-
-         <tr><td align="right">newProvider:</td>
-             <td><s:textfield theme="simple"
-                             name="opp.newProvider"
-                             value=""
-                             size="20"/>
-            </td>
-         </tr>     
-
-         <tr><td align="right">newService:</td>
-             <td><s:textfield theme="simple"
-                             name="opp.newService"
-                             value=""
-                             size="20"/>
-            </td>    
-         </tr> 
-
-         <tr><td align="right">newProperty:</td>
-             <td><s:textfield theme="simple"
-                             name="opp.newProperty"
-                             value=""
-                             size="90"/>
-            </td>    
-         </tr> 
-
-         <tr><td align="right">newPropertyValue:</td>
-             <td><s:textfield theme="simple"
-                             name="opp.newValue"
-                             value=""
-                             size="90"/>
-            </td>
-         </tr>
-
          </ul>
         
         <tr>
             <td align="center" colspan="2">
                     <s:submit name="op.clear" value="Clear" />
-                    <s:submit name="op.update" value="Update"/>
                     <s:submit name="op.show" value="JsonShow"/>
             </td>
 
