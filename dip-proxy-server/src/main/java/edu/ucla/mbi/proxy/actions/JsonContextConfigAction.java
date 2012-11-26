@@ -101,39 +101,6 @@ public class JsonContextConfigAction extends ManagerSupport {
 
             if ( val != null && val.length() > 0 ) {
                 return operationAction ( key, val );
-                /*         
-                if( key.equals( "add" ) && val.equals( "map" ) ) {
-                    log.info( "execute: op.add map hit. " );
-                    return operationAction ( key + val );
-                }
-
-                if( key.equals( "set" ) && val.equals( "prop" ) ) {
-                    log.info( "execute: op.set prop hit. " );
-                    return operationAction ( key + val );
-                }
-
-                if( key.equals( "drop" )  && val.equals( "prop" ) ) {
-                    return operationAction ( key + val );
-                }
-
-                if( key.equals( "drop" ) && val.equals( "map" ) ) { 
-                    log.info( "execute: op.drop map hit. " );
-                    return operationAction ( key + val );
-                }
-
-                if( key.equals( "show" ) ) {
-                    log.info( "execute: op.show hit. " );
-                    return "json";
-                }
-
-                if( key.equals( "clear" ) ) {
-                    log.info( "execute: op.clear hit." );
-                    if( getOpp() != null ) {
-                        clearJsonWithOpp();
-                    }
-                    return SUCCESS;
-                }
-                */  
             } else {
                 return SUCCESS;
             }         
