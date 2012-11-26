@@ -100,7 +100,8 @@ public class JsonContextConfigAction extends ManagerSupport {
             log.debug(  "op=" + key + "  val=" + val );
 
             if ( val != null && val.length() > 0 ) {
-                 
+                return operationAction ( key, val );
+                /*         
                 if( key.equals( "add" ) && val.equals( "map" ) ) {
                     log.info( "execute: op.add map hit. " );
                     return operationAction ( key + val );
@@ -132,10 +133,10 @@ public class JsonContextConfigAction extends ManagerSupport {
                     }
                     return SUCCESS;
                 }
-
+                */  
             } else {
                 return SUCCESS;
-            }        
+            }         
         }
 
         log.info( "execute: return fault.");
@@ -143,8 +144,21 @@ public class JsonContextConfigAction extends ManagerSupport {
         return ERROR;
     }
   
-    private String operationAction ( String op ) throws ProxyFault {
+    private String operationAction ( String opKey, String opValue ) throws ProxyFault {
         
+        if( opKey.equals( "show" ) ) {
+            log.info( "execute: op.show hit. " );
+            return "json";
+        }
+
+        if( opKey.equals( "clear" ) ) {
+            log.info( "execute: op.clear hit." );
+            if( getOpp() != null ) {
+                clearJsonWithOpp();
+            }
+            return SUCCESS;
+        }
+
         SortedSet<String> levelSSet = new TreeSet<String>();
         String propKey = null;
         String propValue = null;
@@ -169,7 +183,6 @@ public class JsonContextConfigAction extends ManagerSupport {
             if ( oppKey.equals( "value" ) ) {
                 propValue = getOpp().get(oppKey);
             }
-
         }
         
         String[] levelArray = levelSSet.toArray( new String[0] );
@@ -199,15 +212,15 @@ public class JsonContextConfigAction extends ManagerSupport {
             log.info( "operationAction: after get i: currentMap=" + currentMap ); 
 
             if( i == levelArray.length - 1 ) {
-                if( op.equals( "addmap" ) && isNew ) {
+                if( opKey.equals("add") && opValue.equals("map") && isNew ) {
                     log.info( "operationAction: add map... " );
                     saveJsonContext();
                     return SUCCESS;
                 }
 
-                if( op.equals( "setprop" ) && (
-                        currentMap.get(propKey) == null  
-                        ||  !currentMap.get(propKey).equals( propValue ) ) )
+                if( opKey.equals("set") && opValue.equals("prop") 
+                    && ( currentMap.get(propKey) == null  
+                         ||  !currentMap.get(propKey).equals( propValue ) ) )
                 { 
                     log.info( "operationAction: set prop.." );
                     currentMap.put( propKey, propValue ); //add or update property
@@ -215,24 +228,24 @@ public class JsonContextConfigAction extends ManagerSupport {
                     return SUCCESS;
                 }
 
-                if( op.equals( "dropmap" ) && !isNew && currentMap != null ) {
+                if( opKey.equals("drop") && opValue.equals("map") 
+                    && !isNew && currentMap != null ) 
+                {
                     log.info( "operationAction: drop map... ");
                     parentMap.remove( getOpp().get(levelArray[i]) );    
                     saveJsonContext();
                     return SUCCESS;      
                 }
 
-                if( op.equals( "dropprop" ) && !isNew 
-                    && currentMap.get(propKey) != null ) 
+                if( opKey.equals("drop") && opValue.equals("prop") 
+                    && !isNew && currentMap.get(propKey) != null ) 
                 {
                     log.info( "operationAction: drop prop: key=" + propKey );
                     currentMap.remove(propKey); //remove property
                     saveJsonContext();
                     return SUCCESS;
                 } 
-                
             }
-
         }
         return ERROR;
     }
