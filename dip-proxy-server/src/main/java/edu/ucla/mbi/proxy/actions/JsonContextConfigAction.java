@@ -145,7 +145,7 @@ public class JsonContextConfigAction extends ManagerSupport {
   
     private String operationAction ( String op ) throws ProxyFault {
         
-        SortedSet<String> levelSSet = new TreeSet();
+        SortedSet<String> levelSSet = new TreeSet<String>();
         String propKey = null;
         String propValue = null;
 
