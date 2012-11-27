@@ -95,7 +95,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             
             String opVal = getOp().get(opKey);
             
-            log.debug(  "op=" + opKey + "  val=" + opVal );
+            log.info(  "op=" + opKey + "  and val=" + opVal );
 
             if ( opVal != null && opVal.length() > 0 ) {
                 return operationAction ( opKey, opVal );
@@ -128,96 +128,104 @@ public class JsonContextConfigAction extends ManagerSupport {
         int maxOfLevel = 0; // this value <= contextDepth
 
         for( String oppKey:getOpp().keySet() ) {
+            String oppVal = getOpp().get( oppKey );
+
             if( oppKey.startsWith( "l" ) ) {
                 int level = Integer.valueOf( oppKey.substring(1) ).intValue();
                 if( level <= contextDepth ) {
-                    levelArray[ level -1 ] =  getOpp().get(oppKey);
+                    levelArray[ level -1 ] =  oppVal;
                     if( level > maxOfLevel ) {
                         maxOfLevel = level;
                     }
                 } else {
-                    if( !oppKey.equals( "add" ) && !oppKey.equals( "map" ) ) {
-                        log.warn( "op: " + opKey + "/" + opValue 
-                                   + ": level > contextDepth. " );
-                        return ERROR; 
-                    }     
+                    log.warn( "op: " + opKey + "/" + opValue 
+                              + ": level > contextDepth. " );
+                    return ERROR; 
                 }
             } 
                 
             if ( oppKey.equals( "key" ) ) {
-                propKey = getOpp().get(oppKey);
+                propKey = oppVal;
             } 
 
             if ( oppKey.equals( "value" ) ) {
-                propValue = getOpp().get(oppKey);
+                propValue = oppVal;
             }
         }
         
-        
-        boolean isNew = false; // check if the level is new added
+        //*** validate levelArray
+        for( int i = 0; i < maxOfLevel; i++ ) { 
+            if( levelArray[i] == null ) {
+                log.warn( "opp level is not consistent. " );
+                return ERROR;
+            }
+        } 
+
+        boolean isNewMap = false; // check if the level is new added
         Map<String, Object> currentMap = new HashMap();
         Map<String, Object> parentMap = new HashMap();
 
         currentMap = (Map<String, Object>) contextMap.get(contextTop);
 
         for( int i = 0; i < maxOfLevel; i++ ) {
-            //*** validate levelArray
-            if( levelArray[i] == null ) {
-                log.warn( "opp level is not consistent. " );
-                return ERROR;
-            } 
 
-            log.info( "operationAction: level value=" + levelArray[i] ) ;
-            log.info( "operationAction: currentMap=" + currentMap );
+            String levelKey = levelArray[i];
 
             parentMap = currentMap;
 
-            if( isNew || currentMap.get( levelArray[i] ) == null ) {
-                Map<String, Object> levelMap = new HashMap();
-                currentMap.put( levelArray[i], levelMap );
-                isNew = true;
+            if( currentMap.get( levelKey ) == null ) {
+                if(  i == maxOfLevel - 1 ) {
+                    Map<String, Object> levelMap = new HashMap();
+                    currentMap.put( levelKey, levelMap );
+                    isNewMap = true;
+                } else {
+                    log.warn( "operationAction: level(l" + i + "=" 
+                              + levelArray[i] + ")  does not exist. " );
+                    return ERROR;
+                }
             }
 
             currentMap = (Map<String, Object>)currentMap.get( levelArray[i] );
-           
-            log.info( "operationAction: after get i: currentMap=" + currentMap ); 
+        }           
+            
+        log.info( "operationAction: after get i: currentMap=" + currentMap ); 
 
-            if( i == maxOfLevel - 1 ) {
-                if( opKey.equals("add") && opValue.equals("map") && isNew ) {
-                    log.info( "operationAction: add map... " );
-                    saveJsonContext();
-                    return SUCCESS;
-                }
-
-                if( opKey.equals("set") && opValue.equals("prop") 
-                    && ( currentMap.get(propKey) == null  
-                         ||  !currentMap.get(propKey).equals( propValue ) ) )
-                { 
-                    log.info( "operationAction: set prop.." );
-                    currentMap.put( propKey, propValue ); //add or update property
-                    saveJsonContext();
-                    return SUCCESS;
-                }
-
-                if( opKey.equals("drop") && opValue.equals("map") 
-                    && !isNew && currentMap != null ) 
-                {
-                    log.info( "operationAction: drop map... ");
-                    parentMap.remove( levelArray[i] ); // drop map   
-                    saveJsonContext();
-                    return SUCCESS;      
-                }
-
-                if( opKey.equals("drop") && opValue.equals("prop") 
-                    && !isNew && currentMap.get(propKey) != null ) 
-                {
-                    log.info( "operationAction: drop prop: key=" + propKey );
-                    currentMap.remove(propKey); //remove property
-                    saveJsonContext();
-                    return SUCCESS;
-                } 
+        if( isNewMap ) {
+            if( opKey.equals("add") && opValue.equals("map") ) {
+                log.info( "operationAction: add map... " ); // add a map
+                saveJsonContext();
+                return SUCCESS;
             }
+        } else {
+            if( opKey.equals("set") && opValue.equals("prop") 
+                && ( currentMap.get(propKey) == null  
+                        ||  !currentMap.get(propKey).equals( propValue ) ) )
+            { 
+                log.info( "operationAction: set prop.." );
+                currentMap.put( propKey, propValue ); //add or update property
+                saveJsonContext();
+                return SUCCESS;
+            }
+
+            if( opKey.equals("drop") && opValue.equals("map") 
+                && currentMap != null ) 
+            {
+                log.info( "operationAction: drop map... ");
+                parentMap.remove( levelArray[ maxOfLevel - 1 ]); // drop a map   
+                saveJsonContext();
+                return SUCCESS;      
+            }
+
+            if( opKey.equals("drop") && opValue.equals("prop") 
+                && currentMap.get(propKey) != null ) 
+            {
+                log.info( "operationAction: drop prop: key=" + propKey );
+                currentMap.remove(propKey); //remove property
+                saveJsonContext();
+                return SUCCESS;
+            } 
         }
+
         return ERROR;
     }
 
