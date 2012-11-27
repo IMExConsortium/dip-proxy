@@ -91,19 +91,15 @@ public class JsonContextConfigAction extends ManagerSupport {
             return SUCCESS;  //XXX
         } 
 
-        for( Iterator<String> i = getOp().keySet().iterator();
-             i.hasNext(); ) {
+        for( String opKey:getOp().keySet() ) {
             
-            String key = i.next();
-            String val = getOp().get(key);
+            String opVal = getOp().get(opKey);
             
-            log.debug(  "op=" + key + "  val=" + val );
+            log.debug(  "op=" + opKey + "  val=" + opVal );
 
-            if ( val != null && val.length() > 0 ) {
-                return operationAction ( key, val );
-            } else {
-                return SUCCESS;
-            }         
+            if ( opVal != null && opVal.length() > 0 ) {
+                return operationAction ( opKey, opVal );
+            } 
         }
 
         log.info( "execute: return fault.");
@@ -126,20 +122,25 @@ public class JsonContextConfigAction extends ManagerSupport {
             return SUCCESS;
         }
 
-        SortedSet<String> levelSSet = new TreeSet<String>();
         String propKey = null;
         String propValue = null;
+        String[] levelArray = new String [ contextDepth ];
+        int maxOfLevel = 0; // this value <= contextDepth
 
         for( String oppKey:getOpp().keySet() ) {
             if( oppKey.startsWith( "l" ) ) {
-                Integer level = Integer.valueOf(
-                                    oppKey.substring(1) );
-
-                if( level.intValue() <= contextDepth ) {
-                    levelSSet.add( oppKey );
+                int level = Integer.valueOf( oppKey.substring(1) ).intValue();
+                if( level <= contextDepth ) {
+                    levelArray[ level -1 ] =  getOpp().get(oppKey);
+                    if( level > maxOfLevel ) {
+                        maxOfLevel = level;
+                    }
                 } else {
-                    log.warn( "op.drop prop: level > contextDepth. " );
-                    return ERROR;      
+                    if( !oppKey.equals( "add" ) && !oppKey.equals( "map" ) ) {
+                        log.warn( "op: " + opKey + "/" + opValue 
+                                   + ": level > contextDepth. " );
+                        return ERROR; 
+                    }     
                 }
             } 
                 
@@ -152,33 +153,36 @@ public class JsonContextConfigAction extends ManagerSupport {
             }
         }
         
-        String[] levelArray = levelSSet.toArray( new String[0] );
-        boolean isNew = false; // for new add map
+        
+        boolean isNew = false; // check if the level is new added
         Map<String, Object> currentMap = new HashMap();
         Map<String, Object> parentMap = new HashMap();
 
         currentMap = (Map<String, Object>) contextMap.get(contextTop);
 
-        for( int i = 0; i < levelArray.length; i++ ) {
-            log.info( "operationAction: level=" + levelArray[i] ) ;
-            log.info( "operationAction: level value=" + getOpp().get(levelArray[i]) );
+        for( int i = 0; i < maxOfLevel; i++ ) {
+            //*** validate levelArray
+            if( levelArray[i] == null ) {
+                log.warn( "opp level is not consistent. " );
+                return ERROR;
+            } 
+
+            log.info( "operationAction: level value=" + levelArray[i] ) ;
             log.info( "operationAction: currentMap=" + currentMap );
 
             parentMap = currentMap;
 
-            if( isNew || currentMap.get( getOpp().get(levelArray[i])) == null ) {
-                log.info( "operationAction: isNew=" + isNew );
+            if( isNew || currentMap.get( levelArray[i] ) == null ) {
                 Map<String, Object> levelMap = new HashMap();
-                currentMap.put( getOpp().get(levelArray[i]), levelMap );
+                currentMap.put( levelArray[i], levelMap );
                 isNew = true;
             }
 
-            currentMap = (Map<String, Object>)currentMap.get(
-                                            getOpp().get(levelArray[i]));
+            currentMap = (Map<String, Object>)currentMap.get( levelArray[i] );
            
             log.info( "operationAction: after get i: currentMap=" + currentMap ); 
 
-            if( i == levelArray.length - 1 ) {
+            if( i == maxOfLevel - 1 ) {
                 if( opKey.equals("add") && opValue.equals("map") && isNew ) {
                     log.info( "operationAction: add map... " );
                     saveJsonContext();
@@ -199,7 +203,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                     && !isNew && currentMap != null ) 
                 {
                     log.info( "operationAction: drop map... ");
-                    parentMap.remove( getOpp().get(levelArray[i]) );    
+                    parentMap.remove( levelArray[i] ); // drop map   
                     saveJsonContext();
                     return SUCCESS;      
                 }
