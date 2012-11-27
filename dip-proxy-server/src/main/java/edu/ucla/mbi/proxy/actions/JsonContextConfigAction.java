@@ -174,7 +174,9 @@ public class JsonContextConfigAction extends ManagerSupport {
             parentMap = currentMap;
 
             if( currentMap.get( levelKey ) == null ) {
-                if(  i == maxOfLevel - 1 ) {
+                if(  i == maxOfLevel - 1
+                     && opKey.equals("add") && opValue.equals("map") ) 
+                {
                     Map<String, Object> levelMap = new HashMap();
                     currentMap.put( levelKey, levelMap );
                     isNewMap = true;
@@ -190,34 +192,38 @@ public class JsonContextConfigAction extends ManagerSupport {
             
         log.info( "operationAction: after get i: currentMap=" + currentMap ); 
 
-        if( isNewMap ) {
-            if( opKey.equals("add") && opValue.equals("map") ) {
+        if( opKey.equals("add") && opValue.equals("map") ) {
+            if( isNewMap ) {
                 log.info( "operationAction: add map... " ); // add a map
                 saveJsonContext();
                 return SUCCESS;
             }
-        } else {
-            if( opKey.equals("set") && opValue.equals("prop") 
-                && ( currentMap.get(propKey) == null  
-                        ||  !currentMap.get(propKey).equals( propValue ) ) )
-            { 
+        }
+    
+        if( opKey.equals("set") && opValue.equals("prop") ) {
+            if( currentMap.get(propKey) == null
+                || ( currentMap.get(propKey) instanceof String 
+                     && !currentMap.get(propKey).equals( propValue ) ) ) 
+            {
                 log.info( "operationAction: set prop.." );
                 currentMap.put( propKey, propValue ); //add or update property
                 saveJsonContext();
                 return SUCCESS;
             }
+        }
 
-            if( opKey.equals("drop") && opValue.equals("map") 
-                && currentMap != null ) 
-            {
+        if( opKey.equals("drop") && opValue.equals("map") ) {
+            if( currentMap != null && currentMap instanceof Map ) { 
                 log.info( "operationAction: drop map... ");
                 parentMap.remove( levelArray[ maxOfLevel - 1 ]); // drop a map   
                 saveJsonContext();
                 return SUCCESS;      
             }
-
-            if( opKey.equals("drop") && opValue.equals("prop") 
-                && currentMap.get(propKey) != null ) 
+        }
+          
+        if( opKey.equals("drop") && opValue.equals("prop") ) { 
+            if( currentMap.get(propKey) != null  
+                && currentMap.get(propKey) instanceof String ) 
             {
                 log.info( "operationAction: drop prop: key=" + propKey );
                 currentMap.remove(propKey); //remove property
