@@ -28,8 +28,10 @@ public class JsonContextConfigAction extends ManagerSupport {
     private Log log = LogFactory.getLog( JsonContextConfigAction.class );
 
     private final String JSON = "json"; 
-    private Map<String, Object> topMap;
-     
+    private final String MAP = "map";
+    private final String LIST = "list";
+
+    private Map<String, Object> topMap;     
     private JsonContext jsonContext;
     
     private Map<String, Object> contextMap; 
@@ -88,7 +90,7 @@ public class JsonContextConfigAction extends ManagerSupport {
         
         if( getOp() == null ) {
             log.info( "execute: enter op=view.");
-            return SUCCESS;  //XXX
+            return SUCCESS; 
         } 
 
         for( String opKey:getOp().keySet() ) {
@@ -107,7 +109,7 @@ public class JsonContextConfigAction extends ManagerSupport {
         return ERROR;
     }
   
-    private String operationAction ( String opKey, String opValue ) throws ProxyFault {
+    private String operationAction ( String opKey, String opVal ) throws ProxyFault {
         
         if( opKey.equals( "show" ) ) {
             log.info( "execute: op.show hit. " );
@@ -122,114 +124,290 @@ public class JsonContextConfigAction extends ManagerSupport {
             return SUCCESS;
         }
 
-        String propKey = null;
-        String propValue = null;
-        String[] levelArray = new String [ contextDepth ];
+        String setKey = null;
+        String setVal = null;
+        String[][] levelArray = new String [ contextDepth ][2];
         int maxOfLevel = 0; // this value <= contextDepth
 
+        //*** fill levelArray using oppVal
         for( String oppKey:getOpp().keySet() ) {
             String oppVal = getOpp().get( oppKey );
 
-            if( oppKey.startsWith( "l" ) ) {
-                int level = Integer.valueOf( oppKey.substring(1) ).intValue();
-                if( level <= contextDepth ) {
-                    levelArray[ level -1 ] =  oppVal;
+            if( oppKey.startsWith( "m" ) || oppKey.startsWith( "l" ) ) {
+                //*** m means map and l means list
+                int level;
+
+                try {
+                    level = Integer.valueOf( oppKey.substring(1) ).intValue();
+                } catch ( Exception e ) {
+                    log.warn( "op: oppKey(" + oppKey + ") format wrong. " );
+                    return ERROR;
+                }
+
+                if( level > 0 && level <= contextDepth ) {
+                    if( oppKey.startsWith( "m" ) ) {
+                        levelArray[ level -1 ][0] =  oppVal;
+                    } 
+
+                    if( oppKey.startsWith( "l" ) ) {
+                        if( oppVal.matches( "([0]|[1-9][0-9]*)" ) ) {
+                            //*** oppVal is a number that is an index in the list 
+                            levelArray[ level -1 ][1] =  oppVal;
+                        } else {
+                            log.warn( "opAction: opp(" + oppKey + "=" + 
+                                      oppVal + ") oppVal has to be a number. " );
+                            return ERROR;
+                        }
+                    } 
+
                     if( level > maxOfLevel ) {
                         maxOfLevel = level;
                     }
                 } else {
-                    log.warn( "op: " + opKey + "/" + opValue 
-                              + ": level > contextDepth. " );
+                    log.warn( "opAction: opp(" + opKey + "=" + opVal + ") " +
+                              "level should not be greater than contextDepth. " );
                     return ERROR; 
                 }
             } 
                 
             if ( oppKey.equals( "key" ) ) {
-                propKey = oppVal;
+                setKey = oppVal;
             } 
 
             if ( oppKey.equals( "value" ) ) {
-                propValue = oppVal;
+                setVal = oppVal;
             }
         }
         
         //*** validate levelArray
         for( int i = 0; i < maxOfLevel; i++ ) { 
-            if( levelArray[i] == null ) {
+            if( ( levelArray[i][0] == null && levelArray[i][1] == null )
+                  || ( levelArray[i][0] != null && levelArray[i][1] != null ) ) 
+            {
                 log.warn( "opp level is not consistent. " );
                 return ERROR;
             }
         } 
 
-        boolean isNewMap = false; // check if the level is new added
-        Map<String, Object> currentMap = new HashMap();
-        Map<String, Object> parentMap = new HashMap();
+        log.info( "opAction: levelArray 0=" + levelArray[i][0] + 
+                  " levelArray 1=" + levelArray[i][1] + "." );
 
-        currentMap = (Map<String, Object>) contextMap.get(contextTop);
+        boolean isNew = false; // check if the level is new added
+        Object currentObj = null;
+        Object parentObj = null;
+        String currentLevelType = null;  
+        String parentLevelType = null;  
 
+        if( contextMap.get(contextTop) instanceof Map ) {
+            currentLevelType = MAP;
+            currentObj = (Map<String, Object>) contextMap.get(contextTop);
+        } else if( contextMap.get(contextTop) instanceof List ) {
+            currentLevelType = LIST;
+            currentObj = (List) contextMap.get(contextTop);
+        } else {
+            log.warn( "opAction: context top type is neither Map nor List. " );
+            return ERROR;
+        }
+
+        //*** trace level tree
         for( int i = 0; i < maxOfLevel; i++ ) {
+            
+            String levelKey = null;
 
-            String levelKey = levelArray[i];
+            parentObj = currentObj;
+            parentLevelType = currentLevelType;
 
-            parentMap = currentMap;
-
-            if( currentMap.get( levelKey ) == null ) {
-                if(  i == maxOfLevel - 1
-                     && opKey.equals("add") && opValue.equals("map") ) 
-                {
-                    Map<String, Object> levelMap = new HashMap();
-                    currentMap.put( levelKey, levelMap );
-                    isNewMap = true;
-                } else {
-                    log.warn( "operationAction: level(l" + i + "=" 
-                              + levelArray[i] + ")  does not exist. " );
+            if( levelArray[i][0] != null ) {
+                if( !parentLevelType.equals( MAP ) ) {
+                    log.warn( "opAction: opp level(" + i + ") type does not " +
+                              "match with json file. " );
                     return ERROR;
                 }
+               
+                levelKey = levelArray[i][0];
+
+                if( ((Map<String, Object>)parentObj).get( levelKey ) == null ) { 
+                    if(  i == maxOfLevel - 1 && opKey.equals("add") ) {
+                        if( opVal.equals( MAP ) ) {
+                            Map<String, Object> levelMap = new HashMap();
+                            ((Map<String, Object>)parentObj).put( levelKey, 
+                                                                  levelMap );
+
+                            isNew = true;
+                        } else if ( opVal.equals( LIST ) ) {
+                            List<Object> levelList = new ArrayList();
+                            ((Map<String, Object>)parentObj).put( levelKey, 
+                                                                  levelList );
+
+                            isNew = true;
+                        } else {
+                            log.warn( "opAction: operation add for " +
+                                      "value(" + opVal + ") neither " + 
+                                      "map nor list. " );
+                            return ERROR;
+                        }
+                    } else {
+                        log.warn( "opAction: level(m" + i + "=" +
+                                  levelKey + ")  does not exist. " );
+                        return ERROR;
+                    } 
+                }
+
+                currentObj = ((Map<String, Object>)parentObj).get( levelKey );
+
             }
 
-            currentMap = (Map<String, Object>)currentMap.get( levelArray[i] );
+            if ( levelArray[i][1] != null ) {
+                if( !parentLevelType.equals( LIST ) ) {
+                    log.warn( "opAction: opp level(" + i + ") type does not " +
+                              "match with json file. " );
+                    return ERROR;
+                }
+                    
+                levelKey = levelArray[i][1];
+                int index = Integer.valueOf(levelKey).intValue();
+
+                if( ((List)currentObj).get( index ) == null ) {
+                    if( i == maxOfLevel - 1 && opKey.equals("add") ) {
+                        if( opVal.equals( MAP ) ) {
+                            Map<String, Object> levelMap = new HashMap();
+                            ((List)parentObj).add( index, levelMap );
+                            isNew = true;
+                        } else if( opVal.equals( LIST ) ) {
+                            List levelList = new ArrayList();
+                            ((List)parentObj).add( index, levelList );
+                            isNew = true;
+                        } else {
+                            log.warn( "opAction: operation add for " +
+                                      "value(" + opVal + ") neither " +
+                                      "map nor list. " );
+                            return ERROR;
+
+                        }
+                    } else {
+                        log.warn( "opAction: level(l" + i + "=" +
+                                  levelKey + ")  does not exist. " );
+                        return ERROR;
+                    }
+                }
+
+                currentObj = ((List)parentObj).get( index );
+
+            }
+
+            if( currentObj instanceof Map ) {
+                currentLevelType = MAP;
+            } else if ( currentObj instanceof List ) {
+                currentLevelType = LIST;
+            } else {
+                log.warn( "opAction: context top type is neither Map nor List. " );
+                return ERROR;
+            }
+
         }           
             
-        log.info( "operationAction: after get i: currentMap=" + currentMap ); 
-
-        if( opKey.equals("add") && opValue.equals("map") ) {
-            if( isNewMap ) {
-                log.info( "operationAction: add map... " ); // add a map
+        if( opKey.equals("add") && currentObj != null ) {
+            if( isNew ) {
+                log.info( "operationAction: add map... " ); // add a map/list
                 saveJsonContext();
                 return SUCCESS;
             }
         }
     
-        if( opKey.equals("set") && opValue.equals("prop") ) {
-            if( currentMap.get(propKey) == null
-                || ( currentMap.get(propKey) instanceof String 
-                     && !currentMap.get(propKey).equals( propValue ) ) ) 
-            {
-                log.info( "operationAction: set prop.." );
-                currentMap.put( propKey, propValue ); //add or update property
-                saveJsonContext();
-                return SUCCESS;
+        if( opKey.equals("set") ) {
+            if( opVal.equals( "prop" ) ) {
+                if( currentLevelType.equals( MAP ) ) {
+                    if( ((Map<String, Object>)currentObj).get(setKey) == null
+                         || ( ((Map<String, Object>)currentObj)
+                                    .get(setKey) instanceof String 
+                                && !((Map<String, Object>)currentObj)
+                                    .get(setKey).equals( setVal ) ) ) 
+                    {
+                        log.info( "operationAction: set prop.." );
+                        ((Map<String, Object>)currentObj).put( setKey, setVal ); //add or update property
+                        saveJsonContext();
+                        return SUCCESS;
+                    }
+                } else {
+                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," + 
+                              " because the last level type is not Map. " );
+                    return ERROR;
+                }
             }
+
+            if( opVal.equals( "ele" ) ) {
+                if( currentLevelType.equals( LIST ) ) {
+                    int index = Integer.valueOf( levelArray[maxOfLevel - 1][1] )
+                                        .intValue();
+
+                    if( ( ((List)currentObj).get( index ) == null )
+                        || !((List)currentObj).get( index ).equals( setVal ) ) 
+                    {
+                        ((List)currentObj).add(index, setVal ); // add or update element
+                        saveJsonContext();
+                        return SUCCESS;
+                    }
+                }  else {
+                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," +
+                              " because the last level type is not List. " );
+                    return ERROR;
+                }
+            }   
         }
 
-        if( opKey.equals("drop") && opValue.equals("map") ) {
-            if( currentMap != null && currentMap instanceof Map ) { 
-                log.info( "operationAction: drop map... ");
-                parentMap.remove( levelArray[ maxOfLevel - 1 ]); // drop a map   
-                saveJsonContext();
-                return SUCCESS;      
+        if( opKey.equals("drop") && currentObj != null ) {
+            if( opVal.equals("map") ) {
+                if( currentLevelType.equals( MAP ) ) { 
+                    log.info( "operationAction: drop map... ");
+                    if( parentLevelType.equals( MAP ) ) {
+                        ((Map<String, Object>)parentObj)
+                            .remove( levelArray[ maxOfLevel - 1 ][0]); // drop a map   
+                        saveJsonContext();
+                        return SUCCESS;  
+                    } 
+
+                    if ( parentLevelType.equals( LIST ) ) {
+                        ((List)parentObj).remove( levelArray[ maxOfLevel - 1 ][1] ); // drop a map
+                        saveJsonContext();
+                        return SUCCESS;
+                    }     
+                } else {
+                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," + 
+                              " because the current level type is not a Map. " );
+                    return ERROR;
+                }
             }
-        }
           
-        if( opKey.equals("drop") && opValue.equals("prop") ) { 
-            if( currentMap.get(propKey) != null  
-                && currentMap.get(propKey) instanceof String ) 
-            {
-                log.info( "operationAction: drop prop: key=" + propKey );
-                currentMap.remove(propKey); //remove property
-                saveJsonContext();
-                return SUCCESS;
-            } 
+            if( opVal.equals("list") ) {
+                if( currentLevelType.equals( LIST ) ) {
+                    log.info( "operationAction: drop list... ");
+                    ((List)currentObj).remove( levelArray[ maxOfLevel - 1 ][1] ); // drop a list  
+                    saveJsonContext();
+                    return SUCCESS;
+                } else {
+                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," +
+                              " because the current level type is not a List. " );
+                    return ERROR;
+                }
+            }
+
+            if( opVal.equals("prop") ) { 
+                if( currentLevelType.equals( MAP ) ) {
+                    if( ((Map<String, Object>)currentObj).get(setKey) != null  
+                        && ((Map<String, Object>)currentObj)
+                                .get(setKey) instanceof String ) 
+                    {
+                        log.info( "operationAction: drop prop: key=" + setKey );
+                        ((Map<String, Object>)currentObj).remove(setKey); //remove property
+                        saveJsonContext();
+                        return SUCCESS;
+                    } 
+                } else {
+                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," +
+                              " because the current level type is not a Map. " );
+                    return ERROR;
+                }   
+            }
         }
 
         return ERROR;
