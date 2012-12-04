@@ -169,7 +169,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                     return ERROR; 
                 }
             } 
-                
+                 
             if ( oppKey.equals( "key" ) ) {
                 setKey = oppVal;
             } 
@@ -187,10 +187,9 @@ public class JsonContextConfigAction extends ManagerSupport {
                 log.warn( "opp level is not consistent. " );
                 return ERROR;
             }
-        } 
-
-        log.info( "opAction: levelArray 0=" + levelArray[i][0] + 
+            log.info( "opAction: levelArray 0=" + levelArray[i][0] +
                   " levelArray 1=" + levelArray[i][1] + "." );
+        } 
 
         boolean isNew = false; // check if the level is new added
         Object currentObj = null;
@@ -218,6 +217,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             parentLevelType = currentLevelType;
 
             if( levelArray[i][0] != null ) {
+                
                 if( !parentLevelType.equals( MAP ) ) {
                     log.warn( "opAction: opp level(" + i + ") type does not " +
                               "match with json file. " );
@@ -226,18 +226,20 @@ public class JsonContextConfigAction extends ManagerSupport {
                
                 levelKey = levelArray[i][0];
 
-                if( ((Map<String, Object>)parentObj).get( levelKey ) == null ) { 
+                if( ((Map<String, Object>)parentObj)
+                            .get( levelKey ) == null ) 
+                { 
                     if(  i == maxOfLevel - 1 && opKey.equals("add") ) {
                         if( opVal.equals( MAP ) ) {
                             Map<String, Object> levelMap = new HashMap();
-                            ((Map<String, Object>)parentObj).put( levelKey, 
-                                                                  levelMap );
+                            ((Map<String, Object>)parentObj)
+                                .put( levelKey, levelMap );
 
                             isNew = true;
                         } else if ( opVal.equals( LIST ) ) {
                             List<Object> levelList = new ArrayList();
-                            ((Map<String, Object>)parentObj).put( levelKey, 
-                                                                  levelList );
+                            ((Map<String, Object>)parentObj)
+                                .put( levelKey, levelList );
 
                             isNew = true;
                         } else {
@@ -247,52 +249,54 @@ public class JsonContextConfigAction extends ManagerSupport {
                             return ERROR;
                         }
                     } else {
-                        log.warn( "opAction: level(m" + i + "=" +
-                                  levelKey + ")  does not exist. " );
+                        log.warn( "opAction: opp level(" + i + ") does not " +
+                                  "match with json file. " );
                         return ERROR;
-                    } 
-                }
+                    }
+                } 
 
                 currentObj = ((Map<String, Object>)parentObj).get( levelKey );
 
             }
 
             if ( levelArray[i][1] != null ) {
+                
                 if( !parentLevelType.equals( LIST ) ) {
                     log.warn( "opAction: opp level(" + i + ") type does not " +
                               "match with json file. " );
                     return ERROR;
                 }
-                    
+
+                log.info( "opAction: before get index. " );    
                 levelKey = levelArray[i][1];
                 int index = Integer.valueOf(levelKey).intValue();
+                log.info( "opAction: index=" + index );
 
-                if( ((List)currentObj).get( index ) == null ) {
+                if( index == ((List)currentObj).size() ) {
                     if( i == maxOfLevel - 1 && opKey.equals("add") ) {
                         if( opVal.equals( MAP ) ) {
                             Map<String, Object> levelMap = new HashMap();
-                            ((List)parentObj).add( index, levelMap );
+                            ((List)parentObj).add( levelMap );
                             isNew = true;
                         } else if( opVal.equals( LIST ) ) {
                             List levelList = new ArrayList();
-                            ((List)parentObj).add( index, levelList );
+                            ((List)parentObj).add( levelList );
                             isNew = true;
                         } else {
                             log.warn( "opAction: operation add for " +
                                       "value(" + opVal + ") neither " +
                                       "map nor list. " );
                             return ERROR;
-
                         }
-                    } else {
-                        log.warn( "opAction: level(l" + i + "=" +
-                                  levelKey + ")  does not exist. " );
-                        return ERROR;
+                        currentObj = ((List)parentObj).get( index );
                     }
-                }
-
-                currentObj = ((List)parentObj).get( index );
-
+                } else if ( index < ((List)currentObj).size() ) { 
+                    currentObj = ((List)parentObj).get( index );
+                } else {
+                    log.warn( "opAction: operation add for value(" +
+                              opVal + ") has a wrong list index. " );  
+                    return ERROR;
+                } 
             }
 
             if( currentObj instanceof Map ) {
@@ -340,17 +344,30 @@ public class JsonContextConfigAction extends ManagerSupport {
                     int index = Integer.valueOf( levelArray[maxOfLevel - 1][1] )
                                         .intValue();
 
-                    if( ( ((List)currentObj).get( index ) == null )
-                        || !((List)currentObj).get( index ).equals( setVal ) ) 
+                    boolean update = false;
+                    
+                    if( index == ((List)currentObj).size() ) {
+                        ((List)currentObj).add( setVal );
+                        update = true;
+                    } else if( index < ((List)currentObj).size()  
+                               && !((List)currentObj).get( index )
+                                        .equals( setVal ) ) 
                     {
-                        ((List)currentObj).add(index, setVal ); // add or update element
+
+                        ((List)currentObj).set(index, setVal ); // add or update element
+                        update = true;
+
+                    } else {
+                       log.warn( "opAction: op (" + opKey + "=" + opVal + 
+                                 ") failed because the last level type " +
+                                 "is not List or the index of List is wrong." );
+                        return ERROR;
+                    }
+                        
+                    if( update ) {
                         saveJsonContext();
                         return SUCCESS;
                     }
-                }  else {
-                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," +
-                              " because the last level type is not List. " );
-                    return ERROR;
                 }
             }   
         }
@@ -379,9 +396,19 @@ public class JsonContextConfigAction extends ManagerSupport {
             }
           
             if( opVal.equals("list") ) {
-                if( currentLevelType.equals( LIST ) ) {
+                if( currentLevelType.equals( LIST ) ) {    
                     log.info( "operationAction: drop list... ");
-                    ((List)currentObj).remove( levelArray[ maxOfLevel - 1 ][1] ); // drop a list  
+
+                    if( parentLevelType.equals( MAP ) ) {
+                        ((Map<String, Object>)parentObj)
+                            .remove( levelArray[ maxOfLevel - 1 ][0]); // drop a list   
+                    }
+
+                    if ( parentLevelType.equals( LIST ) ) {
+                        ((List)parentObj).remove( 
+                            levelArray[ maxOfLevel - 1 ][1] ); // drop a list
+                    }
+
                     saveJsonContext();
                     return SUCCESS;
                 } else {
@@ -407,6 +434,16 @@ public class JsonContextConfigAction extends ManagerSupport {
                               " because the current level type is not a Map. " );
                     return ERROR;
                 }   
+            }
+
+            if( opVal.equals( "ele" ) ) {
+                if( currentLevelType.equals( LIST ) ) {
+                    log.info( "operationAction: drop a list element... ");
+                     ((List)currentObj).remove(
+                            levelArray[ maxOfLevel - 1 ][1] );
+                    saveJsonContext();
+                    return SUCCESS;
+                }
             }
         }
 
