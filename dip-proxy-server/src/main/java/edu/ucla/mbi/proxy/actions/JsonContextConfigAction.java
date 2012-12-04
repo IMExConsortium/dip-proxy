@@ -1,14 +1,14 @@
 package edu.ucla.mbi.proxy.actions;
 
-/*===========================================================================
- * $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/dip-prox#$
- * $Id:: NativeServerConfigure.java 2812 2012-11-07 23:14:55Z lukasz        $
- * Version: $Rev:: 2812                                                     $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/dip-proxy-s#$
+ * $Id:: NativeServerConfigure.java 2812 2012-11-07 23:14:55Z lukasz           $
+ * Version: $Rev:: 2812                                                        $
+ *==============================================================================
  *
- * NativeServerConfigure Action:
+ * JsonContextConfigure Action:
  *
- *========================================================================= */
+ *=========================================================================== */
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -188,8 +188,6 @@ public class JsonContextConfigAction extends ManagerSupport {
                 log.warn( "opp level is not consistent. " );
                 return ERROR;
             }
-            log.info( "opAction: levelArray 0=" + levelArray[i][0] +
-                  " levelArray 1=" + levelArray[i][1] + "." );
         } 
 
         boolean isNew = false; // check if the level is new added
@@ -290,12 +288,16 @@ public class JsonContextConfigAction extends ManagerSupport {
                             return ERROR;
                         }
                         currentObj = ((List)parentObj).get( index );
+                    } else {
+                        log.warn( "opAction: list index=" + index +
+                                  " does not match with the json file. " ); 
+                        return ERROR;
                     }
                 } else if ( index < ((List)currentObj).size() ) { 
                     currentObj = ((List)parentObj).get( index );
                 } else {
-                    log.warn( "opAction: operation add for value(" +
-                              opVal + ") has a wrong list index. " );  
+                    log.warn( "opAction: list index=" + index +
+                              " does not match with the json file. " );  
                     return ERROR;
                 } 
             }
@@ -310,14 +312,14 @@ public class JsonContextConfigAction extends ManagerSupport {
                 log.warn( "opAction: context top type is neither Map nor List. " );
                 return ERROR;
             }
-
         }           
-            
+           
+        boolean updateJson = false;
+ 
         if( opKey.equals("add") && currentObj != null ) {
             if( isNew ) {
                 log.info( "operationAction: add map... " ); // add a map/list
-                saveJsonContext();
-                return SUCCESS;
+                updateJson = true;
             }
         }
     
@@ -332,8 +334,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                     {
                         log.info( "operationAction: set prop.." );
                         ((Map<String, Object>)currentObj).put( setKey, setVal ); //add or update property
-                        saveJsonContext();
-                        return SUCCESS;
+                        updateJson = true;
                     }
                 } else {
                     log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," + 
@@ -343,22 +344,31 @@ public class JsonContextConfigAction extends ManagerSupport {
             }
 
             if( opVal.equals( "ele" ) ) {
-                if( currentLevelType.equals( LIST ) ) {
-                    int index = Integer.valueOf( levelArray[maxOfLevel - 1][1] )
-                                        .intValue();
+                List objList = null;
 
-                    boolean update = false;
+                int index = Integer.valueOf(
+                        levelArray[maxOfLevel - 1][1] ).intValue();
+
+                if( currentLevelType.equals( LIST ) ) {
+                    objList = (List)currentObj;                
+                } 
+                
+                if( currentLevelType.equals( STRING ) 
+                    && parentLevelType.equals( LIST ) ) 
+                {  
+                    objList = (List) parentObj;
+                }
                     
-                    if( index == ((List)currentObj).size() ) {
-                        ((List)currentObj).add( setVal );
-                        update = true;
-                    } else if( index < ((List)currentObj).size()  
-                               && !((List)currentObj).get( index )
-                                        .equals( setVal ) ) 
+                if( objList != null ) {
+                    if( index == objList.size() ) {
+                        ((List)currentObj).add( setVal ); // add a new element
+                        updateJson = true;
+                    } else if( index < objList.size()  
+                               && !objList.get( index ).equals( setVal ) ) 
                     {
 
-                        ((List)currentObj).set(index, setVal ); // add or update element
-                        update = true;
+                        objList.set( index, setVal ); // update element
+                        updateJson = true;
 
                     } else {
                        log.warn( "opAction: op (" + opKey + "=" + opVal + 
@@ -366,12 +376,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                                  "is not List or the index of List is wrong." );
                         return ERROR;
                     }
-                        
-                    if( update ) {
-                        saveJsonContext();
-                        return SUCCESS;
-                    }
-                }
+                }           
             }   
         }
 
@@ -380,10 +385,11 @@ public class JsonContextConfigAction extends ManagerSupport {
                 if( currentLevelType.equals( MAP ) ) { 
                     log.info( "operationAction: drop map... ");
                     if( parentLevelType.equals( MAP ) ) {
+
                         ((Map<String, Object>)parentObj)
-                            .remove( levelArray[ maxOfLevel - 1 ][0]); // drop a map   
-                        saveJsonContext();
-                        return SUCCESS;  
+                            .remove( levelArray[ maxOfLevel - 1 ][0] ); // drop a map   
+
+                        updateJson = true;
                     } 
 
                     if ( parentLevelType.equals( LIST ) ) {
@@ -391,10 +397,9 @@ public class JsonContextConfigAction extends ManagerSupport {
                                 levelArray[ maxOfLevel - 1 ][1] ).intValue();
 
                         ((List)parentObj).remove( index ); // drop a map
-                        saveJsonContext();
-                        return SUCCESS;
+
+                        updateJson = true;
                     }     
-                    log.info( "opAction: parentLevelType neither Map nor List. " );
                 } else {
                     log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," + 
                               " because the current level type is not a Map. " );
@@ -407,18 +412,20 @@ public class JsonContextConfigAction extends ManagerSupport {
                     log.info( "operationAction: drop list... ");
 
                     if( parentLevelType.equals( MAP ) ) {
+
                         ((Map<String, Object>)parentObj)
-                            .remove( levelArray[ maxOfLevel - 1 ][0]); // drop a list   
+                            .remove( levelArray[ maxOfLevel - 1 ][0]); // drop a list in map   
+
+                        updateJson = true;
                     }
 
                     if ( parentLevelType.equals( LIST ) ) {
                         int index = Integer.valueOf(
                                 levelArray[ maxOfLevel - 1 ][1] ).intValue();
-                        ((List)parentObj).remove( index ); // drop a list
+                        ((List)parentObj).remove( index ); // drop a list in list
+                        updateJson = true;
                     }
-
-                    saveJsonContext();
-                    return SUCCESS;
+                    
                 } else {
                     log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," +
                               " because the current level type is not a List. " );
@@ -434,8 +441,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                     {
                         log.info( "operationAction: drop prop: key=" + setKey );
                         ((Map<String, Object>)currentObj).remove(setKey); //remove property
-                        saveJsonContext();
-                        return SUCCESS;
+                        updateJson = true;
                     } 
                 } else {
                     log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," +
@@ -446,32 +452,32 @@ public class JsonContextConfigAction extends ManagerSupport {
 
             if( opVal.equals( "ele" ) ) {
                 log.info( "opAction: currentLevelType=" + currentLevelType );
-                if( currentLevelType.equals( LIST ) ) {
-                    log.info( "operationAction: drop a list element... ");
-                    int index = Integer.valueOf(
-                            levelArray[ maxOfLevel - 1 ][1] ).intValue();
 
-                    ((List)currentObj).remove( index );
-                    saveJsonContext();
-                    return SUCCESS;
-                }
-                
                 if( parentLevelType.equals( LIST ) 
                     && currentLevelType.equals( STRING) ) 
                 {
                     log.info( "operationAction: drop a ele ... ");
+
                     int index = Integer.valueOf(
                             levelArray[ maxOfLevel - 1 ][1] ).intValue();
 
                     ((List)parentObj).remove( index );
-                    saveJsonContext();
-                    return SUCCESS;
+                    updateJson = true;
+                } else {
+                    log.warn( "opAction: drop ele failed because " +
+                              "the current level is not String or parent " +
+                              "level is not List. " );
                 }
 
             }
         }
 
-        return ERROR;
+        if( updateJson ) {
+            saveJsonContext();
+        } 
+            
+        return SUCCESS;
+        
     }
 
     private void clearJsonWithOpp () throws ProxyFault {
