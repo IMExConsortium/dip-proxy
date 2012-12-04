@@ -30,6 +30,7 @@ public class JsonContextConfigAction extends ManagerSupport {
     private final String JSON = "json"; 
     private final String MAP = "map";
     private final String LIST = "list";
+    private final String STRING = "string";
 
     private Map<String, Object> topMap;     
     private JsonContext jsonContext;
@@ -303,6 +304,8 @@ public class JsonContextConfigAction extends ManagerSupport {
                 currentLevelType = MAP;
             } else if ( currentObj instanceof List ) {
                 currentLevelType = LIST;
+            } else if ( currentObj instanceof String ) {
+                currentLevelType = STRING;
             } else {
                 log.warn( "opAction: context top type is neither Map nor List. " );
                 return ERROR;
@@ -384,10 +387,14 @@ public class JsonContextConfigAction extends ManagerSupport {
                     } 
 
                     if ( parentLevelType.equals( LIST ) ) {
-                        ((List)parentObj).remove( levelArray[ maxOfLevel - 1 ][1] ); // drop a map
+                        int index = Integer.valueOf(
+                                levelArray[ maxOfLevel - 1 ][1] ).intValue();
+
+                        ((List)parentObj).remove( index ); // drop a map
                         saveJsonContext();
                         return SUCCESS;
                     }     
+                    log.info( "opAction: parentLevelType neither Map nor List. " );
                 } else {
                     log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," + 
                               " because the current level type is not a Map. " );
@@ -405,8 +412,9 @@ public class JsonContextConfigAction extends ManagerSupport {
                     }
 
                     if ( parentLevelType.equals( LIST ) ) {
-                        ((List)parentObj).remove( 
-                            levelArray[ maxOfLevel - 1 ][1] ); // drop a list
+                        int index = Integer.valueOf(
+                                levelArray[ maxOfLevel - 1 ][1] ).intValue();
+                        ((List)parentObj).remove( index ); // drop a list
                     }
 
                     saveJsonContext();
@@ -437,13 +445,29 @@ public class JsonContextConfigAction extends ManagerSupport {
             }
 
             if( opVal.equals( "ele" ) ) {
+                log.info( "opAction: currentLevelType=" + currentLevelType );
                 if( currentLevelType.equals( LIST ) ) {
                     log.info( "operationAction: drop a list element... ");
-                     ((List)currentObj).remove(
-                            levelArray[ maxOfLevel - 1 ][1] );
+                    int index = Integer.valueOf(
+                            levelArray[ maxOfLevel - 1 ][1] ).intValue();
+
+                    ((List)currentObj).remove( index );
                     saveJsonContext();
                     return SUCCESS;
                 }
+                
+                if( parentLevelType.equals( LIST ) 
+                    && currentLevelType.equals( STRING) ) 
+                {
+                    log.info( "operationAction: drop a ele ... ");
+                    int index = Integer.valueOf(
+                            levelArray[ maxOfLevel - 1 ][1] ).intValue();
+
+                    ((List)parentObj).remove( index );
+                    saveJsonContext();
+                    return SUCCESS;
+                }
+
             }
         }
 
