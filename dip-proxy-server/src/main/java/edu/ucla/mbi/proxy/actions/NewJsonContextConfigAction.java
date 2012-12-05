@@ -155,22 +155,10 @@ public class JsonContextConfigAction extends ManagerSupport {
 
                     levelArrayI[level -1] = oppVal;
                     if( oppKey.startsWith( "m" ) ) {
-                        //levelArray[ level -1 ][0] =  oppVal;
                         levelArrayT[level -1] = "m";
                     } 
 
                     if( oppKey.startsWith( "l" ) ) {
-                        //if( oppVal.matches( "([0]|[1-9][0-9]*)" ) ) {
-                        //    //*** oppVal is a number that is an index in the list 
-                        //    levelArray[ level -1 ][1] =  oppVal;
-                        //    levelArray2[level -1] = "l";
-                        //} else {
-                        //    log.warn( "opAction: opp(" + oppKey + "=" + 
-                        //              oppVal + ") oppVal has to be a number. " );
-                        //    return ERROR;
-                        //}
-
-                        //levelArray[ level -1 ][0] =  oppVal;
                         levelArrayT[level -1] = "l";
                     } 
 
@@ -199,12 +187,6 @@ public class JsonContextConfigAction extends ManagerSupport {
         int pathDpt = 0;
         
         for( int i = maxOfLevel -1; i >0; i-- ) { 
-            //if( ( levelArray[i][0] == null && levelArray[i][1] == null )
-            //      || ( levelArray[i][0] != null && levelArray[i][1] != null ) ) 
-            //{
-            //    log.warn( "opp level is not consistent. " );
-            //    return ERROR;
-            //}
             if( pathOk ){
                 if( levelArrayT[i] == null || levelArrayI[i] == null ){
                     pathOk = false;
@@ -227,17 +209,7 @@ public class JsonContextConfigAction extends ManagerSupport {
         String currentLevelType = null;  
         String parentLevelType = null;  
 
-        //if( contextMap.get(contextTop) instanceof Map ) {
-        //    currentLevelType = MAP;
-        //    currentObj = (Map<String, Object>) contextMap.get(contextTop);
-        //} else if( contextMap.get(contextTop) instanceof List ) {
-        //    currentLevelType = LIST;
-        //    currentObj = (List) contextMap.get(contextTop);
-        //} else {
-        //    log.warn( "opAction: context top type is neither Map nor List. " );
-        //    return ERROR;
-        //}
-
+        
         Collection currentColl = null;
         
         for( int i = 0; i < pathDpt; i++ ) {
@@ -262,6 +234,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             }
         }
 
+        // currentColl: not null collection to perform operation upon
         // opKey:  add|set|drop
         // opVal:  map|list|value 
         // newKey
