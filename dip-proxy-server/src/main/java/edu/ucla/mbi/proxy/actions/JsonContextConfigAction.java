@@ -117,17 +117,8 @@ public class JsonContextConfigAction extends ManagerSupport {
             return "json";
         }
 
-        if( opKey.equals( "clear" ) ) {
-            log.info( "execute: op.clear hit." );
-            if( getOpp() != null ) {
-                clearJsonWithOpp();
-            }
-            return SUCCESS;
-        }
-
-        String setKey = null;
-        String setVal = null;
-        String[][] levelArray = new String [ contextDepth ][2];
+        String newKey = null;
+        String newVal = null;
 
 
         String[] levelArrayT = new String[contextDepth];
@@ -139,6 +130,7 @@ public class JsonContextConfigAction extends ManagerSupport {
         //*** fill levelArray using oppVal
         for( String oppKey:getOpp().keySet() ) {
             String oppVal = getOpp().get( oppKey ); // mN|lN
+            log.info( "oppKey=" + oppKey + " and oppVal=" + oppVal );
 
             if( oppKey.startsWith( "m" ) || oppKey.startsWith( "l" ) ) {
                 //*** m means map and l means list
@@ -146,6 +138,7 @@ public class JsonContextConfigAction extends ManagerSupport {
 
                 try {
                     level = Integer.valueOf( oppKey.substring(1) ).intValue();
+                    log.info( "level=" + level );
                 } catch ( Exception e ) {
                     log.warn( "op: oppKey(" + oppKey + ") format wrong. " );
                     return ERROR;
@@ -155,22 +148,10 @@ public class JsonContextConfigAction extends ManagerSupport {
 
                     levelArrayI[level -1] = oppVal;
                     if( oppKey.startsWith( "m" ) ) {
-                        //levelArray[ level -1 ][0] =  oppVal;
                         levelArrayT[level -1] = "m";
                     } 
 
                     if( oppKey.startsWith( "l" ) ) {
-                        //if( oppVal.matches( "([0]|[1-9][0-9]*)" ) ) {
-                        //    //*** oppVal is a number that is an index in the list 
-                        //    levelArray[ level -1 ][1] =  oppVal;
-                        //    levelArray2[level -1] = "l";
-                        //} else {
-                        //    log.warn( "opAction: opp(" + oppKey + "=" + 
-                        //              oppVal + ") oppVal has to be a number. " );
-                        //    return ERROR;
-                        //}
-
-                        //levelArray[ level -1 ][0] =  oppVal;
                         levelArrayT[level -1] = "l";
                     } 
 
@@ -185,11 +166,12 @@ public class JsonContextConfigAction extends ManagerSupport {
             } 
                  
             if ( oppKey.equals( "key" ) ) {
-                setKey = oppVal;
+                newKey = oppVal;
+                log.info( "newKey coming in with " + newKey );
             } 
 
             if ( oppKey.equals( "value" ) ) {
-                setVal = oppVal;
+                newVal = oppVal;
             }
         }
         
@@ -198,418 +180,180 @@ public class JsonContextConfigAction extends ManagerSupport {
         boolean pathOk = false;
         int pathDpt = 0;
         
-        for( int i = maxOfLevel -1; i >0; i-- ) { 
-            //if( ( levelArray[i][0] == null && levelArray[i][1] == null )
-            //      || ( levelArray[i][0] != null && levelArray[i][1] != null ) ) 
-            //{
-            //    log.warn( "opp level is not consistent. " );
-            //    return ERROR;
-            //}
-            if( pathOk ){
-                if( levelArrayT[i] == null || levelArrayI[i] == null ){
+        for( int i = maxOfLevel; i > 0; i-- ) { 
+            log.info( "path i=" + i + " and pathOk=" + pathOk );
+            if( pathOk ) {
+                if( levelArrayT[i-1] == null || levelArrayI[i-1] == null ) {
                     pathOk = false;
                     break;
                 }
             } else {
-                if( levelArrayT[i] != null || levelArrayI[i] != null ){
+                if( levelArrayT[i-1] != null || levelArrayI[i-1] != null ) {
                     pathOk = true;
-                    pathDpt = i;
-                }
-            }
-        } 
-        if( !pathOk ){
-            // bad path
-        }
-        
-        boolean isNew = false; // check if the level is new added
-        Object currentObj = null;
-        Object parentObj = null;
-        String currentLevelType = null;  
-        String parentLevelType = null;  
-
-        //if( contextMap.get(contextTop) instanceof Map ) {
-        //    currentLevelType = MAP;
-        //    currentObj = (Map<String, Object>) contextMap.get(contextTop);
-        //} else if( contextMap.get(contextTop) instanceof List ) {
-        //    currentLevelType = LIST;
-        //    currentObj = (List) contextMap.get(contextTop);
-        //} else {
-        //    log.warn( "opAction: context top type is neither Map nor List. " );
-        //    return ERROR;
-        //}
-
-        Collection currentColl = null;
-        
-        for( int i = 0; i < pathDpt; i++ ) {
-            if( currentColl==null ){
-                currentColl = contextMap.get( contextTop );
-            } else {
-                if( levelArrayT[i].equals("m") ){
-                    try{ 
-                        currentColl = (Map) currentColl.get(levelArrayI[i]);
-                    } catch(Exception ex) {
-                        // path error
-                    }
-                }
-                if(levelArrayT[i].equals("l") ){
-                    try{
-                        int index = Integer.valueOf(levelArrayI[i]);
-                        currentColl = (List) currentColl.get( index );
-                    } catch(Exception ex) {
-                        // path error
-                    }
+                    pathDpt = i ;
                 }
             }
         }
+ 
+        if( !pathOk && pathDpt > 0) {
+            log.warn( " wrong level path in the url request. " );
+            return ERROR;
+        }
+        
+        //Object currentObj = null;
+        Object currentObj = contextMap.get( contextTop );
+        boolean updateJson = false;
 
+        //***
+        // currentObj: not null collection to perform operation upon
         // opKey:  add|set|drop
         // opVal:  map|list|value 
         // newKey
         // newVal
-        
-        if( opKey.equals("add")){
+        //***
 
-            Collection ncoll = null;
-            if(opVal.equals("map")){
-                ncoll = new HashMap();
+        log.info( "pathDpt=" + pathDpt );
+        for( int i = 0; i < pathDpt; i++ ) {
+        
+            if( levelArrayT[i].equals("m") ) {
+                try {
+                    currentObj = ((Map)currentObj).get( levelArrayI[i] );
+                } catch ( Exception ex ) {
+                    log.warn( "The map level" + i + " =" + levelArrayI[i] +
+                              " does not match with the json file. " );
+                    return ERROR;
+                }
+
+                if( currentObj == null ) {
+                    log.warn( "The map level" + i + " =" + levelArrayI[i] +
+                              " does not match with the json file. " );
+                    return ERROR;
+                }
             }
-            if(opVal.equals("list")){
-                ncoll = new ArrayList();
+
+            if( levelArrayT[i].equals("l") ) {
+                try {
+                    int index = Integer.valueOf( levelArrayI[i] );
+                    currentObj = ((List)currentObj).get( index );
+                } catch( Exception ex ) {
+                    log.warn( "The list level" + i + " =" + levelArrayI[i] +
+                              " does not match with the json file. " ); 
+                    return ERROR;
+                }
+            }
+        }
+  
+        if( opKey.equals("add") ) {
+
+            Object nextObj = null;
+
+            if( opVal.equals("map") ) {
+                nextObj = new HashMap();
+            }
+            if( opVal.equals("list") ) {
+                nextObj = new ArrayList();
             }
             
-            if( currentColl instanceOf Map){
-                ((Map) currentColl).put( newKey, ncoll);
+            if( currentObj instanceof Map ) {
+                log.info( "currentObj is Map, and newKey=" + newKey );
+                ((Map)currentObj).put( newKey, nextObj );
+                log.info( "currentObj after put is " + currentObj );
+                updateJson = true;
             } 
             
-            if( currentColl instanceOf List){
-                ((List)currentList).add( ncoll );
+            if( currentObj instanceof List ) {
+                log.info( "currentObj is List. " );
+                if( newKey != null && newKey.matches("([0]|[1-9][0-9]*)" ) ) {
+                    int index = Integer.valueOf( newKey );
+                    for( int i=((List)currentObj).size();
+                         i<=index; i++ )
+                    {
+                        ((List)currentObj).add( null );
+                    }
+                    ((List)currentObj).set( index, nextObj );
+                } else {
+                    ((List)currentObj).add( nextObj ); // only add list at the end of the parent list
+                }
+                updateJson = true;
             } 
         } else {
             
             Object co = null;
-            if( currentColl instanceOf Map){
-                co = ((Map)currentColl).get(newKey);                
+
+            if( currentObj instanceof Map ) {
+                co = ((Map)currentObj).get( newKey );                
             }
-            if( currentColl instanceOf List){
-                try{
-                    co = ((List)currentColl).get(Integer.valueOf(newKey));
-                } catch(Exception ex){
-                    //error
+
+            if( currentObj instanceof List ) {
+                int index = Integer.valueOf( newKey );
+                log.info( "index=" + index + " and list size=" + 
+                          ((List)currentObj).size() );
+                if( index < ((List)currentObj).size() ) {
+                    try{
+                        co = ((List)currentObj).get( index );
+                    } catch( Exception ex ) {
+                        log.warn( "The newKey=" + newKey + " for the list " +
+                                  "index does not match with the json file. " );
+                        return ERROR;
+                    }
                 }
             }
             
-            if( opKey.equals("set")){
+            if( opKey.equals("set") ) {
 
-                if( co == null ||  co instanceOf String ){
-                
-                    if(currentColl instanceOf Map){
-                        ((Map)currentColl).put(newKey,newVal);
+                if( co != null ||  co instanceof String
+                    || co instanceof Map || co instanceof List ) 
+                {
+                    if( currentObj instanceof Map ) {
+                        ((Map)currentObj).put( newKey, newVal );
+                        updateJson = true;
                     }
-                    if(currentColl instanceOf List){
-                        try{
-                            integer index = Integer.valueOf(newKey);
-                            for( int i=((List)currentColl).size();
-                                 i<=index; i++){
-                                ((List)currentColl).add( null );
+            
+                    if( currentObj instanceof List ) {
+                        log.info( "currentObj is List. " );
+                        try {
+                            int index = Integer.valueOf( newKey );
+                            for( int i=((List)currentObj).size();
+                                 i<=index; i++ ) 
+                            {
+                                ((List)currentObj).add( null );
                             }
-                            ((List)currentColl).set( index, newVal );
-                        }catch(Exception ex){
-                            // error
+                            ((List)currentObj).set( index, newVal );
+                            updateJson = true;
+                        } catch( Exception ex ) {
+                            log.warn( "The newKey=" + newKey + "for the list " +   
+                                      "index does not match with the json file. " );
+                            return ERROR;
                         }       
                     }
                 }
             }
             
             if( opKey.equals("drop")){
-                
-                if( (co instaceOf Map && !opVal.equals("map"))
-                    ||(co instaceOf List && !opVal.equals("list"))
-                    ||(co instaceOf String && !opVal.equals("value"))){
-                
-                    //error: wrong object to drop
-                }
-
-                if( currentColl instanceOf Map ){
-                    ((Map)currentColl).remove( newKey );
-                }
-                if( currentColl instanceOf List ){
-                    ((List)currentColl).remove( Integer.valueOf(newKey) );
-                }
-            }
-        }
-
-        boolean updateJson = true;
-
-        //*** trace level tree
-
-        /*
-
-        for( int i = 0; i < maxOfLevel; i++ ) {
-            
-            String levelKey = null;
-
-            parentObj = currentObj;
-            parentLevelType = currentLevelType;
-
-            if( levelArray[i][0] != null ) {
-                
-                if( !parentLevelType.equals( MAP ) ) {
-                    log.warn( "opAction: opp level(" + i + ") type does not " +
-                              "match with json file. " );
-                    return ERROR;
-                }
-               
-                levelKey = levelArray[i][0];
-
-                if( ((Map<String, Object>)parentObj)
-                            .get( levelKey ) == null ) 
-                { 
-                    if(  i == maxOfLevel - 1 && opKey.equals("add") ) {
-                        if( opVal.equals( MAP ) ) {
-                            Map<String, Object> levelMap = new HashMap();
-                            ((Map<String, Object>)parentObj)
-                                .put( levelKey, levelMap );
-
-                            isNew = true;
-                        } else if ( opVal.equals( LIST ) ) {
-                            List<Object> levelList = new ArrayList();
-                            ((Map<String, Object>)parentObj)
-                                .put( levelKey, levelList );
-
-                            isNew = true;
-                        } else {
-                            log.warn( "opAction: operation add for " +
-                                      "value(" + opVal + ") neither " + 
-                                      "map nor list. " );
-                            return ERROR;
-                        }
-                    } else {
-                        log.warn( "opAction: opp level(" + i + ") does not " +
-                                  "match with json file. " );
-                        return ERROR;
-                    }
-                } 
-
-                currentObj = ((Map<String, Object>)parentObj).get( levelKey );
-
-            }
-
-            if ( levelArray[i][1] != null ) {
-                
-                if( !parentLevelType.equals( LIST ) ) {
-                    log.warn( "opAction: opp level(" + i + ") type does not " +
-                              "match with json file. " );
-                    return ERROR;
-                }
-
-                log.info( "opAction: before get index. " );    
-                levelKey = levelArray[i][1];
-                int index = Integer.valueOf(levelKey).intValue();
-                log.info( "opAction: index=" + index );
-
-                if( index == ((List)currentObj).size() ) {
-                    if( i == maxOfLevel - 1 && opKey.equals("add") ) {
-                        if( opVal.equals( MAP ) ) {
-                            Map<String, Object> levelMap = new HashMap();
-                            ((List)parentObj).add( levelMap );
-                            isNew = true;
-                        } else if( opVal.equals( LIST ) ) {
-                            List levelList = new ArrayList();
-                            ((List)parentObj).add( levelList );
-                            isNew = true;
-                        } else {
-                            log.warn( "opAction: operation add for " +
-                                      "value(" + opVal + ") neither " +
-                                      "map nor list. " );
-                            return ERROR;
-                        }
-                        currentObj = ((List)parentObj).get( index );
-                    } else {
-                        log.warn( "opAction: list index=" + index +
-                                  " does not match with the json file. " ); 
-                        return ERROR;
-                    }
-                } else if ( index < ((List)currentObj).size() ) { 
-                    currentObj = ((List)parentObj).get( index );
-                } else {
-                    log.warn( "opAction: list index=" + index +
-                              " does not match with the json file. " );  
-                    return ERROR;
-                } 
-            }
-
-            if( currentObj instanceof Map ) {
-                currentLevelType = MAP;
-            } else if ( currentObj instanceof List ) {
-                currentLevelType = LIST;
-            } else if ( currentObj instanceof String ) {
-                currentLevelType = STRING;
-            } else {
-                log.warn( "opAction: context top type is neither Map nor List. " );
-                return ERROR;
-            }
-        }           
-
-        
-           
-
- 
-        if( opKey.equals("add") && currentObj != null ) {
-            if( isNew ) {
-                log.info( "operationAction: add map... " ); // add a map/list
-                updateJson = true;
-            }
-        }
-    
-        if( opKey.equals("set") ) {
-            if( opVal.equals( "prop" ) ) {
-                if( currentLevelType.equals( MAP ) ) {
-                    if( ((Map<String, Object>)currentObj).get(setKey) == null
-                         || ( ((Map<String, Object>)currentObj)
-                                    .get(setKey) instanceof String 
-                                && !((Map<String, Object>)currentObj)
-                                    .get(setKey).equals( setVal ) ) ) 
-                    {
-                        log.info( "operationAction: set prop.." );
-                        ((Map<String, Object>)currentObj).put( setKey, setVal ); //add or update property
-                        updateJson = true;
-                    }
-                } else {
-                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," + 
-                              " because the last level type is not Map. " );
-                    return ERROR;
-                }
-            }
-
-            if( opVal.equals( "ele" ) ) {
-                List objList = null;
-
-                int index = Integer.valueOf(
-                        levelArray[maxOfLevel - 1][1] ).intValue();
-
-                if( currentLevelType.equals( LIST ) ) {
-                    objList = (List)currentObj;                
-                } 
-                
-                if( currentLevelType.equals( STRING ) 
-                    && parentLevelType.equals( LIST ) ) 
-                {  
-                    objList = (List) parentObj;
-                }
-                    
-                if( objList != null ) {
-                    if( index == objList.size() ) {
-                        ((List)currentObj).add( setVal ); // add a new element
-                        updateJson = true;
-                    } else if( index < objList.size()  
-                               && !objList.get( index ).equals( setVal ) ) 
-                    {
-
-                        objList.set( index, setVal ); // update element
-                        updateJson = true;
-
-                    } else {
-                       log.warn( "opAction: op (" + opKey + "=" + opVal + 
-                                 ") failed because the last level type " +
-                                 "is not List or the index of List is wrong." );
-                        return ERROR;
-                    }
-                }           
-            }   
-        }
-
-        if( opKey.equals("drop") && currentObj != null ) {
-            if( opVal.equals("map") ) {
-                if( currentLevelType.equals( MAP ) ) { 
-                    log.info( "operationAction: drop map... ");
-                    if( parentLevelType.equals( MAP ) ) {
-
-                        ((Map<String, Object>)parentObj)
-                            .remove( levelArray[ maxOfLevel - 1 ][0] ); // drop a map   
-
-                        updateJson = true;
-                    } 
-
-                    if ( parentLevelType.equals( LIST ) ) {
-                        int index = Integer.valueOf(
-                                levelArray[ maxOfLevel - 1 ][1] ).intValue();
-
-                        ((List)parentObj).remove( index ); // drop a map
-
-                        updateJson = true;
-                    }     
-                } else {
-                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," + 
-                              " because the current level type is not a Map. " );
-                    return ERROR;
-                }
-            }
-          
-            if( opVal.equals("list") ) {
-                if( currentLevelType.equals( LIST ) ) {    
-                    log.info( "operationAction: drop list... ");
-
-                    if( parentLevelType.equals( MAP ) ) {
-
-                        ((Map<String, Object>)parentObj)
-                            .remove( levelArray[ maxOfLevel - 1 ][0]); // drop a list in map   
-
-                        updateJson = true;
-                    }
-
-                    if ( parentLevelType.equals( LIST ) ) {
-                        int index = Integer.valueOf(
-                                levelArray[ maxOfLevel - 1 ][1] ).intValue();
-                        ((List)parentObj).remove( index ); // drop a list in list
-                        updateJson = true;
-                    }
-                    
-                } else {
-                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," +
-                              " because the current level type is not a List. " );
-                    return ERROR;
-                }
-            }
-
-            if( opVal.equals("prop") ) { 
-                if( currentLevelType.equals( MAP ) ) {
-                    if( ((Map<String, Object>)currentObj).get(setKey) != null  
-                        && ((Map<String, Object>)currentObj)
-                                .get(setKey) instanceof String ) 
-                    {
-                        log.info( "operationAction: drop prop: key=" + setKey );
-                        ((Map<String, Object>)currentObj).remove(setKey); //remove property
-                        updateJson = true;
-                    } 
-                } else {
-                    log.warn( "opAction: op (" + opKey + "=" + opVal + ") failed," +
-                              " because the current level type is not a Map. " );
-                    return ERROR;
-                }   
-            }
-
-            if( opVal.equals( "ele" ) ) {
-                log.info( "opAction: currentLevelType=" + currentLevelType );
-
-                if( parentLevelType.equals( LIST ) 
-                    && currentLevelType.equals( STRING) ) 
+                log.info( "op is drop. " );                
+                if( ( co instanceof Map && !opVal.equals("map") )
+                    ||( co instanceof List && !opVal.equals("list") ) )
                 {
-                    log.info( "operationAction: drop a ele ... ");
+                    log.warn( "The operation drop " + opVal + " does not " +
+                              "match with the json file. " );
 
-                    int index = Integer.valueOf(
-                            levelArray[ maxOfLevel - 1 ][1] ).intValue();
-
-                    ((List)parentObj).remove( index );
-                    updateJson = true;
-                } else {
-                    log.warn( "opAction: drop ele failed because " +
-                              "the current level is not String or parent " +
-                              "level is not List. " );
+                    return ERROR;
                 }
 
+                if( currentObj instanceof Map ){
+                    ((Map)currentObj).remove( newKey );
+                    updateJson = true;
+                }
+                if( currentObj instanceof List ) {
+                    int index = Integer.valueOf( newKey );
+                    log.info( "drop index=" + Integer.valueOf( newKey ) );
+                    ((List)currentObj).remove( index );
+                    log.info( "after remove index. " );
+                    updateJson = true;
+                }
             }
         }
-        */
+
         if( updateJson ) {
             saveJsonContext();
         } 
@@ -618,51 +362,6 @@ public class JsonContextConfigAction extends ManagerSupport {
         
     }
 
-    private void clearJsonWithOpp () throws ProxyFault {
- 
-        for( String oppKey:getOpp().keySet() ) {
-            
-            if( !oppKey.contains( "_" ) ) {
-                continue;
-            } 
-
-            String[] oppKeyArray = oppKey.split( "_" );
-            String provider = oppKeyArray[0];
-            String service = oppKeyArray[1];
-            String serverKey = oppKeyArray[2];
-            
-            Map<String, Object> jsonProviderMap = 
-                (Map<String, Object>) ( (Map<String, Object>) contextMap
-                                        .get( contextTop ) ).get( provider ) ;
-            
-            if( jsonProviderMap == null ) {
-                //*** create new provider in Json object        
-                jsonProviderMap = new HashMap();
-            }
-
-            Map<String, Object> jsonServiceMap =
-                (Map<String, Object>) jsonProviderMap.get( service );
-            
-            if( jsonServiceMap == null ) {
-                //*** create new service in Json object
-                jsonServiceMap = new HashMap();
-            }
-            
-            String jsonServerValue = 
-                (String)jsonServiceMap.get( serverKey );
-            
-            jsonServerValue = ""  ;
-            
-            jsonServiceMap.put( serverKey, jsonServerValue );
-            jsonProviderMap.put( service, jsonServiceMap );
-            
-            ((Map<String, Object>) contextMap.get( contextTop) )
-                .put( provider, jsonProviderMap);
-            
-        }        
-        
-    }
-    
     private void saveJsonContext() throws ProxyFault {
             
         String jsonConfigFile = (String) jsonContext.getConfig()

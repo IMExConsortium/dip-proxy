@@ -78,7 +78,6 @@
         
         <tr>
             <td align="center" colspan="2">
-                    <s:submit name="op.clear" value="Clear" />
                     <s:submit name="op.show" value="JsonShow"/>
             </td>
 
