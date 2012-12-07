@@ -265,10 +265,11 @@ public class JsonContextConfigAction extends ManagerSupport {
                 log.info( "currentObj is List. " );
                 if( newKey != null && newKey.matches("([0]|[1-9][0-9]*)" ) ) {
                     int index = Integer.valueOf( newKey );
-                    for( int i=((List)currentObj).size();
-                         i<=index; i++ )
-                    {
+                    for( int i=((List)currentObj).size(); i<=index; i++ ){
                         ((List)currentObj).add( null );
+                        log.info( i+ " null=" + ((List)currentObj).get(i));
+
+                        log.info( i+ " if(null==null)=" + (((List)currentObj).get(i) == null) );
                     }
                     ((List)currentObj).set( index, nextObj );
                 } else {
@@ -301,9 +302,8 @@ public class JsonContextConfigAction extends ManagerSupport {
             
             if( opKey.equals("set") ) {
 
-                if( co != null ||  co instanceof String
-                    || co instanceof Map || co instanceof List ) 
-                {
+                if( co == null ||  co instanceof String ){
+
                     if( currentObj instanceof Map ) {
                         ((Map)currentObj).put( newKey, newVal );
                         updateJson = true;
