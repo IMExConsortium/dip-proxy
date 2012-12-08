@@ -120,10 +120,8 @@ public class JsonContextConfigAction extends ManagerSupport {
         String newKey = null;
         String newVal = null;
 
-
-        String[] levelArrayT = new String[contextDepth];
-        String[] levelArrayI = new String[contextDepth];
-
+        String[] levelArrayT  = null;
+        String[] levelArrayI = null;
 
         int maxOfLevel = 0; // this value <= contextDepth
 
@@ -132,37 +130,29 @@ public class JsonContextConfigAction extends ManagerSupport {
             String oppVal = getOpp().get( oppKey ); // mN|lN
             log.info( "oppKey=" + oppKey + " and oppVal=" + oppVal );
 
-            if( oppKey.startsWith( "m" ) || oppKey.startsWith( "l" ) ) {
-                //*** m means map and l means list
-                int level;
+            if( oppKey.startsWith( "path" ) ) {
+                levelArrayI = oppVal.split("\\|");
+                log.info( "levelArrayI length=" + levelArrayI.length );
+                for( int i=0; i < levelArrayI.length; i++ ) {
+                    log.info( "i=" + i + ": " + levelArrayI[i] );
+                } 
 
-                try {
-                    level = Integer.valueOf( oppKey.substring(1) ).intValue();
-                    log.info( "level=" + level );
-                } catch ( Exception e ) {
-                    log.warn( "op: oppKey(" + oppKey + ") format wrong. " );
-                    return ERROR;
-                }
-
-                if( level > 0 && level <= contextDepth ) {
-
-                    levelArrayI[level -1] = oppVal;
-                    if( oppKey.startsWith( "m" ) ) {
-                        levelArrayT[level -1] = "m";
-                    } 
-
-                    if( oppKey.startsWith( "l" ) ) {
-                        levelArrayT[level -1] = "l";
-                    } 
-
-                    if( level > maxOfLevel ) {
-                        maxOfLevel = level;
-                    }
-                } else {
+                if( levelArrayI.length > contextDepth ) {
                     log.warn( "opAction: opp(" + opKey + "=" + opVal + ") " +
                               "level should not be greater than contextDepth. " );
                     return ERROR; 
                 }
+
+                levelArrayT = new String[ levelArrayI.length ]; 
+                
+                for( int i = 0; i < levelArrayI.length; i++ ) {
+                    if( levelArrayI[i].startsWith( "^" ) ) {
+                        levelArrayT[i] = "l";
+                    } else {
+                        levelArrayT[i] = "m";
+                    }
+                }
+
             } 
                  
             if ( oppKey.equals( "key" ) ) {
@@ -176,11 +166,14 @@ public class JsonContextConfigAction extends ManagerSupport {
         }
         
         //*** validate levelArray
-
         boolean pathOk = false;
         int pathDpt = 0;
         
-        for( int i = maxOfLevel; i > 0; i-- ) { 
+        if( levelArrayI != null ) {
+            pathDpt = levelArrayI.length;
+        }
+       
+        for( int i = pathDpt; i > 0; i-- ) {
             log.info( "path i=" + i + " and pathOk=" + pathOk );
             if( pathOk ) {
                 if( levelArrayT[i-1] == null || levelArrayI[i-1] == null ) {
@@ -189,18 +182,21 @@ public class JsonContextConfigAction extends ManagerSupport {
                 }
             } else {
                 if( levelArrayT[i-1] != null || levelArrayI[i-1] != null ) {
+                    if( levelArrayT[i-1].matches( "^([0]|[1-9][0-9]*)" )  )  {
+                        levelArrayT[i-1] = levelArrayT[i-1].substring( 1 );
+                    }
                     pathOk = true;
-                    pathDpt = i ;
                 }
             }
         }
- 
+
         if( !pathOk && pathDpt > 0) {
-            log.warn( " wrong level path in the url request. " );
-            return ERROR;
+            if( !pathOk ) {
+                log.warn( " wrong level path in the url request. " );
+                return ERROR;
+            }
         }
-        
-        //Object currentObj = null;
+
         Object currentObj = contextMap.get( contextTop );
         boolean updateJson = false;
 
@@ -212,7 +208,6 @@ public class JsonContextConfigAction extends ManagerSupport {
         // newVal
         //***
 
-        log.info( "pathDpt=" + pathDpt );
         for( int i = 0; i < pathDpt; i++ ) {
         
             if( levelArrayT[i].equals("m") ) {
@@ -266,10 +261,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                 if( newKey != null && newKey.matches("([0]|[1-9][0-9]*)" ) ) {
                     int index = Integer.valueOf( newKey );
                     for( int i=((List)currentObj).size(); i<=index; i++ ){
-                        ((List)currentObj).add( null );
-                        log.info( i+ " null=" + ((List)currentObj).get(i));
-
-                        log.info( i+ " if(null==null)=" + (((List)currentObj).get(i) == null) );
+                        ((List)currentObj).add( "" );
                     }
                     ((List)currentObj).set( index, nextObj );
                 } else {
@@ -302,7 +294,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             
             if( opKey.equals("set") ) {
 
-                if( co == null ||  co instanceof String ){
+                if( co != null &&  co instanceof String ) {
 
                     if( currentObj instanceof Map ) {
                         ((Map)currentObj).put( newKey, newVal );
@@ -316,7 +308,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                             for( int i=((List)currentObj).size();
                                  i<=index; i++ ) 
                             {
-                                ((List)currentObj).add( null );
+                                ((List)currentObj).add( "" );
                             }
                             ((List)currentObj).set( index, newVal );
                             updateJson = true;
@@ -340,7 +332,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                     return ERROR;
                 }
 
-                if( currentObj instanceof Map ){
+                if( currentObj instanceof Map ) {
                     ((Map)currentObj).remove( newKey );
                     updateJson = true;
                 }
