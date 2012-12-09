@@ -19,6 +19,8 @@ import edu.ucla.mbi.fault.*;
 import java.util.*;
 import java.io.*;
 
+import org.json.JSONObject;
+
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.util.JsonContext;
 import edu.ucla.mbi.util.struts2.action.ManagerSupport;
@@ -166,6 +168,7 @@ public class JsonContextConfigAction extends ManagerSupport {
         }
         
         //*** validate levelArray
+
         boolean pathOk = false;
         int pathDpt = 0;
         
@@ -261,7 +264,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                 if( newKey != null && newKey.matches("([0]|[1-9][0-9]*)" ) ) {
                     int index = Integer.valueOf( newKey );
                     for( int i=((List)currentObj).size(); i<=index; i++ ){
-                        ((List)currentObj).add( "" );
+                        ((List)currentObj).add( null );
                     }
                     ((List)currentObj).set( index, nextObj );
                 } else {
@@ -294,7 +297,8 @@ public class JsonContextConfigAction extends ManagerSupport {
             
             if( opKey.equals("set") ) {
 
-                if( co != null &&  co instanceof String ) {
+                if( co == JSONObject.NULL || co == null 
+                    || co instanceof String ) {
 
                     if( currentObj instanceof Map ) {
                         ((Map)currentObj).put( newKey, newVal );
@@ -308,7 +312,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                             for( int i=((List)currentObj).size();
                                  i<=index; i++ ) 
                             {
-                                ((List)currentObj).add( "" );
+                                ((List)currentObj).add( JSONObject.NULL );
                             }
                             ((List)currentObj).set( index, newVal );
                             updateJson = true;
