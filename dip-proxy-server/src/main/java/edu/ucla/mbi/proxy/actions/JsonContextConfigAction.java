@@ -112,7 +112,8 @@ public class JsonContextConfigAction extends ManagerSupport {
         return ERROR;
     }
   
-    private String operationAction ( String opKey, String opVal ) throws ProxyFault {
+    private String operationAction ( String opKey, String opVal ) 
+                                                    throws ProxyFault {
         
         if( opKey.equals( "show" ) ) {
             log.info( "execute: op.show hit. " );
@@ -127,9 +128,9 @@ public class JsonContextConfigAction extends ManagerSupport {
 
         int maxOfLevel = 0; // this value <= contextDepth
 
-        //*** fill levelArray using oppVal
+        //*** fill levelArrayI using oppVal
         for( String oppKey:getOpp().keySet() ) {
-            String oppVal = getOpp().get( oppKey ); // mN|lN
+            String oppVal = getOpp().get( oppKey ); 
             log.info( "oppKey=" + oppKey + " and oppVal=" + oppVal );
 
             if( oppKey.startsWith( "path" ) ) {
@@ -185,7 +186,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             }
         }
 
-        if( !pathOk && pathDpt > 0) {
+        if( !pathOk && pathDpt > 0 ) {
             if( !pathOk ) {
                 log.warn( " wrong level path in the url request. " );
                 return ERROR;
@@ -209,7 +210,7 @@ public class JsonContextConfigAction extends ManagerSupport {
         
             if( levelArrayT[i].equals("m") ) {
                 try {
-                    currentObj = ((Map)currentObj).get( levelArrayI[i] );
+                    currentObj = ( (Map)currentObj).get( levelArrayI[i] );
                 } catch ( Exception ex ) {
                     log.warn( "The map level" + i + " =" + levelArrayI[i] +
                               " does not match with the json file. " );
@@ -242,6 +243,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             if( opVal.equals("map") ) {
                 nextObj = new HashMap();
             }
+
             if( opVal.equals("list") ) {
                 nextObj = new ArrayList();
             }
@@ -279,7 +281,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                 log.info( "index=" + index + " and list size=" + 
                           ((List)currentObj).size() );
                 if( index < ((List)currentObj).size() ) {
-                    try{
+                    try {
                         co = ((List)currentObj).get( index );
                     } catch( Exception ex ) {
                         log.warn( "The newKey=" + newKey + " for the list " +
@@ -304,8 +306,8 @@ public class JsonContextConfigAction extends ManagerSupport {
                         try {
                             int index = Integer.valueOf( newKey );
                             for( int i=((List)currentObj).size();
-                                 i<=index; i++ ) 
-                            {
+                                 i<=index; i++ )  {
+
                                 ((List)currentObj).add( JSONObject.NULL );
                             }
                             ((List)currentObj).set( index, newVal );
@@ -319,11 +321,11 @@ public class JsonContextConfigAction extends ManagerSupport {
                 }
             }
             
-            if( opKey.equals("drop")){
+            if( opKey.equals("drop") ) {
                 log.info( "op is drop. " );                
                 if( ( co instanceof Map && !opVal.equals("map") )
-                    ||( co instanceof List && !opVal.equals("list") ) )
-                {
+                    ||( co instanceof List && !opVal.equals("list") ) ) {
+
                     log.warn( "The operation drop " + opVal + " does not " +
                               "match with the json file. " );
 
@@ -334,6 +336,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                     ((Map)currentObj).remove( newKey );
                     updateJson = true;
                 }
+
                 if( currentObj instanceof List ) {
                     int index = Integer.valueOf( newKey );
                     log.info( "drop index=" + Integer.valueOf( newKey ) );
@@ -366,7 +369,6 @@ public class JsonContextConfigAction extends ManagerSupport {
         
         try { 
             jsonContext.writeJsonConfigDef( srcPath  );
-            
         } catch ( Exception e ) {
             log.info( " saveNativeServerConfigure exception: " + e.toString() );
             throw FaultFactory.newInstance ( 27 ); // json configuration         
