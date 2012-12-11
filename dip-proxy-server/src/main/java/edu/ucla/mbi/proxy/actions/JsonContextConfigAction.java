@@ -165,15 +165,8 @@ public class JsonContextConfigAction extends ManagerSupport {
         }
         
         //*** validate levelArray
-
         boolean pathOk = false;
-        int pathDpt = 0;
-        
-        if( levelArrayI != null ) {
-            pathDpt = levelArrayI.length;
-        }
-       
-        for( int i = pathDpt; i > 0; i-- ) {
+        for( int i = levelArrayI.length; i > 0; i-- ) {
             if( pathOk ) {
                 if( levelArrayT[i-1] == null || levelArrayI[i-1] == null ) {
                     pathOk = false;
@@ -186,27 +179,25 @@ public class JsonContextConfigAction extends ManagerSupport {
             }
         }
 
-        if( !pathOk && pathDpt > 0 ) {
-            if( !pathOk ) {
-                log.warn( " wrong level path in the url request. " );
-                return ERROR;
-            }
+        if( !pathOk && levelArrayI.length > 0 ) {
+            log.warn( "wrong level path in the url request. " );
+            return ERROR;
         }
 
         
         Object currentObj = contextMap.get( contextTop );
         boolean updateJson = false;
 
-        //***
-        // currentObj: not null collection to perform operation upon
-        // opKey:  add|set|drop
-        // opVal:  map|list|value 
-        // opp.path format: keyOfMap|^indexOfList|keyOfMap|
-        // newKey: opp.key 
-        // newVal: opp.value
-        //***
+        /** Comment:
+         * currentObj: not null collection to perform operation upon
+         * opKey:  add|set|drop
+         * opVal:  map|list|value 
+         * opp.path format: keyOfMap|^indexOfList|keyOfMap|
+         * newKey: opp.key 
+         * newVal: opp.value
+         **/
 
-        for( int i = 0; i < pathDpt; i++ ) {
+        for( int i = 0; i < levelArrayI.length; i++ ) {
         
             if( levelArrayT[i].equals("m") ) {
                 try {
