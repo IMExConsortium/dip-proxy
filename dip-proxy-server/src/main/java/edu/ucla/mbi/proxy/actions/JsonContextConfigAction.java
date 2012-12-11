@@ -134,10 +134,6 @@ public class JsonContextConfigAction extends ManagerSupport {
 
             if( oppKey.startsWith( "path" ) ) {
                 levelArrayI = oppVal.split("\\|");
-                log.info( "levelArrayI length=" + levelArrayI.length );
-                for( int i=0; i < levelArrayI.length; i++ ) {
-                    log.info( "i=" + i + ": " + levelArrayI[i] );
-                } 
 
                 if( levelArrayI.length > contextDepth ) {
                     log.warn( "opAction: opp(" + opKey + "=" + opVal + ") " +
@@ -150,6 +146,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                 for( int i = 0; i < levelArrayI.length; i++ ) {
                     if( levelArrayI[i].startsWith( "^" ) ) {
                         levelArrayT[i] = "l";
+                        levelArrayI[i] = levelArrayI[i].substring( 1 ); //remove ^ char
                     } else {
                         levelArrayT[i] = "m";
                     }
@@ -159,7 +156,6 @@ public class JsonContextConfigAction extends ManagerSupport {
                  
             if ( oppKey.equals( "key" ) ) {
                 newKey = oppVal;
-                log.info( "newKey coming in with " + newKey );
             } 
 
             if ( oppKey.equals( "value" ) ) {
@@ -177,7 +173,6 @@ public class JsonContextConfigAction extends ManagerSupport {
         }
        
         for( int i = pathDpt; i > 0; i-- ) {
-            log.info( "path i=" + i + " and pathOk=" + pathOk );
             if( pathOk ) {
                 if( levelArrayT[i-1] == null || levelArrayI[i-1] == null ) {
                     pathOk = false;
@@ -185,9 +180,6 @@ public class JsonContextConfigAction extends ManagerSupport {
                 }
             } else {
                 if( levelArrayT[i-1] != null || levelArrayI[i-1] != null ) {
-                    if( levelArrayT[i-1].matches( "^([0]|[1-9][0-9]*)" )  )  {
-                        levelArrayT[i-1] = levelArrayT[i-1].substring( 1 );
-                    }
                     pathOk = true;
                 }
             }
@@ -200,6 +192,7 @@ public class JsonContextConfigAction extends ManagerSupport {
             }
         }
 
+        
         Object currentObj = contextMap.get( contextTop );
         boolean updateJson = false;
 
@@ -207,8 +200,9 @@ public class JsonContextConfigAction extends ManagerSupport {
         // currentObj: not null collection to perform operation upon
         // opKey:  add|set|drop
         // opVal:  map|list|value 
-        // newKey
-        // newVal
+        // opp.path format: keyOfMap|^indexOfList|keyOfMap|
+        // newKey: opp.key 
+        // newVal: opp.value
         //***
 
         for( int i = 0; i < pathDpt; i++ ) {
@@ -264,7 +258,7 @@ public class JsonContextConfigAction extends ManagerSupport {
                 if( newKey != null && newKey.matches("([0]|[1-9][0-9]*)" ) ) {
                     int index = Integer.valueOf( newKey );
                     for( int i=((List)currentObj).size(); i<=index; i++ ){
-                        ((List)currentObj).add( null );
+                        ((List)currentObj).add( JSONObject.NULL );
                     }
                     ((List)currentObj).set( index, nextObj );
                 } else {
