@@ -33,11 +33,8 @@ public class RemoteServerContext {
 
     private int debug = 0;
 
-    //private ProxyTransformer transformer= null;
-    
     private Map properties = new HashMap();
 
-    //private RemoteServer nativeServer = null;
     private Map<String, RemoteServer> nativeServerMap = new HashMap();
 
     private RemoteProxyServer proxyServer = null;
@@ -88,11 +85,6 @@ public class RemoteServerContext {
       	return router.createRouter();
     }
 
-    /*
-    public ProxyTransformer getTransformer(){
-	    return transformer;
-    } */
-
     public void setProperty(String name, Object value){
 	    properties.put(name,value);
     }
@@ -134,12 +126,8 @@ public class RemoteServerContext {
 	    log.info( "  debug=" + context.get( "debug" ) );
 	    debug = (Integer) context.get( "debug" );
        
-	    //log.info( "  transformer=" + context.get( "transformer" ) );
-	    //transformer = (ProxyTransformer) context.get( "transformer" );
-        
         log.info( "  servers:" );
 
-        
         nativeServerMap = (Map<String, RemoteServer>) context.get( "nativeServer" );
         
         log.info( "   proxyProto=" + context.get( "proxyProto" ) );

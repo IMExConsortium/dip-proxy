@@ -106,9 +106,7 @@ public class ProxyTransformer implements ServletContextAware {
 
             if( tfType != null && tfType.equals( "xslt" ) ) {
                 String xslFilePath = (String)((Map)((Map) transfMap
-                                                            .get(provider))
-                                                                .get(service))
-                                                                    .get("xslt");
+                    .get(provider)).get(service)).get("xslt");
 
                 String xslRealPath = servletContext.getRealPath( xslFilePath );
 
