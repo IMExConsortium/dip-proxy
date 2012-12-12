@@ -115,25 +115,6 @@
      <result name="success" type="tiles">nodestatus</result>
    </action>
 
-   <!-- JsonContextConfig -->
-   <action name="json-configure" class="jsonContextAction" >
-     <interceptor-ref name="defaultStack"/>
-     <interceptor-ref name="timer"/>
-     <interceptor-ref name="menu"/> 
-
-     <result name="error" type="tiles">page</result>
-     <result name="success" type="tiles">json-config</result> 
-
-     <result name="json"  type="json">
-       <param name="includeProperties"> 
-            jsonContext.*
-       </param>
-       <param name="noCache">true</param>
-       <param name="contentType">text/html</param>
-     </result>
-   </action>
-
-
    <!-- rest server config new -->
    <action name="rest-server-config" class="restServerConfigAction" >
      <interceptor-ref name="defaultStack"/>
@@ -144,6 +125,7 @@
      <result name="success" type="tiles">json-context-config</result> 
 
      <result name="json"  type="json">
+       <param name="ignoreHierarchy">false</param>
        <param name="includeProperties"> 
             contextMap.*
        </param>
@@ -161,44 +143,13 @@
      <result name="success" type="tiles">json-context-config</result>
 
      <result name="json"  type="json">
+       <param name="ignoreHierarchy">false</param>
        <param name="includeProperties">
             contextMap.*
        </param>
        <param name="noCache">true</param>
      </result>
    </action>
-
- 
-   <!-- native rest server configure -->
-   <action name="native-configure" class="nativeServerConfigureAction" >
-     <interceptor-ref name="defaultStack"/>
-     <interceptor-ref name="timer"/>
-     <interceptor-ref name="menu"/> 
-
-     <result name="success" type="tiles">page</result>
-     <result name="rest-server" type="tiles">rest-server-config</result> 
-
-     <result name="json"  type="json">
-       <param name="includeProperties"> 
-            restServer.*
-       </param>
-       <param name="noCache">true</param>
-       <param name="contentType">application/json</param>
-     </result>
-   </action>
-  
-   <!-- native rest server json configure -->
-   <action name="native-configure-json" class="nativeServerConfigureJsonAction" >
-      
-      <result name="success" type="tiles">page</result>
-      <result name="json"  type="json">
-       <param name="includeProperties">
-            restServer.*
-       </param>
-       <param name="noCache">true</param>
-       <param name="contentType">text/html</param> 
-     </result>
-    </action> 
 
    <!-- anything else --> 
 

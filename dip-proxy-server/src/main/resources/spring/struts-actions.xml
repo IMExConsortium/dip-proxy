@@ -89,22 +89,6 @@
   <property name="contextDepth" value="3"/>
  </bean>
 
- <bean id="nativeServerConfigureAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.NativeServerConfigure">
-  <property name="nativeRestServer">
-    <ref bean="nativeRestServer"/>
-  </property>
-  <property name="pageContext" ref="pageContext"/>
-  <property name="menuContext" ref="menuContext"/>
- </bean>
-
- <bean id="nativeServerConfigureJsonAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.NativeServerConfigureJson">
-  <property name="nativeRestServer">
-    <ref bean="nativeRestServer"/>
-  </property>
- </bean>
-
  <bean id="pageAction" scope="prototype"
        class="edu.ucla.mbi.proxy.actions.PageAction">
 
