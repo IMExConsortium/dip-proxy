@@ -74,7 +74,7 @@
   <property name="ret" value="rest-server-config"/>
 
   <property name="contextTop" value="restServer"/>
-  <property name="contextDepth" value="3"/>
+  <property name="contextDepth" value="2"/>
  </bean>
 
  <!-- transformer config new -->
