@@ -99,13 +99,11 @@ public class RemoteServerImpl implements RemoteServer {
 	        //*** dxf as JAXBResult result of the transformation
 	    
 	        JAXBContext dxfJc = DxfJAXBContext.getDxfContext();
-	        //JAXBContext.newInstance( "edu.ucla.mbi.dxf14" );
 	        JAXBResult result = new JAXBResult( dxfJc );
 	    
 	        //*** transform into DXF
 	        ProxyTransformer pTrans = WSContext.getTransformer();
 
-	        //pTrans.setTransformer( service );
             pTrans.setTransformer( provider, service );
     	    pTrans.setParameters( detail, ns, ac );
     	    pTrans.transform( ssNative, result );

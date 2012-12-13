@@ -52,13 +52,14 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
 
     public void initialize() throws ProxyFault {
         log.info( "initialize starting... " );
+        /*
         configInitialize();
     }
 
     public void configInitialize() throws ProxyFault {
 
         log.info( "restServerConfigInitialize starting ... " );
-
+        */
         String jsonConfigFile = 
                 (String) restServerContext.getConfig().get( "json-config" );
 
@@ -82,7 +83,8 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
                                                             throws ProxyFault 
     {
 
-        configInitialize(); //JsonContextConfigAction may update restserver.json
+        //configInitialize(); //JsonContextConfigAction may update restserver.json
+        initialize();
 
         if( restServerMap.get(provider) == null ) {
             log.warn( "getRealUrl: provider=" + provider + " does not exist. " );

@@ -82,9 +82,13 @@ public class ProxyTransformer implements ServletContextAware {
 
     }
 
-    public void setTransformer( String provider, String service ) {
+    public void setTransformer( String provider, String service ) 
+        throws ProxyFault {
 
         Log log = LogFactory.getLog( ProxyTransformer.class );
+        
+        initialize(); //keep fresh in case json config is updated
+
         try {
 	    
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -131,10 +135,10 @@ public class ProxyTransformer implements ServletContextAware {
         } catch ( ProxyFault fault ) {
             log.info( "setTransformer: transformer.json doesn't have " + 
                       "transformer type xslt. " );
-            this.tf = null;
+            throw fault;
         } catch( Exception e ) {
-            log.info( e.toString() );
-            this.tf = null;
+            log.info( "setTransformer: exception is " + e.toString() );
+            throw  FaultFactory.newInstance( 99 ); //unknown;
         }     
     }   
     
@@ -149,15 +153,15 @@ public class ProxyTransformer implements ServletContextAware {
     }  
  
     public void transform( StreamSource xmlStreamSource, 
-                           JAXBResult jaxbResult) {
+                           JAXBResult jaxbResult) throws ProxyFault {
 	    
 	    Log log = LogFactory.getLog( ProxyTransformer.class );
-	
+
 	    try{
 	        tf.transform(xmlStreamSource, jaxbResult );
 	    }catch(Exception e){
-	        log.info("Transformation error="+e.toString());
-	        // NOTE: should throw exception/fault
+	        log.info("Transformation error=" + e.toString());
+            throw FaultFactory.newInstance ( 7 ); // transformer error
 	    }
     }
 }
