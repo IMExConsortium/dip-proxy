@@ -189,5 +189,6 @@
  <bean id="nativeRestServer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
   <property name="restServerContext" ref="restServerContext"/>
+  <property name="contextTop" value="restServer"/>
  </bean>
 </beans>

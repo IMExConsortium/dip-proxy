@@ -1,14 +1,14 @@
 package edu.ucla.mbi.proxy;
 
-/*===========================================================================
- * $HeadURL::                                                               $
- * $Id::                                                                    $
- * Version: $Rev::                                                          $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * ProxyTransformer:
  *
- *========================================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,8 +33,9 @@ import org.springframework.web.context.ServletContextAware;
 public class ProxyTransformer implements ServletContextAware {
 
     private JsonContext transformerContext;
+    private String contextTop;
     private ServletContext servletContext;
-
+    
     private Transformer tf;
     private static Map<String, Object> transfMap;
 
@@ -43,6 +44,10 @@ public class ProxyTransformer implements ServletContextAware {
         this.transformerContext = context;
     }    
 
+    public void setContextTop ( String top ) {
+        this.contextTop = top;
+    }
+
     public void setServletContext ( ServletContext servletContext ) {
         this.servletContext = servletContext;
     }
@@ -50,6 +55,10 @@ public class ProxyTransformer implements ServletContextAware {
     //*** getter
     public JsonContext getTransformerContext () {
         return transformerContext;
+    }
+
+    public String getContextTop () {
+        return contextTop;
     }
 
     public Transformer getTransformer() {
@@ -78,7 +87,7 @@ public class ProxyTransformer implements ServletContextAware {
 
         Map<String, Object> jtf = transformerContext.getJsonConfig();
 
-        transfMap = (Map) jtf.get( "transformer" );
+        transfMap = (Map) jtf.get( contextTop );
 
     }
 

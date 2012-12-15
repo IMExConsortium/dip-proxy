@@ -32,34 +32,37 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
     private Log log = LogFactory.getLog( NativeRestServer.class );
     private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
     private JsonContext restServerContext;
+    private String contextTop;
     private ServletContext servletContext;
  
     public Map<String,Object> getRestServerMap() {
         return restServerMap;
     }
 
+    //*** setter
     public void setRestServerContext( JsonContext context ) {
         this.restServerContext = context;
     }
 
-    public JsonContext getRestServerContext() {
-        return restServerContext;
+    public void setContextTop( String top ) {
+        this.contextTop = top;
     }
 
     public void setServletContext ( ServletContext servletContext ) {
         this.servletContext = servletContext;
     }
 
-    public void initialize() throws ProxyFault {
-        log.info( "initialize starting... " );
-        /*
-        configInitialize();
+    //*** getter
+    public JsonContext getRestServerContext() {
+        return restServerContext;
     }
 
-    public void configInitialize() throws ProxyFault {
+    public String getContextTop() {
+        return contextTop;
+    }
 
-        log.info( "restServerConfigInitialize starting ... " );
-        */
+    public void initialize() throws ProxyFault {
+        log.info( "initialize starting... " );
         String jsonConfigFile = 
                 (String) restServerContext.getConfig().get( "json-config" );
 
@@ -74,16 +77,14 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
 
         Map<String, Object> jrs = restServerContext.getJsonConfig(); 
         
-        restServerMap = (Map) jrs.get( "restServer" );
+        restServerMap = (Map) jrs.get( contextTop );
 
         log.info( "restServerConIni ... after get restSerer . " );
     }
 
     public String getRealUrl ( String provider, String service, String ac ) 
-                                                            throws ProxyFault 
-    {
+        throws ProxyFault {
 
-        //configInitialize(); //JsonContextConfigAction may update restserver.json
         initialize();
 
         if( restServerMap.get(provider) == null ) {
@@ -99,14 +100,14 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
         }
 
         String restAcTag =
-           (String) ( (ArrayList) ( (Map<String, Map>) (
+            ( (Map<String, String>) (
                             (Map<String, Map>)restServerMap.get(provider) )
-                                             .get(service) ).get("restAcTag") ).get(0);
+                                             .get(service) ).get( "restAcTag" );
 
         String restUrl =
-            (String) ( (ArrayList) ( (Map<String, Map>) (
+            ( (Map<String, String>) (
                             (Map<String, Map>)restServerMap.get(provider) )
-                                            .get(service) ).get( "restUrl" ) ).get(0);
+                                            .get(service) ).get( "restUrl" );
 
         if( restAcTag == null || restUrl == null ) {
             log.warn( "getRealUrl: restAcTag or restUrl is not configured. " );

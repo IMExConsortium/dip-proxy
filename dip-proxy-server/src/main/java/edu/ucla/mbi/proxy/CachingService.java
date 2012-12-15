@@ -315,6 +315,7 @@ public class CachingService extends Observable {
         DxfRecord dxfRecord = null;
         Date currentTime = Calendar.getInstance().getTime();
         boolean dxf_expired = false;
+        DatasetType dxfRslt = null;
 
         if ( rsc.isCacheOn() ) {
             
@@ -340,20 +341,23 @@ public class CachingService extends Observable {
                     if ( currentTime.after( expirationTime ) ) {
                         dxf_expired = true;
                         dxfRecord.setCreateTime();
-                    } else {
-                        DatasetType dxfRslt = unmarshall( dxfRecord.getDxf() );
-                        
-                        if ( rsc.getDebugLevel() == 1 ) {
-                            log.info( " dropping dxf record = " + dxfRecord );
-                            DipProxyDAO.getDxfRecordDAO().delete( dxfRecord );
-                        }
+                    } 
 
+                    dxfRslt = unmarshall( dxfRecord.getDxf() );
+                        
+                    if ( rsc.getDebugLevel() == 1 ) {
+                        log.info( " dropping dxf record = " + dxfRecord );
+                        DipProxyDAO.getDxfRecordDAO().delete( dxfRecord );
+                    }
+
+                    if( !dxf_expired ) {
                         if ( !dxfRslt.getNode().isEmpty() 
-                             && !dxfRslt.getNode().get(0).getAc().equals("") ) {
+                            && !dxfRslt.getNode().get(0).getAc().equals("") ) {
                             return dxfRslt;
                         }else{
                             log.info( "CachingService: " +
                                       "dxf record is empty or there is no ac.");
+                            DipProxyDAO.getDxfRecordDAO().delete( dxfRecord );                        
                         }
                     }
                 } else {
@@ -390,10 +394,10 @@ public class CachingService extends Observable {
         if ( currentTime.after( nr.getExpireTime() ) ) {
             if( dxf_expired ) {
                 //*** nr is expired then return original expired dxf
-                DatasetType dxfRslt = unmarshall( dxfRecord.getDxf() );
+                //DatasetType dxfRslt = unmarshall( dxfRecord.getDxf() );
 
                 if ( !dxfRslt.getNode().isEmpty()
-                        && !dxfRslt.getNode().get(0).getAc().equals("") ) 
+                     && !dxfRslt.getNode().get(0).getAc().equals("") ) 
                 {
                     return dxfRslt;
                 } else {
@@ -419,50 +423,40 @@ public class CachingService extends Observable {
 
             log.info( "getDxf: after buildDxf. dxfResult=" + dxfResult );
         } catch( ProxyFault se ) {
-            log.info( "getDxf: get Exception: " + se.toString() );
-            //log.info( "getDxf: discarding native record" );
-            
-            // get cached copy of native record
-            // ----------------------------------
-            /*
-            NativeRecord faultyRecord = DipProxyDAO.getNativeRecordDAO()
-                                            .find( provider, service, ns, ac );
-
-            faultyRecord.setNativeXml( "" );
-            
-            Calendar expCal = Calendar.getInstance();
-            faultyRecord.setExpireTime( expCal.getTime() );
-            DipProxyDAO.getNativeRecordDAO().create( faultyRecord );
-            */
-
-            /*
-            try {
-                DipProxyDAO.getNativeRecordDAO().delete( faultyRecord );
-            } catch ( DAOException e ) {
-                throw FaultFactory.newInstance( Fault.TRANSACTION );
-            }
-            */
             log.warn( "getDxf(): transform error for service " + service +
                       " and ac " + ac + " exception: "+ se.toString());
-            throw FaultFactory.newInstance( Fault.TRANSFORM );
+
+
+            //*** return expired dxf
+            if ( dxf_expired && !dxfRslt.getNode().isEmpty()
+                 && !dxfRslt.getNode().get(0).getAc().equals("") ) {
+
+                return dxfRslt;
+            } else {
+                throw FaultFactory.newInstance( Fault.TRANSFORM );
+            }
         }
 
         // build and store dxf record
         // ---------------------------
 
-        if ( dxfResult.getNode().isEmpty() ) {
-            log.warn( "getDxf(): dxf_record missing node: service=" +
-                      service + " and ac=" + ac + ".");
-            throw FaultFactory.newInstance( Fault.TRANSFORM );
+        if ( dxfResult.getNode().isEmpty() 
+             || dxfResult.getNode().get(0).getAc().equals("") ) {
+
+            log.warn( "getDxf(): transformer error: dxf_record missing node " +
+                      "or node ac is empty for service=" + service +
+                      " and ac=" + ac + ".");
+
+            //*** return expired dxf
+            if ( dxf_expired && !dxfRslt.getNode().isEmpty()
+                 && !dxfRslt.getNode().get(0).getAc().equals("") ) {
+
+                return dxfRslt;
+            } else {
+                throw FaultFactory.newInstance( Fault.TRANSFORM );
+            }
         }
        
-        if( dxfResult.getNode().get(0).getAc().equals("") ){
-            log.warn("getDxf(): dxf_record missin ac: service=" + 
-                     service + " and ac " + ac + ".");  
-            
-            throw FaultFactory.newInstance( Fault.TRANSFORM );            
-        } 
-
         if ( rsc.isCacheOn() ) {
             try {
                 

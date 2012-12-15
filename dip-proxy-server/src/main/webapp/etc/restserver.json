@@ -18,7 +18,7 @@
                 "restAcTag":"%%ACTAG%%"
             },
             "nlmesearch":{
-                "restUrl":"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nlmcatalog&retmode=xml&term=%%ACTAG%%nlmid",
+                "restUrl":"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nlmcatalog&retmode=xml&term=%%ACTAG%%",
                 "restAcTag":"%%ACTAG%%"
             },
             "nlmefetch":{
