@@ -1,4 +1,4 @@
-package edu.ucla.mbi.proxy.actions;
+package edu.ucla.mbi.proxy.struts.action;
 
 /* =========================================================================
  * $HeadURL:: http://wyu@imex.mbi.ucla.edu/svn/central/trunk/icentral/src/#$
@@ -14,7 +14,7 @@ package edu.ucla.mbi.proxy.actions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import edu.ucla.mbi.util.struts2.action.PageSupport;
+import edu.ucla.mbi.util.struts.action.PageSupport;
 
 public class PageAction extends PageSupport {
 }

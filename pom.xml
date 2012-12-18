@@ -4,7 +4,7 @@
   <groupId>edu.ucla.mbi.dip</groupId>
   <artifactId>dip-proxy</artifactId>
   <packaging>pom</packaging>
-  <version>0.02</version>
+  <version>0.03</version>
   <name>dip-proxy</name>
   <url>http://dip.mbi.ucla.edu</url>
 
@@ -52,9 +52,9 @@
 
   <modules>
     <module>dip-proxy-api</module>
-    <module>picr-client</module>
     <module>dip-proxy-client</module>
     <module>dip-proxy-server</module>
+    <module>dip-picr-client</module>
   </modules>
 
   <dependencies>

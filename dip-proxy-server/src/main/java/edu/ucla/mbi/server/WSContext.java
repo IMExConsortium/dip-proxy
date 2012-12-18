@@ -21,7 +21,7 @@ import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.monitor.Scheduler;
 import edu.ucla.mbi.cache.orm.*;
 
-import edu.ucla.mbi.util.struts2.action.*;
+import edu.ucla.mbi.util.struts.action.*;
 
 public class WSContext{
     

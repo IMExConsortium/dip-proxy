@@ -1,4 +1,4 @@
-package edu.ucla.mbi.proxy.actions;
+package edu.ucla.mbi.proxy.struts.action;
 
 /*===========================================================================
  * $HeadURL::                                                               $

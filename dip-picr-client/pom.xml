@@ -2,15 +2,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.ucla.mbi.dip</groupId>
-  <artifactId>picr-client</artifactId>
+  <artifactId>dip-picr-client</artifactId>
   <packaging>jar</packaging>
-  <name>picr-client</name>
+  <name>dip-picr-client</name>
   <url>http://dip.mbi.ucla.edu</url>
 
   <parent>
     <groupId>edu.ucla.mbi.dip</groupId>
     <artifactId>dip-proxy</artifactId>
-    <version>0.02</version>
+    <version>0.03</version>
   </parent>
 
   <dependencies>
@@ -22,7 +22,7 @@
   </dependencies>
 
   <build>
-    <finalName>picr-client</finalName>
+    <finalName>dip-picr-client</finalName>
 
     <plugins>
       <plugin>

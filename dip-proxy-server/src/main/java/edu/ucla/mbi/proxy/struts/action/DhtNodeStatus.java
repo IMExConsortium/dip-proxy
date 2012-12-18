@@ -1,4 +1,4 @@
-package edu.ucla.mbi.proxy.actions;
+package edu.ucla.mbi.proxy.struts.action;
 
 /*===========================================================================
  * $HeadURL::                                                               $
@@ -27,7 +27,7 @@ import ow.routing.*;
 import edu.ucla.mbi.proxy.router.*;
 
 import edu.ucla.mbi.util.JsonContext;
-import edu.ucla.mbi.util.struts2.action.PageSupport;
+import edu.ucla.mbi.util.struts.action.PageSupport;
 import org.json.*;
 
 public class DhtNodeStatus extends PageSupport {

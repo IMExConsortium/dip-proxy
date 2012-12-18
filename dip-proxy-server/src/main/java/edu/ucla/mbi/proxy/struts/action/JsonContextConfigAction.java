@@ -1,4 +1,4 @@
-package edu.ucla.mbi.proxy.actions;
+package edu.ucla.mbi.proxy.struts.action;
 
 /*==============================================================================
  * $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/dip-proxy-s#$
@@ -11,7 +11,7 @@ package edu.ucla.mbi.proxy.actions;
  *=========================================================================== */
 
 
-import edu.ucla.mbi.util.struts2.action.JsonContextConfigSupport;
+import edu.ucla.mbi.util.struts.action.JsonContextConfigSupport;
 
 public class JsonContextConfigAction extends JsonContextConfigSupport {
 

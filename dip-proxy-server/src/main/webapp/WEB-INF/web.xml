@@ -27,13 +27,13 @@
     <param-name>
       org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG
     </param-name>
-    <param-value>/WEB-INF/classes/struts/tiles.xml</param-value>
+    <param-value>/WEB-INF/classes/tiles.xml</param-value>
   </context-param>
 
   <!-- ================================================= SPRING context  -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>/WEB-INF/classes/spring/applicationContext.xml</param-value> 
+    <param-value>/WEB-INF/classes/applicationContext.xml</param-value>    
   </context-param>
 
 <!-- ===================================================== ============= -->

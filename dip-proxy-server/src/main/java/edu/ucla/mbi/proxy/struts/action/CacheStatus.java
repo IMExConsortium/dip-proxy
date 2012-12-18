@@ -1,4 +1,4 @@
-package edu.ucla.mbi.proxy.actions;
+package edu.ucla.mbi.proxy.struts.action;
 
 /*===========================================================================
  * $HeadURL::                                                               $
@@ -6,7 +6,7 @@ package edu.ucla.mbi.proxy.actions;
  * Version: $Rev::                                                          $
  *===========================================================================
  *
- * NativeStatus Action:
+ * CacheStatus Action:
  *
  *========================================================================= */
 
@@ -24,59 +24,65 @@ import edu.ucla.mbi.orm.*;
 import edu.ucla.mbi.cache.orm.*;
 
 import edu.ucla.mbi.util.JsonContext;
-import edu.ucla.mbi.util.struts2.action.PageSupport;
+import edu.ucla.mbi.util.struts.action.PageSupport;
 import org.json.*;
 
-public class NativeStatus extends PageSupport {
-
-    private Log log = LogFactory.getLog( NativeStatus.class );
+public class CacheStatus extends PageSupport {
 
     private WSContext wsContext = null;
 
-    private Map<String,Map> delays = null;
-
+    private Map<String,Map> counts = null;
+        
 
     public void setWsContext( WSContext wsContext ) {
         this.wsContext = wsContext;
     }
-
-    public Map<String,Map> getDelays() {
-        return delays;
-    }
     
+    //---------------------------------------------------------------------
+
+    public Map<String,Map> getCounts() {
+        return counts;
+    }
+
+    //---------------------------------------------------------------------
 
     public String execute() throws Exception {
 
-        log.info( " NativeStatus execute..." );
+        Log log = LogFactory.getLog( CacheStatus.class );
+        log.info("CacheStatus execute ...");
 
         super.findMenuPage();
-
-        delays = new TreeMap<String,Map>();
-
+ 
+        counts = new TreeMap<String,Map>();
+        
         try {
-            NativeAuditDAO ado = DipProxyDAO.getNativeAuditDAO();
 
-            // go over providers
-            //------------------
+            NativeRecordDAO ndo = DipProxyDAO.getNativeRecordDAO();
 
-            Set<String> providers = wsContext.getServices().keySet();
+            if ( ndo != null ){
 
-            for (Iterator<String> ii = providers.iterator();
-                ii.hasNext(); ) {
+                // go over providers
+                //------------------
+                
+                Set<String> providers = wsContext.getServices().keySet();
+                
+                for (Iterator<String> ii = providers.iterator();
+                     ii.hasNext(); ) {
+                    
+                    String prv = ii.next();
 
-                String prv = ii.next();
-
-                log.info( "prv=" + prv );
-
-                Map<String,Double> prvDelay = ado.delayAll( prv );
-                log.info( "prvDelay end. ");
-                delays.put( prv, prvDelay );
+                    log.info( "prv=" + prv );
+                    
+                    Map<String,Long> prvCounts = ndo.countAll( prv );
+                    counts.put( prv, prvCounts );
+                }
             }
+
         } catch ( DAOException de ) {
-
+            
         }
-
-        return SUCCESS;
+        
+        return "success";
     }
 
     /**

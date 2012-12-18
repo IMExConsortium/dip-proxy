@@ -97,21 +97,21 @@
   <parent>
     <groupId>edu.ucla.mbi.dip</groupId>
     <artifactId>dip-proxy</artifactId>
-    <version>0.02</version>
+    <version>0.03</version>
   </parent>
 
   <dependencies>
 
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
-      <artifactId>picr-client</artifactId>
-      <version>0.02</version>
+      <artifactId>dip-picr-client</artifactId>
+      <version>0.03</version>
     </dependency>
 
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-proxy-api</artifactId>
-      <version>0.02</version>
+      <version>0.03</version>
     </dependency>
 
     <dependency>
@@ -129,7 +129,7 @@
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-util-struts</artifactId>
-      <version>0.02</version>
+      <version>0.03</version>
     </dependency>
 
     <dependency>
@@ -141,7 +141,7 @@
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-util-orm</artifactId>
-      <version>0.02</version>
+      <version>0.03</version>
     </dependency>
    
     <dependency>
@@ -213,17 +213,16 @@
             </resource>
 
             <resource>
-              <directory>${basedir}/src/main/config</directory>
+              <directory>${basedir}/../etc</directory>
               <targetPath>WEB-INF</targetPath>
               <filtering>true</filtering>
               <includes>
                 <include>sun-jaxws.xml</include>
-                <include>web.xml</include>
               </includes>
             </resource>
 
             <resource>
-              <directory>${basedir}/src/main/config/jetty</directory>
+              <directory>${basedir}/../etc/jetty</directory>
               <targetPath>WEB-INF</targetPath>
               <filtering>true</filtering>
               <includes>
@@ -240,16 +239,6 @@
                 <include>context.xml</include>
               </includes>
             </resource>
-            <!-- 
-            <resource>
-              <directory>${basedir}/src/main/webapp/tiles</directory>
-              <targetPath>tiles</targetPath>
-              <filtering>true</filtering>
-              <includes>
-                <include>icentral-css.jsp</include>
-              </includes>
-            </resource>
-            -->
           </webResources>
         </configuration>
       </plugin>
@@ -270,7 +259,7 @@
             </connector>
           </connectors>
           
-          <webDefaultXml>${basedir}/src/main/config/jetty/webdefault.xml</webDefaultXml> 
+          <webDefaultXml>${basedir}/../etc/jetty/webdefault.xml</webDefaultXml> 
 
           <systemProperties>
             <systemProperty>
@@ -280,7 +269,7 @@
 
             <systemProperty>
               <name>log4j.configuration</name>
-              <value>file:${basedir}/src/main/config/jetty/jetty-log4j.properties</value>
+              <value>file:${basedir}/../etc/jetty/jetty-log4j.properties</value>
             </systemProperty>
 
           </systemProperties>
