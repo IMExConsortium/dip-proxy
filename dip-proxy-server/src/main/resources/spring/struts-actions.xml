@@ -16,7 +16,7 @@
  <!-- struts2 actions -->
 
  <bean id="cacheStatusAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.CacheStatus">
+       class="edu.ucla.mbi.proxy.struts.action.CacheStatus">
   <property name="wsContext">
     <ref bean="wsContext"/>
   </property>
@@ -40,7 +40,7 @@
  </bean>
 
  <bean id="nativeSparkAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.NativeSparkline">
+       class="edu.ucla.mbi.proxy.struts.action.NativeSparkline">
   <property name="wsContext">
    <ref bean="wsContext"/>
   </property>
@@ -50,14 +50,14 @@
  </bean>
 
  <bean id="dhtStatusAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.DhtNodeStatus">
+       class="edu.ucla.mbi.proxy.struts.action.DhtNodeStatus">
   <property name="dht" ref="dht"/>
   <property name="pageContext" ref="pageContext"/>
   <property name="menuContext" ref="menuContext"/>
  </bean>
 
  <bean id="nativeStatusAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.NativeStatus">
+       class="edu.ucla.mbi.proxy.struts.actions.NativeStatus">
   <property name="wsContext">
     <ref bean="wsContext"/>
   </property>
@@ -67,7 +67,7 @@
 
  <!-- rest server config new -->
  <bean id="restServerConfigAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.JsonContextConfigAction">
+       class="edu.ucla.mbi.proxy.struts.action.JsonContextConfigAction">
 
   <property name="jsonContext" ref="restServerContext"/>
   <property name="menuContext" ref="menuContext"/>
@@ -79,7 +79,7 @@
 
  <!-- transformer config new -->
  <bean id="transformerConfigAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.JsonContextConfigAction">
+       class="edu.ucla.mbi.proxy.struts.action.JsonContextConfigAction">
 
   <property name="jsonContext" ref="transformerContext"/>
   <property name="menuContext" ref="menuContext"/>
@@ -90,7 +90,7 @@
  </bean>
 
  <bean id="pageAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.actions.PageAction">
+       class="edu.ucla.mbi.proxy.struts.action.PageAction">
 
     <property name="pageContext" ref="pageContext"/>
     <property name="menuContext" ref="menuContext"/>
