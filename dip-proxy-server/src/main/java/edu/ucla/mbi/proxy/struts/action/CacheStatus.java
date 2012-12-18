@@ -23,7 +23,7 @@ import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.orm.*;
 import edu.ucla.mbi.cache.orm.*;
 
-import edu.ucla.mbi.util.JsonContext;
+import edu.ucla.mbi.util.context.JsonContext;
 import edu.ucla.mbi.util.struts.action.PageSupport;
 import org.json.*;
 

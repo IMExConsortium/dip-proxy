@@ -22,7 +22,7 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
 
 import edu.ucla.mbi.fault.*;
-import edu.ucla.mbi.util.*;
+import edu.ucla.mbi.util.context.*;
 
 import javax.servlet.ServletContext;
 import org.springframework.web.context.ServletContextAware;

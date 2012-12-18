@@ -26,7 +26,7 @@ import ow.routing.*;
 
 import edu.ucla.mbi.proxy.router.*;
 
-import edu.ucla.mbi.util.JsonContext;
+import edu.ucla.mbi.util.context.JsonContext;
 import edu.ucla.mbi.util.struts.action.PageSupport;
 import org.json.*;
 

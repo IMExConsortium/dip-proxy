@@ -14,7 +14,7 @@
       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
     <!-- Context: Configuration files -->
-    <bean id="portalContext" class="edu.ucla.mbi.util.PortalContext">
+    <bean id="portalContext" class="edu.ucla.mbi.util.context.PortalContext">
 
         <property name="portal">
             <map>
@@ -40,7 +40,7 @@
         </property>
     </bean>
 
-    <bean id="pageContext" class="edu.ucla.mbi.util.JsonContext">
+    <bean id="pageContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
                 <entry key="json-config" value="/etc/pages.json"/>
@@ -48,7 +48,7 @@
         </property>
     </bean>
 
-    <bean id="menuContext" class="edu.ucla.mbi.util.JsonContext">
+    <bean id="menuContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
                 <entry key="json-config" value="/etc/menu.json"/>
@@ -56,7 +56,7 @@
         </property>
     </bean>
 
-    <bean id="restServerContext" class="edu.ucla.mbi.util.JsonContext">
+    <bean id="restServerContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
                 <entry key="json-config" value="/etc/restserver.json"/>
@@ -64,7 +64,7 @@
         </property>
     </bean>
 
-    <bean id="transformerContext" class="edu.ucla.mbi.util.JsonContext">
+    <bean id="transformerContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
                 <entry key="json-config" value="/etc/transformer.json"/>
