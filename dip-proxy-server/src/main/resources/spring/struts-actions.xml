@@ -70,11 +70,12 @@
        class="edu.ucla.mbi.proxy.struts.action.JsonContextConfigAction">
 
   <property name="jsonContext" ref="restServerContext"/>
-  <property name="menuContext" ref="menuContext"/>
-  <property name="ret" value="rest-server-config"/>
-  
   <property name="contextTop" value="restServer"/>
   <property name="contextDepth" value="2"/> 
+
+  <property name="menuContext" ref="menuContext"/>
+  <property name="actionName" value="rest-server-config"/> 
+  
  </bean>
 
  <!-- transformer config new -->
@@ -82,11 +83,12 @@
        class="edu.ucla.mbi.proxy.struts.action.JsonContextConfigAction">
 
   <property name="jsonContext" ref="transformerContext"/>
-  <property name="menuContext" ref="menuContext"/>
-  <property name="ret" value="transformer-config"/>
-  
   <property name="contextTop" value="transformer"/>
   <property name="contextDepth" value="2"/> 
+
+  <property name="menuContext" ref="menuContext"/>
+  <property name="actionName" value="transformer-config"/> 
+  
  </bean>
 
  <bean id="pageAction" scope="prototype"

@@ -15,5 +15,14 @@ import edu.ucla.mbi.util.struts.action.JsonContextConfigSupport;
 
 public class JsonContextConfigAction extends JsonContextConfigSupport {
 
+    private String actionName;
+
+    public void setActionName( String name ) {
+        this.actionName = name;
+    }
+
+    public String getActionName () {
+        return actionName;
+    }
 }
     

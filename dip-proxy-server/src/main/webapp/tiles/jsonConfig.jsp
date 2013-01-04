@@ -3,7 +3,7 @@
 
     <br><br>
     <table align="center">
-      <s:form theme="simple" action="%{ret}">
+      <s:form theme="simple" action="%{actionName}">
         <caption>
             <center>Update Json Configuration File</center>
         </caption>
