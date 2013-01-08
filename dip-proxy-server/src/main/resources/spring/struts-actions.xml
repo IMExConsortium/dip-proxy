@@ -74,7 +74,6 @@
   <property name="contextDepth" value="2"/> 
 
   <property name="menuContext" ref="menuContext"/>
-  <property name="actionName" value="rest-server-config"/> 
   
  </bean>
 
@@ -87,7 +86,6 @@
   <property name="contextDepth" value="2"/> 
 
   <property name="menuContext" ref="menuContext"/>
-  <property name="actionName" value="transformer-config"/> 
   
  </bean>
 

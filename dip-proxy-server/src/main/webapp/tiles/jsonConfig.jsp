@@ -3,7 +3,7 @@
 
     <br><br>
     <table align="center">
-      <s:form theme="simple" action="%{actionName}">
+      <s:form theme="simple">
         <caption>
             <center>Update Json Configuration File</center>
         </caption>
@@ -76,15 +76,6 @@
 
          </ul>
         
-        <tr>
-            <td align="center" colspan="2">
-                    <s:submit name="op.show" value="JsonShow"/>
-            </td>
-
-        </tr>
-
-        <tr><td colspan="2"/><br></td></tr>
-
       </s:form>
     </table>
 
