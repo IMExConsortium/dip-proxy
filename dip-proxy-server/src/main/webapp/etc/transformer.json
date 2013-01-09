@@ -1,5 +1,4 @@
-{
-    "transformer":{
+{"transformer":{
         "NCBI":{
             "pubmed":{
                 "type":"xslt",

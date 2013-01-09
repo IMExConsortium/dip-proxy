@@ -1,5 +1,4 @@
-{ 
-    "restServer":{ 
+{"restServer":{
         "NCBI":{ 
             "pubmed":{
                 "restUrl":"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id=%%ACTAG%%",

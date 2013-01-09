@@ -27,7 +27,8 @@ import edu.ucla.mbi.util.context.*;
 import javax.servlet.ServletContext;
 import org.springframework.web.context.ServletContextAware;
 
-public class NativeRestServer implements NativeServer, ServletContextAware {
+public class NativeRestServer implements NativeServer, ServletContextAware, 
+    ContextListener {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
     private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
@@ -82,10 +83,17 @@ public class NativeRestServer implements NativeServer, ServletContextAware {
         log.info( "restServerConIni ... after get restSerer . " );
     }
 
+    public void contextUpdate ( JsonContext context ) {
+        try {
+            log.info( "contextUpdate called. " );
+            initialize();
+        } catch ( ProxyFault fault ) {
+            log.error( "contextUpdate: failed from fault: " + fault.toString() );
+        }
+    }
+
     public String getRealUrl ( String provider, String service, String ac ) 
         throws ProxyFault {
-
-        initialize();
 
         if( restServerMap.get(provider) == null ) {
             log.warn( "getRealUrl: provider=" + provider + " does not exist. " );

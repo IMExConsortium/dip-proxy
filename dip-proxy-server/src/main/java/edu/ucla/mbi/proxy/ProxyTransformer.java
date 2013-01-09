@@ -30,7 +30,7 @@ import javax.servlet.ServletContext;
 import org.springframework.core.io.*;
 import org.springframework.web.context.ServletContextAware;
 
-public class ProxyTransformer implements ServletContextAware {
+public class ProxyTransformer implements ServletContextAware, ContextListener {
 
     private JsonContext transformerContext;
     private String contextTop;
@@ -91,13 +91,22 @@ public class ProxyTransformer implements ServletContextAware {
 
     }
 
+    public void contextUpdate ( JsonContext context ) {
+        Log log = LogFactory.getLog( ProxyTransformer.class );
+        try {
+            log.info( "contextupdate: called. " );
+            initialize();
+        } catch ( ProxyFault fault ) {
+            log.error( "contextUpdate: failed from the fault: " + 
+                       fault.toString() );
+        }
+    }
+
     public void setTransformer( String provider, String service ) 
         throws ProxyFault {
 
         Log log = LogFactory.getLog( ProxyTransformer.class );
         
-        initialize(); //keep fresh in case json config is updated
-
         try {
 	    
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

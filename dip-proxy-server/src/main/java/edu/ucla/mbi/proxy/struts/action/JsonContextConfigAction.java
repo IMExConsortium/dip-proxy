@@ -10,10 +10,27 @@ package edu.ucla.mbi.proxy.struts.action;
  *
  *=========================================================================== */
 
-
+import edu.ucla.mbi.util.context.*;
 import edu.ucla.mbi.util.struts.action.JsonContextConfigSupport;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+
 public class JsonContextConfigAction extends JsonContextConfigSupport { 
+
+    private ContextListener contextListener;
+    private JsonContext jsonContext;
+
+    //*** setter
+    public void setContextListener ( ContextListener listener ) {
+        this.contextListener = listener;
+    }
+
+    public void setJsonContext ( JsonContext jsonContext ) {
+        jsonContext.addContextUpdateListener( contextListener );
+        super.setJsonContext( jsonContext );
+    }
 
 }
     

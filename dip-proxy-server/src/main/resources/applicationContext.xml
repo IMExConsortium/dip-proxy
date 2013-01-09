@@ -22,29 +22,25 @@
         http://www.springframework.org/schema/aop 
         http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-<!-- ========================================================== CONTEXT -->
+ <!-- ========================================================== CONTEXT -->
 
  <import resource="spring/contextBean.xml" />
 
-<!-- ===================================================== REMOTE SERVERS -->
+ <!-- ===================================================== REMOTE SERVERS -->
 
  <import resource="spring/serversBean.xml" />
 
-<!-- ========================================================== SCHEDULER -->
+ <!-- ========================================================== SCHEDULER -->
 
  <import resource="spring/schedulerBean.xml" />
 
-<!-- ========================================================== AOP AUDIT -->
+ <!-- ========================================================== AOP AUDIT -->
 
  <import resource="spring/auditBean.xml" /> 
 
-<!-- ========================================================== DAO -->
+ <!-- ========================================================== DAO -->
 
  <import resource="spring/daoBean.xml"/>
-
- <!-- ===================================================== STRUTS ACTIONS -->
-
- <import resource="spring/struts-actions.xml" />
 
  <!--========================================================  TRANSFORMER -->
 
@@ -54,7 +50,12 @@
   <property name="contextTop" value="transformer"/>
  </bean>
 
-<!-- ===================================================== PROXY SERVICES -->
+ <!-- ===================================================== STRUTS ACTIONS -->
+
+ <import resource="spring/struts-actions.xml" /> 
+
+
+ <!-- ===================================================== PROXY SERVICES -->
 
  <bean id="wsContext" init-method="initialize" destroy-method="cleanup"
        class="edu.ucla.mbi.server.WSContext">
@@ -77,7 +78,7 @@
     <ref bean="proxyTransformer"/>
   </property>
 
-<property name="services">
+  <property name="services">
    <map>
      <entry key="EBI"> 
       <map>
