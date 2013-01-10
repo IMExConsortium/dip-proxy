@@ -69,12 +69,11 @@
  <bean id="restServerConfigAction" scope="prototype"
        class="edu.ucla.mbi.proxy.struts.action.JsonContextConfigAction">
 
-  <property name="contextListener" ref="nativeRestServer"/>
   <property name="jsonContext" ref="restServerContext"/>
   <property name="contextTop" value="restServer"/>
   <property name="contextDepth" value="2"/> 
 
-  <property name="menuContext" ref="menuContext"/>
+  <property name="menuContext" ref="menuContext"/> 
   
  </bean>
 
@@ -82,12 +81,11 @@
  <bean id="transformerConfigAction" scope="prototype"
        class="edu.ucla.mbi.proxy.struts.action.JsonContextConfigAction">
 
-  <property name="contextListener" ref="proxyTransformer"/>
   <property name="jsonContext" ref="transformerContext"/>
   <property name="contextTop" value="transformer"/>
   <property name="contextDepth" value="2"/> 
 
-  <property name="menuContext" ref="menuContext"/>
+  <property name="menuContext" ref="menuContext"/> 
   
  </bean>
 

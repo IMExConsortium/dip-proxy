@@ -17,20 +17,5 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
-public class JsonContextConfigAction extends JsonContextConfigSupport { 
-
-    private ContextListener contextListener;
-    private JsonContext jsonContext;
-
-    //*** setter
-    public void setContextListener ( ContextListener listener ) {
-        this.contextListener = listener;
-    }
-
-    public void setJsonContext ( JsonContext jsonContext ) {
-        jsonContext.addContextUpdateListener( contextListener );
-        super.setJsonContext( jsonContext );
-    }
-
-}
+public class JsonContextConfigAction extends JsonContextConfigSupport { }
     

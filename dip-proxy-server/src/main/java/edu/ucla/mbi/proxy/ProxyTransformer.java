@@ -70,6 +70,7 @@ public class ProxyTransformer implements ServletContextAware, ContextListener {
     }
 
     public void initialize () throws ProxyFault {
+
         Log log = LogFactory.getLog( ProxyTransformer.class );
         log.info( "initializing ... " );
     
@@ -84,22 +85,24 @@ public class ProxyTransformer implements ServletContextAware, ContextListener {
             log.info( "configInitialize exception: " + e.toString() );
             throw FaultFactory.newInstance ( 27 ); // json configuration
         }
-
+        
         Map<String, Object> jtf = transformerContext.getJsonConfig();
 
         transfMap = (Map) jtf.get( contextTop );
-
+    
+        //*** add context listener
+        transformerContext.addContextUpdateListener( this );
+        log.info ( "initialize.. after get transformer map. " );    
     }
 
     public void contextUpdate ( JsonContext context ) {
+
         Log log = LogFactory.getLog( ProxyTransformer.class );
-        try {
-            log.info( "contextupdate: called. " );
-            initialize();
-        } catch ( ProxyFault fault ) {
-            log.error( "contextUpdate: failed from the fault: " + 
-                       fault.toString() );
-        }
+        log.info( "contextUpdate called. " );
+       
+        Map<String, Object> jtf = context.getJsonConfig();
+
+        transfMap = (Map) jtf.get( contextTop );
     }
 
     public void setTransformer( String provider, String service ) 
