@@ -68,6 +68,9 @@ public class CachingService extends Observable {
         boolean remoteExpired = false;
         
         String natXml = null;
+
+        //
+
 	
         if ( rsc.isCacheOn() ) { // try retrieve from local cache
 
