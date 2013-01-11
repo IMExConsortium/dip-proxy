@@ -57,7 +57,7 @@
  </bean>
 
  <bean id="nativeStatusAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.struts.actions.NativeStatus">
+       class="edu.ucla.mbi.proxy.struts.action.NativeStatus">
   <property name="wsContext">
     <ref bean="wsContext"/>
   </property>
