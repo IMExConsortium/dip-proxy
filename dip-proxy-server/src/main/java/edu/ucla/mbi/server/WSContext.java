@@ -20,7 +20,7 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.monitor.Scheduler;
 import edu.ucla.mbi.cache.orm.*;
-
+import edu.ucla.mbi.util.cache.*;
 import edu.ucla.mbi.util.struts.action.*;
 
 public class WSContext{
@@ -45,6 +45,8 @@ public class WSContext{
     private static int threadRunMinutes = 10; // 10 minutes
 
     private static ProxyTransformer transformer;
+
+    private static McClient mcClient;
 
     //*** setter
     public void setPort( int port ) {
@@ -73,6 +75,10 @@ public class WSContext{
 
     public void setServices( Map<String,Map> services ) {
         this.services = services;
+    }
+
+    public void setMcClient ( McClient client ) {
+        this.mcClient = client;
     }
 
     //*** getter
@@ -108,6 +114,10 @@ public class WSContext{
         return threadRunMinutes;
     }
 
+    public static McClient getMcClient() {
+        return mcClient;
+    }
+
     //---------------------------------------------------------------------
 
     public static RemoteServerContext getServerContext( String provider ) {
@@ -126,6 +136,7 @@ public class WSContext{
         Log log = LogFactory.getLog( WSContext.class );
         log.info( "ProxyWS: WSContext initializing..." );
         log.info( "ProxyWS: Known remote services:" );
+        log.info( "ProxyWS: mcClient=" + mcClient );
 
 	    for( Iterator<String> 
 		        i = services.keySet().iterator(); i.hasNext(); ) {

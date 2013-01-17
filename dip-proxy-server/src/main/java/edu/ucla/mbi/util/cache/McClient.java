@@ -14,35 +14,53 @@ package edu.ucla.mbi.util.cache;
 import edu.ucla.mbi.util.cache.CacheClient;
 import net.spy.memcached.spring.MemcachedClientFactoryBean;
 import net.spy.memcached.MemcachedClient;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class McClient implements CacheClient {
+
+    private Log log = LogFactory.getLog( McClient.class );
 
     // configuration properties
     //-------------------------
 
-    private MemcachedClient mcFactory = null;
-    
-    public void setMcf( MemcachedClient mcFactory ){
-        
-        this.mcFactory = mcFactory;
+    //private net.spy.memcached.spring.MemcachedClientFactoryBean mcf = null;
+    private MemcachedClient mcf = null;    
+    private int ttl = 0;
+
+    //*** setter
+    //public void setMcf( net.spy.memcached.spring.MemcachedClientFactoryBean mcFactory ){
+    public void setMcf( MemcachedClient mcf ) {
+        this.mcf = mcf;
     }
     
-    private long ttl = 0;
-
-    public void setTtl( long timeToLive ){
-        
+    public void setTtl( int timeToLive ) {
         ttl = timeToLive;
-
     }
 
     // CacheClient implementation
     //---------------------------
 
-    public Object fetch( String id ){
-        return null;
+    public Object fetch( String id ) {
+        try {
+            //MemcachedClient client = mcf.getObject();
+            return mcf.get( id );
+            //return null;
+        } catch ( Exception ex ) { 
+            log.warn( "memcache fetch got exception: " + ex.toString() );
+            return null;
+        }
     }
     
-    public void store( String id, Object obj ){
-
+    public void store( String id, Object obj ) {
+        try {
+            //MemcachedClient client = (MemcachedClient) mcf.getObject();
+            mcf.set( id, ttl, obj );
+        } catch ( Exception ex ) {
+            log.warn( "memcache store got exception: " + ex.toString() );
+            throw null;
+        }
     }
     
 }

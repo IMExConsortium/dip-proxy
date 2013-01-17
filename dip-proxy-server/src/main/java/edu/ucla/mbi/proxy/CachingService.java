@@ -26,6 +26,7 @@ import edu.ucla.mbi.cache.orm.*;
 import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.server.*;
+import edu.ucla.mbi.util.cache.*;
 
 public class CachingService extends Observable {
 
@@ -34,6 +35,7 @@ public class CachingService extends Observable {
     protected String provider;
     private RemoteServerContext rsc;
     private Router router;
+    private McClient mcClient = WSContext.getMcClient();
 
     static DxfRecordDAO dxfDAO = DipProxyDAO.getDxfRecordDAO();
     static NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO();
@@ -54,7 +56,8 @@ public class CachingService extends Observable {
                                    String ac ) throws ProxyFault {
 
         Date currentTime = Calendar.getInstance().getTime();
-        
+        String id = provider + "_" + service + "_" + ns + "_" + ac;
+
         log.info( "getNative(provider=" + provider + ")" );
         log.info( "         (router=" + router + ")" );
         log.info( "         (router.rsc="
@@ -66,12 +69,20 @@ public class CachingService extends Observable {
         
         NativeRecord remoteRec = null;
         boolean remoteExpired = false;
-        
+       
         String natXml = null;
 
-        //
+        //*** fetch from memcached
+        NativeRecord memcachedRec = null;
+        String memcachedId = provider + "_" + service + "_" + ns + "_" + ac;
 
-	
+        memcachedRec = (NativeRecord)mcClient.fetch( memcachedId );
+        log.info( "getNative: memcachedRec=" + memcachedRec );
+        if( memcachedRec != null ) {
+            log.info( "getNative: memcachedRec != null. " );
+            return memcachedRec;
+        }	
+
         if ( rsc.isCacheOn() ) { // try retrieve from local cache
 
             // get cached copy of native record
@@ -96,8 +107,11 @@ public class CachingService extends Observable {
                     if( natXml == null ) {
                         cacheExpired = true;
                     } else {
-                        log.info( "Native record: return from local cache. ");
-                        //*** return valid record from local cache  
+                        //*** return valid record from local cache
+                        log.info( "getNative: return from local cache." ); 
+                        log.info( "getNative: store cacheRecrod with memcachedId(" +
+                                   memcachedId );
+                        mcClient.store( memcachedId, cacheRecord );
                         return cacheRecord;
                     }
                 }
@@ -150,8 +164,8 @@ public class CachingService extends Observable {
                                 log.info( "getNative: got a remote expiredRec." );
                             } else {
                                 if( expiredRemoteRec.getExpireTime().after( 
-                                        remoteRec.getExpireTime() ) ) 
-                                {
+                                    remoteRec.getExpireTime() ) ) {
+
                                     //*** using more recentlly expired record
                                     expiredRemoteRec = remoteRec; 
                                 }
@@ -291,10 +305,21 @@ public class CachingService extends Observable {
                                       null ); // self
             this.notifyObservers( message );
             this.clearChanged();
-            
+        } 
+
+        //*** store to memcached 
+        if( rsc.isCacheOn() && cacheRecord !=  null ) {
+            log.info( "getNative: store cacheRecrod with memcachedId(" + 
+                      memcachedId );
+            mcClient.store( memcachedId, cacheRecord );
             return cacheRecord;
         } else {	    
             // caching off - return remoteRecord
+            if( remoteRec != null ) {
+                 log.info( "getNative: store remoteRec with memcachedId(" + 
+                           memcachedId );
+                 mcClient.store( memcachedId, remoteRec );
+            }
             return remoteRec;
         }
     }
@@ -310,15 +335,29 @@ public class CachingService extends Observable {
         
         log.info( " cache on=" + rsc.isCacheOn() );
 
-        if ( rsc == null ) {
-            log.warn("remote server is null.");
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
-
         DxfRecord dxfRecord = null;
         Date currentTime = Calendar.getInstance().getTime();
         boolean dxf_expired = false;
         DatasetType dxfRslt = null;
+
+        //*** fetch from memcached
+        DxfRecord memcachedRec = null;
+        String memcachedId = provider + "_" + service + "_" + ns + "_" + 
+                             ac + "_" + detail;
+
+        memcachedRec = (DxfRecord)mcClient.fetch( memcachedId );
+
+        log.info( "getDxf: memcachedRec=" + memcachedRec );
+
+        if( memcachedRec !=  null ) {
+            dxfRslt = unmarshall( memcachedRec.getDxf() );
+            return dxfRslt;
+        }
+
+        if ( rsc == null ) {
+            log.warn("remote server is null.");
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
 
         if ( rsc.isCacheOn() ) {
             
@@ -356,6 +395,12 @@ public class CachingService extends Observable {
                     if( !dxf_expired ) {
                         if ( !dxfRslt.getNode().isEmpty() 
                             && !dxfRslt.getNode().get(0).getAc().equals("") ) {
+                            
+                            //*** store to memcached 
+                            log.info( "getDxf: store cacheRecrod with memcachedId(" +
+                                      memcachedId + ")" );
+                            mcClient.store( memcachedId, dxfRecord );
+                            
                             return dxfRslt;
                         }else{
                             log.info( "CachingService: " +
@@ -402,6 +447,8 @@ public class CachingService extends Observable {
                 if ( !dxfRslt.getNode().isEmpty()
                      && !dxfRslt.getNode().get(0).getAc().equals("") ) 
                 {
+                    log.info( "getDxf: return expried dxf without memcached " + 
+                              "storing. " );
                     return dxfRslt;
                 } else {
                     //*** the expired dxf record is invalid, delete it
@@ -434,6 +481,8 @@ public class CachingService extends Observable {
             if ( dxf_expired && !dxfRslt.getNode().isEmpty()
                  && !dxfRslt.getNode().get(0).getAc().equals("") ) {
 
+                log.info( "getDxf: return expired dxf after transform error1" +
+                          "and without memcached store. " );
                 return dxfRslt;
             } else {
                 throw FaultFactory.newInstance( Fault.TRANSFORM );
@@ -453,7 +502,9 @@ public class CachingService extends Observable {
             //*** return expired dxf
             if ( dxf_expired && !dxfRslt.getNode().isEmpty()
                  && !dxfRslt.getNode().get(0).getAc().equals("") ) {
-
+                
+                log.info( "getDxf: return expired dxf after transform error2 " +
+                          "and without memcached store. " );
                 return dxfRslt;
             } else {
                 throw FaultFactory.newInstance( Fault.TRANSFORM );
@@ -495,6 +546,14 @@ public class CachingService extends Observable {
                 throw FaultFactory.newInstance( Fault.UNKNOWN );
             }
         }
+
+        //*** store to memcached 
+        if( dxfRecord !=  null ) {
+            log.info( "getDxf: store cacheRecrod with memcachedId(" + 
+                      memcachedId + ")" );
+            mcClient.store( memcachedId, dxfRecord );
+        }
+
         return dxfResult;
     }
     

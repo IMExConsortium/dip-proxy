@@ -78,6 +78,10 @@
     <ref bean="proxyTransformer"/>
   </property>
 
+  <property name="mcClient">
+    <ref bean="mcClient"/>
+  </property>
+
   <property name="services">
    <map>
      <entry key="EBI"> 
@@ -206,7 +210,6 @@
             </map>
        </entry>      
 
-       
        <entry key="proxyProto">
         <ref bean="referenceProxy"/>
        </entry>
@@ -233,7 +236,6 @@
             </map>
        </entry>
 
-
        <entry key="proxyProto">
         <ref bean="referenceProxy"/>
        </entry>
@@ -252,32 +254,32 @@
 
  <!-- =========================================================== MEMCACHED -->
 
-    <bean id="mcClient" class="edu.ucla.mbi.util.cache.McClient">
-       <property name="mcf">
-          <ref bean="memcachedCliFactory"/>
-       </property>
-       <property name="ttl" value="864000" />
-    </bean>
+ <bean id="mcClient" class="edu.ucla.mbi.util.cache.McClient">
+  <property name="mcf">
+    <ref bean="memcachedClient"/>
+  </property>
+  <property name="ttl" value="864000" />
+ </bean>
 
-    
-    <bean id="memcachedCliFactory"
+ <!--<bean id="memcachedCliFactory"
+          class="net.spy.memcached.spring.MemcachedClientFactoryBean"> -->
+  <bean id="memcachedClient"
           class="net.spy.memcached.spring.MemcachedClientFactoryBean">
-     <property name="servers" value="10.1.4.111:11211"/>
-     <property name="protocol" value="BINARY"/>
-     <property name="transcoder">
-       <bean class="net.spy.memcached.transcoders.SerializingTranscoder">
-         <property name="compressionThreshold" value="1024"/>
-       </bean>
-     </property>
-     <property name="opTimeout" value="1000"/>
-     <property name="timeoutExceptionThreshold" value="1998"/>
-     <property name="hashAlg">
-       <value type="net.spy.memcached.DefaultHashAlgorithm">KETAMA_HASH</value>
-     </property>
-     <property name="locatorType" value="CONSISTENT"/>
-     <property name="failureMode" value="Redistribute"/>
-     <property name="useNagleAlgorithm" value="false"/>
-   </bean>
-
+  <property name="servers" value="10.1.4.111:11211"/>
+  <property name="protocol" value="BINARY"/>
+  <property name="transcoder">
+    <bean class="net.spy.memcached.transcoders.SerializingTranscoder">
+        <property name="compressionThreshold" value="1024"/>
+    </bean>
+  </property>
+  <property name="opTimeout" value="1000"/>
+  <property name="timeoutExceptionThreshold" value="1998"/>
+  <property name="hashAlg">
+    <value type="net.spy.memcached.DefaultHashAlgorithm">KETAMA_HASH</value>
+  </property>
+  <property name="locatorType" value="CONSISTENT"/>
+  <property name="failureMode" value="Redistribute"/>
+  <property name="useNagleAlgorithm" value="false"/>
+ </bean>
 
 </beans>
