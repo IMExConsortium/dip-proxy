@@ -261,9 +261,7 @@
   <property name="ttl" value="864000" />
  </bean>
 
- <!--<bean id="memcachedCliFactory"
-          class="net.spy.memcached.spring.MemcachedClientFactoryBean"> -->
-  <bean id="memcachedClient"
+ <bean id="memcachedClient"
           class="net.spy.memcached.spring.MemcachedClientFactoryBean">
   <property name="servers" value="10.1.4.111:11211"/>
   <property name="protocol" value="BINARY"/>
