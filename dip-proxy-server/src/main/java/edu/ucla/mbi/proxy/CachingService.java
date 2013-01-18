@@ -35,10 +35,10 @@ public class CachingService extends Observable {
     protected String provider;
     private RemoteServerContext rsc;
     private Router router;
-    private McClient mcClient = WSContext.getMcClient();
 
-    static DxfRecordDAO dxfDAO = DipProxyDAO.getDxfRecordDAO();
-    static NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO();
+    private static McClient mcClient = WSContext.getMcClient();
+    private static DxfRecordDAO dxfDAO = DipProxyDAO.getDxfRecordDAO();
+    private static NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO();
 
     public CachingService( String provider, Router router, 
                            RemoteServerContext rsc ) 
@@ -81,7 +81,7 @@ public class CachingService extends Observable {
             memcachedRec = (NativeRecord)mcClient.fetch( memcachedId );
         } catch ( Exception ex ) {
             log.warn ( "FAULT " + Fault.CACHE_FAULT + ":" + 
-                       Fault.getMessage( 29 ) + ":" + ex.toString() );
+                       Fault.getMessage( Fault.CACHE_FAULT ) + ":" + ex.toString() );
         }
 
         log.info( "getNative: memcachedRec=" + memcachedRec );
@@ -123,7 +123,7 @@ public class CachingService extends Observable {
                             mcClient.store( memcachedId, cacheRecord );
                         } catch ( Exception ex ) {
                             log.warn ( "FAULT " + Fault.CACHE_FAULT + 
-                                       ":" + Fault.getMessage( 29 ) + 
+                                       ":" + Fault.getMessage( Fault.CACHE_FAULT ) + 
                                        ":" + ex.toString() );
                         }
 
@@ -326,7 +326,7 @@ public class CachingService extends Observable {
 
         //*** store to memcached 
         if( rsc.isCacheOn() ) {
-            //*** return expired or updated from remtoeRecord
+            //*** return expired or updated from remoteRecord
             if( cacheRecord != null && !cacheExpired ) {
                 log.info( "getNative: store cacheRecrod with memcachedId(" + 
                           memcachedId );
@@ -334,7 +334,7 @@ public class CachingService extends Observable {
                     mcClient.store( memcachedId, cacheRecord );
                 } catch ( Exception ex ) {
                     log.warn ( "FAULT " + Fault.CACHE_FAULT + 
-                               ":" + Fault.getMessage( 29 ) + 
+                               ":" + Fault.getMessage( Fault.CACHE_FAULT ) + 
                                ":" + ex.toString() );
                 }
             }
@@ -348,7 +348,7 @@ public class CachingService extends Observable {
                     mcClient.store( memcachedId, remoteRecord );
                 } catch ( Exception ex ) {
                     log.warn ( "FAULT " + Fault.CACHE_FAULT + 
-                               ":" + Fault.getMessage( 29 ) + 
+                               ":" + Fault.getMessage( Fault.CACHE_FAULT ) + 
                                ":" + ex.toString() );
                 }
             }
@@ -381,7 +381,7 @@ public class CachingService extends Observable {
             memcachedRec = (DxfRecord)mcClient.fetch( memcachedId );
         } catch ( Exception ex ) {
             log.warn ( "FAULT " + Fault.CACHE_FAULT + 
-                       ":" + Fault.getMessage( 29 ) + 
+                       ":" + Fault.getMessage( Fault.CACHE_FAULT ) + 
                        ":" + ex.toString() );
         }
 
@@ -441,7 +441,7 @@ public class CachingService extends Observable {
                                 mcClient.store( memcachedId, dxfRecord );
                             } catch ( Exception ex ) {
                                 log.warn ( "FAULT " + Fault.CACHE_FAULT + 
-                                           ":" + Fault.getMessage( 29 ) + 
+                                           ":" + Fault.getMessage( Fault.CACHE_FAULT ) + 
                                            ":" + ex.toString() );
                             }
 
@@ -604,7 +604,7 @@ public class CachingService extends Observable {
                 mcClient.store( memcachedId, dxfRecord );
             } catch ( Exception ex ) {
                 log.warn ( "FAULT " + Fault.CACHE_FAULT + 
-                           ":" + Fault.getMessage( 29 ) + 
+                           ":" + Fault.getMessage( Fault.CACHE_FAULT ) + 
                            ":" + ex.toString() );
             }
         }
