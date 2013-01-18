@@ -259,6 +259,7 @@
     <ref bean="memcachedClient"/>
   </property>
   <property name="ttl" value="864000" />
+  <property name="prefix" value="PROXY"/>
  </bean>
 
  <bean id="memcachedClient"
