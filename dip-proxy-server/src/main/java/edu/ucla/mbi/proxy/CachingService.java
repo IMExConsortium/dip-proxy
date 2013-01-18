@@ -77,7 +77,13 @@ public class CachingService extends Observable {
         String memcachedId = "NATIVE_" + provider + "_" + service + 
                              "_" + ns + "_" + ac;
 
-        memcachedRec = (NativeRecord)mcClient.fetch( memcachedId );
+        try {
+            memcachedRec = (NativeRecord)mcClient.fetch( memcachedId );
+        } catch ( Exception ex ) {
+            log.warn ( "FAULT " + Fault.CACHE_FAULT + ":" + 
+                       Fault.getMessage( 29 ) + ":" + ex.toString() );
+        }
+
         log.info( "getNative: memcachedRec=" + memcachedRec );
         if( memcachedRec != null ) {
             log.info( "getNative: memcachedRec != null. " );
@@ -113,7 +119,14 @@ public class CachingService extends Observable {
                         log.info( "getNative: return from local cache." ); 
                         log.info( "getNative: store cacheRecrod with memcachedId(" +
                                    memcachedId );
-                        mcClient.store( memcachedId, cacheRecord );
+                        try {
+                            mcClient.store( memcachedId, cacheRecord );
+                        } catch ( Exception ex ) {
+                            log.warn ( "FAULT " + Fault.CACHE_FAULT + 
+                                       ":" + Fault.getMessage( 29 ) + 
+                                       ":" + ex.toString() );
+                        }
+
                         return cacheRecord;
                     }
                 }
@@ -317,7 +330,13 @@ public class CachingService extends Observable {
             if( cacheRecord != null && !cacheExpired ) {
                 log.info( "getNative: store cacheRecrod with memcachedId(" + 
                           memcachedId );
-                mcClient.store( memcachedId, cacheRecord );
+                try {
+                    mcClient.store( memcachedId, cacheRecord );
+                } catch ( Exception ex ) {
+                    log.warn ( "FAULT " + Fault.CACHE_FAULT + 
+                               ":" + Fault.getMessage( 29 ) + 
+                               ":" + ex.toString() );
+                }
             }
             return cacheRecord;
         } else {	    
@@ -325,7 +344,13 @@ public class CachingService extends Observable {
             if( remoteRecord != null && !remoteExpired ) {
                  log.info( "getNative: store remoteRecord with memcachedId" +
                            "(" + memcachedId + ").");
-                 mcClient.store( memcachedId, remoteRecord );
+                try {
+                    mcClient.store( memcachedId, remoteRecord );
+                } catch ( Exception ex ) {
+                    log.warn ( "FAULT " + Fault.CACHE_FAULT + 
+                               ":" + Fault.getMessage( 29 ) + 
+                               ":" + ex.toString() );
+                }
             }
             return remoteRecord;
         }
@@ -352,7 +377,13 @@ public class CachingService extends Observable {
         String memcachedId = "DXF_" + provider + "_" + service + "_" + ns + 
                              "_" + ac + "_" + detail;
 
-        memcachedRec = (DxfRecord)mcClient.fetch( memcachedId );
+        try {
+            memcachedRec = (DxfRecord)mcClient.fetch( memcachedId );
+        } catch ( Exception ex ) {
+            log.warn ( "FAULT " + Fault.CACHE_FAULT + 
+                       ":" + Fault.getMessage( 29 ) + 
+                       ":" + ex.toString() );
+        }
 
         log.info( "getDxf: memcachedRec=" + memcachedRec );
 
@@ -406,8 +437,14 @@ public class CachingService extends Observable {
                             //*** store to memcached 
                             log.info( "getDxf: store cacheRecrod with memcachedId(" +
                                       memcachedId + ")" );
-                            mcClient.store( memcachedId, dxfRecord );
-                            
+                            try {
+                                mcClient.store( memcachedId, dxfRecord );
+                            } catch ( Exception ex ) {
+                                log.warn ( "FAULT " + Fault.CACHE_FAULT + 
+                                           ":" + Fault.getMessage( 29 ) + 
+                                           ":" + ex.toString() );
+                            }
+
                             return dxfRslt;
                         }else{
                             log.info( "CachingService: " +
@@ -563,7 +600,13 @@ public class CachingService extends Observable {
         if( dxfRecord !=  null ) {
             log.info( "getDxf: store cacheRecrod with memcachedId(" + 
                       memcachedId + ")" );
-            mcClient.store( memcachedId, dxfRecord );
+            try {
+                mcClient.store( memcachedId, dxfRecord );
+            } catch ( Exception ex ) {
+                log.warn ( "FAULT " + Fault.CACHE_FAULT + 
+                           ":" + Fault.getMessage( 29 ) + 
+                           ":" + ex.toString() );
+            }
         }
 
         return dxfResult;
