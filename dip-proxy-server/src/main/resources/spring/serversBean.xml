@@ -17,11 +17,8 @@
 
  <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
        init-method="initialize" destroy-method="cleanup">
-<!-- 
-  <property name="overlayMode" value="networked" />
--->
 
-  <property name="overlayMode" value="standalone" />
+  <property name="overlayMode" value="${dht.mode}" />
 
   <property name="routingAlgorithm">
     <value>Chord</value>
@@ -33,13 +30,10 @@
 
   <property name="bootServers">
     <list>
-<!--     
-     <value>10.1.1.204</value> 
-     <value>10.1.1.205</value>
-     <value>10.1.1.206</value>
-     <value>10.1.1.207</value>
--->
-     <value>128.97.39.180</value>
+     <value>10.1.1.207</value> 
+     <value>10.1.1.208</value>
+     <value>10.1.1.209</value>
+     <value>10.1.1.210</value>
     </list>
   </property>
 

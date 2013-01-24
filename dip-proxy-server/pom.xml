@@ -8,7 +8,10 @@
   <url>http://dip.mbi.ucla.edu</url>
 
   <properties>
-    <tomcat.datasource></tomcat.datasource>
+    <dbid></dbid>
+    <dht.mode>standalone</dht.mode>
+    <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
+    <hibernate.connection.portnum>5432</hibernate.connection.portnum>
   </properties>
 
   <profiles>
@@ -23,26 +26,20 @@
       </activation>
       <properties>
         <!--- using JNDI for tomcat server-->
-        <tomcat.datasource>java:/comp/env/</tomcat.datasource> 
       </properties>
     </profile>
 
     <profile>
       <id>dip-proxy-dev</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
-        <property>
-          <name>build</name>
-          <value>dev</value>
-        </property>
+        <activeByDefault>false</activeByDefault>        
       </activation>
       <properties>
         <environment.srv>tomcat</environment.srv>
         <dip-proxy.css>icentral-test.css</dip-proxy.css>
 
         <!--- using JNDI -->
-        <hibernate.connection.datasource>${tomcat.datasource}jdbc/proxyws</hibernate.connection.datasource>
-        <hibernate.connection.dbname>proxyws</hibernate.connection.dbname>
+        <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
         <hibernate.connection.servername>10.1.200.1</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
       </properties>
@@ -53,18 +50,10 @@
 
    <profile>
      <id>dip-proxy-beta</id>
-     <activation>
-       <property>
-         <name>build</name>
-         <value>beta</value>
-       </property>
-     </activation>
      <properties>
         <dip-proxy.css>dip-proxy-beta.css</dip-proxy.css> 
-        <hibernate.connection.datasource>${tomcat.datasource}jdbc/proxyws</hibernate.connection.datasource>
-        <hibernate.connection.dbname>proxyws</hibernate.connection.dbname>
+        <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
         <hibernate.connection.servername>10.1.1.211</hibernate.connection.servername>
-        <hibernate.connection.portnum>5432</hibernate.connection.portnum>
      </properties>
      <build>
        <finalName>dip-proxy</finalName>
@@ -73,16 +62,9 @@
 
    <profile>
      <id>dip-proxy-production</id>
-     <activation>
-        <property>
-          <name>build</name>
-          <value>prod</value>
-        </property> 
-     </activation>
      <properties>
-        <dip-proxy.css>dip-proxy.css</dip-proxy.css>
-      
-        <hibernate.connection.datasource>${tomcat.datasource}jdbc/proxyws</hibernate.connection.datasource>
+        <dip-proxy.css>dip-proxy.css</dip-proxy.css>      
+        <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
         <hibernate.connection.dbname>proxyws</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.211</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
@@ -91,7 +73,6 @@
        <finalName>dip-proxy</finalName>
      </build>
    </profile>
-
   </profiles>
 
   <parent>
