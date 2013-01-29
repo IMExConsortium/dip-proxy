@@ -194,7 +194,7 @@ public class WSContext{
 				                  " :format error. Using default." );
                     }
                 } else {
-                    log.info("ProxyWS: timeout="+timeout+
+                    log.info("ProxyWS: timeout=" + timeout +
                              " :unknown units/format. Using default.");
 		            timeout=String.valueOf(DEFAULT_TIMEOUT);
                 }
@@ -209,33 +209,70 @@ public class WSContext{
 		              "timeout=" + timeout + " s)" );
 	    
 
-	        // Cache flag
+	        // ramCache flag
             //------------
 
-            String cacheOn =
-                (String) ( (Map) services.get( service ) ).get( "cache" );
-            boolean isCacheOn = true;
+            String ramCacheOn =
+                (String) ( (Map) services.get( service ) ).get( "ramCache" );
+            boolean isRamCacheOn = true;
 	    
-            if ( cacheOn != null ) {
-                if ( cacheOn.equalsIgnoreCase( "true" ) ||
-                     cacheOn.equalsIgnoreCase( "on" ) ||
-                     cacheOn.equalsIgnoreCase( "yes" )){
-                    isCacheOn = true;
-                } else if (cacheOn.equalsIgnoreCase( "false" ) ||
-                           cacheOn.equalsIgnoreCase( "off" ) ||
-                           cacheOn.equalsIgnoreCase( "no" ) ){
-                    isCacheOn = false;
+            if ( ramCacheOn != null ) {
+                if ( ramCacheOn.equalsIgnoreCase( "true" ) ||
+                     ramCacheOn.equalsIgnoreCase( "on" ) ||
+                     ramCacheOn.equalsIgnoreCase( "yes" )) {
+
+                    isRamCacheOn = true;
+
+                } else if ( ramCacheOn.equalsIgnoreCase( "false" ) ||
+                            ramCacheOn.equalsIgnoreCase( "off" ) ||
+                            ramCacheOn.equalsIgnoreCase( "no" ) ) {
+
+                    isRamCacheOn = false;
+
                 } else {
                     throw new ProxyException( "Service: " + service +
-                                              " cache flag format error");
+                                              " ramCache flag format error");
                 }
-                log.info( "ProxyWS:   cache=" + isCacheOn );
+                log.info( "ProxyWS:   ramCache=" + isRamCacheOn );
             } else {
-                log.info( "ProxyWS:   cache=" + isCacheOn +
+                log.info( "ProxyWS:   ramCache=" + isRamCacheOn +
                           " (default)");
             }
 
-            ( (Map) services.get( service ) ).put( "cacheOn", isCacheOn );
+            ( (Map) services.get( service ) ).put( "ramCacheOn", isRamCacheOn );
+
+            // dbCache flag
+            //------------
+
+            String dbCacheOn =
+                (String) ( (Map) services.get( service ) ).get( "dbCache" );
+            boolean isDbCacheOn = true;
+	    
+            if ( dbCacheOn != null ) {
+                if ( dbCacheOn.equalsIgnoreCase( "true" ) ||
+                     dbCacheOn.equalsIgnoreCase( "on" ) ||
+                     dbCacheOn.equalsIgnoreCase( "yes" )) {
+
+                    isDbCacheOn = true;
+
+                } else if ( dbCacheOn.equalsIgnoreCase( "false" ) ||
+                            dbCacheOn.equalsIgnoreCase( "off" ) ||
+                            dbCacheOn.equalsIgnoreCase( "no" ) ) {
+
+                    isDbCacheOn = false;
+
+                } else {
+                    throw new ProxyException( "Service: " + service +
+                                              " dbCache flag format error");
+                }
+                log.info( "ProxyWS:   dbCache=" + isDbCacheOn );
+            } else {
+                log.info( "ProxyWS:   dbCache=" + isDbCacheOn +
+                          " (default)");
+            }
+
+            ( (Map) services.get( service ) ).put( "dbCacheOn", isDbCacheOn );
+
 
             // Monitor flag
             //-------------
@@ -247,12 +284,16 @@ public class WSContext{
             if ( monitorOn != null ) {
                 if ( monitorOn.equalsIgnoreCase( "true" ) ||
                      monitorOn.equalsIgnoreCase( "on" ) ||
-                     monitorOn.equalsIgnoreCase( "yes" ) ){
+                     monitorOn.equalsIgnoreCase( "yes" ) ) {
+
                     isMonitorOn = true;
+
                 } else if (monitorOn.equalsIgnoreCase( "false" ) ||
                            monitorOn.equalsIgnoreCase( "off" ) ||
-                           monitorOn.equalsIgnoreCase( "no" ) ){
+                           monitorOn.equalsIgnoreCase( "no" ) ) {
+
                     isMonitorOn = false;
+
                 } else {
                     throw new ProxyException( "Service: " + service +
                                               " monitor flag format error");
@@ -284,14 +325,16 @@ public class WSContext{
             if ( remoteProxyOn != null ) {
                 if ( remoteProxyOn.equalsIgnoreCase( "true" ) ||
                      remoteProxyOn.equalsIgnoreCase( "on" ) ||
-                     remoteProxyOn.equalsIgnoreCase( "yes" ) )
-                {
+                     remoteProxyOn.equalsIgnoreCase( "yes" ) ) {
+
                     isRemoteProxyOn = true;
+
                 } else if (remoteProxyOn.equalsIgnoreCase( "false" ) ||
                            remoteProxyOn.equalsIgnoreCase( "off" ) ||
-                           remoteProxyOn.equalsIgnoreCase( "no" ) )
-                {
+                           remoteProxyOn.equalsIgnoreCase( "no" ) ) {
+
                     isRemoteProxyOn = false;
+
                 } else {
                     throw new ProxyException( "Provider: " + service +
                                               " remote proxy flag format error");
@@ -313,6 +356,7 @@ public class WSContext{
             RemoteServer proxyProto =         
                 (RemoteServer) ( (Map) services.get( service ) ).get( "proxyProto" );
             ( (Map) services.get( service ) ).put( "proxyProto", proxyProto );
+
 
 	        // router
 	        //-------
@@ -356,7 +400,6 @@ public class WSContext{
     }
 
     public void cleanup() {
-
         Log log = LogFactory.getLog( WSContext.class );
         log.info( "cleanup called" );
     }

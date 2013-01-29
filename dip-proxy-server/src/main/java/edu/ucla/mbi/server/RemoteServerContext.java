@@ -27,7 +27,9 @@ public class RemoteServerContext {
     
     private int ttl=0;
     private int timeout=0;
-    private boolean cacheOn = true;
+
+    private boolean ramCacheOn = true;
+    private boolean dbCacheOn = true;
     private boolean monitorOn = true;
     private boolean remoteProxyOn = true;
 
@@ -41,6 +43,7 @@ public class RemoteServerContext {
 
     private Router router = null;
     
+    //*** getter
     public int getTimeout(){
 	    return timeout;
     }
@@ -52,9 +55,13 @@ public class RemoteServerContext {
     public long getTtlMilli(){
         return 1000L*60*60*24*ttl;
     }
+
+    public boolean isRamCacheOn() {
+        return ramCacheOn;
+    }
     
-    public boolean isCacheOn(){
-        return cacheOn;
+    public boolean isDbCacheOn(){
+        return dbCacheOn;
     }
     
     public boolean isMonitorOn(){
@@ -114,8 +121,11 @@ public class RemoteServerContext {
 	    log.info( "  ttl=" + context.get( "ttl" ) );
 	    ttl = (Integer) context.get( "ttl" );
 
-	    log.info( "  cacheOn=" + context.get( "cacheOn" ) );
-	    cacheOn = (Boolean) context.get( "cacheOn" );
+	    log.info( "  ramCacheOn=" + context.get( "ramCacheOn" ) );
+	    ramCacheOn = (Boolean) context.get( "ramCacheOn" );
+
+        log.info( "  dbCacheOn=" + context.get( "dbCacheOn" ) );
+        dbCacheOn = (Boolean) context.get( "dbCacheOn" );
                 
 	    log.info( "  remoteProxyOn=" + context.get( "remoteProxyOn" ) );
 	    remoteProxyOn = (Boolean) context.get( "remoteProxyOn" );

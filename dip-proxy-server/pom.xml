@@ -9,7 +9,8 @@
 
   <properties>
     <dbid></dbid>
-    <dht.mode>standalone</dht.mode>
+    <dht.mode>standalone</dht.mode> 
+    <!--<dht.mode>local</dht.mode> -->
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
     <hibernate.connection.portnum>5432</hibernate.connection.portnum>
   </properties>

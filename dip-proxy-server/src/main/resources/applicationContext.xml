@@ -115,10 +115,11 @@
        <entry key="router">
         <ref bean="ebiDhtRouter"/> 
        </entry>
-
-       <entry key="cache" value="on"/>
-       <entry key="monitor" value="on"/>
+        
+       <entry key="ramCache" value="off"/>
+       <entry key="dbCache" value="off"/>
        <entry key="remoteProxy" value="off"/>
+       <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
 
       </map>
@@ -158,10 +159,12 @@
         <ref bean="ncbiDhtRouter"/> 
        </entry>
 
-       <entry key="cache" value="on"/>
-       <entry key="remoteProxy" value="on"/>
-       <entry key="monitor" value="on"/>
+       <entry key="ramCache" value="off"/>
+       <entry key="dbCache" value="off"/>
+       <entry key="remoteProxy" value="off"/>
+       <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/> 
+
       </map>
      </entry>
 
@@ -186,7 +189,8 @@
         <ref bean="mbiDhtRouter"/> 
        </entry>
 
-       <entry key="cache" value="on"/>
+       <entry key="ramCache" value="off"/>
+       <entry key="dbCache" value="off"/>
        <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
@@ -218,8 +222,12 @@
         <ref bean="dipDhtRouter"/> 
        </entry>
 
-       <entry key="cache" value="on"/>
+       <entry key="ramCache" value="off"/>
+       <entry key="dbCache" value="off"/>
+       <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
+       <entry key="debug" value="0"/>
+
       </map>
      </entry>
 
@@ -244,8 +252,12 @@
         <ref bean="yeastMineDhtRouter"/>
        </entry>
  
-       <entry key="cache" value="on"/>
+       <entry key="ramCache" value="off"/>
+       <entry key="dbCache" value="off"/>
+       <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
+       <entry key="debug" value="0"/>
+
       </map>
      </entry>
    </map> 
