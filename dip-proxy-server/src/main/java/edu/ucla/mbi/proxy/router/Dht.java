@@ -1,16 +1,16 @@
 package edu.ucla.mbi.proxy.router;
-  
-/*===========================================================================
- * $HeadURL:: http://imex.mbi.ucla.edu/svn/ProxyWS/src/edu/ucla/mbi/service#$
- * $Id:: CachingService.java 130 2009-02-03 17:58:49Z wyu                   $
- * Version: $Rev:: 130                                                      $
- *===========================================================================
+
+/*==============================================================================
+ * $HeadURL:: http://imex.mbi.ucla.edu/svn/ProxyWS/src/edu/ucla/mbi/service#   $
+ * $Id:: CachingService.java 130 2009-02-03 17:58:49Z wyu                      $
+ * Version: $Rev:: 130                                                         $
+ *==============================================================================
  *
  * Dht:
  *   DHT access 
  *
- *========================================================================= */
- 
+ *============================================================================ */
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -98,7 +98,7 @@ public class Dht {
         return this.proxyDht;
     }
 
-    //---------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     public void initialize() {
         Log log = LogFactory.getLog( Dht.class );
@@ -131,7 +131,7 @@ public class Dht {
             log.info( " old:    proxyId=" + proxyIdSHA1.toString(16) );
             
         } catch (FileNotFoundException e ){
-            
+
             try {
                 InetAddress localHost = InetAddress.getLocalHost();
                 proxyHost = localHost.getHostName();
@@ -229,13 +229,16 @@ public class Dht {
                     String bootHost = i.next();
                     log.info( "  trying boothost=" + bootHost + 
                               ":" + proxyPort );
-                    //-----------------------------------------------------
-                    
-                    if ( ! bootHost.equals( localAddress.getHostAddress() ) ) {
+                    //----------------------------------------------------------
+
+                    if ( !bootHost.equals( localAddress.getHostAddress() ) ) {
                         try {
-                            ma = proxyDht.joinOverlay( bootHost + ":" + proxyPort,  
-                                                       Integer.parseInt( proxyPort ) );
-                            log.info( "   overlay joined (MessagingAddress=" + ma + ")");
+                            ma = proxyDht
+                                .joinOverlay( bootHost 
+                                              + ":" + proxyPort,  
+                                              Integer.parseInt( proxyPort ) );
+                            log.info( "overlay joined (MessagingAddress=" + 
+                                      ma + ")" );
                             break;
                         } catch ( ow.routing.RoutingException re ) {
                             log.info( "   routing exception: " + re );
@@ -243,14 +246,14 @@ public class Dht {
                     }
                 }
             } 
-
+            
         } catch( Exception e ){
             e.printStackTrace();
         }
     }
 
-    //---------------------------------------------------------------------
-
+    //--------------------------------------------------------------------------
+    
     public void cleanup() {
         
         Log log = LogFactory.getLog( Dht.class );
@@ -261,7 +264,7 @@ public class Dht {
         }
     }
     
-    //---------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     public ID getRecordID( String provider,
                            String service,
@@ -273,8 +276,7 @@ public class Dht {
         
         return ID.getSHA1BasedID( recordStrId.getBytes() );
     }
-
-
+    
     public Set<ValueInfo<DhtRouterList>> getDhtRecord( ID rid ){
         
         Log log = LogFactory.getLog(Dht.class);
@@ -289,7 +291,7 @@ public class Dht {
         return val;
     }
     
-    public void updateIterm( ID rid, DhtRouterItem newItem ) {
+    public void updateItem( ID rid, DhtRouterItem newItem ) {
         
         Log log = LogFactory.getLog(Dht.class);
 
@@ -323,13 +325,13 @@ public class Dht {
                     DhtRouterItem proxyItem = pi.next();                   
                     log.info( "   item=" + proxyItem.toString() );
                     
-                    if ( proxyItem.getAddress().equals( newItem.getAddress() ) ) {
+                    if ( proxyItem.getAddress().equals(newItem.getAddress()) ){
                         newFlag = false;
                         proxyItem.setCreateTime( newItem.getCreateTime() );
                         proxyItem.setExpireTime( newItem.getExpireTime() );
                     }
                 }
-                
+
                 if( newFlag ) {
                     DhtRouterItem dpi = newItem;
                     dpl.addItem( dpi );
@@ -360,7 +362,7 @@ public class Dht {
         log.info( "update(UPDATE): done" );
     }
 
-    public void deleteIterm( ID rid, DhtRouterItem newItem ) {
+    public void deleteItem( ID rid, DhtRouterItem newItem ) {
         
         Log log = LogFactory.getLog(Dht.class);
         Set<ValueInfo<DhtRouterList>> val = null;
@@ -373,7 +375,7 @@ public class Dht {
         }
         log.info( " got val..." );
      
-        if ( val != null && val.size() > 0 ) {
+        if( val != null && val.size() > 0 ) {
             for( Iterator<ValueInfo<DhtRouterList>> i = val.iterator();
                  i.hasNext(); ){
                 
@@ -386,19 +388,19 @@ public class Dht {
                 long lastExpire = 0;
                 String lastUrl = null;
                 
-                for ( Iterator<DhtRouterItem> pi = dpl.iterator();
+                for( Iterator<DhtRouterItem> pi = dpl.iterator();
                       pi.hasNext(); ){
                     
                     DhtRouterItem proxyItem = pi.next();                   
                     log.info( "   item=" + proxyItem.toString() );
                     
-                    if ( proxyItem.getAddress().equals( newItem.getAddress() ) ) {
+                    if( proxyItem.getAddress().equals(newItem.getAddress()) ){
                         dpl.removeItem( proxyItem );
                         log.info( "   item removed" );
                         break;
                     }
                 }
-                
+
                 try {
                     proxyDht.put( rid, dpl );            
                 } catch ( Exception e ) {
@@ -428,7 +430,7 @@ public class Dht {
             log.info( "  routing exception" );
         }
         
-        if ( dhtRec != null && dhtRec.size() > 0 ){
+        if( dhtRec != null && dhtRec.size() > 0 ){
             
             log.info( "  old key. checking..." );
             
@@ -485,12 +487,12 @@ public class Dht {
         
         try {
             dhtRec = proxyDht.get(rid);  
-        } catch( RoutingException re ) {
+        }catch( RoutingException re ) {
             log.info( "  routing exception" );
         }
         
-        if ( dhtRec != null && dhtRec.size() > 0 ){
-        
+        if( dhtRec != null && dhtRec.size() > 0 ){
+
             for( Iterator<ValueInfo<DhtRouterList>> i = dhtRec.iterator(); 
                  i.hasNext(); ){
 

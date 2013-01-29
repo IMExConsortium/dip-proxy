@@ -1,15 +1,15 @@
 package edu.ucla.mbi.proxy.router;
 
-/*===========================================================================
- * $HeadURL:: http://imex.mbi.ucla.edu/svn/ProxyWS/src/edu/ucla/mbi/service#$
- * $Id:: CachingService.java 130 2009-02-03 17:58:49Z wyu                   $
- * Version: $Rev:: 130                                                      $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL:: http://imex.mbi.ucla.edu/svn/ProxyWS/src/edu/ucla/mbi/service#   $
+ * $Id:: CachingService.java 130 2009-02-03 17:58:49Z wyu                      $
+ * Version: $Rev:: 130                                                         $
+ *==============================================================================
  *
  * DhtRouter:
  *   selects remote server to call
  *
- *========================================================================= */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
