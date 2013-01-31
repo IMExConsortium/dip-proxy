@@ -226,12 +226,12 @@ public class DhtRouter implements Router {
         
         if ( message.getMsg() == DhtRouterMessage.DELETE ) {
 	        log.info( "  DhtRouterItem: DELETING" );
-            proxyDht.deleteIterm( rid, routerItem );
+            proxyDht.deleteItem( rid, routerItem );
         } 
         
         if ( message.getMsg() == DhtRouterMessage.UPDATE ) {
 	        log.info( "  DhtRouterItem: UPDATING" );
-            proxyDht.updateIterm( rid, routerItem );
+            proxyDht.updateItem( rid, routerItem );
         }
     }
 }
