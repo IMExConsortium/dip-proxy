@@ -28,13 +28,14 @@ import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.server.*;
 import edu.ucla.mbi.util.cache.*;
 
-public class CachingService extends CachingNativeService {
+public class CachingService extends RemoteNativeService {
 
     private Log log = LogFactory.getLog( CachingService.class );
     
     private static DxfRecordDAO dxfDAO = DipProxyDAO.getDxfRecordDAO();
 
-    public CachingService( String provider, Router router, 
+    public CachingService( String provider, 
+                           Router router, 
                            RemoteServerContext rsc ) {
 
         super( provider, router, rsc );
@@ -44,8 +45,189 @@ public class CachingService extends CachingNativeService {
 
     //--------------------------------------------------------------------------
 
-    public DatasetType getDxf( String provider, String service, String ns,
-                               String ac, String detail 
+    public NativeRecord getNative( String provider, 
+                                   String service, 
+                                   String ns,
+                                   String ac 
+                                   ) throws ProxyFault {
+
+        String id = provider + "_" + service + "_" + ns + "_" + ac;
+
+        log.info( "getNative(provider=" + provider + ")" );
+        log.info( "         (router=" + router + ")" );
+        log.info( "         (router.rsc="
+                  + router.getRemoteServerContext().getProvider() + ")" );
+        log.info( " ramCacheOn=" + rsc.isRamCacheOn() );
+        log.info( " dbCacheon=" + rsc.isDbCacheOn() );
+
+        NativeRecord cacheRecord = null;
+        boolean cacheExpired = false;
+
+        NativeRecord remoteRecord = null;
+        boolean remoteExpired = false;
+        ProxyFault proxyFault = null;
+
+        String natXml = null;
+        NativeRecord expiredRecord = null;
+
+        String memcachedId = "NATIVE_" + provider + "_" + service +
+                             "_" + ns + "_" + ac;
+
+        //*** retrieve from memcached
+        if( rsc.isRamCacheOn() ) {
+            NativeRecord memcachedRec = null;
+            try {
+                memcachedRec = (NativeRecord)mcClient.fetch( memcachedId );
+            } catch ( Exception ex ) {
+                log.warn ( "FAULT " + Fault.CACHE_FAULT + ":" +
+                           Fault.getMessage( Fault.CACHE_FAULT ) +
+                           ":" + ex.toString() );
+            }
+
+            log.info( "getNative: memcachedRec=" + memcachedRec );
+
+            if( memcachedRec != null ) {
+                log.info( "getNative: memcachedRec != null. " );
+                return memcachedRec;
+            }
+        }
+
+        //*** retrieve from local database
+        if ( rsc.isDbCacheOn() ) {
+
+            try {
+                cacheRecord = DipProxyDAO.getNativeRecordDAO()
+                                        .find( provider, service, ns, ac );
+            } catch ( DAOException ex ) {
+                proxyFault = FaultFactory.newInstance( Fault.TRANSACTION );
+            }
+
+            if ( cacheRecord != null ) { // local record present
+
+                natXml = cacheRecord.getNativeXml();
+
+                if( natXml == null || natXml.length() == 0 ) {
+                    DipProxyDAO.getNativeRecordDAO().delete( cacheRecord );
+                    cacheRecord = null;
+                } else {
+                    Date expirationTime = cacheRecord.getExpireTime();
+                    Date currentTime = Calendar.getInstance().getTime();
+
+                    log.info( "Native record: CT=" +
+                              cacheRecord.getCreateTime() +
+                              " ET=" + expirationTime );
+
+                    if ( currentTime.after( expirationTime ) ) {
+                        cacheExpired = true;
+                        expiredRecord = cacheRecord;
+                    } else {
+                        //*** return valid record from dbCache
+                        log.info( "getNative: return from dbCache." );
+
+                        if( rsc.isRamCacheOn() ) {
+                            memcachedStore ( memcachedId, cacheRecord );
+                        }
+                        return cacheRecord;
+                    }
+                }
+            }
+        }
+
+        //*** valid native record not available here ( null or expired ) 
+        //*** retrieve from remote proxy server or native server  
+        try {
+            remoteRecord = getNativeFromRemote ( provider, service, ns, ac );
+        } catch ( ProxyFault fault ) {
+            proxyFault = fault;
+        }
+
+        if( remoteRecord != null ) {
+            Date currentTime = Calendar.getInstance().getTime();
+
+            if( currentTime.after( remoteRecord.getExpireTime() ) ) {
+                //*** remote record is expired
+                log.info( "getNative: remoteExpired=true. " );
+
+                if( expiredRecord != null ) {
+                    //*** select more recentlly expired record
+                    if( expiredRecord.getExpireTime()
+                                        .after( remoteRecord
+                                                    .getExpireTime() ) ) {
+
+                        //*** update expired in dbCache
+                        if( rsc.isDbCacheOn() ) {
+                            expiredRecord.setNativeXml(
+                                remoteRecord.getNativeXml() );
+
+                            expiredRecord.resetExpireTime (
+                                remoteRecord.getQueryTime(), rsc.getTtl() );
+
+                            DipProxyDAO.getNativeRecordDAO()
+                                        .create( expiredRecord );
+
+                        }
+                        //*** update expiredRecord from remote
+                        expiredRecord = remoteRecord;
+                    }
+                } else {
+                    expiredRecord = remoteRecord;
+                }
+
+                //*** expiredRecord maybe from dbCache or remote         
+                return expiredRecord;
+            }
+
+            //*** return remoteRecord  
+
+            //*** dbCache update                           
+            if( rsc.isDbCacheOn() ) {
+
+                if( cacheRecord == null ) {
+                    cacheRecord = new NativeRecord( provider,
+                                                    service, ns, ac );
+                }
+
+                cacheRecord.setNativeXml( remoteRecord.getNativeXml() );
+
+                // NOTE: remoteRecord must specify time of the primary 
+                //       source query
+
+                cacheRecord.resetExpireTime( remoteRecord.getQueryTime(),
+                                             rsc.getTtl() );
+
+                //*** store/update native record locall
+                DipProxyDAO.getNativeRecordDAO().create( cacheRecord );
+
+            }
+
+            //*** memcached store
+            if( rsc.isRamCacheOn() ) {
+                memcachedStore ( memcachedId, remoteRecord );
+            }
+
+            return remoteRecord;
+        }
+
+        //*** finally return a expiredRecord      
+        if( expiredRecord != null ) {
+            //*** remote is null return expired record from dbCache 
+            return expiredRecord;
+        } else if ( proxyFault != null ) {
+            log.info( "getNative: throw a proxyFault. " );
+            throw proxyFault;
+        } else {
+            log.info( "getNative: return a null. " );
+            return null;
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
+    public DatasetType getDxf( String provider, 
+                               String service, 
+                               String ns,
+                               String ac, 
+                               String detail 
                                ) throws ProxyFault {
 
         log.info( "getDxf(prv=" + provider + " srv=" + service + " det="
@@ -235,6 +417,20 @@ public class CachingService extends CachingNativeService {
             throw proxyFault;
         } else {
             return null;
+        }
+    }
+
+    private void memcachedStore ( String memcachedId, Object record ) {
+
+        log.info( "getNative: store cacheRecrod with " +
+                  "memcachedId(" + memcachedId );
+
+        try {
+            mcClient.store( memcachedId, record );
+        } catch ( Exception ex ) {
+            log.warn ( "FAULT " + Fault.CACHE_FAULT + ":" +
+                       Fault.getMessage( Fault.CACHE_FAULT ) +
+                       ":" + ex.toString() );
         }
     }
 
