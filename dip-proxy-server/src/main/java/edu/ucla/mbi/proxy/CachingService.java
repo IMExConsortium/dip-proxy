@@ -31,8 +31,10 @@ import edu.ucla.mbi.util.cache.*;
 public class CachingService extends RemoteNativeService {
 
     private Log log = LogFactory.getLog( CachingService.class );
-    
+
+    private static NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO();    
     private static DxfRecordDAO dxfDAO = DipProxyDAO.getDxfRecordDAO();
+    private static McClient mcClient = WSContext.getMcClient();
 
     public CachingService( String provider, 
                            Router router, 

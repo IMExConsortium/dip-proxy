@@ -6,8 +6,8 @@ package edu.ucla.mbi.proxy;
  * Version: $Rev::                                                          $
  *===========================================================================
  *
- * CachingNativeServices:
- *  returns a native record;
+ * RemoteNativeServices:
+ *  returns a remote proxy or remote native record;
  *
  *======================================================================== */
 
@@ -20,13 +20,10 @@ import javax.xml.bind.*;
 import javax.xml.transform.stream.StreamSource;
 
 import edu.ucla.mbi.dxf14.*;
-import edu.ucla.mbi.orm.*;
 import edu.ucla.mbi.cache.*;
-import edu.ucla.mbi.cache.orm.*;
 import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.server.*;
-import edu.ucla.mbi.util.cache.*;
 
 class RemoteNativeService extends Observable {
 
@@ -36,10 +33,6 @@ class RemoteNativeService extends Observable {
     protected RemoteServerContext rsc;
     protected Router router;
 
-    protected static McClient mcClient = WSContext.getMcClient();
-    private static NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO();
-
-    
     protected RemoteNativeService( String provider, 
                                    Router router, 
                                    RemoteServerContext rsc ) {
