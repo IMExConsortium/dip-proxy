@@ -238,34 +238,6 @@ public class CachingService extends CachingNativeService {
         }
     }
 
-    private DatasetType getDxfFromRemote ( String nativeXml, String provider, 
-        String service, String ns, String ac, String detail ) throws ProxyFault  {
-
-        RemoteServer rs = selectRemoteServer( rsc, service );
-
-        try {
-            DatasetType dxfResult = rs.buildDxf( nativeXml, ns, ac,
-                                     detail, provider, service );
-          
-            return dxfResult;
-
-        } catch( ProxyFault fault ) {
-            log.warn( "getDxf(): transform error for service " + service +
-                      " and ac " + ac + " exception: "+ fault.toString());
-            throw fault; 
-        }
-
-    }
- 
-    private RemoteServer selectRemoteServer( RemoteServerContext rsc,
-                                             String service ) {
-
-        if ( rsc.isRemoteProxyOn() ) {
-             return router.getLastProxyServer( service );
-        }
-        return router.getNativeServer( service );
-     }
-     
     private String marshall( DatasetType record ) throws ProxyFault {
 
         try {
