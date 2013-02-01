@@ -183,28 +183,41 @@ class CachingNativeService extends Observable {
 
                     if( remoteRecord.getExpireTime() == null ) {
                         //*** remoteRecord is newly created 
-                        Date queryTime = remoteRecord.getCreateTime();  // primary query
-                        Calendar qCal = Calendar.getInstance();
-                        qCal.setTime( queryTime );
-                        qCal.add( Calendar.SECOND, rsc.getTtl() );
-
-                        remoteRecord.setExpireTime( qCal.getTime() );
+                        remoteRecord.resetExpireTime( 
+                            remoteRecord.getCreateTime(), rsc.getTtl() );
                     }
 
+                    
                     if( currentTime.after( remoteRecord.getExpireTime() ) ) {
                         //*** remote record is expired
                         log.info( "getNative: remoteExpired=true. " );
                         if( expiredRecord == null ) {
                             expiredRecord = remoteRecord;
                             log.info( "getNative: got a remote expiredRec." );
+                            
                         } else {
                             //*** select more recentlly expired record
                             if( expiredRecord.getExpireTime()
                                     .after( remoteRecord.getExpireTime() ) ) {
 
-                                expiredRecord = remoteRecord; 
+                                //*** update expired from dbCache
+                                if( rsc.isDbCacheOn() ) {
+                                    expiredRecord.setNativeXml( 
+                                        remoteRecord.getNativeXml() );
+
+                                    expiredRecord.resetExpireTime ( 
+                                        remoteRecord.getQueryTime(), 
+                                        rsc.getTtl() );
+
+                                    DipProxyDAO.getNativeRecordDAO()
+                                                .create( expiredRecord );
+
+                                }
+                                expiredRecord = remoteRecord;
                             } 
                         }
+                        
+                        return expiredRecord;
                     } else {
                         //*** return remoteRecord  
                         
@@ -213,11 +226,11 @@ class CachingNativeService extends Observable {
 
                             if( cacheRecord == null ) {
                                 cacheRecord = new NativeRecord( provider, 
-                                                            service, ns, ac );
+                                                                service, ns, ac );
                             }
 
                             dbCacheUpdate ( cacheRecord, remoteRecord );
-
+                            // need update here ?????????????
                         }
                         
                         //*** memcached store

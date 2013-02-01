@@ -170,7 +170,9 @@ public class RemoteProxyServer implements RemoteServer {
 		    (DatasetType) ( (JAXBElement) result.getResult() ).getValue();
 	    
             //test if dxfResult is empty
-	        if ( dxfResult.getNode().isEmpty() ) {
+	        if ( dxfResult.getNode().isEmpty() 
+                 || dxfResult.getNode().get(0).getAc().equals("") ) {
+ 
 		        throw FaultFactory.newInstance( Fault.TRANSFORM ); 
 	        }	    
 	    

@@ -112,8 +112,10 @@ public class RemoteServerImpl implements RemoteServer {
 		    (DatasetType) ( (JAXBElement) result.getResult() ).getValue();
 	    
             //*** test if dxfResult is empty
-	        if ( dxfResult.getNode().isEmpty() ) {
-		        throw FaultFactory.newInstance( Fault.NO_RECORD );  // no hits
+	        if ( dxfResult.getNode().isEmpty() 
+                 || dxfResult.getNode().get(0).getAc().equals("") ) {
+
+		        throw FaultFactory.newInstance( Fault.TRANSFORM );  
 	        }	    
             return dxfResult;
 	    
@@ -121,7 +123,7 @@ public class RemoteServerImpl implements RemoteServer {
 	        log.info( "Transformer fault: empty dxfResult ");
 	        throw fault;
         } catch ( Exception e ) {
-	        throw FaultFactory.newInstance( Fault.UNKNOWN );  
+	        throw FaultFactory.newInstance( Fault.TRANSFORM );  
 	    }   
     }
     
