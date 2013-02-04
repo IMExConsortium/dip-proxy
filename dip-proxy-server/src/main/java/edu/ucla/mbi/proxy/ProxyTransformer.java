@@ -27,10 +27,11 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.bind.util.JAXBResult;
 import javax.servlet.ServletContext;
 
-import org.springframework.core.io.*;
-import org.springframework.web.context.ServletContextAware;
+//import org.springframework.core.io.*;
+//import org.springframework.web.context.ServletContextAware;
 
-public class ProxyTransformer implements ServletContextAware, ContextListener {
+public class ProxyTransformer implements //ServletContextAware, 
+                                         ContextListener {
 
     private JsonContext transformerContext;
     private String contextTop;

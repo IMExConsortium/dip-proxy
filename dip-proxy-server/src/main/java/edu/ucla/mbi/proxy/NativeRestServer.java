@@ -24,10 +24,10 @@ import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.context.*;
 
-import javax.servlet.ServletContext;
-import org.springframework.web.context.ServletContextAware;
+//import javax.servlet.ServletContext;
+//import org.springframework.web.context.ServletContextAware;
 
-public class NativeRestServer implements NativeServer, ServletContextAware, 
+public class NativeRestServer implements NativeServer, //ServletContextAware, 
     ContextListener {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
@@ -66,6 +66,20 @@ public class NativeRestServer implements NativeServer, ServletContextAware,
 
         log.info( "initialize starting... " );
 
+        /*
+        FileResource fr = (FileResource) restServerContext.getConfig().get("json-source");
+        if ( fr == null ) return;
+
+        try {
+            restServerContext.readJsonConfigDef( fr.getInputStream() );
+        } catch ( Exception e ){
+            log.info( "initialize exception: " + e.toString() );
+            throw FaultFactory.newInstance ( 27 ); // json configuration
+        }
+
+        
+
+
         String jsonConfigFile = 
                 (String) restServerContext.getConfig().get( "json-config" );
 
@@ -78,7 +92,7 @@ public class NativeRestServer implements NativeServer, ServletContextAware,
             throw FaultFactory.newInstance ( 27 ); // json configuration
         }
 
-        
+        */
         Map<String, Object> jrs = restServerContext.getJsonConfig(); 
         
         restServerMap = (Map) jrs.get( contextTop );

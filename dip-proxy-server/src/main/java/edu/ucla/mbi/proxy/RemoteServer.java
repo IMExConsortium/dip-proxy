@@ -23,7 +23,7 @@ public interface RemoteServer{
                                    int retry ) throws ProxyFault;
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
-				                 String detail, String provider, String service 
+                                 String detail, String provider, String service 
                                  ) throws ProxyFault;
     
     
