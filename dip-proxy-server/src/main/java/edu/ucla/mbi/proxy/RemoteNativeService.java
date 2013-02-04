@@ -63,10 +63,10 @@ class RemoteNativeService extends Observable {
             return router.getNextProxyServer( service, namespace, accession );
         }
 
-        return router.getNativeServer(service);
+        return rsc.getNativeServerMap().get( service );
 
     }
-
+    /*
     protected RemoteServer selectRemoteServer( RemoteServerContext rsc,
                                                String service ) {
 
@@ -74,7 +74,7 @@ class RemoteNativeService extends Observable {
              return router.getLastProxyServer( service );
         }
         return router.getNativeServer( service );   
-    }
+    } */
 
     protected NativeRecord getNativeFromRemote ( String provider, 
                                                  String service, 
@@ -122,10 +122,20 @@ class RemoteNativeService extends Observable {
                     remoteRecord = null;
                 } else {
                     if( remoteRecord.getExpireTime() == null ) {
+
                         //*** remoteRecord is newly created from remote native 
                         remoteRecord.resetExpireTime(        
                             remoteRecord.getCreateTime(), rsc.getTtl() );
-                    }
+
+                        this.setChanged(); // update site from DHT
+
+                        DhtRouterMessage message =
+                            new DhtRouterMessage( DhtRouterMessage.UPDATE,
+                                                  remoteRecord, rs );
+
+                        this.notifyObservers( message );
+                        this.clearChanged();
+                    } 
                 }
             }
 
@@ -134,15 +144,15 @@ class RemoteNativeService extends Observable {
         return remoteRecord;
     }
 
-    protected DatasetType getDxfFromRemote ( String nativeXml, 
-                                             String provider, 
-                                             String service, 
-                                             String ns, 
-                                             String ac,   
-                                             String detail 
-                                             ) throws ProxyFault  {
+    protected DatasetType transformToDxf ( String nativeXml, 
+                                           String provider, 
+                                           String service, 
+                                           String ns, 
+                                           String ac,   
+                                           String detail 
+                                           ) throws ProxyFault  {
 
-        RemoteServer rs = selectRemoteServer( rsc, service );
+        RemoteServer rs = rsc.getNativeServerMap().get( service);
 
         try {
             DatasetType dxfResult = rs.buildDxf( nativeXml, ns, ac,

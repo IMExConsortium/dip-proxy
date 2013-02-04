@@ -363,8 +363,8 @@ public class CachingService extends RemoteNativeService {
         
             //*** get dxf from remote proxy or remote native using valid/expired nr
             try {
-                dxfResult = getDxfFromRemote ( nativeXml, provider, 
-                                               service, ns, ac, detail );
+                dxfResult = transformToDxf (  nativeXml, provider,
+                                              service, ns, ac, detail );
             } catch ( ProxyFault fault ) {
                 proxyFault = fault;
             }
