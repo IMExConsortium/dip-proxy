@@ -66,15 +66,6 @@ class RemoteNativeService extends Observable {
         return rsc.getNativeServerMap().get( service );
 
     }
-    /*
-    protected RemoteServer selectRemoteServer( RemoteServerContext rsc,
-                                               String service ) {
-
-        if ( rsc.isRemoteProxyOn() ) {
-             return router.getLastProxyServer( service );
-        }
-        return router.getNativeServer( service );   
-    } */
 
     protected NativeRecord getNativeFromRemote ( String provider, 
                                                  String service, 
