@@ -109,6 +109,16 @@
   </property>
  </bean>
 
+ <!-- REST SERVER -->
+
+ <bean id="nativeRestServer" init-method="initialize" 
+       class="edu.ucla.mbi.proxy.NativeRestServer">
+  <property name="restServerContext" ref="restServerContext"/>
+  <property name="contextTop" value="restServer"/>
+ </bean>
+</beans>
+
+
  <!-- EBI proxy services -->
  
  <bean id="ebiReferenceServer" init-method="initialize" 
@@ -179,10 +189,3 @@
   </property>
  </bean>
 
- <!-- REST SERVER -->
- <bean id="nativeRestServer" init-method="initialize" 
-       class="edu.ucla.mbi.proxy.NativeRestServer">
-  <property name="restServerContext" ref="restServerContext"/>
-  <property name="contextTop" value="restServer"/>
- </bean>
-</beans>

@@ -144,6 +144,7 @@ class RemoteNativeService extends Observable {
         return remoteRecord;
     }
 
+    /*
     protected DatasetType transformToDxf ( String nativeXml, 
                                            String provider, 
                                            String service, 
@@ -166,4 +167,5 @@ class RemoteNativeService extends Observable {
             throw fault; 
         }
     }
+    */
 }

@@ -363,8 +363,13 @@ public class CachingService extends RemoteNativeService {
         
             //*** get dxf from remote proxy or remote native using valid/expired nr
             try {
-                dxfResult = transformToDxf (  nativeXml, provider,
-                                              service, ns, ac, detail );
+                ///dxfResult = transformToDxf (  nativeXml, provider,
+                //                              service, ns, ac, detail );
+
+                ProxyDxfTransformer pdt = new ProxyDxfTransformer();
+                dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail, 
+                                          provider, service );
+                
             } catch ( ProxyFault fault ) {
                 proxyFault = fault;
             }
