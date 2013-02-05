@@ -24,17 +24,13 @@ import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.context.*;
 
-//import javax.servlet.ServletContext;
-//import org.springframework.web.context.ServletContextAware;
 
-public class NativeRestServer implements NativeServer, //ServletContextAware, 
-    ContextListener {
+public class NativeRestServer implements NativeServer, ContextListener {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
     private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
     private JsonContext restServerContext;
     private String contextTop;
-    private ServletContext servletContext;
  
     public Map<String,Object> getRestServerMap() {
         return restServerMap;
@@ -47,10 +43,6 @@ public class NativeRestServer implements NativeServer, //ServletContextAware,
 
     public void setContextTop( String top ) {
         this.contextTop = top;
-    }
-
-    public void setServletContext ( ServletContext servletContext ) {
-        this.servletContext = servletContext;
     }
 
     //*** getter
@@ -66,8 +58,9 @@ public class NativeRestServer implements NativeServer, //ServletContextAware,
 
         log.info( "initialize starting... " );
 
-        /*
-        FileResource fr = (FileResource) restServerContext.getConfig().get("json-source");
+        FileResource fr = (FileResource) restServerContext
+                                .getConfig().get("json-source");
+
         if ( fr == null ) return;
 
         try {
@@ -77,22 +70,6 @@ public class NativeRestServer implements NativeServer, //ServletContextAware,
             throw FaultFactory.newInstance ( 27 ); // json configuration
         }
 
-        
-
-
-        String jsonConfigFile = 
-                (String) restServerContext.getConfig().get( "json-config" );
-
-        String srcPath = servletContext.getRealPath( jsonConfigFile );
-
-        try {
-            restServerContext.readJsonConfigDef( srcPath );       
-        } catch( Exception e ) {
-            log.info( "initialize exception: " + e.toString() );
-            throw FaultFactory.newInstance ( 27 ); // json configuration
-        }
-
-        */
         Map<String, Object> jrs = restServerContext.getJsonConfig(); 
         
         restServerMap = (Map) jrs.get( contextTop );
@@ -155,8 +132,7 @@ public class NativeRestServer implements NativeServer, //ServletContextAware,
 
     public NativeRecord getNative( String provider, String service, 
                                    String ns, String ac, int timeout 
-                                   ) throws ProxyFault 
-    {
+                                   ) throws ProxyFault {
         String retVal = null;
         log.info( "getNative: PROVIDER=" + provider + " and SERVICE=" + 
                   service + " and NS=" + ns + " AC=" + ac );

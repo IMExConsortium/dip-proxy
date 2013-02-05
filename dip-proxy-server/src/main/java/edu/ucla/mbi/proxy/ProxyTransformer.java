@@ -17,6 +17,7 @@ import edu.ucla.mbi.util.context.*;
 import edu.ucla.mbi.fault.*;
 
 import java.util.*;
+
 import java.io.*;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
@@ -25,12 +26,11 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.bind.util.JAXBResult;
+
 import javax.servlet.ServletContext;
+import org.springframework.web.context.ServletContextAware;
 
-//import org.springframework.core.io.*;
-//import org.springframework.web.context.ServletContextAware;
-
-public class ProxyTransformer implements //ServletContextAware, 
+public class ProxyTransformer implements ServletContextAware, 
                                          ContextListener {
 
     private JsonContext transformerContext;
@@ -49,9 +49,10 @@ public class ProxyTransformer implements //ServletContextAware,
         this.contextTop = top;
     }
 
+    
     public void setServletContext ( ServletContext servletContext ) {
         this.servletContext = servletContext;
-    }
+    } 
 
     //*** getter
     public JsonContext getTransformerContext () {
@@ -75,18 +76,18 @@ public class ProxyTransformer implements //ServletContextAware,
         Log log = LogFactory.getLog( ProxyTransformer.class );
         log.info( "initializing ... " );
     
-        String jsonConfigFile =
-                (String) transformerContext.getConfig().get( "json-config" );
+        FileResource fr = (FileResource) transformerContext
+                                .getConfig().get("json-source");
 
-        String srcPath = servletContext.getRealPath( jsonConfigFile );
+        if ( fr == null ) return;
 
         try {
-            transformerContext.readJsonConfigDef( srcPath );
-        } catch( Exception e ) {
-            log.info( "configInitialize exception: " + e.toString() );
+            transformerContext.readJsonConfigDef( fr.getInputStream() );
+        } catch ( Exception e ){
+            log.info( "initialize exception: " + e.toString() );
             throw FaultFactory.newInstance ( 27 ); // json configuration
         }
-        
+
         Map<String, Object> jtf = transformerContext.getJsonConfig();
 
         transfMap = (Map) jtf.get( contextTop );
@@ -131,15 +132,17 @@ public class ProxyTransformer implements //ServletContextAware,
                                                     .get(service)).get("type");
 
             if( tfType != null && tfType.equals( "xslt" ) ) {
+                
                 String xslFilePath = (String)((Map)((Map) transfMap
                     .get(provider)).get(service)).get("xslt");
 
+                
                 String xslRealPath = servletContext.getRealPath( xslFilePath );
 
                 log.info( "setTransformer: xslRealPath=" + xslRealPath );
 
                 Document xslDoc = db.parse ( new File( xslRealPath ) );
-
+                
                 DOMSource xslDomSource = new DOMSource( xslDoc );
 
                 TransformerFactory 
