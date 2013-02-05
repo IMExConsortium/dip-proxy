@@ -144,28 +144,4 @@ class RemoteNativeService extends Observable {
         return remoteRecord;
     }
 
-    /*
-    protected DatasetType transformToDxf ( String nativeXml, 
-                                           String provider, 
-                                           String service, 
-                                           String ns, 
-                                           String ac,   
-                                           String detail 
-                                           ) throws ProxyFault  {
-
-        RemoteServer rs = rsc.getNativeServerMap().get( service);
-
-        try {
-            DatasetType dxfResult = rs.buildDxf( nativeXml, ns, ac,
-                                                 detail, provider, service );
-          
-            return dxfResult;
-
-        } catch( ProxyFault fault ) {
-            log.warn( "getDxf(): transform error for service " + service +
-                      " and ac " + ac + " exception: "+ fault.toString());
-            throw fault; 
-        }
-    }
-    */
 }

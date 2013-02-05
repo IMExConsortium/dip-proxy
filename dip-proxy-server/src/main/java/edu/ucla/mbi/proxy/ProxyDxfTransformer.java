@@ -1,9 +1,9 @@
 package edu.ucla.mbi.proxy;
 
 /*==============================================================================
- * $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/dip-proxy-s#$
- * $Id:: ProxyTransformer.java 2960 2013-02-05 02:14:45Z wyu                   $
- * Version: $Rev:: 2960                                                        $
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
  *==============================================================================
  *
  * ProxyDxfTransformer:
@@ -13,17 +13,7 @@ package edu.ucla.mbi.proxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
  
-
-import java.util.*;
 import java.io.*;
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.StreamSource;
-
-import java.io.ByteArrayInputStream;
 
 import javax.xml.bind.util.JAXBResult;
 import javax.xml.bind.JAXBElement;
@@ -35,11 +25,9 @@ import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.dxf14.DxfJAXBContext;
 
 import edu.ucla.mbi.server.WSContext;
-
-import edu.ucla.mbi.util.context.*;
 import edu.ucla.mbi.fault.*;
 
-public class ProxyDxfTransformer implements ContextListener {
+public class ProxyDxfTransformer {
 
     public ProxyDxfTransformer(){}
     
@@ -48,9 +36,9 @@ public class ProxyDxfTransformer implements ContextListener {
                                   String provider, String service 
                                   ) throws ProxyFault {
 
-	    Log log = LogFactory.getLog( RemoteServer.class );
+	    Log log = LogFactory.getLog( ProxyDxfTransformer.class );
 	    
-            try {
+        try {
 	        //*** native data in string representationa as input
                 
 	        ByteArrayInputStream bisNative =
@@ -65,29 +53,30 @@ public class ProxyDxfTransformer implements ContextListener {
 	        //*** transform into DXF
 	        ProxyTransformer pTrans = WSContext.getTransformer();
                 
-                //synchronize{
+            //synchronize{
 
                 pTrans.setTransformer( provider, service );
                 pTrans.setParameters( detail, ns, ac );
                 pTrans.transform( ssNative, result );
                 
-                //}
+            //}
                 
-                DatasetType dxfResult  = 
-                    (DatasetType) ( (JAXBElement) result.getResult() ).getValue();
+            DatasetType dxfResult  = 
+                (DatasetType) ( (JAXBElement) result.getResult() ).getValue();
                 
-                //*** test if dxfResult is empty
-                if ( dxfResult.getNode().isEmpty() 
-                     || dxfResult.getNode().get(0).getAc().equals("") ) {
+            //*** test if dxfResult is empty
+            if ( dxfResult.getNode().isEmpty() 
+                 || dxfResult.getNode().get(0).getAc().equals("") ) {
                     
-                    throw FaultFactory.newInstance( Fault.TRANSFORM );  
+                throw FaultFactory.newInstance( Fault.TRANSFORM );  
 	        }	    
-                return dxfResult;
+              
+            return dxfResult;
                 
 	    } catch ( ProxyFault fault ) { 
 	        log.info( "Transformer fault: empty dxfResult ");
 	        throw fault;
-            } catch ( Exception e ) {
+        } catch ( Exception e ) {
 	        throw FaultFactory.newInstance( Fault.TRANSFORM );  
 	    }   
     }

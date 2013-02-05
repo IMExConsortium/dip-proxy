@@ -116,7 +116,6 @@
   <property name="restServerContext" ref="restServerContext"/>
   <property name="contextTop" value="restServer"/>
  </bean>
-</beans>
 
 
  <!-- EBI proxy services -->
@@ -188,4 +187,4 @@
     </map>
   </property>
  </bean>
-
+ </beans>
