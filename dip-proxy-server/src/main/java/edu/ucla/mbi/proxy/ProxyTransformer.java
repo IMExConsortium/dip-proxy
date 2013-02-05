@@ -27,15 +27,10 @@ import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.bind.util.JAXBResult;
 
-import javax.servlet.ServletContext;
-import org.springframework.web.context.ServletContextAware;
-
-public class ProxyTransformer implements ServletContextAware, 
-                                         ContextListener {
+public class ProxyTransformer implements ContextListener {
 
     private JsonContext transformerContext;
     private String contextTop;
-    private ServletContext servletContext;
     
     private Transformer tf;
     private static Map<String, Object> transfMap;
@@ -48,11 +43,6 @@ public class ProxyTransformer implements ServletContextAware,
     public void setContextTop ( String top ) {
         this.contextTop = top;
     }
-
-    
-    public void setServletContext ( ServletContext servletContext ) {
-        this.servletContext = servletContext;
-    } 
 
     //*** getter
     public JsonContext getTransformerContext () {
@@ -85,7 +75,7 @@ public class ProxyTransformer implements ServletContextAware,
             transformerContext.readJsonConfigDef( fr.getInputStream() );
         } catch ( Exception e ){
             log.info( "initialize exception: " + e.toString() );
-            throw FaultFactory.newInstance ( 27 ); // json configuration
+            throw FaultFactory.newInstance ( Fault.JSON_CONFIGURATION ); 
         }
 
         Map<String, Object> jtf = transformerContext.getJsonConfig();
@@ -119,15 +109,6 @@ public class ProxyTransformer implements ServletContextAware,
 	    
             DocumentBuilder db = dbf.newDocumentBuilder();
 	    
-	        // NOTE: this one needed when file sits inside .aar
-	        //ClassLoader cl = getClass().getClassLoader();
-	        //Document xslDoc = db.parse(cl.getResourceAsStream(xslFile));	   
-	    
-            /* NOTE: this one needed in spring configureation 
-            Resource xslFile =transfMap.get( service );
-            Document xslDoc = db.parse( xslFile.getFile() );
-            */
-
             String tfType = (String)((Map)((Map) transfMap.get(provider))
                                                     .get(service)).get("type");
 
@@ -136,13 +117,16 @@ public class ProxyTransformer implements ServletContextAware,
                 String xslFilePath = (String)((Map)((Map) transfMap
                     .get(provider)).get(service)).get("xslt");
 
-                
-                String xslRealPath = servletContext.getRealPath( xslFilePath );
+                SpringFileResource fr = (SpringFileResource)transformerContext
+                                            .getConfig().get("json-source");
 
-                log.info( "setTransformer: xslRealPath=" + xslRealPath );
+                if ( fr == null ) throw FaultFactory.newInstance( 
+                                            Fault.JSON_CONFIGURATION ); 
 
-                Document xslDoc = db.parse ( new File( xslRealPath ) );
+                fr.setFile( xslFilePath  );
                 
+                Document xslDoc = db.parse ( fr.getInputStream() );
+
                 DOMSource xslDomSource = new DOMSource( xslDoc );
 
                 TransformerFactory 
@@ -155,7 +139,7 @@ public class ProxyTransformer implements ServletContextAware,
                 tf.setErrorListener( logErrorListener );
             } else {
                 log.info( "setTransformer: tfType == null or tfType != 'xslt' " );
-                throw FaultFactory.newInstance( 27 ); //json configuration
+                throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
             }
         } catch ( ProxyFault fault ) {
             log.info( "setTransformer: transformer.json doesn't have " + 
@@ -163,7 +147,7 @@ public class ProxyTransformer implements ServletContextAware,
             throw fault;
         } catch( Exception e ) {
             log.info( "setTransformer: exception is " + e.toString() );
-            throw  FaultFactory.newInstance( 99 ); //unknown;
+            throw  FaultFactory.newInstance( Fault.UNKNOWN ); 
         }     
     }   
     
@@ -186,7 +170,7 @@ public class ProxyTransformer implements ServletContextAware,
 	        tf.transform(xmlStreamSource, jaxbResult );
 	    }catch(Exception e){
 	        log.info("Transformation error=" + e.toString());
-            throw FaultFactory.newInstance ( 7 ); // transformer error
+            throw FaultFactory.newInstance ( Fault.TRANSFORM ); // transformer error
 	    }
     }
 }

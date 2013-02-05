@@ -65,9 +65,9 @@ public class NativeRestServer implements NativeServer, ContextListener {
 
         try {
             restServerContext.readJsonConfigDef( fr.getInputStream() );
-        } catch ( Exception e ){
+        } catch ( Exception e ) {
             log.info( "initialize exception: " + e.toString() );
-            throw FaultFactory.newInstance ( 27 ); // json configuration
+            throw FaultFactory.newInstance ( Fault.JSON_CONFIGURATION ); 
         }
 
         Map<String, Object> jrs = restServerContext.getJsonConfig(); 
