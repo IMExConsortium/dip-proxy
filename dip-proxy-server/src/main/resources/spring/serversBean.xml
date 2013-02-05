@@ -145,6 +145,9 @@
         <value>WORMBASE</value>
        </list>
       </entry>
+
+      <entry key="nativeRestServer" ref="nativeRestServer">
+       
     </map>
   </property>
  </bean>
@@ -153,6 +156,14 @@
  
  <bean id="ncbiReferenceServer" parent="remoteServerImpl" 
        class="edu.ucla.mbi.proxy.ncbi.NcbiServer">
+
+  <property name="context">
+    <map>
+       <entry key="nativeRestServer" ref="nativeRestServer">
+       <entry key="retry">3</entry>
+    </map>
+  </property>
+
  </bean>
 
 
@@ -162,6 +173,7 @@
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="context">
     <map>
+        <entry key="nativeRestServer" ref="nativeRestServer">              
         <entry key="ncbiProxyAddress">
             <!--<value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> -->
             <value> http://10.1.200.201:8080/dip-proxy-server/proxy-service</value>

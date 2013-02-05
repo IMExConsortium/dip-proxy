@@ -31,12 +31,28 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import java.net.URL;
 
-public class NcbiServer extends RemoteServerImpl {
+public class NcbiServer implements NativeServer{
+    
+    //extends RemoteServerImpl {
+
+    // need rest server
 
     private Log log = LogFactory.getLog( NcbiServer.class );
      
+
+    Map<String,Object> context = null;
+
+    //--------------------------------------------------------------------------
+
+    public void setContext( Map<String,Object> context ) {
+        this.context = context;
+    }
+
+    //--------------------------------------------------------------------------
+
+
     public NativeRecord getNative( String provider, String service, String ns,
-                                   String ac, int timeout, int retry 
+                                   String ac, int timeout, // int retry 
                                    ) throws ProxyFault 
     {
 
@@ -60,6 +76,8 @@ public class NcbiServer extends RemoteServerImpl {
             try{
                 DocumentBuilder builder = fct.newDocumentBuilder();
 
+                // get native rest servet from context
+
                 String url_esearch_string = 
                     nativeRestServer.getRealUrl( provider, "nlmesearch", ac );
 
@@ -73,6 +91,8 @@ public class NcbiServer extends RemoteServerImpl {
                 Document docEsearch = builder.parse( xml_esearch );
                 Element rootElementEsearch = docEsearch.getDocumentElement();
              
+                // get retry from context 
+
                 if( rootElementEsearch.getChildNodes().getLength() ==  0 ) {
                     if( retry > 0 ) {
                         log.info( "getNative: nlm esearch get empty return." + 
@@ -158,6 +178,8 @@ public class NcbiServer extends RemoteServerImpl {
                 //------------------
 
                 log.info( "NcbiServer: nlm: ncbi_nlmid is " + ncbi_nlmid );
+
+                // get native rest servet from context
 
                 String url_efetch_string =
                         nativeRestServer.getRealUrl( provider, "nlmefetch", 

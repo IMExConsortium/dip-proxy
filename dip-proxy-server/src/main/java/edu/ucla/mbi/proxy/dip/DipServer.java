@@ -34,11 +34,16 @@ import edu.ucla.mbi.services.legacy.dip.*;
 
 import edu.ucla.mbi.dip.dbservice.*;
 
-public class DipServer extends RemoteServerImpl {
+public class DipServer implements NativeServer{      
+                //extends RemoteServerImpl {
+
+    // need context
+
+
 
     private DipLegacyPort dipLegacyPort;
     private String dipLegacyEndpoint = null;
-    
+     
     private DipDxfPort dipPort;
     private String dipEndpoint = null;
 
@@ -125,10 +130,19 @@ public class DipServer extends RemoteServerImpl {
 
     }
 
+
+    Map<String,Object> context = null;
+
+    //--------------------------------------------------------------------------
+
+    public void setContext( Map<String,Object> context ) {
+        this.context = context;
+    }
+
     // ---------------------------------------------------------------------
 
     public NativeRecord getNative( String provider, String service, String ns,
-                                   String ac, int timeout, int retry 
+                                   String ac, int timeout, // int retry 
                                    ) throws ProxyFault 
     {
         Log log = LogFactory.getLog( DipServer.class );

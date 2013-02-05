@@ -33,9 +33,44 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.stream.StreamSource;
 
 
-public class ProlinksServer extends RemoteServerImpl {
+public class ProlinksServer implements NativeServer{
+
+    Map<String,Object> context = null;
+
+    //--------------------------------------------------------------------------
+
+    public void setContext( Map<String,Object> context ) {
+        this.context = context;
+    }
+
+    //--------------------------------------------------------------------------
+
+    //extends RemoteServerImpl {
+
+    //needs nativeRestServer
 
     private Log log = LogFactory.getLog( ProlinksServer.class );
+
+
+    public NativeRecord getNative( String provider, String service,
+                                   String ns, String ac, int timeout //,int retry 
+                                   ) throws ProxyFault {
+        
+        // get nativeRestServer from context
+
+        if( nativeRestServer == null ) {
+            log.warn ( "getNative:restServer is not configured " +
+                       "for the service=" + service );
+
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        return nativeRestServer.getNative( provider, service, ns, ac, timeout );
+    }
+
+
+
+    /*
 
     public DatasetType buildDxf( String strNative, String ns, String ac,
                                  String detail, String provider, 
@@ -125,4 +160,6 @@ public class ProlinksServer extends RemoteServerImpl {
         }
         return dxfResult;
     }
+    */
+
 }

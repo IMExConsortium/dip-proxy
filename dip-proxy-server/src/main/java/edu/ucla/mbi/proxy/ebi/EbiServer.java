@@ -40,7 +40,9 @@ import uk.ac.ebi.picr.*;
 import uk.ac.ebi.picr.accessionmappingservice.*;
 import uk.ac.ebi.picr.model.*;
 
-public class EbiServer extends RemoteServerImpl {
+public class EbiServer implements NativeServer{
+//extends RemoteServerImpl {
+
 
     private List<String> searchDB;
 
@@ -138,11 +140,19 @@ public class EbiServer extends RemoteServerImpl {
         }
 
     }
+
+    //-------------------------------------------------------------------------
+
+    Map<String,Object> context = null;
+
+    public void setContext( Map<String,Object> context ) {
+        this.context = context;
+    }
     
     //-------------------------------------------------------------------------
     
     public NativeRecord getNative( String provider, String service, 
-                                   String ns, String ac, int timeout, int retry 
+                                   String ns, String ac, int timeout, //int retry 
                                    ) throws ProxyFault 
     {
         Log log = LogFactory.getLog( EbiServer.class );
@@ -150,7 +160,9 @@ public class EbiServer extends RemoteServerImpl {
 
         if ( !service.equals( "picr" ) ) {
 
-            return super.getNative( provider, service, ns, ac, timeout, retry );            
+            // get native rest server from context; call nativeRestServer.getNative(...)
+            // get rid of retry
+            return super.getNative( provider, service, ns, ac, timeout); // retry );            
 
         } else {
 

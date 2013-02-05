@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.net.*;
 import java.io.*;
+import java.util.Map;
 
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
@@ -27,5 +28,7 @@ public interface NativeServer {
     public NativeRecord getNative( String provider, String service, 
                                    String ns, String ac, int timeOut 
                                    ) throws ProxyFault; 
+
+    public vois setContext( Map<String,Object> context );
     
 }
