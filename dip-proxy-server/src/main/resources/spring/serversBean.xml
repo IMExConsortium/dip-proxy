@@ -113,8 +113,17 @@
 
  <bean id="nativeRestServer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-  <property name="restServerContext" ref="restServerContext"/>
-  <property name="contextTop" value="restServer"/>
+  <!--<property name="restServerContext" ref="restServerContext"/> 
+     <property name="contextTop" value="restServer"/>
+   -->
+    <property name="context">
+        <map>
+            <entry key="restServerContext">
+                <ref bean="restServerContext"/>
+            </entry>
+            <entry key="contextTop" value="restServer"/>
+        </map>
+    </property>
  </bean>
 
 
@@ -146,7 +155,9 @@
        </list>
       </entry>
 
-      <entry key="nativeRestServer" ref="nativeRestServer">
+      <entry key="nativeRestServer">
+        <ref bean="nativeRestServer"/>
+      </entry>
        
     </map>
   </property>
@@ -154,13 +165,17 @@
 
  <!-- NCBI proxy services -->
  
- <bean id="ncbiReferenceServer" parent="remoteServerImpl" 
+<!-- <bean id="ncbiReferenceServer" parent="remoteServerImpl" 
+       class="edu.ucla.mbi.proxy.ncbi.NcbiServer"> -->
+ <bean id="ncbiReferenceServer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.ncbi.NcbiServer">
 
   <property name="context">
     <map>
-       <entry key="nativeRestServer" ref="nativeRestServer">
-       <entry key="retry">3</entry>
+       <entry key="nativeRestServer">
+            <ref bean="nativeRestServer"/>
+       </entry>
+       <entry key="retry" value="3"/>
     </map>
   </property>
 
@@ -169,11 +184,13 @@
 
  <!-- Prolinks proxy services -->
  
- <bean id="prlReferenceServer" 
+ <bean id="prlReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">
   <property name="context">
     <map>
-        <entry key="nativeRestServer" ref="nativeRestServer">              
+        <entry key="nativeRestServer">
+            <ref bean="nativeRestServer"/>              
+        </entry>
         <entry key="ncbiProxyAddress">
             <!--<value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> -->
             <value> http://10.1.200.201:8080/dip-proxy-server/proxy-service</value>

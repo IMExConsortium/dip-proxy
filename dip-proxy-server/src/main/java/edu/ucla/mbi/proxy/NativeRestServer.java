@@ -31,7 +31,18 @@ public class NativeRestServer implements NativeServer, ContextListener {
     private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
     private JsonContext restServerContext;
     private String contextTop;
- 
+
+    private Map<String, Object> context = null;
+
+    //--------------------------------------------------------------------------
+
+    public void setContext( Map<String,Object> context ) {
+        this.context = context;
+    }
+
+    //--------------------------------------------------------------------------
+
+    /* 
     public Map<String,Object> getRestServerMap() {
         return restServerMap;
     }
@@ -44,7 +55,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
     public void setContextTop( String top ) {
         this.contextTop = top;
     }
-
+    */
     //*** getter
     public JsonContext getRestServerContext() {
         return restServerContext;
@@ -57,6 +68,27 @@ public class NativeRestServer implements NativeServer, ContextListener {
     public void initialize() throws ProxyFault {
 
         log.info( "initialize starting... " );
+
+        if(  context == null ) {
+            log.warn( "NativeRestServer: initializing failed " +
+                      "because context is null. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
+
+        restServerContext = (JsonContext)context.get( "restServerContext" );
+
+        if( restServerContext == null ) {
+            log.warn( "NativeRestServer: initializing failed " +
+                      "because restServerContext is null. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
+
+        contextTop = (String) context.get( "contextTop" );
+        if( contextTop == null ) {
+            log.warn( "NativeRestServer: initializing failed " +
+                      "because contextTop is null. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
 
         FileResource fr = (FileResource) restServerContext
                                 .getConfig().get("json-source");

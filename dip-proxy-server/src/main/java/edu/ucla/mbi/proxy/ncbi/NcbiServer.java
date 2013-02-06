@@ -30,36 +30,48 @@ import javax.xml.xpath.XPathFactory;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import java.net.URL;
+import java.util.Map;
 
-public class NcbiServer implements NativeServer{
+public class NcbiServer implements NativeServer {
     
-    //extends RemoteServerImpl {
-
-    // need rest server
-
     private Log log = LogFactory.getLog( NcbiServer.class );
      
-
-    Map<String,Object> context = null;
-
-    //--------------------------------------------------------------------------
+    private NativeRestServer nativeRestServer = null;
+    private Map<String,Object> context = null;
 
     public void setContext( Map<String,Object> context ) {
         this.context = context;
     }
 
-    //--------------------------------------------------------------------------
+    public void initialize() throws ProxyFault {
+        if( context == null ) {
+            log.warn( "NcbiServer: initializing failed " +
+                      "because context is null. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
 
+        nativeRestServer = (NativeRestServer) context.get( "nativeRestServer" );
+
+        if( nativeRestServer == null ) {
+            log.warn( "NcbiServer: initializing failed " +
+                      "because nativeRestServer is null. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
+    }
 
     public NativeRecord getNative( String provider, String service, String ns,
-                                   String ac, int timeout, // int retry 
-                                   ) throws ProxyFault 
-    {
+                                   String ac, int timeout 
+                                   ) throws ProxyFault {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
-    
+        
+        int retry = 1; //default value 
+        if( (Integer) context.get( "retry" ) != null ) {
+            retry= ((Integer) context.get( "retry" )).intValue();
+        } 
+
         if ( !service.equals( "nlm" ) ) {
-            return super.getNative( provider, service, ns, ac, timeout, retry );
+            return nativeRestServer.getNative( provider, service, ns, ac, timeout );
         } else {
             NativeRecord record = null;
             String retVal = null;
@@ -73,7 +85,7 @@ public class NcbiServer implements NativeServer{
             // esearch ncbi internal id of the nlmid
             //--------------------------------------
             
-            try{
+            try {
                 DocumentBuilder builder = fct.newDocumentBuilder();
 
                 // get native rest servet from context

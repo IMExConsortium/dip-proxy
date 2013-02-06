@@ -14,12 +14,8 @@ package edu.ucla.mbi.proxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
 import java.util.*;
-//import javax.xml.bind.*;
-//import javax.xml.transform.stream.StreamSource;
 
-//import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.fault.*;
@@ -45,7 +41,8 @@ class RemoteNativeService extends Observable {
     
     //--------------------------------------------------------------------------
         
-    protected RemoteServer selectNextRemoteServer( String provider,
+    //protected RemoteServer selectNextRemoteServer( String provider,
+    protected NativeServer selectNextRemoteServer( String provider,
                                                    String service,
                                                    String namespace,
                                                    String accession ) {
@@ -63,7 +60,8 @@ class RemoteNativeService extends Observable {
             return router.getNextProxyServer( service, namespace, accession );
         }
 
-        return rsc.getNativeServerMap().get( service );
+        //return rsc.getNativeServerMap().get( service );
+        return rsc.getNativeServer();
 
     }
 
@@ -78,15 +76,19 @@ class RemoteNativeService extends Observable {
           
         while ( retry > 0 && remoteRecord == null ) {    
             RemoteServer rs = 
+            //NativeServer ns = 
                 selectNextRemoteServer( provider, service, ns, ac );
 
-            log.info( " selected rs=" + rs );
             log.info( " retries left=" + retry );
             retry--;
                 
             try {
+                
                 remoteRecord = rs.getNative( provider, service, ns, ac, 
                                              rsc.getTimeout(), retry );
+                
+                //remoteRecord = ns.getNative( provider, service, ns, ac, 
+                //                             rsc.getTimeout() );
             } catch( ProxyFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
                           "fault: " + fault.getFaultInfo().getMessage()); 

@@ -70,15 +70,10 @@ public class NativeAgent implements Agent {
                                 + ":" + ac );
 
                         try {
-                            //NativeRecord natRec =
-                            //        rsc.getNativeServer().getNative( prv,
-                            //                service, ns, ac, rsc.getTimeout() );
-
-                            NativeRecord natRec = rsc.getNativeServerMap()
-                                    .get( service).getNative( prv, service, 
-                                                              ns, ac, 
-                                                              rsc.getTimeout(),
-                                                              1 );
+                            NativeRecord natRec = 
+                                rsc.getNativeServer()
+                                        .getNative( prv, service, ns,
+                                                    ac, rsc.getTimeout() );
 
                             NativeRecord oldRecord =
                                     ndo.find( prv, service, ns, ac );

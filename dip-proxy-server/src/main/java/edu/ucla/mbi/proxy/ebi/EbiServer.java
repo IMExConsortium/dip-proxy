@@ -33,16 +33,11 @@ import edu.ucla.mbi.cache.NativeRecord;
 
 import edu.ucla.mbi.fault.*;
 
-// EBI Picr client
-//----------------
-
 import uk.ac.ebi.picr.*;
 import uk.ac.ebi.picr.accessionmappingservice.*;
 import uk.ac.ebi.picr.model.*;
 
-public class EbiServer implements NativeServer{
-//extends RemoteServerImpl {
-
+public class EbiServer implements NativeServer {
 
     private List<String> searchDB;
 
@@ -61,7 +56,18 @@ public class EbiServer implements NativeServer{
      */
 
     static final JAXBContext acrContext = initAcrContext();
-    
+
+    private NativeRestServer nativeRestServer = null;
+    private Map<String, Object> context = null; 
+     
+    //--------------------------------------------------------------------------
+
+    public void setContext( Map<String,Object> context ) {
+        this.context = context;
+    }
+
+    //--------------------------------------------------------------------------
+   
     private static JAXBContext initAcrContext() {
 
         Log log = LogFactory.getLog( EbiServer.class );
@@ -83,42 +89,54 @@ public class EbiServer implements NativeServer{
 
     //--------------------------------------------------------------------------
     
-    public void initialize() {
+    public void initialize() throws ProxyFault {
         Log log = LogFactory.getLog( EbiServer.class );
         log.info( "initializing: " );
 
         searchDB = new ArrayList<String>();
 
-        Map<String, Object> context = getContext();
-        
-        if( context != null ){
-    
-            //super.initialize(); // initializing uniprot rest server        
-
-            picrEndpoint = (String) getContext().get( "picrEndpoint" );
-            
-            if( picrEndpoint != null && picrEndpoint.length() > 0 ) {
-                picrEndpoint = picrEndpoint.replaceAll( "^\\s+", "" );
-                picrEndpoint = picrEndpoint.replaceAll( "\\s+$", "" );
-            } else {
-                log.warn( "EbiServer: PICR service initializing failed "
-                          + "because of the picrEndpoint is not set. " );
-                return;
-            }
-
-            if( context.get( "searchDbList" ) != null ) {
-                log.info( " searchDB list: " );
-                for ( Iterator ii =
-                      ((List) context.get( "searchDbList" )).iterator(); 
-                      ii.hasNext(); ) 
-                {
-                    String db = (String) ii.next();
-                    db = db.replaceAll( "\\s+", "" );
-                    log.info( "  db=" + db );
-                    searchDB.add( db );
-                }            
-            }
+        if(  context == null ) {
+            log.warn( "EbiServer: initializing failed " + 
+                      "because context is null. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
+ 
+        nativeRestServer = ( NativeRestServer)context.get( "nativeRestServer" );
+
+        if( nativeRestServer == null ) {
+            log.warn( "EbiServer: initializing failed " +
+                      "because nativeRestServer is null. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
+
+        picrEndpoint = (String) context.get( "picrEndpoint" );
+            
+        if( picrEndpoint != null && picrEndpoint.length() > 0 ) {
+            picrEndpoint = picrEndpoint.replaceAll( "^\\s+", "" );
+            picrEndpoint = picrEndpoint.replaceAll( "\\s+$", "" );
+        } else {
+            log.warn( "EbiServer: PICR service initializing failed " +
+                      "because of the picrEndpoint is not set. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
+
+        if( context.get( "searchDbList" ) != null ) {
+            log.info( " searchDB list: " );
+            for ( Iterator ii = 
+                    ((List) context.get( "searchDbList" )).iterator(); 
+                  ii.hasNext(); ) {
+
+                String db = (String) ii.next();
+                db = db.replaceAll( "\\s+", "" );
+                log.info( "  db=" + db );
+                searchDB.add( db );
+            }            
+        } else {
+            log.warn( "EbiServer: initializing failed " +
+                      "because searchDbList is null. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
+        
 
         //*** call EBI PICR utility
         try{
@@ -136,34 +154,22 @@ public class EbiServer implements NativeServer{
         } catch ( Exception ex ) {
             log.warn( "EbiServer: PICR service initializing failed: "
                       + "reason=" + ex.toString() + "." );
-            return;
+            throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
 
     }
 
     //-------------------------------------------------------------------------
-
-    Map<String,Object> context = null;
-
-    public void setContext( Map<String,Object> context ) {
-        this.context = context;
-    }
-    
-    //-------------------------------------------------------------------------
     
     public NativeRecord getNative( String provider, String service, 
-                                   String ns, String ac, int timeout, //int retry 
-                                   ) throws ProxyFault 
-    {
+                                   String ns, String ac, int timeout  
+                                   ) throws ProxyFault { 
+    
         Log log = LogFactory.getLog( EbiServer.class );
         log.info( "NS=" + ns + " AC=" + ac + " SRV=" + service );
 
         if ( !service.equals( "picr" ) ) {
-
-            // get native rest server from context; call nativeRestServer.getNative(...)
-            // get rid of retry
-            return super.getNative( provider, service, ns, ac, timeout); // retry );            
-
+            return nativeRestServer.getNative( provider, service, ns, ac, timeout );
         } else {
 
             NativeRecord record = null;
@@ -258,6 +264,5 @@ public class EbiServer implements NativeServer{
             return record;
 
         } 
-
     }
 }

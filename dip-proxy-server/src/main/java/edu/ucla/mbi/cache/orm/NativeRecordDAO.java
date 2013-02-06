@@ -206,8 +206,9 @@ public class NativeRecordDAO extends AbstractDAO {
             Set<String> services = WSContext.getServerContext(
                                             provider.toUpperCase() )
             //                                 .getTransformer().getTransfMap()
-                                            .getNativeServerMap()
-                                            .keySet();
+            //                                .getNativeServerMap()
+            //                                .keySet();
+                                              .getServiceSet();
 
             // get oldest entries
             //-------------------
@@ -266,8 +267,10 @@ public class NativeRecordDAO extends AbstractDAO {
             Set<String> services = WSContext.getServerContext( 
                                             provider.toUpperCase() )
            //                                 .getTransformer().getTransfMap()
-                                            .getNativeServerMap()
-                                            .keySet();
+           //                                 .getNativeServerMap()
+           //                                 .keySet();
+                                            .getServiceSet();
+
  
             // get oldest entries
             //-------------------

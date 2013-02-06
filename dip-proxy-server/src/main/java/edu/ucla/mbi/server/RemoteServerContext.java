@@ -13,8 +13,7 @@ package edu.ucla.mbi.server;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.proxy.router.*;
@@ -34,17 +33,15 @@ public class RemoteServerContext {
     private boolean remoteProxyOn = true;
 
     private int debug = 0;
-
     private Map properties = new HashMap();
-
-    private Map<String, RemoteServer> nativeServerMap = new HashMap();
-
+    //private Map<String, RemoteServer> nativeServerMap = new HashMap();
+    private NativeServer nativeServer = null;
     private RemoteProxyServer proxyServer = null;
-
     private Router router = null;
-    
+    private Set serviceSet = new HashSet();
+ 
     //*** getter
-    public int getTimeout(){
+    public int getTimeout() {
 	    return timeout;
     }
     
@@ -60,15 +57,15 @@ public class RemoteServerContext {
         return ramCacheOn;
     }
     
-    public boolean isDbCacheOn(){
+    public boolean isDbCacheOn() {
         return dbCacheOn;
-    }
+    } 
     
-    public boolean isMonitorOn(){
+    public boolean isMonitorOn() {
         return monitorOn;
     }
 
-    public boolean isRemoteProxyOn(){
+    public boolean isRemoteProxyOn() {
         return remoteProxyOn;
     }
 
@@ -76,33 +73,41 @@ public class RemoteServerContext {
         return debug;
     }
 
-    public String getProvider(){
+    public String getProvider() {
         return provider;
     }
 
+    /*
     public Map<String, RemoteServer> getNativeServerMap(){
         return nativeServerMap;
+    }*/
+    public NativeServer getNativeServer() {
+        return nativeServer;
     }
 
-    public RemoteProxyServer getProxyProto(){
+    public RemoteProxyServer getProxyProto() {
         return proxyServer;
     }
      
-    public Router createRouter(){
+    public Router createRouter() {
       	return router.createRouter();
     }
 
-    public void setProperty(String name, Object value){
+    public void setProperty( String name, Object value ) {
 	    properties.put(name,value);
     }
     
-    public Object getProperty(String name){
+    public Object getProperty( String name ) {
 	    return properties.get(name);
     }
    
+    public Set<String> getServiceSet () {
+        return serviceSet;
+    }
+    /*
     public void setNativeServerMap( Map<String, RemoteServer> nativeMap ) {
         this.nativeServerMap = nativeMap;
-    } 
+    } */
 
 
     public void init( String provider ) {
@@ -138,8 +143,11 @@ public class RemoteServerContext {
        
         log.info( "  servers:" );
 
-        nativeServerMap = (Map<String, RemoteServer>) context.get( "nativeServer" );
+        //nativeServerMap = (Map<String, RemoteServer>) context.get( "nativeServer" );
+        nativeSever = (NativeServer) context.get( "nativeServer" );
         
+        serviceSet = (Set) context.get( "serviceSet" );
+
         log.info( "   proxyProto=" + context.get( "proxyProto" ) );
         proxyServer = (RemoteProxyServer) context.get( "proxyProto" );
         

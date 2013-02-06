@@ -137,9 +137,11 @@ public class CachingService extends RemoteNativeService {
 
         //*** valid native record not available here ( null or expired ) 
         //*** retrieve from remote proxy server or native server  
+        log.info( "getNative: before getNativeFromRemote. " );
         try {
             remoteRecord = getNativeFromRemote ( provider, service, ns, ac );
         } catch ( ProxyFault fault ) {
+            log.warn( "getNative: getNativeFromRemote fault. " );
             proxyFault = fault;
         }
 
@@ -215,7 +217,7 @@ public class CachingService extends RemoteNativeService {
             //*** remote is null return expired record from dbCache 
             return expiredRecord;
         } else if ( proxyFault != null ) {
-            log.info( "getNative: throw a proxyFault. " );
+            log.warn( "getNative: throw a proxyFault. " );
             throw proxyFault;
         } else {
             log.info( "getNative: return a null. " );
@@ -339,6 +341,7 @@ public class CachingService extends RemoteNativeService {
         try { 
             nr = getNative( provider, service, ns, ac );
         } catch ( ProxyFault fault ) {
+            log.warn( "getDxf: getNative fault. " ); 
             proxyFault = fault;
         } 
 
@@ -369,6 +372,7 @@ public class CachingService extends RemoteNativeService {
                                           provider, service );
                 
             } catch ( ProxyFault fault ) {
+                log.warn( "getDxf: transform and build dxf fault. " );
                 proxyFault = fault;
             }
         }
@@ -379,6 +383,7 @@ public class CachingService extends RemoteNativeService {
             try {
                 dxfString = marshall( dxfResult );
             } catch ( ProxyFault fault ) {
+                log.warn( "getDxf: marshall fault. " );
                 proxyFault = fault;
             }
     
@@ -419,6 +424,7 @@ public class CachingService extends RemoteNativeService {
             //*** return expired dxf coming from dbCache, here remote is null
             return expiredResult;
         } else if ( proxyFault != null ) {
+            log.warn( "getDxf: throw proxyFault. " );
             throw proxyFault;
         } else {
             return null;

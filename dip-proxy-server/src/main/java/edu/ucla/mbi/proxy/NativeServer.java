@@ -26,9 +26,11 @@ import edu.ucla.mbi.fault.*;
 public interface NativeServer {
 
     public NativeRecord getNative( String provider, String service, 
-                                   String ns, String ac, int timeOut 
+                                   String ns, String ac, int timeout 
                                    ) throws ProxyFault; 
 
-    public vois setContext( Map<String,Object> context );
+    public void setContext( Map<String,Object> context );
+
+    public void initialize() throws ProxyFault;
     
 }

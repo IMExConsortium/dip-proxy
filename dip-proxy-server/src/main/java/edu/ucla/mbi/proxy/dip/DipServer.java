@@ -21,7 +21,7 @@ import javax.xml.ws.BindingProvider;
 import com.sun.xml.ws.developer.JAXWSProperties;
 import javax.xml.namespace.QName;
 
-import java.util.List;
+import java.util.*;
 import java.io.StringWriter;
 
 import edu.ucla.mbi.proxy.*;
@@ -34,12 +34,7 @@ import edu.ucla.mbi.services.legacy.dip.*;
 
 import edu.ucla.mbi.dip.dbservice.*;
 
-public class DipServer implements NativeServer{      
-                //extends RemoteServerImpl {
-
-    // need context
-
-
+public class DipServer implements NativeServer {       
 
     private DipLegacyPort dipLegacyPort;
     private String dipLegacyEndpoint = null;
@@ -55,38 +50,45 @@ public class DipServer implements NativeServer{
     private final String dipNsSrv = "http://mbi.ucla.edu/dip/dbservice";
     private final String dipNmSrv = "dipDxfService";
 
-    //--------------------------------------------------------------------------
+    private Map<String, Object> context = null;
 
-    public void initialize() {
+    public void setContext ( Map context ) {
+        this.context = context;
+    }
+
+    public void initialize() throws ProxyFault {
         
         Log log = LogFactory.getLog( DipServer.class );
         log.info( "initialize service" );
-        
-        if( getContext() != null ){
 
-            dipEndpoint = (String) getContext().get( "dipEndpoint" );
-            dipLegacyEndpoint = (String) getContext().get( "dipLegacyEndpoint" );
-
-            if( dipEndpoint != null &&  dipEndpoint.length() > 0 ) {
-                dipEndpoint = dipEndpoint.replaceAll( "^\\s+", "" );
-                dipEndpoint = dipEndpoint.replaceAll( "\\s+$", "" );
-            } else {
-                log.warn( "DipServer: DipDxfService initializing failed "
-                           + "because of dipEndpoint is not set. " );
-                return;
-            }
-
-            if( dipLegacyEndpoint != null && dipLegacyEndpoint.length() > 0 ) {
-                dipLegacyEndpoint = dipLegacyEndpoint.replaceAll( "^\\s+", "" );
-                dipLegacyEndpoint = dipLegacyEndpoint.replaceAll( "\\s+$", "" );
-            } else {
-                log.warn( "DipServer: DipLegacyService initializing failed "
-                           + "because of dipLegacyEndpoint is not set. " );
-                return;
-            }
-
+        if( context == null ) {
+            log.warn( "DipServer: context is null. " );
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
         
+        dipEndpoint = (String) context.get( "dipEndpoint" );
+        dipLegacyEndpoint = (String) context.get( "dipLegacyEndpoint" );
+
+        if( dipEndpoint != null &&  dipEndpoint.length() > 0 ) {
+            dipEndpoint = dipEndpoint.replaceAll( "^\\s+", "" );
+            dipEndpoint = dipEndpoint.replaceAll( "\\s+$", "" );
+        } else {
+            log.warn( "DipServer: DipDxfService initializing failed " +
+                      "because of dipEndpoint is not set. " );
+            //return;
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
+
+        if( dipLegacyEndpoint != null && dipLegacyEndpoint.length() > 0 ) {
+            dipLegacyEndpoint = dipLegacyEndpoint.replaceAll( "^\\s+", "" );
+            dipLegacyEndpoint = dipLegacyEndpoint.replaceAll( "\\s+$", "" );
+        } else {
+            log.warn( "DipServer: DipLegacyService initializing failed " +
+                      "because of dipLegacyEndpoint is not set. " );
+            //return;
+            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
+
         log.info( " dipLegacyEndpoint=" + dipLegacyEndpoint );
             
         try {
@@ -130,21 +132,11 @@ public class DipServer implements NativeServer{
 
     }
 
-
-    Map<String,Object> context = null;
-
-    //--------------------------------------------------------------------------
-
-    public void setContext( Map<String,Object> context ) {
-        this.context = context;
-    }
-
     // ---------------------------------------------------------------------
 
     public NativeRecord getNative( String provider, String service, String ns,
-                                   String ac, int timeout, // int retry 
-                                   ) throws ProxyFault 
-    {
+                                   String ac, int timeout ) throws ProxyFault { 
+    
         Log log = LogFactory.getLog( DipServer.class );
         log.info( "srv=" + service + " ns=" + ns + " ac=" + ac );
 

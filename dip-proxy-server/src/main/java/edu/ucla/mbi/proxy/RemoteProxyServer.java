@@ -39,8 +39,8 @@ import edu.ucla.mbi.cache.NativeRecord;
 
 import java.util.Map;
 
-public class RemoteProxyServer implements RemoteServer {
-
+//public class RemoteProxyServer implements RemoteServer {
+public class RemoteProxyServer implements NativeServer {
     private Log log = LogFactory.getLog( RemoteProxyServer.class ); 
     
     private String proxyAddress;
@@ -138,7 +138,7 @@ public class RemoteProxyServer implements RemoteServer {
     public RemoteProxyServer getRemoteProxyServerInstance() {
         return null;
     }
-    
+    /*
     public DatasetType transform( String strNative,
 				                  String ns, String ac, String detail,
 	        			          String provider, 
@@ -186,7 +186,7 @@ public class RemoteProxyServer implements RemoteServer {
 	        throw FaultFactory.newInstance( Fault.TRANSFORM );  
 	    }   
     }
-    
+        
     public DatasetType buildDxf( String strNative, String ns, String ac,
 				                 String detail, String provider, String service 
                                  ) throws ProxyFault 
@@ -198,5 +198,6 @@ public class RemoteProxyServer implements RemoteServer {
 
         return this.transform( strNative, ns, ac, detail, provider, service );
     }
+    */
 }
 
