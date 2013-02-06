@@ -113,49 +113,49 @@ public class RemoteServerContext {
     public void init( String provider ) {
        	Log log = LogFactory.getLog( RemoteServerContext.class );
 
-	    log.info( "rsc=" + this );
+        log.info( "rsc=" + this );
         log.info( "configure(" + provider + ")" );
 
-	    this.provider = provider;
+        this.provider = provider;
 	
-	    Map context = WSContext.getProvider( provider );
-                                                                           	
-	    log.info( "  timeout=" + context.get( "timeout" ) );
-	    timeout = (Integer) context.get( "timeout" );
+        Map context = WSContext.getProvider( provider );
+        
+        log.info( "  timeout=" + context.get( "timeout" ) );
+        timeout = (Integer) context.get( "timeout" );
 	
-	    log.info( "  ttl=" + context.get( "ttl" ) );
-	    ttl = (Integer) context.get( "ttl" );
-
-	    log.info( "  ramCacheOn=" + context.get( "ramCacheOn" ) );
-	    ramCacheOn = (Boolean) context.get( "ramCacheOn" );
-
+        log.info( "  ttl=" + context.get( "ttl" ) );
+        ttl = (Integer) context.get( "ttl" );
+        
+        log.info( "  ramCacheOn=" + context.get( "ramCacheOn" ) );
+        ramCacheOn = (Boolean) context.get( "ramCacheOn" );
+        
         log.info( "  dbCacheOn=" + context.get( "dbCacheOn" ) );
         dbCacheOn = (Boolean) context.get( "dbCacheOn" );
-                
-	    log.info( "  remoteProxyOn=" + context.get( "remoteProxyOn" ) );
-	    remoteProxyOn = (Boolean) context.get( "remoteProxyOn" );
         
-	    log.info( "  monitorOn=" + context.get( "monitorOn" ) );
-	    monitorOn = (Boolean) context.get( "monitorOn" );
-
-	    log.info( "  debug=" + context.get( "debug" ) );
-	    debug = (Integer) context.get( "debug" );
-       
+        log.info( "  remoteProxyOn=" + context.get( "remoteProxyOn" ) );
+        remoteProxyOn = (Boolean) context.get( "remoteProxyOn" );
+        
+        log.info( "  monitorOn=" + context.get( "monitorOn" ) );
+        monitorOn = (Boolean) context.get( "monitorOn" );
+        
+        log.info( "  debug=" + context.get( "debug" ) );
+        debug = (Integer) context.get( "debug" );
+        
         log.info( "  servers:" );
-
+        
         //nativeServerMap = (Map<String, RemoteServer>) context.get( "nativeServer" );
         nativeSever = (NativeServer) context.get( "nativeServer" );
         
         serviceSet = (Set) context.get( "serviceSet" );
-
+        
         log.info( "   proxyProto=" + context.get( "proxyProto" ) );
         proxyServer = (RemoteProxyServer) context.get( "proxyProto" );
         
-	    log.info( "   router=" + context.get( "router" ) );
-	    router = (Router) context.get( "router" );
-	    router.setRemoteServerContext( this );
+        log.info( "   router=" + context.get( "router" ) );
+        router = (Router) context.get( "router" );
+        router.setRemoteServerContext( this );
         
-	    initialized=true;
-	    log.info("configure(" +  provider+ "): DONE");    
+        initialized=true;
+        log.info("configure(" +  provider+ "): DONE");    
     }
 }  

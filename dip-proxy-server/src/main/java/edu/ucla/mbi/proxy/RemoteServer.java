@@ -16,7 +16,7 @@ package edu.ucla.mbi.proxy;
 import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.cache.NativeRecord;
 
-public interface RemoteServer{
+public interface RemoteServer extends NativeServer{
     
     public NativeRecord getNative( String provider, String service,
                                    String ns, String ac, int timeout, 

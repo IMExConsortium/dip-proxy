@@ -88,8 +88,120 @@ public class ProxyDxfTransformer {
 	
     	// NOTE: overload if dxf building more complex than
         //       a simple xslt transformation
+        
+        DatasetType trResult = this.transform( strNative, ns, ac, detail, provider, service );
+
+        
+        if( !provider.equalsNoCase("mbi") || !service.equalsNoCase("prolinks") ){
+            return trResult;
+        } 
 	
-        return this.transform( strNative, ns, ac, detail, provider, service );
+        if( detail.equalsNoCase("FULL") ){
+            //return this.buildProlinksDxf( strNative, ns, ac, detail, provider, service );
+            return this.buildProlinksDxf( trResult,  detail );
+        }
+
+        return trResult;
+        
     }
 
+    //--------------------------------------------------------------------------
+
+
+    //public DatasetType buildProlinksDxf( String strNative, String ns, String ac,
+    //                                     String detail, String provider, 
+    //                                     String service ) throws ProxyFault 
+    //{
+
+    public DatasetType buildProlinksDxf( DatasetType dxfResult , String detail ) 
+        throws ProxyFault {
+        
+        Log log = LogFactory.getLog( ProxyDxfTransformer.class );
+        log.info( " buildProlinksDxf called: " + ac );
+        
+        //String ncbiProxyAddress = ( String ) getContext().get( "ncbiProxyAddress" );  //XX
+
+
+        //String ncbiProxyAddress = ( String ) WSContext...... .get( "ncbiProxyAddress" );
+
+
+        if( ncbiProxyAddress != null &&  ncbiProxyAddress.length() > 0 ) {
+            ncbiProxyAddress = ncbiProxyAddress.replaceAll( "\\s", "" );
+        } else {
+            log.warn( "buildDxf: ncbiProxyAddress is not initialized. " );
+            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+        }
+
+        //edu.ucla.mbi.dxf14.DatasetType dxfResult = 
+        //    this.buildDxf ( strNative, ns, ac, detail, provider, service );
+        
+     
+            //*** take detail info of refseq node from NCBI service    
+            ProxyService proxySrv = new ProxyService();
+            ProxyPort port = proxySrv.getProxyPort();
+
+            RemoteServerContext rsc = WSContext.getServerContext( "NCBI" );
+
+            // set server location 
+            // ---------------------
+
+            ((BindingProvider) port).getRequestContext()
+                    .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                            ncbiProxyAddress );
+
+            // set client Timeout
+            // ----
+
+            ((BindingProvider) port).getRequestContext().put(
+                    JAXWSProperties.CONNECT_TIMEOUT, rsc.getTimeout() );
+            
+            List<NodeType> node = dxfResult.getNode();
+            
+            for ( Iterator iterator = node.iterator(); iterator.hasNext(); ) {
+                NodeType nodetype = (NodeType) iterator.next();
+                List<edu.ucla.mbi.dxf14.NodeType.PartList.Part> part =
+                nodetype.getPartList().getPart();
+                
+                for ( Iterator iterator1 = part.iterator(); 
+                      iterator1.hasNext(); ) 
+                {
+            
+                    PartType parttype = (PartType) iterator1.next();
+                    NodeType nodeOld = parttype.getNode();
+                    String node_ac = nodeOld.getAc();
+                    long node_id = nodeOld.getId();
+
+                    try {
+                        log.info( "ProlinksServer: port.getRefseq call "
+                                  + "(loop):"
+                                  + " NS=refseq" + " AC=" + node_ac + " DT="
+                                  + detail );
+
+                        Holder<DatasetType> resDataset =
+                                    new Holder<DatasetType>();
+                        Holder<String> resNative = new Holder<String>();
+                        Holder<XMLGregorianCalendar> timestamp = null;
+
+                        port.getRecord( "NCBI", "refseq", "refseq", node_ac, 
+                                        "", "base", "", "", 0, timestamp, 
+                                        resDataset, resNative );
+
+                        DatasetType dataset = resDataset.value;
+
+                        NodeType nodeNew = 
+                                (NodeType) dataset.getNode().get( 0 );
+                        nodeNew.setId( node_id );
+                        parttype.setNode( nodeNew );
+                    } catch ( ProxyFault fault ) {
+                        throw fault;
+                    } catch ( Exception e ) {
+                        log.info( "ProlinksServer: NCBI getRefseq: "
+                                  + e.toString() );
+                        throw FaultFactory.newInstance( Fault.UNKNOWN );
+                    }
+                }
+            }
+        
+        return dxfResult;
+    }
 }
