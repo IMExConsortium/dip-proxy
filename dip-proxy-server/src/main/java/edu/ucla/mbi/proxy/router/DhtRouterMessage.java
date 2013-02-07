@@ -26,17 +26,14 @@ public class DhtRouterMessage implements Serializable {
 
     private int msg = -1;
     Record record = null;
-    //RemoteServer server = null;
-    NativeServer server = null;
+    RemoteServer server = null;
 
     public DhtRouterMessage( int msg, Record record, 
-                             NativeServer server ) {
-    //                         RemoteServer server ) {
+                             RemoteServer server ) {
                              
         this.msg = msg;
         this.record = record;
-        //this.server = server;
-        this.server = (RemoteServer)server;
+        this.server = server;
     }
     
     public int getMsg() {
@@ -47,8 +44,7 @@ public class DhtRouterMessage implements Serializable {
         return record;
     }
 
-    //public RemoteServer getRemoteServer() {
-    public NativeServer getRemoteServer() {
+    public RemoteServer getRemoteServer() {
         return server;
     }
     

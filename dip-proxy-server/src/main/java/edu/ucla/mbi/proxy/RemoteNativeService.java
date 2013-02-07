@@ -105,12 +105,14 @@ class RemoteNativeService extends Observable {
             if( remoteRecord != null ) {      
                 String natXml = remoteRecord.getNativeXml();
 
-                log.info( "getNativeFromRemote: got natXml=" + natXml );
-
                 if( natXml == null || natXml.length() == 0 ) {            
                     // remote site problem
                     // NOTE: should also drop on exception remote exception ???
 
+                    // ----------------------------------
+                    // NOTE: temporary hiding for proxy
+                    // -------------------------------
+                    /*
                     log.info( "getNative: natXml is null/zero length. " );
                     this.setChanged(); // drop site from DHT
 
@@ -120,14 +122,21 @@ class RemoteNativeService extends Observable {
 
                     this.notifyObservers( message );
                     this.clearChanged();
+                    */
+                    //------------------------------------------------------
+                    
                     remoteRecord = null;
+
                 } else {
                     if( remoteRecord.getExpireTime() == null ) {
-
                         //*** remoteRecord is newly created from remote native 
                         remoteRecord.resetExpireTime(        
                             remoteRecord.getCreateTime(), rsc.getTtl() );
 
+                        // ---------------------------------------------------
+                        // NOTE: temporary hiding for proxy
+                        // ---------------------------------------------------
+                        /*
                         this.setChanged(); // update site from DHT
 
                         DhtRouterMessage message =
@@ -136,6 +145,8 @@ class RemoteNativeService extends Observable {
 
                         this.notifyObservers( message );
                         this.clearChanged();
+                        */
+                        // -----------------------------------------------------
                     } 
                 }
             }

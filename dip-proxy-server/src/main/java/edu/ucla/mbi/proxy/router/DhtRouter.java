@@ -192,8 +192,7 @@ public class DhtRouter implements Router {
                   " (msg=" + message.getMsg() + ")" );
         
         Record record = message.getRecord();
-        //RemoteServer server = message.getRemoteServer();
-        NativeServer server = message.getRemoteServer();
+        RemoteServer server = message.getRemoteServer();
 
         log.info( "  DhtRouter.update: " );
 

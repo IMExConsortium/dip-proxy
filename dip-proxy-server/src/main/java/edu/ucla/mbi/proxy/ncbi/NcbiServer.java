@@ -66,8 +66,8 @@ public class NcbiServer implements NativeServer {
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
         
         int retry = 1; //default value 
-        if( (Integer) context.get( "retry" ) != null ) {
-            retry= ((Integer) context.get( "retry" )).intValue();
+        if( context.get( "retry" ) != null ) {
+            retry= Integer.parseInt( (String) context.get( "retry" ) );
         } 
 
         if ( !service.equals( "nlm" ) ) {
