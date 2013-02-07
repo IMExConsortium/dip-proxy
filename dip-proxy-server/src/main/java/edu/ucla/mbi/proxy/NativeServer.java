@@ -29,8 +29,4 @@ public interface NativeServer {
                                    String ns, String ac, int timeout 
                                    ) throws ProxyFault; 
 
-    //public void setContext( Map<String,Object> context );
-
-    //public void initialize() throws ProxyFault;
-    
 }

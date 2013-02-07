@@ -284,7 +284,7 @@
        <entry key="ttl" value="14"/>
 
        <entry key="nativeServer">
-        <ref bean="nativeRestSever"/>
+        <ref bean="nativeRestServer"/>
         <!--
             <map>
                 <entry key="yeastmine">

@@ -39,8 +39,7 @@ import edu.ucla.mbi.cache.NativeRecord;
 
 import java.util.Map;
 
-//public class RemoteProxyServer implements RemoteServer {
-public class RemoteProxyServer implements NativeServer {
+public class RemoteProxyServer implements RemoteServer {
     private Log log = LogFactory.getLog( RemoteProxyServer.class ); 
     
     private String proxyAddress;
@@ -74,7 +73,7 @@ public class RemoteProxyServer implements NativeServer {
     }
  
     public NativeRecord getNative( String provider, String service,
-                                   String ns, String ac, int timeout, int retry
+                                   String ns, String ac, int timeout 
                                    ) throws ProxyFault 
     {
 
@@ -138,7 +137,7 @@ public class RemoteProxyServer implements NativeServer {
     public RemoteProxyServer getRemoteProxyServerInstance() {
         return null;
     }
-    /*
+    
     public DatasetType transform( String strNative,
 				                  String ns, String ac, String detail,
 	        			          String provider, 
@@ -198,6 +197,6 @@ public class RemoteProxyServer implements NativeServer {
 
         return this.transform( strNative, ns, ac, detail, provider, service );
     }
-    */
+    
 }
 

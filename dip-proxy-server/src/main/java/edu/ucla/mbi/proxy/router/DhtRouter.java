@@ -72,11 +72,11 @@ public class DhtRouter implements Router {
     }
  
     public RemoteServer getNativeServer( String service ){
-        
+    //public NativeServer getNativeServer( String service ){    
         Log log = LogFactory.getLog(DhtRouter.class);
         log.info("getNativeServer(native server= " + 
-                 (RemoteServer)rsc.getNativeServerMap().get( service) + ")" );
-        return (RemoteServer)rsc.getNativeServerMap().get(service);
+                 (RemoteServer)rsc.getNativeServer() + ")" );
+        return (RemoteServer)rsc.getNativeServer();
     } 
     
     public ID getRecordID( String provider,
@@ -159,7 +159,8 @@ public class DhtRouter implements Router {
             //    remote = rsc.getNativeServer();
             //}
         } else {
-            remote = rsc.getNativeServerMap().get( service );
+            //remote = rsc.getNativeServer();
+            remote = (RemoteServer)rsc.getNativeServer();
             log.info( "   remote==native " + remote );
         }
         
@@ -191,7 +192,8 @@ public class DhtRouter implements Router {
                   " (msg=" + message.getMsg() + ")" );
         
         Record record = message.getRecord();
-        RemoteServer server = message.getRemoteServer();
+        //RemoteServer server = message.getRemoteServer();
+        NativeServer server = message.getRemoteServer();
 
         log.info( "  DhtRouter.update: " );
 

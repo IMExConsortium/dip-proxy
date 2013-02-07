@@ -75,8 +75,8 @@ class RemoteNativeService extends Observable {
         NativeRecord remoteRecord = null;
           
         while ( retry > 0 && remoteRecord == null ) {    
-            RemoteServer rs = 
-            //NativeServer ns = 
+            //RemoteServer rs = 
+            NativeServer nativeServer = 
                 selectNextRemoteServer( provider, service, ns, ac );
 
             log.info( " retries left=" + retry );
@@ -84,20 +84,28 @@ class RemoteNativeService extends Observable {
                 
             try {
                 
-                remoteRecord = rs.getNative( provider, service, ns, ac, 
-                                             rsc.getTimeout(), retry );
-                
-                //remoteRecord = ns.getNative( provider, service, ns, ac, 
-                //                             rsc.getTimeout() );
+                //remoteRecord = rs.getNative( provider, service, ns, ac, 
+                //                             rsc.getTimeout(), retry );
+                log.info( "getNativeFromRemote: before getNative. " );
+                remoteRecord = nativeServer.getNative( 
+                    provider, service, ns, ac, rsc.getTimeout() );
+                log.info( "getNativeFromRemote: after getNative. " );
             } catch( ProxyFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
                           "fault: " + fault.getFaultInfo().getMessage()); 
                 throw fault;      
+            } catch ( Exception ex ) {
+                log.warn( "getNativeFromRemote: ex=" + ex.toString() );
+                
             }
             
+            log.info( "getNativeFromRemote: after got remoteRecord=" + 
+                      remoteRecord );
 
             if( remoteRecord != null ) {      
                 String natXml = remoteRecord.getNativeXml();
+
+                log.info( "getNativeFromRemote: got natXml=" + natXml );
 
                 if( natXml == null || natXml.length() == 0 ) {            
                     // remote site problem
@@ -108,7 +116,7 @@ class RemoteNativeService extends Observable {
 
                     DhtRouterMessage message =
                         new DhtRouterMessage( DhtRouterMessage.DELETE,
-                                              remoteRecord, rs );
+                                              remoteRecord, nativeServer );
 
                     this.notifyObservers( message );
                     this.clearChanged();
@@ -124,7 +132,7 @@ class RemoteNativeService extends Observable {
 
                         DhtRouterMessage message =
                             new DhtRouterMessage( DhtRouterMessage.UPDATE,
-                                                  remoteRecord, rs );
+                                                  remoteRecord, nativeServer );
 
                         this.notifyObservers( message );
                         this.clearChanged();

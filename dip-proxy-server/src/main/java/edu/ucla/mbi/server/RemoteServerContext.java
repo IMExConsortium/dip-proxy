@@ -39,6 +39,8 @@ public class RemoteServerContext {
     private RemoteProxyServer proxyServer = null;
     private Router router = null;
     private Set serviceSet = new HashSet();
+
+    private String ncbiProxyAddress = "";
  
     //*** getter
     public int getTimeout() {
@@ -75,6 +77,10 @@ public class RemoteServerContext {
 
     public String getProvider() {
         return provider;
+    }
+
+    public String getNcbiProxyAddress() {
+        return ncbiProxyAddress;
     }
 
     /*
@@ -144,8 +150,9 @@ public class RemoteServerContext {
         log.info( "  servers:" );
         
         //nativeServerMap = (Map<String, RemoteServer>) context.get( "nativeServer" );
-        nativeSever = (NativeServer) context.get( "nativeServer" );
-        
+        nativeServer = (NativeServer) context.get( "nativeServer" );
+        ncbiProxyAddress = (String) context.get( "ncbiProxyAddress" );       
+ 
         serviceSet = (Set) context.get( "serviceSet" );
         
         log.info( "   proxyProto=" + context.get( "proxyProto" ) );

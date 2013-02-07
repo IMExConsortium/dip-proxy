@@ -56,7 +56,8 @@ public class SimpleRouter implements Router {
     public RemoteServer getNativeServer( String service ){
         
         Log log = LogFactory.getLog(SimpleRouter.class);
-        return rsc.getNativeServerMap().get( service );
+        //return rsc.getNativeServer();
+        return (RemoteServer)rsc.getNativeServer();
     } 
         
     
