@@ -45,13 +45,6 @@ public class SimpleRouter implements Router {
         return rsc;
     }
 
-    public void setMaxRetry( int retry ) {
-        this.maxRetry = retry;
-    }
-    
-    public int getMaxRetry() {
-        return maxRetry;
-    }
 
     public RemoteServer getNativeServer( String service ){
         
@@ -105,11 +98,51 @@ public class SimpleRouter implements Router {
         return this.getNextProxyServer( operation );
     }
 
+
+
     // observer intereface
     //--------------------
 
     public void update( Observable o, Object arg ) {
 
+    }
+    
+
+    Map config = null;
+
+    public void setConfig( Map config ){
+        this.config= config;
+    }
+
+    //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+    
+    public void setMaxRetry( int retry ) {
+        this.maxRetry = retry;
+    }
+    
+    public int getMaxRetry() {
+        return maxRetry;
+    }
+
+    
+    int currentProxyServer = -1;
+    
+    public NativeServer getNextProxyServer( String provider,
+                                            String service,
+                                            String namespace,
+                                            String accession ){
+
+         List pul = ((List) config.get("proxy-url-list"));
+         
+         if( currentProxyServer+1 == pul.length() ){
+             currentProxyServer = 0;
+         }
+         
+         String url = (String) pil.get( currentProxyServer+1 );
+         
+         return new RemoteProxyServer( url );
     }
             
 }

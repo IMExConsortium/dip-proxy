@@ -84,7 +84,7 @@
 
   <property name="services">
    <map>
-     <entry key="EBI"> 
+     <entry key="EBI">  
       <map>
        <entry key="timeout" value="600"/> <!-- NOTE: default unit seconds -->
        <entry key="ttl" value="14"/>  <!-- NOTE: default unit days --> 
@@ -115,12 +115,13 @@
        </entry>      
        
        <entry key="router">
-        <ref bean="ebiDhtRouter"/> 
+<!--        <ref bean="ebiDhtRouter"/>  -->
+        <ref bean="ebiSimpleRouter"/> 
        </entry>
         
        <entry key="ramCache" value="off"/>
        <entry key="dbCache" value="off"/>
-       <entry key="remoteProxy" value="off"/>
+       <entry key="remoteProxy" value="on"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
 

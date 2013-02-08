@@ -57,7 +57,8 @@ class RemoteNativeService extends Observable {
             log.info( " adding observer..." );
             this.addObserver( router );
 
-            return router.getNextProxyServer( service, namespace, accession );
+            return router.getNextProxyServer( provider, service, 
+                                              namespace, accession );
         }
 
         //return rsc.getNativeServerMap().get( service );

@@ -20,6 +20,8 @@ import java.util.*;
 import edu.ucla.mbi.server.RemoteServerContext;
 import edu.ucla.mbi.proxy.RemoteServer;
 
+import edu.ucla.mbi.proxy.NativeServer;
+
 public interface Router extends Observer {
 
     public Router createRouter();
@@ -33,9 +35,16 @@ public interface Router extends Observer {
 
     public RemoteServer getNextProxyServer( String service );
 
-    public RemoteServer getNextProxyServer( String namespace, 
-                                            String accession,
-                                            String operation );
+
+
+    //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+    public NativeServer getNextProxyServer( String provider,
+                                            String service,
+                                            String namespace, 
+                                            String accession );
+    //,String operation );
 
     public void setMaxRetry( int retry );
     public int getMaxRetry();

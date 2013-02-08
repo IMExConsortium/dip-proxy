@@ -53,13 +53,6 @@ public class DhtRouter implements Router {
         this.proxyDht = dht;
     }
     
-    public void setMaxRetry( int retry ) {
-        this.maxRetry= retry;
-    }
-
-    public int getMaxRetry() {
-        return maxRetry;
-    }
 
     public void setRemoteServerContext( RemoteServerContext rsc ){
         Log log = LogFactory.getLog(DhtRouter.class);
@@ -235,4 +228,37 @@ public class DhtRouter implements Router {
             proxyDht.updateItem( rid, routerItem );
         }
     }
+
+
+    //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+    
+    public NativeServer getNextProxyServer( String provider, 
+                                            String service, 
+                                            String namespace,
+                                            String accession ) {
+        
+        Log log = LogFactory.getLog(DhtRouter.class);
+        log.info( "getNextProxyServer(args) (provider=" + 
+                  rsc.getProvider() + ")" );
+        log.info( " SRV=" + service + 
+                  " NS=" + namespace + " AC=" + accession );
+        
+        ID rid = this.getRecordID( service, namespace, accession );
+        
+        return this.getNextProxyServer( rid, service );
+    }
+
+
+
+    public void setMaxRetry( int retry ) {
+        this.maxRetry= retry;
+    }
+
+    public int getMaxRetry() {
+        return maxRetry;
+    }
+
+
 }

@@ -39,10 +39,26 @@
 
  </bean>
 
+ <bean id="ebiSimpleRouter" class="edu.ucla.mbi.proxy.router.SimpleRouter">
+  <property name="config">
+    <map>
+      <entry key="proxy-url-list">
+        <list>
+          <value>http://10.1.200.209:8080/dip-proxy-server</value>
+          <value>http://10.1.200.210:8080/dip-proxy-server</value>
+        </list>
+     </entry>
+    </map>
+  </property>
+
+
+<!--
  <bean id="ebiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
   </property>
+-->
+
 
   <property name="maxRetry">
     <value>3</value>

@@ -39,7 +39,8 @@ import edu.ucla.mbi.cache.NativeRecord;
 
 import java.util.Map;
 
-public class RemoteProxyServer implements RemoteServer {
+public class RemoteProxyServer implements NativeServer {
+
     private Log log = LogFactory.getLog( RemoteProxyServer.class ); 
     
     private String proxyAddress;
@@ -72,64 +73,6 @@ public class RemoteProxyServer implements RemoteServer {
         log.info( "initialize service=" + this );
     }
  
-    public NativeRecord getNative( String provider, String service,
-                                   String ns, String ac, int timeout 
-                                   ) throws ProxyFault 
-    {
-
-        log.info( "getNative(NS=" + ns + " AC=" + ac + " OP=" + service + ")" );
-
-        String url = getAddress();
-
-        ProxyService proxySrv = new ProxyService();
-        ProxyPort port = proxySrv.getProxyPort();
-
-        try {
-            log.info( " this=" + this );
-            log.info( " port=" + url + " timeout=" + timeout );
-
-            // set server location
-            // ---------------------
-
-            ((BindingProvider) port).getRequestContext().put(
-                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url );
-
-            // set client Timeout
-            // ------------------
-
-            ((BindingProvider) port).getRequestContext().put(
-                   JAXWSProperties.CONNECT_TIMEOUT, timeout );
-        
-            Holder<DatasetType> resDataset = new Holder<DatasetType>();
-            Holder<String> resNative = new Holder<String>();
-            Holder<XMLGregorianCalendar> timestamp =
-                                new Holder<XMLGregorianCalendar>();
-
-            port.getRecord( provider, service, ns, ac, "", "", "native", 
-                                 "", 0, timestamp, resDataset, resNative );
-
-            XMLGregorianCalendar qtime = timestamp.value;
-
-            NativeRecord record = new NativeRecord( provider, service, ns, ac );
-            record.setNativeXml( resNative.value );
-            record.setCreateTime( qtime.toGregorianCalendar().getTime() );
-
-            return record;
-
-        } catch ( ProxyFault fault ) {
-            throw fault;
-        } catch ( Exception e ) {
-            log.info( "getNative: exception: " + e.toString() );
-            if ( e.toString().contains( "No result found" ) ) {
-                throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
-            } else if ( e.toString().contains( "Read timed out" ) ) {
-                throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT ); // timeout
-            } else {
-                throw FaultFactory.newInstance( Fault.UNKNOWN ); // unknown
-            }
-        }
-    }
-
     public RemoteServer getRemoteServerInstance() {
         return null;
     }
@@ -196,6 +139,78 @@ public class RemoteProxyServer implements RemoteServer {
         log.info( "buildDxf entering ... " );	
 
         return this.transform( strNative, ns, ac, detail, provider, service );
+    }
+
+
+
+
+    //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+
+    public RemoteProxyServer(){};
+
+    public RemoteProxyServer( String url ){
+        this.setAddress( url );
+    };
+
+
+    public NativeRecord getNative( String provider, String service,
+                                   String ns, String ac, int timeout 
+                                   ) throws ProxyFault 
+    {
+
+        log.info( "getNative(NS=" + ns + " AC=" + ac + " OP=" + service + ")" );
+
+        String url = getAddress();
+
+        ProxyService proxySrv = new ProxyService();
+        ProxyPort port = proxySrv.getProxyPort();
+
+        try {
+            log.info( " this=" + this );
+            log.info( " port=" + url + " timeout=" + timeout );
+
+            // set server location
+            // ---------------------
+
+            ((BindingProvider) port).getRequestContext().put(
+                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url );
+
+            // set client Timeout
+            // ------------------
+
+            ((BindingProvider) port).getRequestContext().put(
+                   JAXWSProperties.CONNECT_TIMEOUT, timeout );
+        
+            Holder<DatasetType> resDataset = new Holder<DatasetType>();
+            Holder<String> resNative = new Holder<String>();
+            Holder<XMLGregorianCalendar> timestamp =
+                                new Holder<XMLGregorianCalendar>();
+
+            port.getRecord( provider, service, ns, ac, "", "", "native", 
+                                 "", 0, timestamp, resDataset, resNative );
+
+            XMLGregorianCalendar qtime = timestamp.value;
+
+            NativeRecord record = new NativeRecord( provider, service, ns, ac );
+            record.setNativeXml( resNative.value );
+            record.setCreateTime( qtime.toGregorianCalendar().getTime() );
+
+            return record;
+
+        } catch ( ProxyFault fault ) {
+            throw fault;
+        } catch ( Exception e ) {
+            log.info( "getNative: exception: " + e.toString() );
+            if ( e.toString().contains( "No result found" ) ) {
+                throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
+            } else if ( e.toString().contains( "Read timed out" ) ) {
+                throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT ); // timeout
+            } else {
+                throw FaultFactory.newInstance( Fault.UNKNOWN ); // unknown
+            }
+        }
     }
     
 }
