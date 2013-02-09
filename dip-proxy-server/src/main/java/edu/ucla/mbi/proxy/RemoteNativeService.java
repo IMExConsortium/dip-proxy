@@ -57,11 +57,11 @@ class RemoteNativeService extends Observable {
             log.info( " adding observer..." );
             this.addObserver( router );
 
+            log.info( "before router getNextProxyServer. " );
             return router.getNextProxyServer( provider, service, 
                                               namespace, accession );
         }
 
-        //return rsc.getNativeServerMap().get( service );
         return rsc.getNativeServer();
 
     }
@@ -74,8 +74,13 @@ class RemoteNativeService extends Observable {
 
         int retry = router.getMaxRetry();  
         NativeRecord remoteRecord = null;
-          
+        
+        log.info( "getNativeFromRemote: retry=" + retry );
+        log.info( "getNativeFromRemote: router=" + router );
+  
         while ( retry > 0 && remoteRecord == null ) {    
+
+            log.info( "getNativeFromRemote: before selectNextRemoteServer. " );
             //RemoteServer rs = 
             NativeServer nativeServer = 
                 selectNextRemoteServer( provider, service, ns, ac );

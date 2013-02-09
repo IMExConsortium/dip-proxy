@@ -32,7 +32,7 @@
 
  <!-- ========================================================== SCHEDULER -->
 
- <import resource="spring/schedulerBean.xml" />
+ <!--<import resource="spring/schedulerBean.xml" /> -->
 
  <!-- ========================================================== AOP AUDIT -->
 
@@ -65,10 +65,12 @@
   <property name="dht">
    <ref bean="dht"/>
   </property> 
-
+  
+  <!--
   <property name="scheduler">
    <ref bean="scheduler"/>
   </property> 
+  -->
 
   <property name="waitMillis" value="5000"/>
 
@@ -109,11 +111,13 @@
                 </entry>
             </map> -->
        </entry>      
-       
+      
+       <!-- 
        <entry key="proxyProto"> 
         <ref bean="referenceProxy"/>
        </entry>      
-       
+       -->
+
        <entry key="router">
 <!--        <ref bean="ebiDhtRouter"/>  -->
         <ref bean="ebiSimpleRouter"/> 
@@ -164,15 +168,16 @@
         -->
        </entry>      
 
-       
+       <!--       
        <entry key="proxyProto"> 
         <ref bean="referenceProxy"/>
        </entry>      
        
+
        <entry key="router">
         <ref bean="ncbiDhtRouter"/> 
        </entry>
-
+       -->
        <entry key="ramCache" value="off"/>
        <entry key="dbCache" value="off"/>
        <entry key="remoteProxy" value="off"/>
@@ -212,7 +217,8 @@
             <!--<value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> -->
             <value> http://10.1.200.201:8080/dip-proxy-server/proxy-service</value>
        </entry>
-        
+
+       <!--        
        <entry key="proxyProto"> 
         <ref bean="referenceProxy"/>
        </entry>      
@@ -220,6 +226,7 @@
        <entry key="router">
         <ref bean="mbiDhtRouter"/> 
        </entry>
+       -->
 
        <entry key="ramCache" value="off"/>
        <entry key="dbCache" value="off"/>
@@ -255,6 +262,7 @@
         -->
        </entry>      
 
+       <!--
        <entry key="proxyProto">
         <ref bean="referenceProxy"/>
        </entry>
@@ -262,6 +270,7 @@
        <entry key="router">
         <ref bean="dipDhtRouter"/> 
        </entry>
+       -->
 
        <entry key="ramCache" value="off"/>
        <entry key="dbCache" value="off"/>
@@ -295,14 +304,16 @@
         -->
        </entry>
 
+       <!--
        <entry key="proxyProto">
         <ref bean="referenceProxy"/>
        </entry>
 
        <entry key="router">
-        <ref bean="yeastMineDhtRouter"/>
+         <ref bean="yeastMineDhtRouter"/> 
        </entry>
- 
+       -->
+
        <entry key="ramCache" value="off"/>
        <entry key="dbCache" value="off"/>
        <entry key="remoteProxy" value="off"/>

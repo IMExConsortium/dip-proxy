@@ -94,11 +94,17 @@ public class RemoteServerContext {
     public RemoteProxyServer getProxyProto() {
         return proxyServer;
     }
-     
+    
+    // -----------------------------------------
+    // Note:  why need it??????????????? 
     public Router createRouter() {
       	return router.createRouter();
     }
-
+    // Node: new adding
+    public Router getRouter() {
+        return router;
+    }
+    // --------------------------------------
     public void setProperty( String name, Object value ) {
 	    properties.put(name,value);
     }
@@ -110,6 +116,7 @@ public class RemoteServerContext {
     public Set<String> getServiceSet () {
         return serviceSet;
     }
+
     /*
     public void setNativeServerMap( Map<String, RemoteServer> nativeMap ) {
         this.nativeServerMap = nativeMap;
@@ -160,8 +167,11 @@ public class RemoteServerContext {
         
         log.info( "   router=" + context.get( "router" ) );
         router = (Router) context.get( "router" );
-        router.setRemoteServerContext( this );
         
+        if( router != null ){
+            router.setRemoteServerContext( this );
+        }
+
         initialized=true;
         log.info("configure(" +  provider+ "): DONE");    
     }

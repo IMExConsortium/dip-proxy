@@ -14,7 +14,6 @@
       http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
  <!-- distributed hash configuration -->
-
  <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
        init-method="initialize" destroy-method="cleanup">
 
@@ -39,31 +38,33 @@
 
  </bean>
 
- <bean id="ebiSimpleRouter" class="edu.ucla.mbi.proxy.router.SimpleRouter">
+ <bean id="ebiSimpleRouter" 
+    class="edu.ucla.mbi.proxy.router.SimpleRouter">
+
   <property name="config">
     <map>
       <entry key="proxy-url-list">
         <list>
-          <value>http://10.1.200.209:8080/dip-proxy-server</value>
-          <value>http://10.1.200.210:8080/dip-proxy-server</value>
+          <value>http://10.1.200.209:8080/dip-proxy-server/proxy-service</value>
+          <value>http://10.1.200.210:8080/dip-proxy-server/proxy-service</value>
         </list>
      </entry>
     </map>
   </property>
 
-
-<!--
- <bean id="ebiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
-  <property name="dht">
-   <ref bean="dht"/>
-  </property>
--->
-
-
   <property name="maxRetry">
     <value>3</value>
   </property>
  </bean>
+
+ <!--
+ <bean id="ebiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
+ </bean>
+ -->
+
 
  <bean id="ncbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">

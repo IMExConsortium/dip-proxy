@@ -22,7 +22,6 @@
         http://www.springframework.org/schema/aop 
         http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-
  <bean id="scheduler" init-method="start" destroy-method="shutdown"
        class="edu.ucla.mbi.monitor.Scheduler" >
 
@@ -45,5 +44,4 @@
    </map>
   </property>
  </bean>
-
 </beans>

@@ -125,7 +125,7 @@ public class ProxyDxfTransformer {
         
         Log log = LogFactory.getLog( ProxyDxfTransformer.class );
         
-        /*
+        // -----------------------------------------------------------------
         RemoteServerContext rsc = WSContext.getServerContext( "MBI" );
         
         String ncbiProxyAddress = ( String ) rsc.getNcbiProxyAddress();  //XX
@@ -150,7 +150,8 @@ public class ProxyDxfTransformer {
 
         ((BindingProvider) port).getRequestContext()
             .put( JAXWSProperties.CONNECT_TIMEOUT, rsc.getTimeout() );
-        */    
+        // -----------------------------------------------------------------
+    
         List<NodeType> node = dxfResult.getNode();
             
         for ( Iterator iterator = node.iterator(); iterator.hasNext(); ) {
@@ -171,7 +172,7 @@ public class ProxyDxfTransformer {
                     log.info( "ProlinksServer: port.getRefseq call " +
                               "(loop): NS=refseq" + " AC=" + node_ac ); 
 
-                    /*
+                    // ----------------------------------------------------
                     Holder<DatasetType> resDataset =
                         new Holder<DatasetType>();
                     Holder<String> resNative = new Holder<String>();
@@ -182,10 +183,11 @@ public class ProxyDxfTransformer {
                                     resDataset, resNative );
                     
                     DatasetType dataset = resDataset.value;
-                    */
+                    // --------------------------------------------------------
                     
                     //*** new thinking ?????????? 
-                    // --------------------------------------------------------
+                    /*
+                    //--------------------------------------------------------
                     Router router =
                         WSContext.getServerContext( "NCBI" ).createRouter() ;
                     CachingService cachingSrv =
@@ -196,6 +198,8 @@ public class ProxyDxfTransformer {
                         "NCBI", "refseq", "refseq", node_ac, "base" );
                    
                     // ------------------------------------------------------ 
+                    */
+
                     NodeType nodeNew = 
                         (NodeType) dataset.getNode().get( 0 );
 

@@ -142,12 +142,18 @@ public class DhtRouter implements Router {
         if ( lastAddress != null && 
              ! ( lastAddress.equals(rsc.getProxyProto().getAddress() ) ) 
              ) {
-            
+
+            // -----------------------------------------------------------
+            // Note: temporary hiding by using simpleRouter
+            /* 
             RemoteProxyServer remoteProxy =
                 rsc.getProxyProto().getRemoteProxyServerInstance();
             remoteProxy.setAddress( lastAddress );
             remote = remoteProxy;
             log.info( "   remote URL=" + lastAddress );
+            */
+            //---------------------------------------------------------
+
             //if ( rsc.getDebugLevel() == 1 ){
             //    remote = rsc.getNativeServer();
             //}

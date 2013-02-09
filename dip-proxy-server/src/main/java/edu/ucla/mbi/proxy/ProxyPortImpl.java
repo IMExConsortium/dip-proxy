@@ -42,14 +42,15 @@ public class ProxyPortImpl implements ProxyPort {
                            Holder<String> nativerecord
                            ) throws ProxyFault {
 
-        ns = validateCheck( provider, service, ns, ac, detail, format );
+        ns = this.validateCheck( provider, service, ns, ac, detail, format );
         
         log.info( "getRecord: ns= " + ns + " and ac=" + ac +
                   " and detail=" + detail + " format=" + format + "." );
         
         try {
             Router router =
-                WSContext.getServerContext( provider ).createRouter() ;
+                //WSContext.getServerContext( provider ).createRouter() ;
+                WSContext.getServerContext( provider ).getRouter();
 
             log.info( "getRecord: router=" + router );
             log.info( "getRecord: router.rsc=" 

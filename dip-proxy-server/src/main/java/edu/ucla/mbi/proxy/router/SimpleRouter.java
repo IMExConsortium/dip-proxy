@@ -19,11 +19,13 @@ import java.util.*;
 
 import edu.ucla.mbi.server.RemoteServerContext;
 import edu.ucla.mbi.proxy.RemoteServer;
+import edu.ucla.mbi.proxy.NativeServer;
+import edu.ucla.mbi.proxy.RemoteProxyServer;
 
 public class SimpleRouter implements Router {
     
     private RemoteServerContext rsc = null;
-    private int maxRetry = 0;
+    private int maxRetry = 2;
     
     private int currentServer = -1;
 
@@ -34,7 +36,7 @@ public class SimpleRouter implements Router {
     }
 
     public Router createRouter(){
-        return new SimpleRouter( this.rsc );
+        return new SimpleRouter( this.rsc ); 
     }
 
     public void setRemoteServerContext( RemoteServerContext rsc ){
@@ -108,41 +110,46 @@ public class SimpleRouter implements Router {
     }
     
 
-    Map config = null;
+    private Map<String, Object> config = new HashMap<String, Object>();
 
-    public void setConfig( Map config ){
+    public void setConfig( Map<String, Object> config ){
         this.config= config;
     }
 
     //--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
 
-    
+        
     public void setMaxRetry( int retry ) {
         this.maxRetry = retry;
-    }
+    } 
     
     public int getMaxRetry() {
         return maxRetry;
     }
-
     
+     
     int currentProxyServer = -1;
     
     public NativeServer getNextProxyServer( String provider,
                                             String service,
                                             String namespace,
-                                            String accession ){
+                                            String accession ) {
 
-         List pul = ((List) config.get("proxy-url-list"));
-         
-         if( currentProxyServer+1 == pul.length() ){
-             currentProxyServer = 0;
-         }
-         
-         String url = (String) pil.get( currentProxyServer+1 );
-         
-         return new RemoteProxyServer( url );
-    }
+        Log log = LogFactory.getLog(SimpleRouter.class);        
+        log.info( "config=" + config );
+
+        List<String> pul = new ArrayList<String>();
+        pul = (List<String>) config.get("proxy-url-list");
+
+        log.info( "pul=" + pul );
             
+        if( currentProxyServer + 1 == pul.size() ) {
+            currentProxyServer = 0;
+        }
+         
+        String url = (String) pul.get( currentProxyServer + 1 );
+         
+        return new RemoteProxyServer( url );
+    }
 }
