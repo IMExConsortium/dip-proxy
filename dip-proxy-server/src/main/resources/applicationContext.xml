@@ -91,6 +91,8 @@
        <entry key="timeout" value="600"/> <!-- NOTE: default unit seconds -->
        <entry key="ttl" value="14"/>  <!-- NOTE: default unit days --> 
 
+       <entry key="maxRetry" value="3"/>
+
        <entry key="nativeServer"> 
             <ref bean="ebiReferenceServer"/>
         <!--

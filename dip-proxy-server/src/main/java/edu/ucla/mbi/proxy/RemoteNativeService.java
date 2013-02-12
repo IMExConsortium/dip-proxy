@@ -42,7 +42,7 @@ class RemoteNativeService extends Observable {
     //--------------------------------------------------------------------------
         
     //protected RemoteServer selectNextRemoteServer( String provider,
-    protected NativeServer selectNextRemoteServer( String provider,
+    private  NativeServer selectNextRemoteServer( String provider,
                                                    String service,
                                                    String namespace,
                                                    String accession ) {
@@ -72,18 +72,25 @@ class RemoteNativeService extends Observable {
                                                  String ac 
                                                  ) throws ProxyFault {
 
-        int retry = router.getMaxRetry();  
+        int retry = rsc.....getMaxRetry();  
         NativeRecord remoteRecord = null;
         
         log.info( "getNativeFromRemote: retry=" + retry );
         log.info( "getNativeFromRemote: router=" + router );
   
         while ( retry > 0 && remoteRecord == null ) {    
-
+            
             log.info( "getNativeFromRemote: before selectNextRemoteServer. " );
             //RemoteServer rs = 
-            NativeServer nativeServer = 
-                selectNextRemoteServer( provider, service, ns, ac );
+
+            NativeServer nativeServer = null;
+
+            if( rsc.isRemoteProxyOn() && retry > 0 ){
+                nativeServer = router.getNextProxyServer( provider, service,
+                                                          namespace, accession );
+            } else {
+                nativeServer = rsc.getNativeServer();
+            }
 
             log.info( " retries left=" + retry );
             retry--;
@@ -99,7 +106,7 @@ class RemoteNativeService extends Observable {
             } catch( ProxyFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
                           "fault: " + fault.getFaultInfo().getMessage()); 
-                throw fault;      
+                /// throw fault;      
             } catch ( Exception ex ) {
                 log.warn( "getNativeFromRemote: ex=" + ex.toString() );
                 
@@ -107,11 +114,18 @@ class RemoteNativeService extends Observable {
             
             log.info( "getNativeFromRemote: after got remoteRecord=" + 
                       remoteRecord );
+            
+        }
 
-            if( remoteRecord != null ) {      
-                String natXml = remoteRecord.getNativeXml();
+        if( remoteRecord == null ) {
 
-                if( natXml == null || natXml.length() == 0 ) {            
+            // throw fault
+        }
+
+      
+        String natXml = remoteRecord.getNativeXml();
+
+        if( natXml == null || natXml.length() == 0 ) {            
                     // remote site problem
                     // NOTE: should also drop on exception remote exception ???
 
@@ -131,14 +145,18 @@ class RemoteNativeService extends Observable {
                     */
                     //------------------------------------------------------
                     
-                    remoteRecord = null;
+                    //remoteRecord = null;
+                    
+            // throw fault
 
-                } else {
-                    if( remoteRecord.getExpireTime() == null ) {
-                        //*** remoteRecord is newly created from remote native 
-                        remoteRecord.resetExpireTime(        
-                            remoteRecord.getCreateTime(), rsc.getTtl() );
+        }
+        
 
+        if( remoteRecord.getExpireTime() == null ) {
+            //*** remoteRecord is newly created from remote native 
+            remoteRecord.resetExpireTime(        
+                                         remoteRecord.getCreateTime(), rsc.getTtl() );
+            
                         // ---------------------------------------------------
                         // NOTE: temporary hiding for proxy
                         // ---------------------------------------------------
@@ -153,12 +171,9 @@ class RemoteNativeService extends Observable {
                         this.clearChanged();
                         */
                         // -----------------------------------------------------
-                    } 
-                }
-            }
-
+            } 
         }
-
+   
         return remoteRecord;
     }
 
