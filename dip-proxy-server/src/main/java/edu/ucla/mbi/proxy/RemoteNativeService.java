@@ -75,26 +75,25 @@ class RemoteNativeService extends Observable {
         int retry = rsc.getMaxRetry();
         NativeRecord remoteRecord = null;
         ProxyFault retryFault = null;
- 
+        
         while ( retry > 0 && remoteRecord == null ) {    
             
             log.info( "getNativeFromRemote: before selectNextRemoteServer. " );
             log.info( "getNativeFromRemote: retry left=" + retry );
-
+            
             NativeServer nativeServer = null;
-
+                
             retry--;
-
+                
             if( rsc.isRemoteProxyOn() && retry > 0 ) {
                 nativeServer = router.getNextProxyServer( provider, service,
                                                           ns, ac );
             } else {
-                
+                    
                 // last retry or no proxy 
                 
                 nativeServer = rsc.getNativeServer();
             }
-
                 
             try {                
 
@@ -112,6 +111,12 @@ class RemoteNativeService extends Observable {
             
             log.info( "getNativeFromRemote: after got remoteRecord=" + 
                       remoteRecord );
+          
+            if( remoteRecord != null & ! isRecordValid( remoteRecord )){
+            
+                remoteRecord == null;
+                retryFault = FaultFactory.newInstance( Fault.VALIDATION_ERROR );
+            }
             
         }
 
@@ -120,11 +125,12 @@ class RemoteNativeService extends Observable {
                 throw retryFault;
             } 
             return null;
-        }
+         }
 
-        String natXml = remoteRecord.getNativeXml();
+        
+        //String natXml = remoteRecord.getNativeXml();
 
-        if( natXml == null || natXml.length() == 0 ) {            
+        //if( natXml == null || natXml.length() == 0 ) {            
             // remote site problem
             // NOTE: should also drop on exception remote exception ???
 
@@ -145,8 +151,8 @@ class RemoteNativeService extends Observable {
             //------------------------------------------------------
             //remoteRecord = null;
                     
-            throw FaultFactory.newInstance( Fault.VALIDATION_ERROR );
-        }
+        //  throw FaultFactory.newInstance( Fault.VALIDATION_ERROR );
+        // }
         
 
         if( remoteRecord.getExpireTime() == null ) {
@@ -173,4 +179,14 @@ class RemoteNativeService extends Observable {
         return remoteRecord;
     }
 
+    private boolean isRecordValid( NativeRecord record ){
+
+        if( record == null) return false;
+        if( remoteRecord.getNativeXml() == null || 
+            remoteRecord.getNativeXml().length() == 0 ){
+            return false;
+        }
+        return true;
+    }
+        
 }
