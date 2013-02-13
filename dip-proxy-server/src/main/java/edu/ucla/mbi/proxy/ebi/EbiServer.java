@@ -137,7 +137,8 @@ public class EbiServer implements NativeServer {
             throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
         
-
+        // Note: PICR server is DOWN today
+        /*
         //*** call EBI PICR utility
         try{
             AccessionMapperService amSrv =
@@ -154,9 +155,9 @@ public class EbiServer implements NativeServer {
         } catch ( Exception ex ) {
             log.warn( "EbiServer: PICR service initializing failed: "
                       + "reason=" + ex.toString() + "." );
-            throw FaultFactory.newInstance( Fault.UNKNOWN );
+            throw FaultFactory.newInstance( Fault.UNKNOWN ); // temporary hiding
         }
-
+        */
     }
 
     //-------------------------------------------------------------------------

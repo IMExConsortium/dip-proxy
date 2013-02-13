@@ -138,12 +138,8 @@ public class CachingService extends RemoteNativeService {
         //*** valid native record not available here ( null or expired ) 
         //*** retrieve from remote proxy server or native server  
         log.info( "getNative: before getNativeFromRemote. " );
-        try {
-            remoteRecord = getNativeFromRemote ( provider, service, ns, ac );
-        } catch ( ProxyFault fault ) {
-            log.warn( "getNative: getNativeFromRemote fault. " );
-            proxyFault = fault;
-        }
+            
+        remoteRecord = getNativeFromRemote ( provider, service, ns, ac );
 
         if( remoteRecord != null ) {
             Date currentTime = Calendar.getInstance().getTime();

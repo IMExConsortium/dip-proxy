@@ -72,22 +72,22 @@ class RemoteNativeService extends Observable {
                                                  String ac 
                                                  ) throws ProxyFault {
 
-        int retry = rsc.....getMaxRetry();  
+        int retry = rsc.getMaxRetry();
         NativeRecord remoteRecord = null;
-        
+        ProxyFault faultOfRetry = null;
+ 
         log.info( "getNativeFromRemote: retry=" + retry );
-        log.info( "getNativeFromRemote: router=" + router );
   
         while ( retry > 0 && remoteRecord == null ) {    
             
             log.info( "getNativeFromRemote: before selectNextRemoteServer. " );
-            //RemoteServer rs = 
 
             NativeServer nativeServer = null;
 
-            if( rsc.isRemoteProxyOn() && retry > 0 ){
+            //if( rsc.isRemoteProxyOn() && retry > 0 ){
+            if( rsc.isRemoteProxyOn() ) {
                 nativeServer = router.getNextProxyServer( provider, service,
-                                                          namespace, accession );
+                                                          ns, ac );
             } else {
                 nativeServer = rsc.getNativeServer();
             }
@@ -95,8 +95,7 @@ class RemoteNativeService extends Observable {
             log.info( " retries left=" + retry );
             retry--;
                 
-            try {
-                
+            try {                
                 //remoteRecord = rs.getNative( provider, service, ns, ac, 
                 //                             rsc.getTimeout(), retry );
                 log.info( "getNativeFromRemote: before getNative. " );
@@ -106,10 +105,10 @@ class RemoteNativeService extends Observable {
             } catch( ProxyFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
                           "fault: " + fault.getFaultInfo().getMessage()); 
-                /// throw fault;      
+                faultOfRetry = fault;      
             } catch ( Exception ex ) {
                 log.warn( "getNativeFromRemote: ex=" + ex.toString() );
-                
+                faultOfRetry = FaultFactory.newInstance( Fault.UNKNOWN );
             }
             
             log.info( "getNativeFromRemote: after got remoteRecord=" + 
@@ -118,60 +117,58 @@ class RemoteNativeService extends Observable {
         }
 
         if( remoteRecord == null ) {
-
-            // throw fault
+            if( faultOfRetry != null ) {
+                throw faultOfRetry;
+            } 
+            return null;
         }
 
-      
         String natXml = remoteRecord.getNativeXml();
 
         if( natXml == null || natXml.length() == 0 ) {            
-                    // remote site problem
-                    // NOTE: should also drop on exception remote exception ???
+            // remote site problem
+            // NOTE: should also drop on exception remote exception ???
 
-                    // ----------------------------------
-                    // NOTE: temporary hiding for proxy
-                    // -------------------------------
-                    /*
-                    log.info( "getNative: natXml is null/zero length. " );
-                    this.setChanged(); // drop site from DHT
+            // ----------------------------------
+            // NOTE: temporary hiding for proxy
+            // -------------------------------
+            /*
+            log.info( "getNative: natXml is null/zero length. " );
+            this.setChanged(); // drop site from DHT
 
-                    DhtRouterMessage message =
-                        new DhtRouterMessage( DhtRouterMessage.DELETE,
-                                              remoteRecord, nativeServer );
+            DhtRouterMessage message =
+                new DhtRouterMessage( DhtRouterMessage.DELETE,
+                                      remoteRecord, nativeServer );
 
-                    this.notifyObservers( message );
-                    this.clearChanged();
-                    */
-                    //------------------------------------------------------
+            this.notifyObservers( message );
+            this.clearChanged();
+            */
+            //------------------------------------------------------
+            //remoteRecord = null;
                     
-                    //remoteRecord = null;
-                    
-            // throw fault
-
+            throw FaultFactory.newInstance( Fault.VALIDATION_ERROR );
         }
         
 
         if( remoteRecord.getExpireTime() == null ) {
             //*** remoteRecord is newly created from remote native 
-            remoteRecord.resetExpireTime(        
-                                         remoteRecord.getCreateTime(), rsc.getTtl() );
+            remoteRecord.resetExpireTime( remoteRecord.getCreateTime(), 
+                                          rsc.getTtl() );
             
-                        // ---------------------------------------------------
-                        // NOTE: temporary hiding for proxy
-                        // ---------------------------------------------------
-                        /*
-                        this.setChanged(); // update site from DHT
+            // ---------------------------------------------------
+            // NOTE: temporary hiding for proxy
+            // ---------------------------------------------------
+            /*
+            this.setChanged(); // update site from DHT
 
-                        DhtRouterMessage message =
-                            new DhtRouterMessage( DhtRouterMessage.UPDATE,
-                                                  remoteRecord, nativeServer );
+            DhtRouterMessage message =
+                new DhtRouterMessage( DhtRouterMessage.UPDATE,
+                                      remoteRecord, nativeServer );
 
-                        this.notifyObservers( message );
-                        this.clearChanged();
-                        */
-                        // -----------------------------------------------------
-            } 
+            this.notifyObservers( message );
+            this.clearChanged();
+            */
+            // -----------------------------------------------------
         }
    
         return remoteRecord;

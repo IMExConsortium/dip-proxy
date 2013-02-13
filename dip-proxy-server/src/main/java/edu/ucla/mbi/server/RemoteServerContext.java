@@ -21,12 +21,12 @@ import edu.ucla.mbi.proxy.ProxyTransformer;
 
 public class RemoteServerContext {
     
-    private String provider="";
-    private boolean initialized=false;
+    private String provider = "";
+    private boolean initialized = false;
     
-    private int ttl=0;
-    private int timeout=0;
-
+    private int ttl = 0;
+    private int timeout = 0;
+    private int maxRetry = 1;
     private boolean ramCacheOn = true;
     private boolean dbCacheOn = true;
     private boolean monitorOn = true;
@@ -34,7 +34,6 @@ public class RemoteServerContext {
 
     private int debug = 0;
     private Map properties = new HashMap();
-    //private Map<String, RemoteServer> nativeServerMap = new HashMap();
     private NativeServer nativeServer = null;
     private RemoteProxyServer proxyServer = null;
     private Router router = null;
@@ -49,6 +48,10 @@ public class RemoteServerContext {
     
     public int getTtl(){
         return ttl;
+    }
+
+    public int getMaxRetry() {
+        return maxRetry;
     }
 
     public long getTtlMilli(){
@@ -83,10 +86,6 @@ public class RemoteServerContext {
         return ncbiProxyAddress;
     }
 
-    /*
-    public Map<String, RemoteServer> getNativeServerMap(){
-        return nativeServerMap;
-    }*/
     public NativeServer getNativeServer() {
         return nativeServer;
     }
@@ -100,10 +99,12 @@ public class RemoteServerContext {
     public Router createRouter() {
       	return router.createRouter();
     }
+
     // Node: new adding
     public Router getRouter() {
         return router;
     }
+
     // --------------------------------------
     public void setProperty( String name, Object value ) {
 	    properties.put(name,value);
@@ -117,11 +118,6 @@ public class RemoteServerContext {
         return serviceSet;
     }
 
-    /*
-    public void setNativeServerMap( Map<String, RemoteServer> nativeMap ) {
-        this.nativeServerMap = nativeMap;
-    } */
-
 
     public void init( String provider ) {
        	Log log = LogFactory.getLog( RemoteServerContext.class );
@@ -131,42 +127,44 @@ public class RemoteServerContext {
 
         this.provider = provider;
 	
-        Map context = WSContext.getProvider( provider );
+        Map<String, Object> context = WSContext.getProvider( provider );
         
-        log.info( "  timeout=" + context.get( "timeout" ) );
         timeout = (Integer) context.get( "timeout" );
-	
-        log.info( "  ttl=" + context.get( "ttl" ) );
+        log.info( "  timeout=" + timeout );
+
         ttl = (Integer) context.get( "ttl" );
-        
-        log.info( "  ramCacheOn=" + context.get( "ramCacheOn" ) );
+        log.info( "  ttl=" + ttl );  
+ 
+        maxRetry = Integer.parseInt( (String)context.get( "maxRetry" ) );
+        log.info( "  maxRetry=" + maxRetry );
+ 
         ramCacheOn = (Boolean) context.get( "ramCacheOn" );
+        log.info( "  ramCacheOn=" + ramCacheOn );
         
-        log.info( "  dbCacheOn=" + context.get( "dbCacheOn" ) );
         dbCacheOn = (Boolean) context.get( "dbCacheOn" );
+        log.info( "  dbCacheOn=" + dbCacheOn );
         
-        log.info( "  remoteProxyOn=" + context.get( "remoteProxyOn" ) );
         remoteProxyOn = (Boolean) context.get( "remoteProxyOn" );
+        log.info( "  remoteProxyOn=" + remoteProxyOn );
         
-        log.info( "  monitorOn=" + context.get( "monitorOn" ) );
         monitorOn = (Boolean) context.get( "monitorOn" );
+        log.info( "  monitorOn=" + monitorOn );
         
-        log.info( "  debug=" + context.get( "debug" ) );
         debug = (Integer) context.get( "debug" );
+        log.info( "  debug=" + debug );
         
         log.info( "  servers:" );
         
-        //nativeServerMap = (Map<String, RemoteServer>) context.get( "nativeServer" );
         nativeServer = (NativeServer) context.get( "nativeServer" );
         ncbiProxyAddress = (String) context.get( "ncbiProxyAddress" );       
  
         serviceSet = (Set) context.get( "serviceSet" );
         
-        log.info( "   proxyProto=" + context.get( "proxyProto" ) );
         proxyServer = (RemoteProxyServer) context.get( "proxyProto" );
+        log.info( "   proxyProto=" + proxyServer );
         
-        log.info( "   router=" + context.get( "router" ) );
         router = (Router) context.get( "router" );
+        log.info( "   router=" + router );
         
         if( router != null ){
             router.setRemoteServerContext( this );
