@@ -4,7 +4,7 @@
   <groupId>edu.ucla.mbi.dip</groupId>
   <artifactId>dip-proxy</artifactId>
   <packaging>pom</packaging>
-  <version>0.03</version>
+  <version>0.04</version>
   <name>dip-proxy</name>
   <url>http://dip.mbi.ucla.edu</url>
 

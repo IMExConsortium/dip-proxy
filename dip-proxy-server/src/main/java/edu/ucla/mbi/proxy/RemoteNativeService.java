@@ -74,7 +74,7 @@ class RemoteNativeService extends Observable {
 
         int retry = rsc.getMaxRetry();
         NativeRecord remoteRecord = null;
-        ProxyFault faultOfRetry = null;
+        ProxyFault retryFault = null;
  
         while ( retry > 0 && remoteRecord == null ) {    
             
@@ -83,14 +83,18 @@ class RemoteNativeService extends Observable {
 
             NativeServer nativeServer = null;
 
-            if( rsc.isRemoteProxyOn() ) {
+            retry--;
+
+            if( rsc.isRemoteProxyOn() && retry > 0 ) {
                 nativeServer = router.getNextProxyServer( provider, service,
                                                           ns, ac );
             } else {
+                
+                // last retry or no proxy 
+                
                 nativeServer = rsc.getNativeServer();
             }
 
-            retry--;
                 
             try {                
 
@@ -100,10 +104,10 @@ class RemoteNativeService extends Observable {
             } catch( ProxyFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
                           "fault: " + fault.getFaultInfo().getMessage()); 
-                faultOfRetry = fault;      
+                retryFault = fault;      
             } catch ( Exception ex ) {
                 log.warn( "getNativeFromRemote: ex=" + ex.toString() );
-                faultOfRetry = FaultFactory.newInstance( Fault.UNKNOWN );
+                retryFault = FaultFactory.newInstance( Fault.UNKNOWN );
             }
             
             log.info( "getNativeFromRemote: after got remoteRecord=" + 
@@ -112,8 +116,8 @@ class RemoteNativeService extends Observable {
         }
 
         if( remoteRecord == null ) {
-            if( faultOfRetry != null ) {
-                throw faultOfRetry;
+            if( retryFault != null ) {
+                throw retryFault;
             } 
             return null;
         }
