@@ -76,15 +76,13 @@ class RemoteNativeService extends Observable {
         NativeRecord remoteRecord = null;
         ProxyFault faultOfRetry = null;
  
-        log.info( "getNativeFromRemote: retry=" + retry );
-  
         while ( retry > 0 && remoteRecord == null ) {    
             
             log.info( "getNativeFromRemote: before selectNextRemoteServer. " );
+            log.info( "getNativeFromRemote: retry left=" + retry );
 
             NativeServer nativeServer = null;
 
-            //if( rsc.isRemoteProxyOn() && retry > 0 ){
             if( rsc.isRemoteProxyOn() ) {
                 nativeServer = router.getNextProxyServer( provider, service,
                                                           ns, ac );
@@ -92,16 +90,13 @@ class RemoteNativeService extends Observable {
                 nativeServer = rsc.getNativeServer();
             }
 
-            log.info( " retries left=" + retry );
             retry--;
                 
             try {                
-                //remoteRecord = rs.getNative( provider, service, ns, ac, 
-                //                             rsc.getTimeout(), retry );
-                log.info( "getNativeFromRemote: before getNative. " );
+
                 remoteRecord = nativeServer.getNative( 
                     provider, service, ns, ac, rsc.getTimeout() );
-                log.info( "getNativeFromRemote: after getNative. " );
+
             } catch( ProxyFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
                           "fault: " + fault.getFaultInfo().getMessage()); 
