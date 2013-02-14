@@ -137,8 +137,6 @@ public class EbiServer implements NativeServer {
             throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
         
-        // Note: PICR server is DOWN today
-        /*
         //*** call EBI PICR utility
         try{
             AccessionMapperService amSrv =
@@ -157,7 +155,6 @@ public class EbiServer implements NativeServer {
                       + "reason=" + ex.toString() + "." );
             throw FaultFactory.newInstance( Fault.UNKNOWN ); // temporary hiding
         }
-        */
     }
 
     //-------------------------------------------------------------------------

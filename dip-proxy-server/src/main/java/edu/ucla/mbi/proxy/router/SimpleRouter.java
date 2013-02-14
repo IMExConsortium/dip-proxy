@@ -129,7 +129,7 @@ public class SimpleRouter implements Router {
     }
     
      
-    int currentProxyServer = -1;
+    private static int currentProxyServer = -1;
     
     public NativeServer getNextProxyServer( String provider,
                                             String service,
@@ -141,15 +141,17 @@ public class SimpleRouter implements Router {
 
         List<String> pul = new ArrayList<String>();
         pul = (List<String>) config.get("proxy-url-list");
+        
 
         log.info( "pul=" + pul );
-            
+        log.info( "currentProxyServer=" + currentProxyServer );
+              
         if( currentProxyServer + 1 == pul.size() ) {
-            currentProxyServer = 0;
+            currentProxyServer = -1;
         }
          
-        String url = (String) pul.get( currentProxyServer + 1 );
-         
+        String url = (String) pul.get( ++currentProxyServer );
+                 
         return new RemoteProxyServer( url );
     }
 }

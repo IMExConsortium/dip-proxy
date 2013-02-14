@@ -78,25 +78,26 @@ class RemoteNativeService extends Observable {
         
         while ( retry > 0 && remoteRecord == null ) {    
             
-            log.info( "getNativeFromRemote: before selectNextRemoteServer. " );
-            log.info( "getNativeFromRemote: retry left=" + retry );
-            
-            NativeServer nativeServer = null;
-                
+            NativeServer nativeServer = null;                
             retry--;
-                
+
+            log.info( "getNativeFromRemote: retry left=" + retry );
+            log.info( "getNativeFromRemote: before selectNextRemoteServer. " );    
+
             if( rsc.isRemoteProxyOn() && retry > 0 ) {
+                
                 nativeServer = router.getNextProxyServer( provider, service,
                                                           ns, ac );
+                log.info( "getNativeFromRemote: nativeServer came from proxy. " );
             } else {
                     
-                // last retry or no proxy 
-                
+                //*** last retry or no proxy 
                 nativeServer = rsc.getNativeServer();
+                log.info( "getNativeFromRemote: nativeServer came from native. " );
+                
             }
                 
             try {                
-
                 remoteRecord = nativeServer.getNative( 
                     provider, service, ns, ac, rsc.getTimeout() );
 
@@ -112,9 +113,8 @@ class RemoteNativeService extends Observable {
             log.info( "getNativeFromRemote: after got remoteRecord=" + 
                       remoteRecord );
           
-            if( remoteRecord != null & ! isRecordValid( remoteRecord )){
-            
-                remoteRecord == null;
+            if( remoteRecord != null && !isRecordValid( remoteRecord ) ) {
+                remoteRecord = null;
                 retryFault = FaultFactory.newInstance( Fault.VALIDATION_ERROR );
             }
             
@@ -179,11 +179,11 @@ class RemoteNativeService extends Observable {
         return remoteRecord;
     }
 
-    private boolean isRecordValid( NativeRecord record ){
+    private boolean isRecordValid( NativeRecord record ) {
 
-        if( record == null) return false;
-        if( remoteRecord.getNativeXml() == null || 
-            remoteRecord.getNativeXml().length() == 0 ){
+        if( record.getNativeXml() == null 
+            || record.getNativeXml().length() == 0 ) {
+
             return false;
         }
         return true;

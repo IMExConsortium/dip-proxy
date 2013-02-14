@@ -207,6 +207,9 @@ public class RemoteProxyServer implements NativeServer {
                 throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
             } else if ( e.toString().contains( "Read timed out" ) ) {
                 throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT ); // timeout
+            } else if( e.toString().contains( 
+                        "ConnectException: Connection refused" ) ) {
+                throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); //remote down
             } else {
                 throw FaultFactory.newInstance( Fault.UNKNOWN ); // unknown
             }
