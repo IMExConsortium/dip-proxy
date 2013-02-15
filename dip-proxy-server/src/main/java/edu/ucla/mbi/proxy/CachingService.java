@@ -81,9 +81,9 @@ public class CachingService extends RemoteNativeService {
             try {
                 memcachedRec = (NativeRecord)mcClient.fetch( memcachedId );
             } catch ( Exception ex ) {
-                log.warn ( "FAULT " + Fault.CACHE_FAULT + ":" +
-                           Fault.getMessage( Fault.CACHE_FAULT ) +
-                           ":" + ex.toString() );
+                //log.warn ( "FAULT " + Fault.CACHE_FAULT + ":" +
+                //           Fault.getMessage( Fault.CACHE_FAULT ) +
+                //           ":" + ex.toString() );
             }
 
             log.info( "getNative: memcachedRec=" + memcachedRec );
@@ -256,9 +256,9 @@ public class CachingService extends RemoteNativeService {
             try {
                 memcachedRec = (DxfRecord)mcClient.fetch( memcachedId );
             } catch ( Exception ex ) {
-                log.warn ( "FAULT " + Fault.CACHE_FAULT + 
-                           ":" + Fault.getMessage( Fault.CACHE_FAULT ) + 
-                           ":" + ex.toString() );
+                //log.warn ( "FAULT " + Fault.CACHE_FAULT + 
+                //           ":" + Fault.getMessage( Fault.CACHE_FAULT ) + 
+                //           ":" + ex.toString() );
             }
         
             log.info( "getDxf: memcachedRec=" + memcachedRec );
@@ -435,9 +435,9 @@ public class CachingService extends RemoteNativeService {
         try {
             mcClient.store( memcachedId, record );
         } catch ( Exception ex ) {
-            log.warn ( "FAULT " + Fault.CACHE_FAULT + ":" +
-                       Fault.getMessage( Fault.CACHE_FAULT ) +
-                       ":" + ex.toString() );
+            //log.warn ( "FAULT " + Fault.CACHE_FAULT + ":" +
+            //           Fault.getMessage( Fault.CACHE_FAULT ) +
+            //           ":" + ex.toString() );
         }
     }
 

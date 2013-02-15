@@ -44,12 +44,11 @@ public class DhtRouterStatus {
                                                  String namespace,
                                                  String accession ){
         
-        ID id = dhtRouter.getRecordID( provider, service,
-                                       namespace, accession );
-        return dhtRouter.getDhtRouterList( id );
+        return dhtRouter.getDhtRouterList( provider, service,
+                                           namespace, accession );
     }
     
-    public List<DhtRouterList> getDhtRouterList( ID rid ){
-        return dhtRouter.getDhtRouterList( rid );
-    }
+    //public List<DhtRouterList> getDhtRouterList( ID rid ){
+    //    return dhtRouter.getDhtRouterList( rid );
+    //}
 }

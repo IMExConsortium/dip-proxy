@@ -172,51 +172,51 @@ public class WSContext{
 		        ttl = String.valueOf( DEFAULT_TTL );
 	        }
 	         
-            ( (Map) services.get( service ) ).put( "ttl", intTtl );
-	    
-
+                ( (Map) services.get( service ) ).put( "ttl", intTtl );
+                
+                
 	        // Remote Service Timeout
 	        //-----------------------
-
+                
 	        String timeout =
-		        (String) ( (Map) services.get( service ) ).get( "timeout" );
+                    (String) ( (Map) services.get( service ) ).get( "timeout" );
 	    
 	        int intTimeout = DEFAULT_TIMEOUT;
 	        if( timeout != null ) {
-                if ( timeout.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
-		            try {
-                        // detault units: seconds
-			            intTimeout = Integer.parseInt( timeout );
-			            // convert to miliseconds
-                        intTimeout = intTimeout*1000; 
-                    } catch( NumberFormatException nfe ) {
-                        log.info( "ProxyWS: timeout=" + timeout +
-				                  " :format error. Using default." );
+                    if ( timeout.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
+                        try {
+                            // detault units: seconds
+                            intTimeout = Integer.parseInt( timeout );
+                            // convert to miliseconds
+                            intTimeout = intTimeout*1000; 
+                        } catch( NumberFormatException nfe ) {
+                            log.info( "ProxyWS: timeout=" + timeout +
+                                      " :format error. Using default." );
+                    }
+                    } else {
+                        log.info("ProxyWS: timeout=" + timeout +
+                                 " :unknown units/format. Using default.");
+                        timeout=String.valueOf(DEFAULT_TIMEOUT);
                     }
                 } else {
-                    log.info("ProxyWS: timeout=" + timeout +
-                             " :unknown units/format. Using default.");
-		            timeout=String.valueOf(DEFAULT_TIMEOUT);
+                    log.info( "ProxyWS: ttl not specified: Using default." );
+                    timeout=String.valueOf( DEFAULT_TIMEOUT );
                 }
-            } else {
-                log.info( "ProxyWS: ttl not specified: Using default." );
-		        timeout=String.valueOf( DEFAULT_TIMEOUT );
-            }
-	    
-	        ( (Map) services.get( service ) ).put( "timeout", intTimeout );
-	    
+                
+                ( (Map) services.get( service ) ).put( "timeout", intTimeout );
+                
 	        log.info( "ProxyWS:  " + service + " (ttl: " + ttl + " days; " +
 		              "timeout=" + timeout + " s)" );
-	    
+                
 
 	        // ramCache flag
-            //------------
+                //------------
 
-            String ramCacheOn =
-                (String) ( (Map) services.get( service ) ).get( "ramCache" );
-            boolean isRamCacheOn = true;
-	    
-            if ( ramCacheOn != null ) {
+                String ramCacheOn =
+                    (String) ( (Map) services.get( service ) ).get( "ramCache" );
+                boolean isRamCacheOn = true;
+                
+                if ( ramCacheOn != null ) {
                 if ( ramCacheOn.equalsIgnoreCase( "true" ) ||
                      ramCacheOn.equalsIgnoreCase( "on" ) ||
                      ramCacheOn.equalsIgnoreCase( "yes" )) {
@@ -353,13 +353,13 @@ public class WSContext{
             //RemoteProxyServer proxyProto = 
             //    (RemoteProxyServer) ( (Map) services.get( service ) ).get( "proxyProto" );
             
-            RemoteServer proxyProto =         
-                (RemoteServer) ( (Map) services.get( service ) ).get( "proxyProto" );
+            NativeServer proxyProto =         
+                (NativeServer) ( (Map) services.get( service ) ).get( "proxyProto" );
             ( (Map) services.get( service ) ).put( "proxyProto", proxyProto );
 
-
-	        // router
-	        //-------
+            
+            // router
+            //-------
 
             Router router = 
                 (Router) ( (Map) services.get( service ) ).get( "router" );

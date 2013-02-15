@@ -21,7 +21,7 @@ import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.server.*;
 
-class RemoteNativeService extends Observable {
+class RemoteNativeService { // extends Observable {
 
     private Log log = LogFactory.getLog( RemoteNativeService.class );
 
@@ -34,7 +34,12 @@ class RemoteNativeService extends Observable {
                                    RemoteServerContext rsc ) {
         this.provider = provider;
         this.router = router;
+
+        log.info( " adding observer..." );
+        this.addObserver( router );
+        
         this.rsc = rsc;
+
     }
     
     protected RemoteNativeService() { }
@@ -120,6 +125,8 @@ class RemoteNativeService extends Observable {
             
         }
 
+        
+
         if( remoteRecord == null ) {
             if( retryFault != null ) {
                 throw retryFault;
@@ -127,13 +134,15 @@ class RemoteNativeService extends Observable {
             return null;
          }
 
+        log.info( "valid record="+ remoteRecord);
+
+        // valid record when here
+        //-----------------------
         
-        //String natXml = remoteRecord.getNativeXml();
-
-        //if( natXml == null || natXml.length() == 0 ) {            
-            // remote site problem
-            // NOTE: should also drop on exception remote exception ???
-
+        
+        //  remote site problem
+        //  NOTE: should also drop on exception remote exception ???
+               
             // ----------------------------------
             // NOTE: temporary hiding for proxy
             // -------------------------------
@@ -154,28 +163,30 @@ class RemoteNativeService extends Observable {
         //  throw FaultFactory.newInstance( Fault.VALIDATION_ERROR );
         // }
         
-
         if( remoteRecord.getExpireTime() == null ) {
+            
             //*** remoteRecord is newly created from remote native 
+            
             remoteRecord.resetExpireTime( remoteRecord.getCreateTime(), 
                                           rsc.getTtl() );
-            
-            // ---------------------------------------------------
-            // NOTE: temporary hiding for proxy
-            // ---------------------------------------------------
-            /*
-            this.setChanged(); // update site from DHT
+        }    
+         
+        //this.setChanged(); // update site from DHT
+        
 
-            DhtRouterMessage message =
-                new DhtRouterMessage( DhtRouterMessage.UPDATE,
-                                      remoteRecord, nativeServer );
 
-            this.notifyObservers( message );
-            this.clearChanged();
-            */
-            // -----------------------------------------------------
-        }
-   
+        DhtRouterMessage message =
+            new DhtRouterMessage( DhtRouterMessage.UPDATE,
+                                  remoteRecord, null );
+
+        log.info( "DhtRouterMessage: " + message );
+        
+        this.notifyObservers( message );
+
+        //this.clearChanged();
+        
+        //log.info( "change flag: " + this.hasChanged() ); 
+        
         return remoteRecord;
     }
 
@@ -188,5 +199,25 @@ class RemoteNativeService extends Observable {
         }
         return true;
     }
-        
+    
+    private List<Router> observerList = new ArrayList<Router>();
+    
+    public void addObserver( Router router ){
+        observerList.add( router );
+    }
+
+
+    public void notifyObservers( Object arg){
+
+        for(Iterator<Router> io = observerList.iterator(); io.hasNext(); ){
+            
+            Router r = io.next();
+
+            log.info("updating router="+ r);
+            r.update( this, arg );
+
+        }
+
+    }
+   
 }

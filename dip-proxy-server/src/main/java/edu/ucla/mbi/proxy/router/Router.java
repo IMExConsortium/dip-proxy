@@ -22,19 +22,23 @@ import edu.ucla.mbi.proxy.RemoteServer;
 
 import edu.ucla.mbi.proxy.NativeServer;
 
-public interface Router extends Observer {
+public interface Router{ //  extends Observer {
 
     public Router createRouter();
     
     public void setRemoteServerContext( RemoteServerContext rsc );
     public RemoteServerContext getRemoteServerContext();
     
-    public RemoteServer getNativeServer( String service );
+    public NativeServer getNativeServer( String service );
 
-    public RemoteServer getLastProxyServer( String service );
+    public NativeServer getLastProxyServer( String service );
 
-    public RemoteServer getNextProxyServer( String service );
+    public NativeServer getNextProxyServer( String service );
 
+
+
+    public void setMaxRetry( int retry );
+    public int getMaxRetry();
 
 
     //--------------------------------------------------------------------------
@@ -46,7 +50,6 @@ public interface Router extends Observer {
                                             String accession );
     //,String operation );
 
-    public void setMaxRetry( int retry );
-    public int getMaxRetry();
-
+    public void update( Object observer, Object arg );
+  
 }

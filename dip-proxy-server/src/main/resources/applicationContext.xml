@@ -96,15 +96,14 @@
             <ref bean="ebiReferenceServer"/>
        </entry>      
       
-       <!-- 
        <entry key="proxyProto"> 
         <ref bean="referenceProxy"/>
        </entry>      
-       -->
+    
 
        <entry key="router">
-<!--        <ref bean="ebiDhtRouter"/>  -->
-        <ref bean="ebiSimpleRouter"/> 
+        <ref bean="ebiDhtRouter"/> 
+<!--        <ref bean="ebiSimpleRouter"/>  -->
        </entry>
         
        <entry key="ramCache" value="off"/>

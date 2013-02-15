@@ -105,8 +105,8 @@ public class SimpleRouter implements Router {
     // observer intereface
     //--------------------
 
-    public void update( Observable o, Object arg ) {
-
+    public void update( Object observer, Object arg ) {
+        // nothing to do
     }
     
 

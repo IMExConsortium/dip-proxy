@@ -17,7 +17,7 @@ import java.net.InetAddress;
 import java.util.Calendar;
 
 import edu.ucla.mbi.proxy.*;
-import edu.ucla.mbi.cache.Record;
+import edu.ucla.mbi.cache.NativeRecord;
 
 public class DhtRouterMessage implements Serializable {
 
@@ -25,12 +25,12 @@ public class DhtRouterMessage implements Serializable {
     public static final int DELETE = 1;
 
     private int msg = -1;
-    Record record = null;
-    RemoteServer server = null;
+    NativeRecord record = null;
+    NativeServer server = null;
 
-    public DhtRouterMessage( int msg, Record record, 
-                             RemoteServer server ) {
-                             
+    public DhtRouterMessage( int msg, NativeRecord record, 
+                             NativeServer server ) {
+        
         this.msg = msg;
         this.record = record;
         this.server = server;
@@ -40,11 +40,11 @@ public class DhtRouterMessage implements Serializable {
         return msg;
     }
 
-    public Record getRecord() {
+    public NativeRecord getRecord() {
         return record;
     }
 
-    public RemoteServer getRemoteServer() {
+    public NativeServer getNativeServer() {
         return server;
     }
     

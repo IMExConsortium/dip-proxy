@@ -187,6 +187,8 @@ public class Dht {
             // set port
             //---------
 
+            log.info( "  DHTConfiguration: port=" + Integer.parseInt( proxyPort ) );
+
             dhtc.setSelfPort( Integer.parseInt( proxyPort ) );
             dhtc.setContactPort( Integer.parseInt( proxyPort ) );
             
@@ -195,55 +197,64 @@ public class Dht {
 
             dhtc.setDoUPnPNATTraversal( false );
 
-            // use TCP
-            //--------
+            // use UDP (default)
+            //------------------
 
-            dhtc.setMessagingTransport( "TCP" );
+            dhtc.setMessagingTransport( "UDP" );
 
             // set routing algorithm
             //----------------------
 
+            log.info( "  DHTConfiguration: RoutingAlgorithm=" +  routingAlg );
+            
             dhtc.setRoutingAlgorithm( routingAlg );
             
             proxyDht = DHTFactory.getDHT( dhtc, proxyId );
+                        
+            // join overlay
+            //-------------
 
+            log.info( " joining overlay" );
 
-            if ( overlayMode.equalsIgnoreCase( "networked" ) ) {
-                log.info( " joining overlay" );
-                // join overlay
-                //-------------
-
-                MessagingAddress ma = null;
-                InetAddress localAddress = null;
-                try {
-                    localAddress = InetAddress.getLocalHost();
-                } catch (UnknownHostException e) {
-                    log.info( " should not happen " );
-                    
-                }
+            MessagingAddress ma = null;
+            InetAddress localAddress = null;
+            try {
+                localAddress = InetAddress.getLocalHost();
+            } catch( UnknownHostException e ){
+                log.info( " should not happen " );                
+            }
                 
+            for( Iterator<String> i = bootServers.iterator(); 
+                 i.hasNext(); ) {
+                
+                String bootHost = i.next();
 
-                for( Iterator<String> i = bootServers.iterator(); 
-                     i.hasNext(); ) {
+                log.info( "  local host=" +
+                          localAddress.getHostAddress() );
+
+                //--------------------------------------------------------------
                     
-                    String bootHost = i.next();
-                    log.info( "  trying boothost=" + bootHost + 
-                              ":" + proxyPort );
-                    //----------------------------------------------------------
+                if ( ( overlayMode.equalsIgnoreCase( "local" ) &&
+                       bootHost.equals( localAddress.getHostAddress() ) ) || 
+                     overlayMode.equalsIgnoreCase( "networked" ) ){
 
-                    if ( !bootHost.equals( localAddress.getHostAddress() ) ) {
-                        try {
-                            ma = proxyDht
-                                .joinOverlay( bootHost 
-                                              + ":" + proxyPort,  
-                                              Integer.parseInt( proxyPort ) );
-                            log.info( "overlay joined (MessagingAddress=" + 
-                                      ma + ")" );
-                            break;
+                    log.info( "  trying boothost=" + 
+                              bootHost + ":" + proxyPort );
+                    
+                    try {
+                        ma = proxyDht
+                            .joinOverlay( bootHost 
+                                          + ":" + proxyPort,  
+                                          Integer.parseInt( proxyPort ) );
+                        log.info( "overlay joined (MessagingAddress=" + 
+                                  ma + ")" );
+                        break;
                         } catch ( ow.routing.RoutingException re ) {
-                            log.info( "   routing exception: " + re );
-                        }                 
-                    }
+                        log.info( "   routing exception: " + re );
+                    }                 
+                } else {
+                    log.info( "  skipping (non-local) boothost=" + 
+                              bootHost + ":" + proxyPort );
                 }
             } 
             
@@ -297,13 +308,18 @@ public class Dht {
 
         Set<ValueInfo<DhtRouterList>> val = null;
         RemoteServer remote = null;
-        
+
         try {
             val = proxyDht.get(rid);
         } catch( RoutingException re ) {
-            log.info( "  routing exception" );
+            log.info( "  UpdateItem: routing exception" + re.toString() );
+            re.printStackTrace();
+        } catch( Exception ex ) {
+            log.info( "UpdateItem: generic exception" + ex.toString() );
+            ex.printStackTrace();
         }
-        log.info( " got val..." );
+        
+        log.info( " got val=" + val );
         boolean newFlag = true;
         
         if ( val != null && val.size() > 0 ) {
@@ -357,7 +373,7 @@ public class Dht {
                 proxyDht.put( rid, dpl );
             } catch ( Exception e ) {
                 log.info( "dht exception:" + e.toString() );
-            }
+            } 
         }
         log.info( "update(UPDATE): done" );
     }
@@ -425,10 +441,15 @@ public class Dht {
        
         try {
             dhtRec = proxyDht.get(rid);
-            
         } catch( RoutingException re ) {
-            log.info( "  routing exception" );
+            log.info( "  routing exception" + re.toString() );
+            re.printStackTrace();
+        } catch( Exception ex ){
+            log.info( "  exception" + ex.toString() );
+            ex.printStackTrace();
         }
+        
+        log.info( "  DHT Record(s) retieved=" + dhtRec );
         
         if( dhtRec != null && dhtRec.size() > 0 ){
             
@@ -450,6 +471,8 @@ public class Dht {
                     DhtRouterItem item = pi.next();
                     
                     log.info( "   item=" + item.toString() );
+                    log.info( "   item.ExpireTime=" + item.getExpireTime() );
+                    log.info( "   item.CreateTime=" + item.getCreateTime());
                     
                     if ( item.getExpireTime() > lastExpire ){
                         lastExpire = item.getExpireTime();
@@ -463,7 +486,7 @@ public class Dht {
                 }
             }
         }
-       
+        log.info( "   return addres=" + lastExUrl );
         return lastExUrl;
     }   
 
@@ -488,7 +511,9 @@ public class Dht {
         try {
             dhtRec = proxyDht.get(rid);  
         }catch( RoutingException re ) {
-            log.info( "  routing exception" );
+            log.info( "  routing exception "+ re.toString() );
+        } catch( Exception ex ) {
+            log.info( "  routing exception "+ ex.toString() );
         }
         
         if( dhtRec != null && dhtRec.size() > 0 ){
