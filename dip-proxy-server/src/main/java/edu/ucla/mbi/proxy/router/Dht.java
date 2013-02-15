@@ -237,7 +237,9 @@ public class Dht {
                 if ( ( overlayMode.equalsIgnoreCase( "local" ) &&
                        bootHost.equals( localAddress.getHostAddress() ) ) || 
                      overlayMode.equalsIgnoreCase( "networked" ) ){
-
+                    
+                    // NOTE: need fixing !!!
+  
                     log.info( "  trying boothost=" + 
                               bootHost + ":" + proxyPort );
                     
