@@ -24,6 +24,7 @@ import java.io.*;
 import java.util.*;
 import java.math.BigInteger;
 
+import edu.ucla.mbi.server.WSContext;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.*;
 
@@ -81,7 +82,12 @@ public class Dht {
         if ( mode != null ){
             if ( mode.equalsIgnoreCase( "networked" ) ) {
                 overlayMode = "networked";
-            } else if ( mode.equalsIgnoreCase( "local" ) ) {
+            } 
+            /*
+            else if ( mode.equalsIgnoreCase( "local" ) ) {
+                overlayMode = "local";
+            }*/
+            else {
                 overlayMode = "local";
             }
             log.info(   "overlay mode= " + overlayMode );
@@ -104,6 +110,12 @@ public class Dht {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "initializing(mode=" + routingAlg +")" );
         log.info( " boot servers=" + bootServers);
+
+        if( proxyPort == null ) {
+            proxyPort = Integer.toString( WSContext.getPort() );
+        }
+
+        log.info( "proxyPort=" + proxyPort );
 
         //String proxyHost  = null;
         String proxyTime  = null;
@@ -223,17 +235,36 @@ public class Dht {
             } catch( UnknownHostException e ){
                 log.info( " should not happen " );                
             }
-                
-            for( Iterator<String> i = bootServers.iterator(); 
-                 i.hasNext(); ) {
-                
-                String bootHost = i.next();
 
-                log.info( "  local host=" +
+            // ------------------------------------------------
+            // Node: new adding
+
+            //*** overlay mode whatever is "local|networked"
+            if( bootServers.contains( localAddress.getHostAddress() ) ) {
+                try {
+                    ma = proxyDht.joinOverlay( 
+                            localAddress.getHostAddress() + ":" + proxyPort,  
+                            Integer.parseInt( proxyPort ) );
+
+                    log.info( "overlay joined (MessagingAddress=" + 
+                              ma + ")" );
+                        
+                } catch ( ow.routing.RoutingException re ) {
+                    log.info( "   routing exception: " + re );
+                }
+            }                 
+            
+            /*    
+            for( Iterator<String> i = bootServers.iterator(); 
+                     i.hasNext(); ) {
+                
+                    String bootHost = i.next();
+
+                    log.info( "  local host=" +
                           localAddress.getHostAddress() );
 
                 //--------------------------------------------------------------
-                    
+                 
                 if ( ( overlayMode.equalsIgnoreCase( "local" ) &&
                        bootHost.equals( localAddress.getHostAddress() ) ) || 
                      overlayMode.equalsIgnoreCase( "networked" ) ){
@@ -251,15 +282,14 @@ public class Dht {
                         log.info( "overlay joined (MessagingAddress=" + 
                                   ma + ")" );
                         break;
-                        } catch ( ow.routing.RoutingException re ) {
+                    } catch ( ow.routing.RoutingException re ) {
                         log.info( "   routing exception: " + re );
                     }                 
                 } else {
                     log.info( "  skipping (non-local) boothost=" + 
                               bootHost + ":" + proxyPort );
                 }
-            } 
-            
+            } */    
         } catch( Exception e ){
             e.printStackTrace();
         }

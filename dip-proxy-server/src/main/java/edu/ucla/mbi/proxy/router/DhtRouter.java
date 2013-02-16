@@ -254,21 +254,28 @@ public class DhtRouter implements Router {
         
         String lastAddress = proxyDht.getLastAddress( rid );
         
-        log.info( "lstAddress=" + lastAddress );
+        log.info( "lastAddress=" + lastAddress );
 
-        String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
+        //---------------------------------------------------------------------
+        //Node: new changing
+
+        //String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
+        String url = proxyDht.getProxyHost() + ":" + proxyDht.getProxyPort();
         //String url = rsc.getProxyProto().getAddress() + ":" + WSContext.getPort();
+
+        //--------------------------------------------------------------------------
 
         log.info( "url="+ url );
 
         String localAddress = rsc.getProxyProto().getAddress();
         localAddress = localAddress.replaceAll( "%%URL%%", url );
 
-        log.info( "lclAddress=" + localAddress );
+        log.info( "localAddress=" + localAddress );
         
         if ( lastAddress != null && 
              ! ( lastAddress.equals( localAddress ) ) ) {
-            
+           
+            log.info( "lastAddress not equals localAddress. " ); 
             RemoteProxyServer remoteProxy =
                 rsc.getProxyProto().getRemoteProxyServerInstance();
             remoteProxy.setAddress( lastAddress );
@@ -282,6 +289,7 @@ public class DhtRouter implements Router {
             //}
             
         } else {
+            log.info( "lastAddress equals localAddress. " );
             remote = rsc.getNativeServer();
             //remote = (NativeServer) rsc.getNativeServer();
             log.info( "   remote==native " + remote );

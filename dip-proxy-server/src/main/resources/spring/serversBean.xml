@@ -23,9 +23,12 @@
     <value>Chord</value>
   </property>
 
+  
   <property name="proxyPort">
-    <value>55666</value>
+    <!--<value>55666</value> -->
+    <value>8080</value>
   </property>
+  
 
   <property name="bootServers">
     <list>
