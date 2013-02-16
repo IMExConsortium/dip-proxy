@@ -1,9 +1,9 @@
 package edu.ucla.mbi.proxy;
 
 /*==============================================================================
- * $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/src/main/ja#$
- * $Id:: RemoteNativeServer.java 2679 2012-08-30 01:49:50Z wyu                 $
- * Version: $Rev:: 2679                                                        $
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
  *==============================================================================
  *
  * RemoteServerImpl:

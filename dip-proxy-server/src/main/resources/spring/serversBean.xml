@@ -22,14 +22,11 @@
   <property name="routingAlgorithm">
     <value>Chord</value>
   </property>
-
   
-  <property name="proxyPort">
-    <!--<value>55666</value> -->
-    <value>8080</value>
+  <property name="dhtPort">
+    <value>55666</value>    
   </property>
   
-
   <property name="bootServers">
     <list>
      <value>10.1.200.201</value>
@@ -60,12 +57,7 @@
      </entry>
     </map>
   </property>
-
-  <property name="maxRetry">
-    <value>3</value>
-  </property>
  </bean>
-
 
  <bean id="ebiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
@@ -73,15 +65,9 @@
   </property>
  </bean>
 
-
-
  <bean id="ncbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
-  </property>
-
-  <property name="maxRetry">
-    <value>3</value>
   </property>
  </bean>
 
@@ -89,29 +75,17 @@
   <property name="dht">
    <ref bean="dht"/>
   </property>
-
-  <property name="maxRetry">
-    <value>3</value>
-  </property>
  </bean>
 
  <bean id="dipDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
   </property>
-
-  <property name="maxRetry">
-    <value>3</value>
-  </property>
  </bean>
 
  <bean id="yeastMineDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
-  </property>
-
-  <property name="maxRetry">
-    <value>3</value>
   </property>
  </bean>
 

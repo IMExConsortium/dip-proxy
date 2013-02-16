@@ -1,13 +1,13 @@
 package edu.ucla.mbi.proxy.router;
 
 /*==============================================================================
- * $HeadURL:: http://imex.mbi.ucla.edu/svn/ProxyWS/src/edu/ucla/mbi/service#   $
- * $Id:: CachingService.java 130 2009-02-03 17:58:49Z wyu                      $
- * Version: $Rev:: 130                                                         $
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
  *==============================================================================
  *
- * DhtRouter:
- *   selects remote server to call
+ * DhtRouterStatus:
+ *   returns dht router status
  *
  *=========================================================================== */
 
@@ -48,7 +48,4 @@ public class DhtRouterStatus {
                                            namespace, accession );
     }
     
-    //public List<DhtRouterList> getDhtRouterList( ID rid ){
-    //    return dhtRouter.getDhtRouterList( rid );
-    //}
 }

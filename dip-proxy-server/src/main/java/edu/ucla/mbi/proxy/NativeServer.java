@@ -1,9 +1,9 @@
 package edu.ucla.mbi.proxy;
 
 /*==============================================================================
- * $HeadURL:: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/src/mai#$
- * $Id:: NcbiServer.java 2607 2012-07-31 20:38:53Z wyu                         $
- * Version: $Rev:: 2607                                                        $
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
  *==============================================================================
  *
  * NativeServer:

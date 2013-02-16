@@ -1,16 +1,16 @@
 package edu.ucla.mbi.proxy.router;
 
-/*===========================================================================
- * $HeadURL:: http://imex.mbi.ucla.edu/svn/ProxyWS/src/edu/ucla/mbi/service#$
- * $Id:: CachingService.java 130 2009-02-03 17:58:49Z wyu                   $
- * Version: $Rev:: 130                                                      $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * DhtRouter:
- *   selects remote server to call 
+ *   selects remote proxy server to call  
  *
- *========================================================================= */
- 
+ *=========================================================================== */
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,23 +32,20 @@ public class DhtRouter implements Router {
     
     private RemoteServerContext rsc = null;
     private Dht proxyDht = null;
-    private int maxRetry = 0;
     
     private NativeServer currentServer = null;
     
     private DhtRouter() { }
     
-    private DhtRouter( RemoteServerContext rsc,
-                       Dht dht, int maxRetry ) { 
-	    this.rsc = rsc;
-        this.proxyDht = dht;
-        this.maxRetry = maxRetry;
+    private DhtRouter( RemoteServerContext rsc,  Dht dht ){ 
+        this.rsc = rsc;
+        this.proxyDht = dht;        
     }
     
     public Router createRouter(){
-        return new DhtRouter( this.rsc, this.proxyDht, this.maxRetry );
+        return new DhtRouter( this.rsc, this.proxyDht);
     }
-
+    
     public void setDht( Dht dht ){
         this.proxyDht = dht;
     }
@@ -63,17 +60,7 @@ public class DhtRouter implements Router {
     public RemoteServerContext getRemoteServerContext(){
         return rsc;
     }
- 
-    public RemoteServer getNativeServer( String service ){
-    //public NativeServer getNativeServer( String service ){    
-        Log log = LogFactory.getLog(DhtRouter.class);
-        log.info("getNativeServer(native server= " + 
-                 (RemoteServer)rsc.getNativeServer() + ")" );
-        return (RemoteServer)rsc.getNativeServer();
-    } 
     
-
-
     private ID getRecordID( String service, 
                            String namespace,
                            String accession ){
@@ -83,33 +70,7 @@ public class DhtRouter implements Router {
         
         return ID.getSHA1BasedID( recordStrId.getBytes() );
     }
- 
-
-    public NativeServer getLastProxyServer( String service ) {
-
-        Log log = LogFactory.getLog(DhtRouter.class);
-        log.info("getLastProxyServer (last proxy server= " +
-                 currentServer + ")" );
-
-        if (currentServer != null  ) {
-            return currentServer;
-        }
-        log.info("  falling back to native" );
-        return this.getNativeServer( service );
-    }
     
-    public NativeServer getNextProxyServer( String service ) {
-        
-        Log log = LogFactory.getLog(DhtRouter.class);
-        log.info( "getNextProxyServer() (provider=" + 
-                  rsc.getProvider() + ")" );
-        return currentServer       ;
-        
-    }
-  
-    
-
-
     // statistics-related function
     //----------------------------
 
@@ -122,14 +83,16 @@ public class DhtRouter implements Router {
                                    namespace, accession );  
         return proxyDht.getDhtRouterList( rid );
     }    
-    
+
+    //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // observer intereface
     //--------------------
 
     public void update( Object rns, Object arg ) {
         
-        // this will be called when new native record added
-        //-------------------------------------------------
+        //  called when new native record added
+        //--------------------------------------
         
         DhtRouterMessage message = (DhtRouterMessage) arg;
 
@@ -150,7 +113,6 @@ public class DhtRouter implements Router {
         address = rsc.getProxyProto().getAddress();
         address = address.replaceAll( "%%URL%%", url );
         
-   
         log.info( "Record: provider=" +record.getProvider() + 
                   " service=" + record.getService() +
                   " NS=" + record.getNs() + 
@@ -180,41 +142,7 @@ public class DhtRouter implements Router {
             proxyDht.updateItem( rid, routerItem );
         }
     }
-
-
-    //--------------------------------------------------------------------------
-    //--------------------------------------------------------------------------
-
-    public void setMaxRetry( int retry ) {
-        this.maxRetry= retry;
-    }
-
-    public int getMaxRetry() {
-        return maxRetry;
-    }
-
-
-
-    public NativeServer getNextProxyServer( String service, 
-                                            String namespace,
-                                            String accession ) {
         
-        Log log = LogFactory.getLog( DhtRouter.class );
-        log.info( "getNextProxyServer(args) (provider=" + 
-                  rsc.getProvider() + ")" );
-        log.info( " SRV=" + service + 
-                  " NS=" + namespace + " AC=" + accession );
-        
-        ID rid = this.getRecordID( service, namespace, accession );
-        
-        return this.getNextProxyServer( rid, service );
-    }
-
-
-    //--------------------------------------------------------------------------
-    //--------------------------------------------------------------------------
-    
- 
     public NativeServer getNextProxyServer( String provider, 
                                             String service, 
                                             String namespace,
@@ -232,20 +160,8 @@ public class DhtRouter implements Router {
     }
 
     //--------------------------------------------------------------------------
-
-    private ID getRecordID( String provider,
-                            String service,
-                            String namespace,
-                            String accession ){
-        
-        String recordStrId = provider + ":" + service +
-            namespace + ":" + accession + ":";
-        
-        return ID.getSHA1BasedID( recordStrId.getBytes() );
-    }
-
-
-    public NativeServer getNextProxyServer( ID rid, String service ) {
+    
+    private NativeServer getNextProxyServer( ID rid, String service ) {
         
         Log log = LogFactory.getLog(DhtRouter.class);
         log.info( "  rid=" + rid.toString(16) + " @ " + proxyDht );        
@@ -256,20 +172,16 @@ public class DhtRouter implements Router {
         
         log.info( "lastAddress=" + lastAddress );
 
-        //---------------------------------------------------------------------
-        //Node: new changing
-
-        //String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
-        String url = proxyDht.getProxyHost() + ":" + proxyDht.getProxyPort();
-        //String url = rsc.getProxyProto().getAddress() + ":" + WSContext.getPort();
-
-        //--------------------------------------------------------------------------
-
+        // local proxy address/port
+        //-------------------------
+        String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
+       
         log.info( "url="+ url );
-
+        
         String localAddress = rsc.getProxyProto().getAddress();
+        
         localAddress = localAddress.replaceAll( "%%URL%%", url );
-
+        
         log.info( "localAddress=" + localAddress );
         
         if ( lastAddress != null && 
@@ -282,21 +194,26 @@ public class DhtRouter implements Router {
             remote = remoteProxy;
             log.info( "   remote URL=" + lastAddress );
             
-            //---------------------------------------------------------
-            
-            //if ( rsc.getDebugLevel() == 1 ){
-            //    remote = rsc.getNativeServer();
-            //}
-            
-        } else {
-            log.info( "lastAddress equals localAddress. " );
+        } else {            
             remote = rsc.getNativeServer();
-            //remote = (NativeServer) rsc.getNativeServer();
+
+            log.info( "lastAddress same as localAddress:" );
             log.info( "   remote==native " + remote );
         }
         
         currentServer = remote;
         return remote;
     }   
+
+    private ID getRecordID( String provider,
+                            String service,
+                            String namespace,
+                            String accession ){
+        
+        String recordStrId = provider + ":" + service +
+            namespace + ":" + accession + ":";
+        
+        return ID.getSHA1BasedID( recordStrId.getBytes() );
+    }
 
 }

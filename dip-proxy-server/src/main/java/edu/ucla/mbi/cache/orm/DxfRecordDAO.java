@@ -1,9 +1,9 @@
 package edu.ucla.mbi.cache.orm;
 
 /*===========================================================================
- * $HeadURL:: http://imex.mbi.ucla.edu/svn/ProxyWS/src/edu/ucla/mbi/cache/o#$
- * $Id:: DxfRecordDAO.java 100 2009-01-01 22:23:35Z lukasz                  $
- * Version: $Rev:: 100                                                      $
+ * $HeadURL::                                                               $
+ * $Id::                                                                    $
+ * Version: $Rev::                                                          $
  *===========================================================================
  *
  * DxfRecordDAO:

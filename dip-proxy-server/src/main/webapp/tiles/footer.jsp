@@ -8,7 +8,7 @@
           <tr>
           <tr>
            <td class="copyright2" colspan="2">
-             Copyright 1999-2009 UCLA 
+             Copyright 2011-13 UCLA 
            </td>
            <td class="copyright2" colspan="2" align="right">
              <A HREF="index.jsp">DIP Proxy Site</A>.

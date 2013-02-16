@@ -1,9 +1,9 @@
 package edu.ucla.mbi.proxy.router;
 
 /*===========================================================================
- * $HeadURL:: http://imex.mbi.ucla.edu/svn/ProxyWS/src/edu/ucla/mbi/service#$
- * $Id:: CachingService.java 130 2009-02-03 17:58:49Z wyu                   $
- * Version: $Rev:: 130                                                      $
+ * $HeadURL::                                                               $
+ * $Id::                                                                    $
+ * Version: $Rev::                                                          $
  *===========================================================================
  *
  * SimpleRouter:
@@ -25,10 +25,9 @@ import edu.ucla.mbi.proxy.RemoteProxyServer;
 public class SimpleRouter implements Router {
     
     private RemoteServerContext rsc = null;
-    private int maxRetry = 2;
-    
-    private int currentServer = -1;
 
+    private static int currentProxyServer = -1;
+    
     public  SimpleRouter() { }
     
     public  SimpleRouter( RemoteServerContext rsc ){ 
@@ -46,90 +45,20 @@ public class SimpleRouter implements Router {
     public RemoteServerContext getRemoteServerContext(){
         return rsc;
     }
-
-
-    public RemoteServer getNativeServer( String service ){
-        
-        Log log = LogFactory.getLog(SimpleRouter.class);
-        //return rsc.getNativeServer();
-        return (RemoteServer)rsc.getNativeServer();
-    } 
-        
     
-    public RemoteServer getLastProxyServer( String service ) {
-        
-        /*
-	    Log log = LogFactory.getLog(SimpleRouter.class);
-        List<RemoteProxyServer> servers = rsc.getProxyServers();
-	
-        RemoteServer server = servers.get( currentServer );
-        log.info("server # "+currentServer);
-	    */
-        
-	    return null;
-    }
-    
-    public RemoteServer getNextProxyServer( String service ) {
-	
-        /*
-	    Log log = LogFactory.getLog(SimpleRouter.class);
- 
-        List<RemoteProxyServer> servers = rsc.getProxyServers();
-	
-	    // rotate servers
-	    //---------------
-        
-	    currentServer++;
-	
-	    if ( currentServer == servers.size() || 
-	        currentServer < 0 ) {
-	        currentServer = 0;
-	    }
-	
-        log.info("server # "+currentServer);
-        RemoteServer server = servers.get( currentServer );
-        */
-
-        return null;
-    }
-    
-    public RemoteServer getNextProxyServer( String namespace,
-                                            String accession,
-                                            String operation ){
-        
-        return this.getNextProxyServer( operation );
-    }
-
-
-
-    // observer intereface
-    //--------------------
-
-    public void update( Object observer, Object arg ) {
-        // nothing to do
-    }
-    
-
     private Map<String, Object> config = new HashMap<String, Object>();
 
     public void setConfig( Map<String, Object> config ){
         this.config= config;
     }
 
-    //--------------------------------------------------------------------------
-    //--------------------------------------------------------------------------
+       
+    // observer intereface
+    //--------------------
 
-        
-    public void setMaxRetry( int retry ) {
-        this.maxRetry = retry;
-    } 
-    
-    public int getMaxRetry() {
-        return maxRetry;
+    public void update( Object observer, Object arg ) {
+        // no updates needed
     }
-    
-     
-    private static int currentProxyServer = -1;
     
     public NativeServer getNextProxyServer( String provider,
                                             String service,
