@@ -24,10 +24,10 @@ import edu.ucla.mbi.orm.*;
 import edu.ucla.mbi.cache.orm.*;
 
 import edu.ucla.mbi.util.context.JsonContext;
-import edu.ucla.mbi.util.struts.action.PageSupport;
+import edu.ucla.mbi.util.struts.action.PortalSupport;
 import org.json.*;
 
-public class NativeStatus extends PageSupport {
+public class NativeStatus extends PortalSupport {
 
     private Log log = LogFactory.getLog( NativeStatus.class );
 
@@ -48,9 +48,6 @@ public class NativeStatus extends PageSupport {
     public String execute() throws Exception {
 
         log.info( " NativeStatus execute..." );
-
-        super.findMenuPage();
-
         delays = new TreeMap<String,Map>();
 
         try {

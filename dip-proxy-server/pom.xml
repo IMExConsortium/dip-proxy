@@ -8,11 +8,17 @@
   <url>http://dip.mbi.ucla.edu</url>
 
   <properties>
+    <proxy.version>${project.version}</proxy.version>
+    <proxy.bld>$Rev: 2995 $</proxy.bld>
+
     <dbid></dbid>
     <!--<dht.mode>networked</dht.mode> --> 
     <dht.mode>local</dht.mode> 
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
     <hibernate.connection.portnum>5432</hibernate.connection.portnum>
+
+
+
   </properties>
 
   <profiles>

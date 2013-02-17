@@ -1203,7 +1203,16 @@ a.disabled {
 }
 
 .copyright2 {
-  border-bottom: 0px dotted #5375a8;
+  border-bottom: 1px dotted #5375a8;
+  font-size: 0.60em;
+  color: #777777;
+  padding: 5px 10px;
+  text-align: left; 
+  vertical-align: middle; 
+}
+
+.copyright3 {
+  border-bottom: 1px dotted #5375a8;
   font-size: 0.60em;
   color: #777777;
   padding: 5px 10px;

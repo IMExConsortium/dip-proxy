@@ -24,10 +24,10 @@ import edu.ucla.mbi.orm.*;
 import edu.ucla.mbi.cache.orm.*;
 
 import edu.ucla.mbi.util.context.JsonContext;
-import edu.ucla.mbi.util.struts.action.PageSupport;
+import edu.ucla.mbi.util.struts.action.PortalSupport;
 import org.json.*;
 
-public class CacheStatus extends PageSupport {
+public class CacheStatus extends PortalSupport {
 
     private WSContext wsContext = null;
 
@@ -50,9 +50,7 @@ public class CacheStatus extends PageSupport {
 
         Log log = LogFactory.getLog( CacheStatus.class );
         log.info("CacheStatus execute ...");
-
-        super.findMenuPage();
- 
+        
         counts = new TreeMap<String,Map>();
         
         try {

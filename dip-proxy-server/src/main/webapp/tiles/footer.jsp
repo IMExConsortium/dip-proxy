@@ -1,34 +1,37 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="t" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-    <table width="100%" class="bottom" cellpadding="0" cellspacing="0">
-      <tr>
-       <td colspan="2">
-        <center>
-         <table width="100%" class="footer" cellpadding="0" cellspacing="0">
-          <tr>
-          <tr>
-           <td class="copyright2" colspan="2">
-             Copyright 2011-13 UCLA 
-           </td>
-           <td class="copyright2" colspan="2" align="right">
-             <A HREF="index.jsp">DIP Proxy Site</A>.
-           </td>
-          </tr>
-         </table>
-        </center>
-       </td>
-      </tr>
-      <tr>
-       <td align="center" width="100%" colspan="2">
-        <table width="98%" cellspacing="0">
-         <tr>
-          <td align="right">
-            <font size="-5"><i>             Design by:
-              <A HREF="mailto:lukasz@mbi.ucla.edu">LS</A>.
-            </i></font>
-          </td>
-         </tr>
-        </table>
-       </td>
-      </tr>
-     </table>
+<div id="footer">
+ <table width="100%" cellpadding="0" cellspacing="0">
+  <tr>
+   <td>
+    <table width="100%" class="footer" cellpadding="0" cellspacing="0">     
+     <tr>
+      <td class="copyright2" nowrap>
+       Copyright 2008-2013 UCLA
+      </td>
+      <td width="5%" class="copyright3" align="center" nowrap>
+       <A HREF="http://dip.mbi.ucla.edu">DIP Database</A>.
+      </td>
+     </tr>
+    </table>
+   </td>
+  </tr>
+  <tr>
+   <td align="center" width="100%">
+    <table width="98%" cellspacing="0">
+     <tr>
+      <td align="left" nowrap>
+       <font size="-5">Ver: ${proxy.version} (${proxy.bld})</font>
+      </td>
+      <td align="right" nowrap>
+       <font size="-5">
+         <i>Code by:<A HREF="mailto:lukasz@mbi.ucla.edu">LS</A>,
+                    <A HREF="mailto:wyu@mbi.ucla.edu">WYU</A></i>         
+       </font>
+      </td>
+     </tr>
+    </table>
+   </td>
+  </tr>
+ </table>
+</div>

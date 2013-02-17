@@ -17,11 +17,14 @@
 
  <bean id="cacheStatusAction" scope="prototype"
        class="edu.ucla.mbi.proxy.struts.action.CacheStatus">
+
   <property name="wsContext">
     <ref bean="wsContext"/>
   </property>
-  <property name="pageContext" ref="pageContext"/>
+
   <property name="menuContext" ref="menuContext"/>
+  <property name="mst" value="1:1:1"/> 
+
  </bean>
 
  <bean id="nativeSparkline" class="edu.ucla.mbi.util.Sparkline">
@@ -51,18 +54,24 @@
 
  <bean id="dhtStatusAction" scope="prototype"
        class="edu.ucla.mbi.proxy.struts.action.DhtNodeStatus">
+
   <property name="dht" ref="dht"/>
-  <property name="pageContext" ref="pageContext"/>
+
   <property name="menuContext" ref="menuContext"/>
+  <property name="mst" value="1:1:2"/>
+
  </bean>
 
  <bean id="nativeStatusAction" scope="prototype"
        class="edu.ucla.mbi.proxy.struts.action.NativeStatus">
+
   <property name="wsContext">
     <ref bean="wsContext"/>
   </property>
-  <property name="pageContext" ref="pageContext"/>
+
   <property name="menuContext" ref="menuContext"/>
+  <property name="mst" value="1:1:2"/>
+
  </bean>
 
  <!-- rest server config new -->
@@ -74,7 +83,7 @@
   <property name="contextDepth" value="2"/> 
 
   <property name="menuContext" ref="menuContext"/> 
-  
+  <property name="mst" value="1:2:1"/>
  </bean>
 
  <!-- transformer config new -->
@@ -86,7 +95,7 @@
   <property name="contextDepth" value="2"/> 
 
   <property name="menuContext" ref="menuContext"/> 
-  
+  <property name="mst" value="1:2:2"/>
  </bean>
 
  <bean id="pageAction" scope="prototype"

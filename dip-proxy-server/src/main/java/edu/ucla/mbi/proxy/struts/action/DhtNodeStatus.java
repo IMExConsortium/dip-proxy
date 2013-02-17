@@ -27,10 +27,10 @@ import ow.routing.*;
 import edu.ucla.mbi.proxy.router.*;
 
 import edu.ucla.mbi.util.context.JsonContext;
-import edu.ucla.mbi.util.struts.action.PageSupport;
+import edu.ucla.mbi.util.struts.action.PortalSupport;
 import org.json.*;
 
-public class DhtNodeStatus extends PageSupport {
+public class DhtNodeStatus extends PortalSupport {
 
     private Log log = LogFactory.getLog(DhtNodeStatus.class);
     private Dht dht = null;
@@ -52,7 +52,7 @@ public class DhtNodeStatus extends PageSupport {
 
         log.info("DhtNodeStatus execute");
 
-        super.findMenuPage();
+        //super.findMenuPage();
 
         DHTConfiguration dhtConf = dht.getDHT().getConfiguration();  
         RoutingService dhtRoutingService = dht.getDHT().getRoutingService();  
@@ -87,9 +87,7 @@ public class DhtNodeStatus extends PageSupport {
 
         // replace default URLs with node-status.action pointer
         //-----------------------------------------------------
-
         
-
         nodeStatus.put( "routing table", rtable );
 
 
@@ -110,16 +108,6 @@ public class DhtNodeStatus extends PageSupport {
         setMessage(getText(MESSAGE));
         return SUCCESS;
     }
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Provide default value for Message property.

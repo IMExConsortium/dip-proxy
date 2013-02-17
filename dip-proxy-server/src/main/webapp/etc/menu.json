@@ -10,21 +10,21 @@
          "disabled":"false",
          menu:[
             {label:"Status",
-             link:"page?id=status",
+             link:"node-status",
              "disabled":"false",
              menu:[
                 {label:"Local cache",
-                 link:"cache-status?id=cache",
+                 link:"cache-status",
                  "disabled":"false",
                  menu:[]
                 },
                 {label:"DHT node",
-                 link:"node-status?id=node",
+                 link:"node-status",
                  "disabled":"false",
                  menu:[]
                 },
                 {label:"Native servers",
-                 link:"native-status?id=native",
+                 link:"native-status",
                  "disabled":"false",
                  menu:[]
                 }]

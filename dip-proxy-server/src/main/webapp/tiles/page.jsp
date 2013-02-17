@@ -74,9 +74,9 @@
    </s:if>
   </table>
   <s:if test="big">
-   <t:insertTemplate template="/tiles/footer.jsp" flush="true">
-    <t:putAttribute name="edit" value="/tiles/pageedit-yui.jsp" />
-   </t:insertTemplate>
+    <t:insertTemplate template="/tiles/footer.jsp" flush="true">
+     <t:putAttribute name="edit" value="/tiles/pageedit-yui.jsp" />
+    </t:insertTemplate>
   </s:if>
   </center>
 
