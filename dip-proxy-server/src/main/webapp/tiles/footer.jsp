@@ -10,7 +10,7 @@
        Copyright 2008-2013 UCLA
       </td>
       <td width="5%" class="copyright3" align="center" nowrap>
-       <A HREF="http://dip.mbi.ucla.edu">DIP Database</A>.
+       <A HREF=".">DIP Proxy</A>.
       </td>
      </tr>
     </table>

@@ -225,6 +225,15 @@
               
             </resource>
             
+             <resource>
+              <directory>${basedir}/src/main/webapp/tiles</directory>
+              <targetPath>tiles</targetPath>
+              <filtering>true</filtering>
+              <includes>
+                <include>footer.jsp</include>
+              </includes>
+            </resource>
+
             <resource>
               <directory>${basedir}/src/main/webapp/META-INF</directory>
               <targetPath>META-INF</targetPath>
