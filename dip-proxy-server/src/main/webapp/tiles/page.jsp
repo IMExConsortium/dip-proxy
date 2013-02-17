@@ -2,9 +2,9 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="t" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%-- ===========================================================================
- ! $HeadURL:: http://wyu@imex.mbi.ucla.edu/svn/central/trunk/icentral/src/main#$
- ! $Id:: page.jsp 205 2011-05-16 00:49:36Z lukasz                              $
- ! Version: $Rev:: 205                                                         $
+ ! $HeadURL::                                                                  $
+ ! $Id::                                                                       $
+ ! Version: $Rev::                                                             $
  !========================================================================= --%>
 
 <s:set name="spath" value="%{skn}"/>

@@ -9,7 +9,7 @@
 
   <properties>
     <proxy.version>${project.version}</proxy.version>
-    <proxy.bld>$Rev: 2995 $</proxy.bld>
+    <proxy.bld>$Rev$</proxy.bld>
 
     <dbid></dbid>
     <!--<dht.mode>networked</dht.mode> --> 
