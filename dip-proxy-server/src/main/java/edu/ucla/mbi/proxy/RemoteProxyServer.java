@@ -77,8 +77,8 @@ public class RemoteProxyServer implements NativeServer {
         return null;
     }
 
-    public RemoteProxyServer getRemoteProxyServerInstance() {
-        return null;
+    public RemoteProxyServer getRemoteProxyServerInstance( String url) {
+        return new RemoteProxyServer( url );
     }
     
     public DatasetType transform( String strNative,

@@ -331,7 +331,9 @@ public class Dht {
         RemoteServer remote = null;
 
         try {
+
             val = proxyDht.get(rid);
+
         } catch( RoutingException re ) {
             log.info( "  UpdateItem: routing exception" + re.toString() );
             re.printStackTrace();
