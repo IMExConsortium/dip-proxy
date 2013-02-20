@@ -30,7 +30,7 @@ import edu.ucla.mbi.cache.*;
 
 public class Dht {
 
-    public final static int MAX_DPL_SIZE = 4;
+    public final static int MAX_DPL_SIZE = 2;
     
     private Properties dhtProperties = null;
     
