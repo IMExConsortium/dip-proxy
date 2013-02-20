@@ -169,7 +169,11 @@ class RemoteNativeService { // extends Observable {
             
             remoteRecord.resetExpireTime( remoteRecord.getCreateTime(), 
                                           rsc.getTtl() );
-        }    
+        } else {
+            //*** remoteRecord got from remote proxy
+            remoteRecord.resetExpireTime( remoteRecord.getQueryTime(),
+                                          rsc.getTtl() );
+        } 
          
         //this.setChanged(); // update site from DHT
         
