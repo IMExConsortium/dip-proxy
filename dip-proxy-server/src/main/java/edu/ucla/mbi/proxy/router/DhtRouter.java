@@ -189,8 +189,8 @@ public class DhtRouter implements Router {
            
             log.info( "lastAddress not equals localAddress. " ); 
             RemoteProxyServer remoteProxy =
-                rsc.getProxyProto().getRemoteProxyServerInstance();
-            remoteProxy.setAddress( lastAddress );
+                rsc.getProxyProto().getRemoteProxyServerInstance( lastAddress );
+            //remoteProxy.setAddress( lastAddress );
             remote = remoteProxy;
             log.info( "   remote URL=" + lastAddress );
             

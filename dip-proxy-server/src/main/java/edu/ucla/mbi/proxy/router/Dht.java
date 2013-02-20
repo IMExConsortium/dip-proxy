@@ -140,7 +140,8 @@ public class Dht {
 
             try {
                 InetAddress localHost = InetAddress.getLocalHost();
-                proxyHost = localHost.getHostName();
+                //proxyHost = localHost.getHostName();
+                proxyHost = localHost.getHostAddress();
                 
             } catch (UnknownHostException ue) {
                 log.info( " unknown host...");
