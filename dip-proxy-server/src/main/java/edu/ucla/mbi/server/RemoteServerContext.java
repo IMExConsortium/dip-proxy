@@ -55,7 +55,7 @@ public class RemoteServerContext {
     }
 
     public long getTtlMilli(){
-        return 1000L*60*60*24*ttl;
+        return 1000L*ttl;
     }
 
     public boolean isRamCacheOn() {
