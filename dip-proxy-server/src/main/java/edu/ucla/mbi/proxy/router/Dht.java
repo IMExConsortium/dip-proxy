@@ -357,18 +357,32 @@ public class Dht {
                 DhtRouterList dpl = vi.getValue();
                 DhtRouterItem lastItem = null;
                 long lastExpire = 0;
+
+                long firstQuery = 0;
+                DhtRouterItem firstQueryItem = null ;
+               
                 String lastUrl = null;
                 
                 for ( Iterator<DhtRouterItem> pi = dpl.iterator();
                       pi.hasNext(); ){
                     
+                    // 
+
                     DhtRouterItem proxyItem = pi.next();                   
+
                     log.info( "   item=" + proxyItem.toString() );
                     
                     if ( proxyItem.getAddress().equals(newItem.getAddress()) ){
                         newFlag = false;
                         proxyItem.setCreateTime( newItem.getCreateTime() );
                         proxyItem.setExpireTime( newItem.getExpireTime() );
+                    }
+
+                    if( firstQuery == 0  
+                        || proxyItem.getCreateTime() < firstQuery ){
+                        
+                        firstQuery = proxyItem.getCreateTime();
+                        firstQueryItem = proxyItem;
                     }
                 }
 
@@ -377,7 +391,7 @@ public class Dht {
                     dpl.addItem( dpi );
                     
                     if ( dpl.size() > MAX_DPL_SIZE ){
-                        dpl.removeItem( 0 );
+                        dpl.removeItem( firstQueryItem );
                     }
                 }   
                 
