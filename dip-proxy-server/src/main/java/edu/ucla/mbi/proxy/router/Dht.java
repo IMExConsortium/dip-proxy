@@ -382,7 +382,16 @@ public class Dht {
                 }   
                 
                 try {
-                    proxyDht.put( rid, dpl );            
+                    
+                    // remove old value(s)
+
+                    proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
+
+                    // set new value
+                    
+                    proxyDht.setHashedSecretForPut( new ByteArray( rid.getValue() ) ); 
+                    proxyDht.put( rid, dpl );
+                    
                 } catch ( Exception e ) {
                     log.info( "dht exception:" + e.toString() );
                 }
@@ -394,7 +403,18 @@ public class Dht {
             dpl.addItem( dpi );
             
             try {
-                proxyDht.put( rid, dpl );
+
+                // remove old value(s)
+
+                proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
+
+                // set new value
+
+                proxyDht.setHashedSecretForPut( new ByteArray( rid.getValue() ) );
+
+
+               proxyDht.put( rid, dpl );
+
             } catch ( Exception e ) {
                 log.info( "dht exception:" + e.toString() );
             } 
@@ -442,7 +462,16 @@ public class Dht {
                 }
 
                 try {
-                    proxyDht.put( rid, dpl );            
+
+                    // remove old value(s)
+
+                    proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
+                    
+                    // set new value
+
+                    proxyDht.setHashedSecretForPut( new ByteArray( rid.getValue() ) );
+                    proxyDht.put( rid, dpl );
+                    
                 } catch ( Exception e ) {
                     log.info( "dht exception:" + e.toString() );
                 }
