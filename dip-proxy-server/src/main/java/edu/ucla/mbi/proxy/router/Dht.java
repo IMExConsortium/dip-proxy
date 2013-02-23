@@ -498,10 +498,10 @@ public class Dht {
         
         long lastCreate = 0;
         long lastExpire = 0;
-
+        
         String lastCrUrl = null;
         String lastExUrl = null;
-
+        
         Log log = LogFactory.getLog(Dht.class);
 
         Set<ValueInfo<DhtRouterList>> dhtRec= null;
@@ -530,25 +530,51 @@ public class Dht {
                 log.info( "  list=" + vi.getValue() );
                 
                 DhtRouterList dpl = vi.getValue();
-                DhtRouterItem lastItem = null;
-                
+                DhtRouterItem lastItem = null;                
+                boolean removeFlag = false;
+
                 for ( Iterator<DhtRouterItem> pi = dpl.iterator(); 
                       pi.hasNext(); ){
-                    
+                  
                     DhtRouterItem item = pi.next();
                     
                     log.info( "   item=" + item.toString() );
                     log.info( "   item.ExpireTime=" + item.getExpireTime() );
                     log.info( "   item.CreateTime=" + item.getCreateTime());
-                    
-                    if ( item.getExpireTime() > lastExpire ){
-                        lastExpire = item.getExpireTime();
-                        lastExUrl = item.getAddress();
-                    }
-                    
+        
+                    long now = Calendar.getInstance().getTimeInMillis();
+            
                     if ( item.getCreateTime() > lastCreate ){
                         lastCreate = item.getCreateTime();
                         lastCrUrl = item.getAddress();
+                    }
+
+                    if( item.getExpireTime() > now ) {
+                        if ( item.getExpireTime() > lastExpire ) {
+                            lastExpire = item.getExpireTime();
+                            lastExUrl = item.getAddress();
+                        }
+                    } else {
+                        //*** move the expired record into a expired list
+                        //*** or directly remove from list
+                        dpl.removeItem( item );
+                        removeFlag = true;
+                    }
+                }
+
+                if( removeFlag ) {
+                    try {
+                        // remove old value(s)
+
+                        proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
+
+                        // set new value
+
+                        proxyDht.setHashedSecretForPut( new ByteArray( rid.getValue() ) );
+                        proxyDht.put( rid, dpl );
+
+                    } catch ( Exception e ) {
+                        log.info( "dht exception:" + e.toString() );
                     }
                 }
             }
