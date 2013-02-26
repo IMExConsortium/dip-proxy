@@ -46,7 +46,6 @@ class RemoteNativeService { // extends Observable {
     
     //--------------------------------------------------------------------------
         
-    //protected RemoteServer selectNextRemoteServer( String provider,
     private  NativeServer selectNextRemoteServer( String provider,
                                                    String service,
                                                    String namespace,
@@ -175,22 +174,17 @@ class RemoteNativeService { // extends Observable {
                                           rsc.getTtl() );
         } 
          
-        //this.setChanged(); // update site from DHT
-        
+        if( rsc.isDbCacheOn() ) {
 
+            DhtRouterMessage message =
+                new DhtRouterMessage( DhtRouterMessage.UPDATE,
+                                      remoteRecord, null );
 
-        DhtRouterMessage message =
-            new DhtRouterMessage( DhtRouterMessage.UPDATE,
-                                  remoteRecord, null );
+            log.info( "DhtRouterMessage: " + message );
+        
+            this.notifyObservers( message );
+        }
 
-        log.info( "DhtRouterMessage: " + message );
-        
-        this.notifyObservers( message );
-
-        //this.clearChanged();
-        
-        //log.info( "change flag: " + this.hasChanged() ); 
-        
         return remoteRecord;
     }
 
