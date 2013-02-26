@@ -94,7 +94,7 @@
        class="edu.ucla.mbi.proxy.RemoteProxyServer">
   <property name="address">
    <value>
-     http://%%URL%%/dip-proxy-server/proxy-service    
+     http://%%URL%%/dip-proxy/proxy-service    
    </value>
   </property>
   <property name="context">
