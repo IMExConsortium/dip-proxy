@@ -101,17 +101,7 @@ public class DhtRouter implements Router {
                   " (msg=" + message.getMsg() + ")" );
         
         NativeRecord record = message.getRecord();
-       
-        log.info( "  DhtRouter.update: " );
-        
-        String address = "";
-        
-        log.info( "local proxy address:" );
-
-        String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
-         
-        address = rsc.getProxyProto().getAddress();
-        address = address.replaceAll( "%%URL%%", url );
+        NativeServer server = message.getNativeServer();
         
         log.info( "Record: provider=" +record.getProvider() + 
                   " service=" + record.getService() +
@@ -123,24 +113,63 @@ public class DhtRouter implements Router {
                                    record.getNs(), 
                                    record.getAc() );
         
-        log.info( "  DhtRouterItem: address=" + address +
-                  " query=" + record.getQueryTime().getTime() +
-                  " expire=" + record.getExpireTime().getTime() );
-	
-        DhtRouterItem routerItem =
-            new DhtRouterItem( address,
-                               record.getQueryTime().getTime(),
-                               record.getExpireTime().getTime() );
-        
-        if ( message.getMsg() == DhtRouterMessage.DELETE ) {
-            log.info( "  DhtRouterItem: DELETING" );
-            proxyDht.deleteItem( rid, routerItem );
-        } 
-        
         if ( message.getMsg() == DhtRouterMessage.UPDATE ) {
+            
+            log.info( "  DhtRouter.update: " );
+        
+            String address = "";
+        
+            log.info( "local proxy address:" );
+
+            String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
+            
+            address = rsc.getProxyProto().getAddress();
+            address = address.replaceAll( "%%URL%%", url );
+
+            DhtRouterItem routerItem =
+                new DhtRouterItem( address,
+                                   record.getQueryTime().getTime(),
+                                   record.getExpireTime().getTime() );
+            
+            log.info( "  DhtRouterItem: address=" + address +
+                      " query=" + record.getQueryTime().getTime() +
+                      " expire=" + record.getExpireTime().getTime() );
+            
             log.info( "  DhtRouterItem: UPDATING" );
             proxyDht.updateItem( rid, routerItem );
         }
+
+        if ( message.getMsg() == DhtRouterMessage.DELETE ) {
+            
+            String address = null;
+
+            if( server instanceof RemoteProxyServer ){
+                
+                //address 
+                //    = ((RemoteProxyServer) server).<get remote proxy eddress>
+            }
+
+            if( addres != null ){
+
+                
+            // NativeServer server = message.getNativeServer();
+
+                
+                DhtRouterItem routerItem =
+                    new DhtRouterItem( address,
+                                       record.getQueryTime().getTime(),
+                                       record.getExpireTime().getTime() );
+                
+            log.info( "  DhtRouterItem: address=" + address +
+                      " query=" + record.getQueryTime().getTime() +
+                      " expire=" + record.getExpireTime().getTime() );
+        
+            log.info( "  DhtRouterItem: DELETING" );
+
+            proxyDht.deleteItem( rid, routerItem );
+        } 
+        
+        
     }
         
     public NativeServer getNextProxyServer( String provider, 

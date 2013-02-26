@@ -120,6 +120,14 @@ class RemoteNativeService { // extends Observable {
             if( remoteRecord != null && !isRecordValid( remoteRecord ) ) {
                 remoteRecord = null;
                 retryFault = FaultFactory.newInstance( Fault.VALIDATION_ERROR );
+
+                NativeRecord faultyRecord new NativeRecord(prov, serv,ns,ac);
+                
+                DhtRouterMessage message =
+                    new DhtRouterMessage( DhtRouterMessage.DELETE,
+                                          faultyRecord, nativeServer );
+                
+                this.notify( message );
             }
             
         }
