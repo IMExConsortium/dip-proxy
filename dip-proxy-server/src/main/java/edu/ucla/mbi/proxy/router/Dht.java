@@ -544,22 +544,19 @@ public class Dht {
         
                     long now = Calendar.getInstance().getTimeInMillis();
             
-                    if ( item.getCreateTime() > lastCreate ){
-                        lastCreate = item.getCreateTime();
-                        lastCrUrl = item.getAddress();
-                    }
 
                     if( item.getExpireTime() > now ) {
-                        if ( item.getExpireTime() > lastExpire ) {
-                            lastExpire = item.getExpireTime();
-                            lastExUrl = item.getAddress();
+
+                        if ( item.getCreateTime() > lastCreate ){
+                            lastCreate = item.getCreateTime();
+                            lastCrUrl = item.getAddress();
                         }
+
                     } else {
-                        //*** move the expired record into a expired list
-                        //*** or directly remove from list
-                        dpl.removeItem( item );
+                        pi.remove();
                         removeFlag = true;
                     }
+                    
                 }
 
                 if( removeFlag ) {
@@ -579,8 +576,8 @@ public class Dht {
                 }
             }
         }
-        log.info( "   return addres=" + lastExUrl );
-        return lastExUrl;
+        log.info( "   return addres=" + lastCrUrl );
+        return lastCrUrl;
     }   
 
     public List<DhtRouterList> getDhtRouterList( String provider,
