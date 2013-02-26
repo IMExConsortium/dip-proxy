@@ -13,7 +13,7 @@
 
     <dbid></dbid>
     <dht.mode>networked</dht.mode>  
-    <!--<dht.mode>local</dht.mode> -->
+    <!--<dht.mode>local</dht.mode> --> 
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
     <hibernate.connection.portnum>5432</hibernate.connection.portnum>
 
@@ -252,6 +252,9 @@
         <version>6.1.25</version>
         <configuration>
           <!-- configure the container -->
+
+          <contextPath>/dip-proxy</contextPath>
+
           <connectors>
             <connector 
                 implementation="org.mortbay.jetty.nio.SelectChannelConnector">
