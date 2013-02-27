@@ -47,9 +47,9 @@ class RemoteNativeService { // extends Observable {
     //--------------------------------------------------------------------------
         
     private  NativeServer selectNextRemoteServer( String provider,
-                                                   String service,
-                                                   String namespace,
-                                                   String accession ) {
+                                                  String service,
+                                                  String namespace,
+                                                  String accession ) {
 
         if ( rsc.isRemoteProxyOn() ) {
 
@@ -121,18 +121,18 @@ class RemoteNativeService { // extends Observable {
                 remoteRecord = null;
                 retryFault = FaultFactory.newInstance( Fault.VALIDATION_ERROR );
 
-                NativeRecord faultyRecord new NativeRecord(prov, serv,ns,ac);
+                NativeRecord faultyRecord = new NativeRecord( provider, service, 
+                                                              ns, ac);
                 
                 DhtRouterMessage message =
                     new DhtRouterMessage( DhtRouterMessage.DELETE,
                                           faultyRecord, nativeServer );
                 
-                this.notify( message );
+                this.notifyObservers( message );
+                log.info( "getNativeFromRemote: delete a invalid record. " );
             }
             
         }
-
-        
 
         if( remoteRecord == null ) {
             if( retryFault != null ) {
@@ -199,7 +199,7 @@ class RemoteNativeService { // extends Observable {
     private boolean isRecordValid( NativeRecord record ) {
 
         if( record.getNativeXml() == null 
-            || record.getNativeXml().length() == 0 ) {
+            || record.getNativeXml().isEmpty() ) {
 
             return false;
         }

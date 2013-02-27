@@ -12,12 +12,13 @@
     <proxy.bld>$Rev$</proxy.bld>
 
     <dbid></dbid>
-    <!--<dht.mode>networked</dht.mode>   -->
-    <dht.mode>local</dht.mode>
+    <dht.mode>networked</dht.mode>  
+    <!-- <dht.mode>local</dht.mode> -->
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
     <hibernate.connection.portnum>5432</hibernate.connection.portnum>
 
-
+    <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
+    <hibernate.connection.servername>10.1.200.1</hibernate.connection.servername>
 
   </properties>
 

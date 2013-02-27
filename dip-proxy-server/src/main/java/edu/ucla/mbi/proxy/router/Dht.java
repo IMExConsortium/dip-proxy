@@ -255,7 +255,7 @@ public class Dht {
                                       ma + ")" );
                             break;
                         } catch ( ow.routing.RoutingException re ) {
-                            log.info( "   routing exception: " + re );
+                            log.info( "   routing exception: " + re.toString() );
                         }                 
                     } else {
                         log.info( "  skipping (non-local) boothost=" + 
@@ -276,7 +276,7 @@ public class Dht {
                               ma + ")" );
                     
                 } catch ( ow.routing.RoutingException re ) {
-                    log.info( "   routing exception: " + re );
+                    log.info( "   routing exception: " + re.toString() );
                 }
             }                 
             
@@ -317,7 +317,7 @@ public class Dht {
         try {
             val = proxyDht.get(rid);
         } catch( RoutingException re ) {
-            log.info( "  routing exception" );
+            log.info( "  routing exception: " + re.toString() );
             return null;
         }
         
@@ -445,7 +445,7 @@ public class Dht {
         try {
             val = proxyDht.get(rid);            
         } catch( RoutingException re ) {
-            log.info( "  routing exception" );
+            log.info( "  routing exception: " + re.toString() );
         }
         log.info( " got val..." );
      

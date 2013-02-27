@@ -86,7 +86,7 @@ public class DhtRouter implements Router {
 
     //--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
-    // observer intereface
+    // observer interface
     //--------------------
 
     public void update( Object rns, Object arg ) {
@@ -143,33 +143,32 @@ public class DhtRouter implements Router {
             
             String address = null;
 
-            if( server instanceof RemoteProxyServer ){
-                
-                //address 
-                //    = ((RemoteProxyServer) server).<get remote proxy eddress>
+            if( server instanceof RemoteProxyServer ) {
+                address = ((RemoteProxyServer) server).getAddress();
+            } else {
+                //address = local address 
+                address = this.getLocalAddress();
             }
+        
+            log.info( "remote proxy address=" + address  );
 
-            if( addres != null ){
+            if( address != null && !address.equals( "" ) ) {
 
-                
             // NativeServer server = message.getNativeServer();
-
-                
                 DhtRouterItem routerItem =
                     new DhtRouterItem( address,
                                        record.getQueryTime().getTime(),
                                        record.getExpireTime().getTime() );
                 
-            log.info( "  DhtRouterItem: address=" + address +
-                      " query=" + record.getQueryTime().getTime() +
-                      " expire=" + record.getExpireTime().getTime() );
+                log.info( " DhtRouterItem: address=" + address +
+                          " query=" + record.getQueryTime().getTime() +
+                          " expire=" + record.getExpireTime().getTime() );
         
-            log.info( "  DhtRouterItem: DELETING" );
+                log.info( "  DhtRouterItem: DELETING" );
 
-            proxyDht.deleteItem( rid, routerItem );
+                proxyDht.deleteItem( rid, routerItem );
+            }
         } 
-        
-        
     }
         
     public NativeServer getNextProxyServer( String provider, 
@@ -194,13 +193,13 @@ public class DhtRouter implements Router {
         
         Log log = LogFactory.getLog(DhtRouter.class);
         log.info( "  rid=" + rid.toString(16) + " @ " + proxyDht );        
-        RemoteProxyServer pserver = null;
         NativeServer remote = null;
         
         String lastAddress = proxyDht.getLastAddress( rid );
         
         log.info( "lastAddress=" + lastAddress );
 
+        /*
         // local proxy address/port
         //-------------------------
         String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
@@ -212,18 +211,21 @@ public class DhtRouter implements Router {
         localAddress = localAddress.replaceAll( "%%URL%%", url );
         
         log.info( "localAddress=" + localAddress );
-        
+        */
+
+        String localAddress = this.getLocalAddress();
+
         if ( lastAddress != null && 
              ! ( lastAddress.equals( localAddress ) ) ) {
            
             log.info( "lastAddress not equals localAddress. " ); 
-            RemoteProxyServer remoteProxy =
-                rsc.getProxyProto().getRemoteProxyServerInstance( lastAddress );
-            //remoteProxy.setAddress( lastAddress );
-            remote = remoteProxy;
+            log.info( "remote come from RemoteProxyServer. " );
+            remote = rsc.getProxyProto().getRemoteProxyServerInstance( 
+                                                                lastAddress );
             log.info( "   remote URL=" + lastAddress );
             
         } else {            
+            log.info( "remote from NativeServer. " );
             remote = rsc.getNativeServer();
 
             log.info( "lastAddress same as localAddress:" );
@@ -245,4 +247,21 @@ public class DhtRouter implements Router {
         return ID.getSHA1BasedID( recordStrId.getBytes() );
     }
 
+    private String getLocalAddress () {
+
+        Log log = LogFactory.getLog(DhtRouter.class);
+
+        // local proxy address/port
+        //-------------------------
+        String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
+
+        log.info( "url="+ url );
+
+        String localAddress = rsc.getProxyProto().getAddress();
+
+        localAddress = localAddress.replaceAll( "%%URL%%", url );
+
+        log.info( "localAddress=" + localAddress );
+        return localAddress ;
+    }
 }

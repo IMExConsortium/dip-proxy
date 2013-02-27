@@ -108,7 +108,7 @@ public class CachingService extends RemoteNativeService {
 
                 natXml = cacheRecord.getNativeXml();
 
-                if( natXml == null || natXml.length() == 0 ) {
+                if( natXml == null || natXml.isEmpty() ) {
                     DipProxyDAO.getNativeRecordDAO().delete( cacheRecord );
                     cacheRecord = null;
                 } else {
