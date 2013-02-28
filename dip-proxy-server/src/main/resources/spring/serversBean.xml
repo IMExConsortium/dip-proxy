@@ -20,7 +20,7 @@
   <property name="overlayMode" value="${dht.mode}" />
 
   <property name="routingAlgorithm">
-    <value>Chord</value>
+    <value>${dht.routing}</value>
   </property>
   
   <property name="dhtPort">
