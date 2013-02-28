@@ -152,14 +152,16 @@ public class DhtRouter implements Router {
         
             log.info( "remote proxy address=" + address  );
 
-            if( address != null && !address.equals( "" ) ) {
+            if( address != null && !address.isEmpty() ) {
 
-            // NativeServer server = message.getNativeServer();
+                log.info( "deleted record=" + record );
+            
                 DhtRouterItem routerItem =
                     new DhtRouterItem( address,
                                        record.getQueryTime().getTime(),
                                        record.getExpireTime().getTime() );
                 
+                log.info( "deleted routerItem=" + routerItem ); 
                 log.info( " DhtRouterItem: address=" + address +
                           " query=" + record.getQueryTime().getTime() +
                           " expire=" + record.getExpireTime().getTime() );
