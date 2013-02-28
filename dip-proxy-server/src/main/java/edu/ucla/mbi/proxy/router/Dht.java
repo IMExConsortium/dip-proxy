@@ -218,6 +218,11 @@ public class Dht {
             
             proxyDht = DHTFactory.getDHT( dhtc, proxyId );
                         
+            // no clue what it does ;o)
+            //-------------------------
+
+            dhtc.setDoReputOnRequester( true );
+
             // join overlay
             //-------------
 
