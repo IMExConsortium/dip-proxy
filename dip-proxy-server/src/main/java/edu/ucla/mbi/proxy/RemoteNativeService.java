@@ -79,8 +79,12 @@ class RemoteNativeService { // extends Observable {
         int retry = rsc.getMaxRetry();
         NativeRecord remoteRecord = null;
         ProxyFault retryFault = null;
+
+
         
         while ( retry > 0 && remoteRecord == null ) {    
+
+            boolean deleteFlag = false;
             
             NativeServer nativeServer = null;                
             retry--;
@@ -112,9 +116,12 @@ class RemoteNativeService { // extends Observable {
             } catch( ProxyFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
                           "fault: " + fault.getFaultInfo().getMessage()); 
-                retryFault = fault;      
+                retryFault = fault;
+                deleteFlag = true;
+                
             } catch ( Exception ex ) {
                 log.warn( "getNativeFromRemote: ex=" + ex.toString() );
+                deleteFlag = true;
                 retryFault = FaultFactory.newInstance( Fault.UNKNOWN );
             }
             
@@ -122,16 +129,16 @@ class RemoteNativeService { // extends Observable {
                       remoteRecord );
           
             if( remoteRecord != null && !isRecordValid( remoteRecord ) ) {
+
+                deleteFlag = true;
                 retryFault = FaultFactory.newInstance( Fault.VALIDATION_ERROR );
                 remoteRecord = null;
             }
-
-            if( retryFault != null 
-                && nativeServer instanceof RemoteProxyServer ) {
+            
+            if( deleteFlag && nativeServer instanceof RemoteProxyServer ) {
 
                 NativeRecord faultyRecord = new NativeRecord( provider, service, 
                                                               ns, ac);
-                
                 faultyRecord.resetExpireTime( rsc.getTtl() );  
      
                 DhtRouterMessage message =
@@ -142,7 +149,6 @@ class RemoteNativeService { // extends Observable {
                 log.info( "getNativeFromRemote: delete a invalid record " +
                           "or fault address. " );
             }
-            
         }
 
         if( remoteRecord == null ) {
@@ -153,33 +159,6 @@ class RemoteNativeService { // extends Observable {
          }
 
         log.info( "valid record="+ remoteRecord);
-
-        // valid record when here
-        //-----------------------
-        
-        
-        //  remote site problem
-        //  NOTE: should also drop on exception remote exception ???
-               
-            // ----------------------------------
-            // NOTE: temporary hiding for proxy
-            // -------------------------------
-            /*
-            log.info( "getNative: natXml is null/zero length. " );
-            this.setChanged(); // drop site from DHT
-
-            DhtRouterMessage message =
-                new DhtRouterMessage( DhtRouterMessage.DELETE,
-                                      remoteRecord, nativeServer );
-
-            this.notifyObservers( message );
-            this.clearChanged();
-            */
-            //------------------------------------------------------
-            //remoteRecord = null;
-                    
-        //  throw FaultFactory.newInstance( Fault.VALIDATION_ERROR );
-        // }
         
         if( remoteRecord.getExpireTime() == null ) {
             
