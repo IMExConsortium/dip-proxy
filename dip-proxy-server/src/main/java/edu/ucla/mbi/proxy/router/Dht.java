@@ -218,10 +218,10 @@ public class Dht {
             
             proxyDht = DHTFactory.getDHT( dhtc, proxyId );
                         
-            // no clue what it does ;o)
-            //-------------------------
+            // propagate old records to incoming nodes ? 
+            //-------------------------------------------
 
-            dhtc.setDoReputOnRequester( true );
+            dhtc.setDoReputOnReplicas( true );
 
             // join overlay
             //-------------
