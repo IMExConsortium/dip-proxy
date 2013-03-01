@@ -110,6 +110,9 @@ public class CachingService extends RemoteNativeService {
 
                 if( natXml == null || natXml.isEmpty() ) {
                     DipProxyDAO.getNativeRecordDAO().delete( cacheRecord );
+                    
+                    // remove dht record here ?
+
                     cacheRecord = null;
                 } else {
                     Date expirationTime = cacheRecord.getExpireTime();

@@ -31,7 +31,8 @@ public class CacheStatus extends PortalSupport {
 
     private WSContext wsContext = null;
 
-    private Map<String,Map> counts = null;
+    private Map<String,Map> nativeCounts = null;
+    private Map<String,Map> dxfCounts = null;
         
 
     public void setWsContext( WSContext wsContext ) {
@@ -41,7 +42,15 @@ public class CacheStatus extends PortalSupport {
     //---------------------------------------------------------------------
 
     public Map<String,Map> getCounts() {
-        return counts;
+        return nativeCounts;
+    }
+
+    public Map<String,Map> getNativeCounts() {
+        return nativeCounts;
+    }
+
+    public Map<String,Map> getDxfCounts() {
+        return dxfCounts;
     }
 
     //---------------------------------------------------------------------
@@ -51,7 +60,8 @@ public class CacheStatus extends PortalSupport {
         Log log = LogFactory.getLog( CacheStatus.class );
         log.info("CacheStatus execute ...");
         
-        counts = new TreeMap<String,Map>();
+        nativeCounts = new TreeMap<String,Map>();
+        dxfCounts = new TreeMap<String,Map>();
         
         try {
 
@@ -72,13 +82,27 @@ public class CacheStatus extends PortalSupport {
                     log.info( "prv=" + prv );
                     
                     Map<String,Long> prvCounts = ndo.countAll( prv );
-                    counts.put( prv, prvCounts );
+                    nativeCounts.put( prv, prvCounts );
                 }
             }
 
         } catch ( DAOException de ) {
             
         }
+
+
+        try {
+
+            DxfRecordDAO ndo = DipProxyDAO.getDxfRecordDAO();
+
+
+            
+
+
+        }catch( DAOException de ) {
+
+        }
+
         
         return "success";
     }
