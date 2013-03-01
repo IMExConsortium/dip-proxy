@@ -216,13 +216,15 @@ public class Dht {
             
             dhtc.setRoutingAlgorithm( routingAlg );
             
-            proxyDht = DHTFactory.getDHT( dhtc, proxyId );
-                        
             // propagate old records to incoming nodes ? 
             //-------------------------------------------
 
             dhtc.setDoReputOnReplicas( true );
 
+
+            proxyDht = DHTFactory.getDHT( dhtc, proxyId );
+                        
+            
             // join overlay
             //-------------
 
