@@ -218,9 +218,8 @@ public class Dht {
             
             // propagate old records to incoming nodes ? 
             //-------------------------------------------
-
+            
             dhtc.setDoReputOnReplicas( true );
-
 
             proxyDht = DHTFactory.getDHT( dhtc, proxyId );
                         
@@ -335,13 +334,12 @@ public class Dht {
         
         Log log = LogFactory.getLog(Dht.class);
 
+        log.info( "updateItem entering with newItem=" + newItem );
         Set<ValueInfo<DhtRouterList>> val = null;
         RemoteServer remote = null;
 
         try {
-
             val = proxyDht.get(rid);
-
         } catch( RoutingException re ) {
             log.info( "  UpdateItem: routing exception" + re.toString() );
             re.printStackTrace();
@@ -352,8 +350,16 @@ public class Dht {
         
         log.info( " got val=" + val );
         boolean newFlag = true;
-        
+       
+        DhtRouterList newDpl = new DhtRouterList(); 
+
         if ( val != null && val.size() > 0 ) {
+            long firstQuery = 0;
+            DhtRouterItem firstQueryItem = null ;
+            //long lastExpire = 0;
+            //DhtRouterItem lastItem = null;
+            //String lastUrl = null;
+
             for( Iterator<ValueInfo<DhtRouterList>> i = val.iterator();
                  i.hasNext(); ){
             
@@ -362,23 +368,16 @@ public class Dht {
                 log.info( "  list=" + vi.getValue() );
                 
                 DhtRouterList dpl = vi.getValue();
-                DhtRouterItem lastItem = null;
-                long lastExpire = 0;
-
-                long firstQuery = 0;
-                DhtRouterItem firstQueryItem = null ;
-               
-                String lastUrl = null;
                 
                 for ( Iterator<DhtRouterItem> pi = dpl.iterator();
-                      pi.hasNext(); ){
+                      pi.hasNext(); ) {
                     
-                    // 
-
                     DhtRouterItem proxyItem = pi.next();                   
 
                     log.info( "   item=" + proxyItem.toString() );
-                    
+                
+                    newDpl.addItem( proxyItem );
+    
                     if ( proxyItem.getAddress().equals(newItem.getAddress()) ){
                         newFlag = false;
                         proxyItem.setCreateTime( newItem.getCreateTime() );
@@ -386,7 +385,7 @@ public class Dht {
                     }
 
                     if( firstQuery == 0  
-                        || proxyItem.getCreateTime() < firstQuery ){
+                        || proxyItem.getCreateTime() < firstQuery ) {
                         
                         firstQuery = proxyItem.getCreateTime();
                         firstQueryItem = proxyItem;
@@ -394,52 +393,39 @@ public class Dht {
                 }
 
                 if( newFlag ) {
+                    log.info( "updateItem: newFlag=true: add newItem=" + newItem );
                     DhtRouterItem dpi = newItem;
-                    dpl.addItem( dpi );
+                    newDpl.addItem( dpi );
                     
                     if ( dpl.size() > MAX_DPL_SIZE ){
                         dpl.removeItem( firstQueryItem );
                     }
                 }   
-                
-                try {
-                    
-                    // remove old value(s)
-
-                    proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
-
-                    // set new value
-                    
-                    proxyDht.setHashedSecretForPut( new ByteArray( rid.getValue() ) ); 
-                    proxyDht.put( rid, dpl );
-                    
-                } catch ( Exception e ) {
-                    log.info( "dht exception:" + e.toString() );
-                }
-                
+                break; 
             }
         } else {
-            DhtRouterList dpl = new DhtRouterList();
+            log.info( "updateItem: add new item to newDpl. " );
             DhtRouterItem dpi = newItem;
-            dpl.addItem( dpi );
-            
-            try {
-
-                // remove old value(s)
-
-                proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
-
-                // set new value
-
-                proxyDht.setHashedSecretForPut( new ByteArray( rid.getValue() ) );
-
-
-               proxyDht.put( rid, dpl );
-
-            } catch ( Exception e ) {
-                log.info( "dht exception:" + e.toString() );
-            } 
+            newDpl.addItem( dpi );
         }
+
+        try {
+            // remove old value(s)
+            proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
+
+            log.info( "updateItem: after remove: dht rc=" + proxyDht.get(rid) );
+
+            // set new value
+            proxyDht.setHashedSecretForPut( new ByteArray( rid.getValue() ) );
+
+            proxyDht.put( rid, newDpl );
+
+            log.info( "updateItem: after put: dht rc=" + proxyDht.get(rid) );
+
+        } catch ( Exception e ) {
+            log.info( "dht exception:" + e.toString() );
+        }
+
         log.info( "update(UPDATE): done" );
     }
 
@@ -523,7 +509,7 @@ public class Dht {
             ex.printStackTrace();
         }
         
-        log.info( "  DHT Record(s) retieved=" + dhtRec );
+        log.info( "  DHT Record(s) retrieved=" + dhtRec );
         
         if( dhtRec != null && dhtRec.size() > 0 ){
             

@@ -123,8 +123,11 @@ public class DhtRouter implements Router {
 
             String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
             
-            address = rsc.getProxyProto().getAddress();
-            address = address.replaceAll( "%%URL%%", url );
+            //address = rsc.getProxyProto().getAddress();
+            address = this.getLocalAddress();
+
+            //address = address.replaceAll( "%%URL%%", url );
+            log.info( "update: UPDATE: address=" + address );
 
             DhtRouterItem routerItem =
                 new DhtRouterItem( address,
