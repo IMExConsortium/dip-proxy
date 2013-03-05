@@ -17,6 +17,7 @@ import edu.ucla.mbi.server.*;
 
 import java.net.*;
 import java.util.*;
+import java.sql.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -118,8 +119,8 @@ public class NativeRecordDAO extends AbstractDAO {
 
     //---------------------------------------------------------------------
 
-    public long count( String provider 
-                      ) throws DAOException {
+    public Long count( String provider 
+                       ) throws DAOException {
         
         Session session = hibernateOrmUtil.getCurrentSession();
         Transaction tx = session.beginTransaction();
@@ -142,13 +143,16 @@ public class NativeRecordDAO extends AbstractDAO {
             session.close();
         } 
 
+        /*
         if ( count != null ){
             return count.longValue();
         } else {
             return 0;
-        }
+        }*/
+        return count;
     }
 
+    //--------------------------------------------------------------------------
     public Map<String,Long> countAll( String provider 
                                       ) throws DAOException {
         
@@ -188,8 +192,54 @@ public class NativeRecordDAO extends AbstractDAO {
         return result;
     }
 
+    //--------------------------------------------------------------------------
+    public void removeAll( String provider ) throws DAOException {
+        Session session = hibernateOrmUtil.getCurrentSession();
+        Transaction tx = session.beginTransaction();
 
-    //---------------------------------------------------------------------
+        try {
+            Query query = session.createQuery( "DELETE FROM NativeRecord nr " +
+                                               " WHERE nr.provider = :prv ");
+            
+            query.setParameter( "prv", provider.toUpperCase() );
+            query.executeUpdate();
+            tx.commit();
+
+        } catch ( HibernateException e ) {
+            handleException( e );
+        } finally {
+            session.close();
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
+    public void expireAll( String provider ) throws DAOException {
+        Session session = hibernateOrmUtil.getCurrentSession();
+        Transaction tx = session.beginTransaction();
+        java.util.Date now = Calendar.getInstance().getTime();
+
+        log.info( "before try expire all. " );
+        try {
+            Query query = session.createQuery( 
+                "UPDATE NativeRecord nr set nr.expireTime = :now " +
+                " WHERE nr.provider = :prv " );
+        
+            query.setParameter( "prv", provider.toUpperCase() );
+            query.setParameter("now", now );
+
+            query.executeUpdate();
+            tx.commit();
+
+        } catch ( HibernateException e ) {
+            handleException( e );
+        } finally {
+            session.close();
+        }
+        log.info( "after try expire. " );
+    }
+
+    //--------------------------------------------------------------------------
     
     public List<String[]> 
         getExpireLast( String provider ) throws DAOException {

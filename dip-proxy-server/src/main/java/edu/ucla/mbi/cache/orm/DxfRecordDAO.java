@@ -18,7 +18,12 @@ import edu.ucla.mbi.cache.*;
 import java.net.*;
 import java.util.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class DxfRecordDAO extends AbstractDAO {
+
+    private Log log = LogFactory.getLog( DxfRecordDAO.class );
   
     public DxfRecordDAO ( HibernateOrmUtil util ) {
         super( util );
@@ -70,7 +75,82 @@ public class DxfRecordDAO extends AbstractDAO {
             session.close();
         }
  
-	    
         return dxfr;
     }
+
+    //--------------------------------------------------------------------------
+    public Long countAll( String provider
+                                      ) throws DAOException {
+
+        Session session = hibernateOrmUtil.getCurrentSession();
+        Transaction tx = session.beginTransaction();
+        
+        Long count = null;
+
+        log.info( "coutAll: before try. ");
+        try {
+
+            Query query = session
+                .createQuery( "select count (*) " +
+                              " from DxfRecord dr " +
+                              " where dr.provider = :prv " );
+
+            query.setParameter( "prv", provider.toUpperCase() );
+
+            count = (Long) query.uniqueResult();
+
+            tx.commit();
+
+        } catch ( HibernateException e ) {
+            handleException( e );
+        } finally {
+            session.close();
+        }
+        log.info( "countAll: after try. ");
+        return count;
+    }
+
+    //--------------------------------------------------------------------------
+    public void removeAll( String provider ) throws DAOException {
+        Session session = hibernateOrmUtil.getCurrentSession();
+        Transaction tx = session.beginTransaction();
+
+        try {
+            Query query = session.createQuery( "DELETE FROM DxfRecord dr "  +
+                                               " WHERE dr.provider = :prv ");
+
+            query.setParameter( "prv", provider.toUpperCase() );
+            query.executeUpdate();
+            tx.commit();
+        } catch ( HibernateException e ) {
+            handleException( e );
+        } finally {
+            session.close();
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
+    public void expireAll( String provider ) throws DAOException {
+        Session session = hibernateOrmUtil.getCurrentSession();
+        Transaction tx = session.beginTransaction();
+        Date now = Calendar.getInstance().getTime();
+
+        log.info( "before try. " );
+        try {
+            Query query = session.createQuery(
+                "UPDATE DxfRecord dr set dr.expireTime = :now " +
+                " WHERE dr.provider = :prv ");
+
+            query.setParameter( "now", now );
+            query.executeUpdate();
+            tx.commit();
+        } catch ( HibernateException e ) {
+            handleException( e );
+        } finally {
+            session.close();
+        }
+        log.info( "after try. " );
+    }
+
 }
