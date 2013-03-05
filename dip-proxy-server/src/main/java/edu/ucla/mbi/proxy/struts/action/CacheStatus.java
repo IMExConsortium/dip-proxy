@@ -33,8 +33,8 @@ public class CacheStatus extends PortalSupport {
 
     //private Map<String,Map> nativeCounts = null;
     //private Map<String,Map> dxfCounts = null;
-    private Map<String,Long> nativeCounts = null;
-    private Map<String,Long> dxfCounts = null;     
+    private Map<String, Long> nativeCounts = null;
+    private Map<String, Long> dxfCounts = null;     
     private Map<String,String> op  = null;
 
     public void setOp( Map<String, String> op ) {
@@ -115,7 +115,6 @@ public class CacheStatus extends PortalSupport {
                         }
                     }
                     
-                    //Map<String,Long> prvCounts = ndo.countAll( prv );
                     Long prvCounts = ndo.count( prv ) ;
                     if( prvCounts != null ) {
                         nativeCounts.put( prv, prvCounts );
@@ -161,7 +160,6 @@ public class CacheStatus extends PortalSupport {
                         }
                     }
 
-                    //Map<String,Long> prvCounts = ddo.countAll( prv );
                     Long prvCounts = ddo.countAll( prv ) ;
                     if( prvCounts != null ) {
                         dxfCounts.put( prv, prvCounts );
