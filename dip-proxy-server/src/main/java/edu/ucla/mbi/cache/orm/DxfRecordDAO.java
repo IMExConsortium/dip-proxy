@@ -143,6 +143,7 @@ public class DxfRecordDAO extends AbstractDAO {
                 " WHERE dr.provider = :prv ");
 
             query.setParameter( "now", now );
+            query.setParameter( "prv", provider.toUpperCase() );
             query.executeUpdate();
             tx.commit();
         } catch ( HibernateException e ) {
