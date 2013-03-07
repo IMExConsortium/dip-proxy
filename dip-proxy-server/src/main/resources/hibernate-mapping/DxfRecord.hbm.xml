@@ -19,6 +19,7 @@
     <property name="detail"  column="detail"/>
     <property name="dxf" column="dxf"/>
     <property name="createTime" column="create_time"/>
+    <property name="queryTime" column="query_time"/>
     <property name="expireTime" column="expire_time"/>    
   </class>
 </hibernate-mapping>

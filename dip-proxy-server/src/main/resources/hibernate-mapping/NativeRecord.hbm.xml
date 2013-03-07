@@ -18,8 +18,9 @@
     <property name="ac"  column="ac"/>
     <property name="nativeXml" column="native_xml"/>
     <property name="createTime" column="create_time"/>
+    <property name="queryTime" column="query_time"/> 
     <property name="expireTime" column="expire_time"/> 
-    <property name="ttl" column="ttl"/> 
+<!--    <property name="ttl" column="ttl"/>  -->
   </class>
 </hibernate-mapping>
 
