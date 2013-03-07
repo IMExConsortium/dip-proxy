@@ -101,7 +101,7 @@ public class CacheStatus extends PortalSupport {
                     if( getOp() != null ) {
                         log.info( "op is not null. " );
                         for( String opKey:getOp().keySet() ) {
-                            if( opKey .equals( "nativeremove" + prv  ) ) {
+                            if( opKey.equals( "nativeremove" + prv  ) ) {
                                 //call removeAll
                                 log.info( "call nativeDAO removeAll." );
                                 ndo.removeAll( prv );
@@ -115,7 +115,7 @@ public class CacheStatus extends PortalSupport {
                         }
                     }
                     
-                    Long prvCounts = ndo.count( prv ) ;
+                    Long prvCounts = ndo.countAll( prv ) ;
                     if( prvCounts != null ) {
                         nativeCounts.put( prv, prvCounts );
                     }
@@ -146,13 +146,13 @@ public class CacheStatus extends PortalSupport {
                     if( getOp() != null ) {
 
                         for( String opKey:getOp().keySet() ) {
-                            if( getOp().get( opKey ).equals( "dxfremove:" + prv  ) ) {
+                            if( opKey.equals( "dxfremove" + prv  ) ) {
                                 //call removeAll
                                 log.info( "ddo call removeAll. " );
                                 ddo.removeAll( prv );
                             }
 
-                            if ( getOp().get( opKey ).equals( "dxfexpire:" + prv ) ) {
+                            if ( opKey.equals( "dxfexpire" + prv ) ) {
                                 //call expireAll
                                 log.info( "ddo call expireAll. " );
                                 ddo.expireAll( prv );
