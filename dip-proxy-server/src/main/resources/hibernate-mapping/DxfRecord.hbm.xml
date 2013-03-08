@@ -6,7 +6,6 @@
 <hibernate-mapping>
   <class name="edu.ucla.mbi.cache.DxfRecord" table="dxf_record" lazy="false">
     <id name="id" column="pk">
-	<!--<generator class="incremen"/>  -->
 	<generator class="sequence">
 		<param name="sequence">dxf_record_pk_seq</param>
 	</generator>
@@ -19,7 +18,6 @@
     <property name="detail"  column="detail"/>
     <property name="dxf" column="dxf"/>
     <property name="createTime" column="create_time"/>
-    <property name="queryTime" column="query_time"/>
     <property name="expireTime" column="expire_time"/>    
   </class>
 </hibernate-mapping>
