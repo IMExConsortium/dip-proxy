@@ -28,6 +28,7 @@ public class DxfRecord implements Record {
     private String dxf = "";   // dip representation
 
     private Date createTime = null;
+    private Date queryTime = null;   
     private Date expireTime = null;   
 
     public DxfRecord() { };
@@ -41,6 +42,7 @@ public class DxfRecord implements Record {
         this.ac = ac;
         this.detail = detail;
         this.createTime = Calendar.getInstance().getTime();
+        this.queryTime = createTime;
     }
     
     // setters
@@ -84,6 +86,11 @@ public class DxfRecord implements Record {
     public DxfRecord setCreateTime( Date time ) {
         this.createTime = time;
         return this;
+    }
+
+    public DxfRecord setQueryTime( Date time ) {
+        this.queryTime = time;
+	return this;
     }
 
     public DxfRecord setExpireTime( Date time ) {
@@ -162,14 +169,16 @@ public class DxfRecord implements Record {
         expireTime = expCal.getTime();
     }  
 
-    public void resetExpireTime( Date now, int ttl ) {
+    public void resetExpireTime( Date queryTime, int ttl ){
 
         if( createTime == null ) {
             createTime = Calendar.getInstance().getTime();
         }
 
+        this.queryTime =  queryTime;
+        
         Calendar expCal = Calendar.getInstance();
-        expCal.setTime( now );
+        expCal.setTime( queryTime  );
         expCal.add( Calendar.SECOND, ttl );
         expireTime = expCal.getTime();
     }

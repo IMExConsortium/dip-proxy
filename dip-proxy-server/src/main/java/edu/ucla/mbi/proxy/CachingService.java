@@ -394,6 +394,7 @@ public class CachingService extends RemoteNativeService {
             dxfRecord.setDxf( dxfString );
             
             if( dxfExpired ) {
+                // generated from native ? 
                 dxfRecord.resetExpireTime ( nr.getQueryTime(),
                                             rsc.getTtl() );
             
@@ -405,7 +406,11 @@ public class CachingService extends RemoteNativeService {
                 return dxfResult;
 
             } else {
-                dxfRecord.resetExpireTime ( rsc.getTtl() );
+
+                // retrieved from cache ? 
+
+                dxfRecord.resetExpireTime ( dxfRecord.getQueryTime(),
+                                            rsc.getTtl() );
 
                 if( rsc.isRamCacheOn() ) {
                     memcachedStore ( memcachedId, dxfRecord );

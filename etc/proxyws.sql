@@ -7,6 +7,7 @@ CREATE TABLE dxf_record (
     detail character varying(5),
     dxf text NOT NULL,
     create_time timestamp without time zone NOT NULL,
+    query_time timestamp without time zone NOT NULL,
     expire_time timestamp without time zone NOT NULL
 );
 
