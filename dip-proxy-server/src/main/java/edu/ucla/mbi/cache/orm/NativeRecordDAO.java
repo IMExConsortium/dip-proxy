@@ -309,7 +309,7 @@ public class NativeRecordDAO extends AbstractDAO {
                 " WHERE nr.provider = :prv " );
 
             query.setParameter( "prv", provider.toUpperCase() );
-            query.setParameter("now", now );
+            query.setParameter( "now", now );
 
             query.executeUpdate();
             tx.commit();
