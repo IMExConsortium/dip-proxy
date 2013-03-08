@@ -266,26 +266,20 @@ public class NativeRecordDAO extends AbstractDAO {
     public void expireAll( String provider, String service ) throws DAOException {
         Session session = hibernateOrmUtil.getCurrentSession();
         Transaction tx = session.beginTransaction();
+        java.util.Date now = Calendar.getInstance().getTime();
         
         log.info( "before try expire all. " );
         try {
 
-            /* **********************************************************
-             * Node: after reset expire_time, ttl needs to be reset also
-             *       to keep query time stable.
-             * ***********************************************************/
-            Query query = session.createSQLQuery(
-                "UPDATE native_record " +
-                " SET ttl = ( ttl - " +
-                "   ( extract( milliseconds from expire_time ) - " +
-                "     extract( milliseconds from LOCALTIMESTAMP ) " +
-                "   ) / 1000 " + 
-                " ), " +
-                " expire_time = LOCALTIMESTAMP " +
-                " WHERE provider = :prv  and service = :srv " );
+             Query query = session.createQuery(
+                "UPDATE NativeRecord nr" +
+                " SET nr.expireTime = :now " +
+                " WHERE nr.provider = :prv " +
+                " AND nr.service = :srv " );
 
             query.setParameter( "prv", provider.toUpperCase() );
             query.setParameter( "srv", service.toLowerCase() );
+            query.setParameter("now", now );
 
             query.executeUpdate();
             tx.commit();
@@ -304,25 +298,18 @@ public class NativeRecordDAO extends AbstractDAO {
     public void expireAll( String provider ) throws DAOException {
         Session session = hibernateOrmUtil.getCurrentSession();
         Transaction tx = session.beginTransaction();
+        java.util.Date now = Calendar.getInstance().getTime();
         
         log.info( "before try expire all. " );
         try {
             
-            /* **********************************************************
-             * Node: after reset expire_time, ttl needs to be reset also
-             *       to keep query time stable.
-             * **********************************************************/
-            Query query = session.createSQLQuery(
-                "UPDATE native_record " +
-                " SET ttl = ( ttl - " +
-                "   ( extract( milliseconds from expire_time ) - " +
-                "     extract( milliseconds from LOCALTIMESTAMP ) " +
-                "   ) / 1000 " + 
-                " ), " +
-                " expire_time = LOCALTIMESTAMP " +
-                " WHERE provider = :prv " );
+            Query query = session.createQuery(
+                "UPDATE NativeRecord nr" +
+                " SET nr.expireTime = :now " +
+                " WHERE nr.provider = :prv " );
 
             query.setParameter( "prv", provider.toUpperCase() );
+            query.setParameter("now", now );
 
             query.executeUpdate();
             tx.commit();
