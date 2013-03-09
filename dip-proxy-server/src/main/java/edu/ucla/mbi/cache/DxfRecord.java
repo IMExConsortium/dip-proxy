@@ -33,8 +33,8 @@ public class DxfRecord implements Record {
 
     public DxfRecord() { };
     
-    public DxfRecord( String provider, String service,
-                      String ns, String ac, String detail ){
+    public DxfRecord( String provider, String service, String ns,
+                      String ac, String detail, Date queryTime ) {
         
         this.provider = provider;
         this.service = service;
@@ -42,7 +42,7 @@ public class DxfRecord implements Record {
         this.ac = ac;
         this.detail = detail;
         this.createTime = Calendar.getInstance().getTime();
-        this.queryTime = createTime;
+        this.queryTime = queryTime;
     }
     
     // setters
@@ -90,7 +90,7 @@ public class DxfRecord implements Record {
 
     public DxfRecord setQueryTime( Date time ) {
         this.queryTime = time;
-	return this;
+	    return this;
     }
 
     public DxfRecord setExpireTime( Date time ) {
@@ -133,6 +133,10 @@ public class DxfRecord implements Record {
         return createTime;
     }
 
+    public Date getQueryTime() {
+        return queryTime;
+    }
+
     public Date getExpireTime() {
         return expireTime;
     }
@@ -140,16 +144,16 @@ public class DxfRecord implements Record {
 
     public String toString() {
 
-        int lastPos = dxf.length()-1;
-        if( lastPos > 48 ){
+        int lastPos = dxf.length() - 1;
+        if( lastPos > 48 ) {
             lastPos = 48;
         }
         
-      String str = "[DxfRecord: id= " + id + "; ns= " + ns + 
+        String str = "[DxfRecord: id= " + id + "; ns= " + ns + 
           ";ac = " + ac + ";detail = "+ detail + 
           ";dxf = " + dxf.substring(0,lastPos) + 
           "\n;createTime " + createTime.toString() + "]";
-      return str;
+        return str;
     }
 
 
@@ -181,6 +185,5 @@ public class DxfRecord implements Record {
         expCal.setTime( queryTime  );
         expCal.add( Calendar.SECOND, ttl );
         expireTime = expCal.getTime();
-    }
- 
+    } 
 }
