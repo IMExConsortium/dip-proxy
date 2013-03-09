@@ -226,6 +226,55 @@ public class CachingService extends RemoteNativeService {
 
     //--------------------------------------------------------------------------
 
+    public DatasetType getDatasetType( DxfRecord dxfRecord )
+        throws ProxyFault{
+
+        if( dxfRecord != null && dxfRecord.getDxf() != null ){
+            return unmarshall( dxfRecord.getDxf() );
+        }
+        throw FaultFactory.newInstance( Fault.MARSHAL );
+    }
+    
+    //--------------------------------------------------------------------------
+
+    public DxfRecord getDxfRecord( String provider,
+                                   String service,
+                                   String ns,
+                                   String ac,
+                                   String detail
+                                   ) throws ProxyFault {
+
+        
+        // test memcached; return record if present
+
+
+        // test dbcachce; return record if not expired;
+        // if expired store the record for later;
+
+        
+
+        // get native record; if not expired make dxf;
+        // if dxf valid store in dbcache & memchached then return 
+        
+        
+        // if native is expired return most recent dxf   
+        
+
+    }
+
+    //-------------------------------------------------------------------------- 
+
+    boolean isDxfValid( String dxfString ){ 
+
+        // marshal and check if valid;
+
+    }
+
+    
+    //--------------------------------------------------------------------------
+
+
+
     public DatasetType getDxf( String provider, 
                                String service, 
                                String ns,
@@ -286,7 +335,7 @@ public class CachingService extends RemoteNativeService {
                 proxyFault = FaultFactory.newInstance( Fault.TRANSACTION );
             }     
                 
-            if ( dxfRecord != null ) {
+            if( dxfRecord != null ) {
                 try {    
                     dxfResult = unmarshall( dxfRecord.getDxf() );
                 } catch ( ProxyFault fault ) {
@@ -358,8 +407,8 @@ public class CachingService extends RemoteNativeService {
                 nativeExpired = true;
 
                 if( dxfExpired 
-                    && nr.getExpireTime().after( 
-                        expiredDxf.getExpireTime() ) ) {
+                    && expiredDxf.getQueryTime().after( 
+                        nr.getQueryTime() ) ) {
                         
                     //*** return expired coming from dbCache
                     return expiredResult;
@@ -388,23 +437,17 @@ public class CachingService extends RemoteNativeService {
                 log.warn( "getDxf: marshall fault. " );
                 proxyFault = fault;
             }
-    
-            // Node: new change here
+   
             if ( dxfRecord == null ) {
-
                 dxfRecord = new DxfRecord( provider, service, ns, ac,
-                                           detail, nr.getQueryTime() );
-
-            } else {
-
-                dxfRecord.setQueryTime( nr.getQueryTime() ); 
-
+                                           detail);
             }
 
+            dxfRecord.setQueryTime( nr.getQueryTime() ); 
+            
             dxfRecord.setDxf( dxfString );
             dxfRecord.resetExpireTime ( dxfRecord.getQueryTime(),
                                         rsc.getTtl() );
-
             
             if( !nativeExpired && rsc.isRamCacheOn() ) {
                 memcachedStore ( memcachedId, dxfRecord );
@@ -416,41 +459,8 @@ public class CachingService extends RemoteNativeService {
             
             //*** return valid/expired dxf coming from remote       
             return dxfResult;
-
-            /*
-            if( dxfExpired ) {
-                // generated from native ? 
-                //*** native is expired
-                dxfRecord.resetExpireTime ( nr.getQueryTime(),
-                                            rsc.getTtl() );
-            
-                if( rsc.isDbCacheOn() ) {
-                    //*** using most recently expired update expired
-                    DipProxyDAO.getDxfRecordDAO().create( dxfRecord );
-                }
-                //*** return expired dxf coming from remote
-                return dxfResult;
-
-            } else {
-
-                // retrieved from cache ? 
-
-                dxfRecord.resetExpireTime ( dxfRecord.getQueryTime(),
-                                            rsc.getTtl() );
-
-                if( rsc.isRamCacheOn() ) {
-                    memcachedStore ( memcachedId, dxfRecord );
-                }
-
-                if( rsc.isDbCacheOn() ) {
-                    DipProxyDAO.getDxfRecordDAO().create( dxfRecord );
-                }
-                //*** return valid dxf coming from remote       
-                return dxfResult;
-            }*/
-            
         }
-
+        
         if( expiredResult != null ) {
             //*** return expired dxf coming from dbCache, here remote is null
             return expiredResult;

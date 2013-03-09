@@ -34,7 +34,7 @@ public class DxfRecord implements Record {
     public DxfRecord() { };
     
     public DxfRecord( String provider, String service, String ns,
-                      String ac, String detail, Date queryTime ) {
+                      String ac, String detail){
         
         this.provider = provider;
         this.service = service;
@@ -42,7 +42,7 @@ public class DxfRecord implements Record {
         this.ac = ac;
         this.detail = detail;
         this.createTime = Calendar.getInstance().getTime();
-        this.queryTime = queryTime;
+       
     }
     
     // setters
