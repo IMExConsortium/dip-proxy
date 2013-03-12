@@ -15,7 +15,7 @@ import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.TimeStamp;
 
-import edu.ucla.mbi.cache.NativeRecord;
+import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.proxy.router.Router;
 import edu.ucla.mbi.server.WSContext;
 
@@ -61,30 +61,53 @@ public class ProxyPortImpl implements ProxyPort {
                                     WSContext.getServerContext( provider ) );
 
             if ( format.equalsIgnoreCase( "dxf" ) 
-                    || format.equalsIgnoreCase( "both" ) ) 
-            {
+                    || format.equalsIgnoreCase( "both" ) ) {
+                
+                /*
                 DatasetType result =
                     cachingSrv.getDxf( provider, service, ns, ac, detail );
-                
-                if ( result != null ) {
-                    dataset.value = result ;
+                */
+
+                boolean noRecord = false;
+                DxfRecord dxfRec = cachingSrv.getDxfRecord ( 
+                                        provider, service, ns, ac, detail );
+
+                if( dxfRec != null && dxfRec.getDxf() != null ) {
+
+                    DatasetType result = cachingSrv.getDatasetType ( dxfRec );
+               
+                    if( result != null ) { 
+                        dataset.value = result ;
+                        timestamp.value =
+                            TimeStamp.toXmlDate( dxfRec.getQueryTime() );
+                    } else {
+                        noRecord = true;
+                    }
+
                 } else {
+                    noRecord = true;
+                }
+
+                if ( noRecord ) {
                     log.info("getRecord: return dataset is null ");
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
                 }
+                
             }
-            
+
             if ( format.equalsIgnoreCase( "native" ) 
-                    ||  format.equalsIgnoreCase( "both" ) )
-            {
+                    ||  format.equalsIgnoreCase( "both" ) ) {
+
                 NativeRecord natRec =
                     cachingSrv.getNative( provider, service, ns, ac );
 
                 if ( natRec != null && natRec.getNativeXml() != null &&
                      natRec.getNativeXml().length() > 0 ) {
+
                     nativerecord.value = natRec.getNativeXml();
                     timestamp.value =
                         TimeStamp.toXmlDate( natRec.getQueryTime() );
+
                 } else {
                     log.info("return dataset is null ");
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
