@@ -63,11 +63,6 @@ public class ProxyPortImpl implements ProxyPort {
             if ( format.equalsIgnoreCase( "dxf" ) 
                     || format.equalsIgnoreCase( "both" ) ) {
                 
-                /*
-                DatasetType result =
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
-                */
-
                 boolean noRecord = false;
                 DxfRecord dxfRec = cachingSrv.getDxfRecord ( 
                                         provider, service, ns, ac, detail );
@@ -80,19 +75,15 @@ public class ProxyPortImpl implements ProxyPort {
                         dataset.value = result ;
                         timestamp.value =
                             TimeStamp.toXmlDate( dxfRec.getQueryTime() );
+
                     } else {
-                        noRecord = true;
+                        throw FaultFactory.newInstance( Fault.MARSHAL );
                     }
 
                 } else {
-                    noRecord = true;
-                }
-
-                if ( noRecord ) {
                     log.info("getRecord: return dataset is null ");
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
                 }
-                
             }
 
             if ( format.equalsIgnoreCase( "native" ) 
