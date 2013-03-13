@@ -63,7 +63,6 @@ public class ProxyPortImpl implements ProxyPort {
             if ( format.equalsIgnoreCase( "dxf" ) 
                     || format.equalsIgnoreCase( "both" ) ) {
                 
-                boolean noRecord = false;
                 DxfRecord dxfRec = cachingSrv.getDxfRecord ( 
                                         provider, service, ns, ac, detail );
 
