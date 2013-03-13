@@ -120,7 +120,10 @@ public class CachingService extends RemoteNativeService {
                               " ET=" + expirationTime );
 
                     if ( currentTime.after( expirationTime ) ) {
+                        log.info( "getNativeRecord: put cacheRecord into "  +
+                                  "expiredRecord."  );
                         expiredRecord = cacheRecord;
+                        log.info( "getNativeRecord: expiredRecord=" + expiredRecord );
                     } else {
                         log.info( "getNative: return from dbCache." );
                         nativeRecord = cacheRecord;
@@ -139,6 +142,12 @@ public class CachingService extends RemoteNativeService {
         }
         
         if( remoteRecord != null ) {
+            if( expiredRecord != null ){
+                remoteRecord.setId( expiredRecord.getId() );
+                log.info( "getNativeRecord: remoteRecord set expiredR " +
+                          "Id and remoteRecord=" + remoteRecord );
+            }
+
             if( currentTime.after( remoteRecord.getExpireTime() ) ) {
                 //*** remote record is expired
                 log.info( "getNative: remoteExpired=true. " );
@@ -147,12 +156,9 @@ public class CachingService extends RemoteNativeService {
                 if(  expiredRecord == null 
                      || remoteRecord.getQueryTime()
                             .after( expiredRecord.getQueryTime() ) ){
-                   
-                    if( expiredRecord != null ){
-                        remoteRecord.setId( expiredRecord.getId() );
-                    } 
                     
                     expiredRecord = remoteRecord;
+                    log.info( "expiredR=" + expiredRecord );
                 }
             } else {
                 nativeRecord = remoteRecord;
@@ -162,6 +168,7 @@ public class CachingService extends RemoteNativeService {
         if( nativeRecord != null ){
             //*** dbCache update                           
             if( rsc.isDbCacheOn() ) {               
+                log.info( "db create nativeR. " );
                 DipProxyDAO.getNativeRecordDAO().create( nativeRecord );
             }
 
@@ -175,6 +182,7 @@ public class CachingService extends RemoteNativeService {
         }  else if( expiredRecord != null ){
 
             if( rsc.isDbCacheOn() ){
+                log.info( "db create expiredR. " );
                 DipProxyDAO.getNativeRecordDAO().create( expiredRecord );
             }
             
@@ -296,21 +304,24 @@ public class CachingService extends RemoteNativeService {
             if( nativeRecord != null ){
                 try{ 
                     DxfRecord dxfr =  buildDxfRecord( nativeRecord, detail );
-                    
-                    if( currentTime.after( nativeRecord.getExpireTime() ) ) {
-                        
-                        //*** nativeRecord is expired
-                        if(  expiredDxf == null 
-                             || nativeRecord.getQueryTime()
-                                    .after ( expiredDxf.getQueryTime() ) ) {
                 
-                            if( expiredDxf != null) {
-                                dxfr.setId( expiredDxf.getId() );
-                            }
-                            expiredDxf = dxfr;
+                    if( dxfr != null ) {
+                        if( expiredDxf != null) {
+                            dxfr.setId( expiredDxf.getId() );
                         }
-                    } else {
-                        dxfRecord = dxfr;
+    
+                        if( currentTime.after( nativeRecord.getExpireTime() ) ) {
+                        
+                            //*** nativeRecord is expired
+                            if( expiredDxf == null 
+                                || nativeRecord.getQueryTime()
+                                    .after ( expiredDxf.getQueryTime() ) ) {
+
+                                expiredDxf = dxfr;
+                            }
+                        } else {
+                            dxfRecord = dxfr;
+                        }
                     }
                 } catch ( ProxyFault fault ) {
                     log.warn( "getDxf: buildDxfRecord. " );
