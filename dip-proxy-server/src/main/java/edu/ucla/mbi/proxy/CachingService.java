@@ -62,20 +62,24 @@ public class CachingService extends RemoteNativeService {
         log.info( " ramCacheOn=" + rsc.isRamCacheOn() );
         log.info( " dbCacheon=" + rsc.isDbCacheOn() );
 
-        NativeRecord cacheRecord = null;
-        boolean cacheExpired = false;
+
+        NativeRecord nativeRecord = null;
 
         NativeRecord remoteRecord = null;
-        boolean remoteExpired = false;
+        NativeRecord expiredRecord = null;
+        
+        //boolean cacheExpired = false;
+        //boolean remoteExpired = false;
+ 
         ProxyFault proxyFault = null;
 
-        String natXml = null;
-        NativeRecord expiredRecord = null;
-
+        Date currentTime = Calendar.getInstance().getTime();
+        
         String memcachedId = "NATIVE_" + provider + "_" + service +
                              "_" + ns + "_" + ac;
 
         //*** retrieve from memcached
+        
         if( rsc.isRamCacheOn() ) {
             NativeRecord memcachedRec = null;
             try {
@@ -88,51 +92,60 @@ public class CachingService extends RemoteNativeService {
 
             log.info( "getNative: memcachedRec=" + memcachedRec );
 
+            /*
             if( memcachedRec != null ) {
                 log.info( "getNative: memcachedRec != null. " );
                 return memcachedRec;
             }
+            */
+            
+            if( memcachedRec != null ) {
+                nativeRecord = memcachedRec;
+            }
+            
         }
 
         //*** retrieve from local database
-        if ( rsc.isDbCacheOn() ) {
+        if ( nativeRecord == null && rsc.isDbCacheOn() ) {
+
+            NativeRecord cacheRecord = null;
 
             try {
                 cacheRecord = DipProxyDAO.getNativeRecordDAO()
-                                        .find( provider, service, ns, ac );
+                    .find( provider, service, ns, ac );
             } catch ( DAOException ex ) {
                 proxyFault = FaultFactory.newInstance( Fault.TRANSACTION );
             }
 
             if ( cacheRecord != null ) { // local record present
 
-                natXml = cacheRecord.getNativeXml();
-
+                String natXml = cacheRecord.getNativeXml();
+                
                 if( natXml == null || natXml.isEmpty() ) {
                     DipProxyDAO.getNativeRecordDAO().delete( cacheRecord );
                     
                     // remove dht record here ?
-
+                    
                     cacheRecord = null;
                 } else {
                     Date expirationTime = cacheRecord.getExpireTime();
-                    Date currentTime = Calendar.getInstance().getTime();
-
+            
                     log.info( "Native record: CT=" +
                               cacheRecord.getCreateTime() +
                               " ET=" + expirationTime );
 
                     if ( currentTime.after( expirationTime ) ) {
-                        cacheExpired = true;
+                        //cacheExpired = true;
                         expiredRecord = cacheRecord;
                     } else {
                         //*** return valid record from dbCache
                         log.info( "getNative: return from dbCache." );
-
+                        /*
                         if( rsc.isRamCacheOn() ) {
                             memcachedStore ( memcachedId, cacheRecord );
                         }
-                        return cacheRecord;
+                        */
+                        nativeRecord = cacheRecord;
                     }
                 }
             }
@@ -140,79 +153,56 @@ public class CachingService extends RemoteNativeService {
 
         //*** valid native record not available here ( null or expired ) 
         //*** retrieve from remote proxy server or native server  
+
         log.info( "getNative: before getNativeFromRemote. " );
-            
-        remoteRecord = getNativeFromRemote ( provider, service, ns, ac );
-
+        
+        if( nativeRecord == null ){
+            remoteRecord = getNativeFromRemote ( provider, service, ns, ac );
+        }
+        
         if( remoteRecord != null ) {
-            Date currentTime = Calendar.getInstance().getTime();
-
             if( currentTime.after( remoteRecord.getExpireTime() ) ) {
                 //*** remote record is expired
                 log.info( "getNative: remoteExpired=true. " );
 
-                if( expiredRecord != null ) {
-                    //*** select more recentlly expired record
-                    if( expiredRecord.getExpireTime()
-                                        .after( remoteRecord
-                                                    .getExpireTime() ) ) {
-
-                        //*** update expired in dbCache
-                        if( rsc.isDbCacheOn() ) {
-                            expiredRecord.setNativeXml(
-                                remoteRecord.getNativeXml() );
-
-                            expiredRecord.resetExpireTime (
-                                remoteRecord.getQueryTime(), rsc.getTtl() );
-
-                            DipProxyDAO.getNativeRecordDAO()
-                                        .create( expiredRecord );
-
-                        }
-                        //*** update expiredRecord from remote
-                        expiredRecord = remoteRecord;
+                //*** select more recently expired record
+                if(  expiredRecord == null ||
+                     remoteRecord.getQueryTime()
+                     .after( expiredRecord.getQueryTime() ) ){
+                    
+                    //*** update expiredRecord from remote
+                 
+                    if( expiredRecord != null ){
+                        remoteRecord.setId( expiredRecord.getId() );
                     }
-                } else {
+                    
                     expiredRecord = remoteRecord;
                 }
-
-                //*** expiredRecord maybe from dbCache or remote         
-                return expiredRecord;
+            } else {
+                nativeRecord = remoteRecord;
             }
+        }
 
-            //*** return remoteRecord  
-
+        if( nativeRecord != null ){
             //*** dbCache update                           
-            if( rsc.isDbCacheOn() ) {
-
-                if( cacheRecord == null ) {
-                    cacheRecord = new NativeRecord( provider,
-                                                    service, ns, ac );
-                }
-
-                cacheRecord.setNativeXml( remoteRecord.getNativeXml() );
-
-                // NOTE: remoteRecord must specify time of the primary 
-                //       source query
-
-                cacheRecord.resetExpireTime( remoteRecord.getQueryTime(),
-                                             rsc.getTtl() );
-
-                //*** store/update native record locall
-                DipProxyDAO.getNativeRecordDAO().create( cacheRecord );
-
+            if( rsc.isDbCacheOn() ) {               
+                DipProxyDAO.getNativeRecordDAO().create( nativeRecord );
             }
 
             //*** memcached store
             if( rsc.isRamCacheOn() ) {
-                memcachedStore ( memcachedId, remoteRecord );
+                memcachedStore ( memcachedId, nativeRecord );
             }
-
             return remoteRecord;
         }
 
         //*** finally return a expiredRecord      
-        if( expiredRecord != null ) {
+        if( expiredRecord != null ){
+
+            if( rsc.isDbCacheOn() ){
+                DipProxyDAO.getNativeRecordDAO().create( expiredRecord );
+            }
+            
             //*** remote is null return expired record from dbCache 
             return expiredRecord;
         } else if ( proxyFault != null ) {
@@ -246,21 +236,30 @@ public class CachingService extends RemoteNativeService {
                                    String ac,
                                    String detail
                                    ) throws ProxyFault {
-
-        boolean dxfExpired = false;
-        String dxfString = null;
+        
         DxfRecord dxfRecord = null;
         DxfRecord expiredDxf = null;
+
+
+        
+        
+        boolean dxfExpired = false;
+
         DatasetType dxfResult = null;
+
+        String dxfString = null;
 
         ProxyFault proxyFault = null;
         String memcachedId = "DXF_" + provider + "_" + service + "_" + ns +
                              "_" + ac + "_" + detail;
+
+        Date currentTime = Calendar.getInstance().getTime();
         
         // test memcached; return record if present
 
         //*** retrieve from memcached
-        if( rsc.isRamCacheOn() ) {
+
+        if( rsc.isRamCacheOn() ){
             DxfRecord memcachedRec = null;
             try {
                 memcachedRec = (DxfRecord)mcClient.fetch( memcachedId );
@@ -281,36 +280,37 @@ public class CachingService extends RemoteNativeService {
         // if expired store the record for later;
         
         //*** retrieve from local database 
-        if ( dxfRecord == null && rsc.isDbCacheOn() ) {
+        if( dxfRecord == null && rsc.isDbCacheOn() ){
             
+            DxfRecord cacheDxfRecord = null;
             try {
-                dxfRecord = DipProxyDAO.getDxfRecordDAO()
-                                .find( provider, service, ns, ac, detail );
+                cacheDxfRecord = DipProxyDAO.getDxfRecordDAO()
+                    .find( provider, service, ns, ac, detail );
             } catch ( DAOException ex ) {
                 proxyFault = FaultFactory.newInstance( Fault.TRANSACTION );
             }     
 
-            if( dxfRecord != null ) {
-    
-                if( isDxfValid ( dxfRecord.getDxf() ) ) {
-                    Date expirationTime = dxfRecord.getExpireTime();
-                    Date currentTime = Calendar.getInstance().getTime();
-
+            if( cacheDxfRecord != null ) {
+                
+                if( isDxfValid ( cacheDxfRecord.getDxf() ) ) {
+                    Date expirationTime = cacheDxfRecord.getExpireTime();
+                    
                     log.info( "CachingService: dxf record CT=" +
-                              dxfRecord.getCreateTime() + " ET= " +
+                              cacheDxfRecord.getCreateTime() + " ET= " +
                               expirationTime );
 
-                    if ( currentTime.after( expirationTime ) ) {
+                    if( currentTime.after( expirationTime ) ) {
                         dxfExpired = true;
-                        expiredDxf = dxfRecord;
-                        dxfRecord = null;
-                    } 
+                        expiredDxf = cacheDxfRecord;
+                    } else {
+                        dxfRecord = cacheDxfRecord;
+                    }
                 } else {
                     try {
                         DipProxyDAO.getDxfRecordDAO().delete( dxfRecord );
                     } catch ( DAOException ex ) {
-                        proxyFault = FaultFactory.newInstance(
-                                                    Fault.TRANSACTION );
+                        proxyFault = FaultFactory
+                            .newInstance( Fault.TRANSACTION );
                     }
                 }
             }
@@ -320,52 +320,110 @@ public class CachingService extends RemoteNativeService {
         // if dxf valid store in dbcache & memchached then return 
 
         //*** retrieve from native, here dxfRecord==null|expired              
-        NativeRecord nr = null;
-        String nativeXml = null;
 
         if( dxfRecord == null ) { 
+            
+            NativeRecord nativeRecord = null;
+            String nativeXml = null;
+            
             try { 
-                nr = getNative( provider, service, ns, ac );
+                nativeRecord  = getNative( provider, service, ns, ac );
             } catch ( ProxyFault fault ) {
                 log.warn( "getDxf: getNative fault. " ); 
                 proxyFault = fault;
             } 
 
-            if( nr != null ) {
-                nativeXml = nr.getNativeXml();
-                Date currentTime = Calendar.getInstance().getTime();
-                boolean nativeIsMostRecentExpired = false;
-
-                if ( currentTime.after( nr.getExpireTime() ) ) {
-                    //*** nr is expired
-                    if( dxfExpired && nr.getQueryTime().after (
-                                        expiredDxf.getQueryTime() ) ) {
-
-                        nativeIsMostRecentExpired = true;
-                    }  
-                    dxfExpired = true;
-
-                } else {
-                    dxfExpired = false;
-                } 
-        
-                //*** get dxf using valid and unexpired nr
-                if( !dxfExpired || nativeIsMostRecentExpired ) {  
-                    try {
-                        ProxyDxfTransformer pdt = new ProxyDxfTransformer();
-                        dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail, 
-                                                  provider, service );
+            if( nativeRecord != null ){
+                try{ 
+                    DxfRecord dxfr =  buildDxfRecord( nativeRecord, detail );
+                    
+                    if( currentTime.after( nativeRecord.getExpireTime() ) ) {
+                        
+                        //*** nativeRecord is expired
+                        if(  expiredDxf == null ||
+                             nativeRecord.getQueryTime()
+                             .after ( expiredDxf.getQueryTime() ) ) {
                 
-                    } catch ( ProxyFault fault ) {
-                        log.warn( "getDxf: transform and build dxf fault. " );
-                        proxyFault = fault;
+                            if( expiredDxf!= null) {
+                                dxfr.setId( expiredDxf.getId() );
+                            }
+                            expiredDxf = dxfr;
+                        }
+                    } else {
+                        dxfRecord = dxfr;
                     }
+                } catch ( ProxyFault fault ) {
+                    log.warn( "getDxf: buildDxfRecord. " );
+                    proxyFault = fault;
                 }
             }    
         }
+        
+        if( dxfRecord != null ) {
 
-        if ( dxfResult != null ) {
+            if( rsc.isDbCacheOn() ) {
+                DipProxyDAO.getDxfRecordDAO().create( dxfRecord );
+            }
+            
+            if( rsc.isRamCacheOn() ) {
+                memcachedStore ( memcachedId, dxfRecord );
+            }
 
+            return dxfRecord;
+        }
+        
+        if( expiredDxf != null ){
+            
+            if( rsc.isDbCacheOn() ){
+                DipProxyDAO.getDxfRecordDAO().create( expiredDxf ); 
+            }
+            
+            return expiredDxf;
+
+        } else if ( proxyFault != null ) {
+            log.warn( "getDxf: throw a proxyFault. " );
+            throw proxyFault;
+        } else {
+            log.info( "getDxf: return a null. " );
+            return null;
+        }
+    }
+
+    
+    //--------------------------------------------------------------------------
+
+    private DxfRecord buildDxfRecord( NativeRecord nativeRecord,
+                                      String detail ) 
+        throws ProxyFault{
+        
+        DxfRecord dxfRecord = null;
+        
+        DatasetType dxfResult = null;
+        ProxyFault proxyFault = null;
+
+        String provider = nativeRecord.getProvider();
+        String service = nativeRecord.getService();
+        String ns = nativeRecord.getNs();
+        String ac = nativeRecord.getAc();
+        String nativeXml = nativeRecord.getNativeXml();
+        
+        
+        if( !dxfExpired || nativeIsMostRecentExpired ) {
+            try {
+                ProxyDxfTransformer pdt = new ProxyDxfTransformer();
+                dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail,
+                                          provider, service );
+                
+            } catch ( ProxyFault fault ) {
+                log.warn( "getDxf: transform and build dxf fault. " );
+                proxyFault = fault;
+            }
+        }
+        
+        if ( isDxfDatasetValid( dxfResult )){
+            
+            String dxfString = null;
+            
             //*** mashall DatasetType object into a string representation
             try {
                 dxfString = marshall( dxfResult );
@@ -373,54 +431,18 @@ public class CachingService extends RemoteNativeService {
                 log.warn( "getDxf: marshall fault. " );
                 proxyFault = fault;
             }
-   
-            if( isDxfValid( dxfString ) ) {    
-                if ( dxfRecord == null ) {
-                    dxfRecord = new DxfRecord( provider, service, ns,
-                                               ac, detail );                
-                }
-
-                dxfRecord.setQueryTime( nr.getQueryTime() ); 
-                dxfRecord.setDxf( dxfString );
-                dxfRecord.resetExpireTime ( dxfRecord.getQueryTime(),
-                                            rsc.getTtl() );
+               
+            dxfRecord = new DxfRecord( provider, service, ns,
+                                       ac, detail );                
             
-                if( dxfExpired ) {
-                    //*** dxfRecord is most recently expired
-                    expiredDxf = dxfRecord;
-                    dxfRecord = null;
-                } 
-            } 
+            dxfRecord.setDxf( dxfString );
+            dxfRecord.resetExpireTime ( nativeRecord.getQueryTime(),
+                                        rsc.getTtl() );                
         }
-        
-        if( dxfRecord != null ) {
-            if( dxfExpired ) {
-                return expiredDxf;
-            } else {
-                if( rsc.isRamCacheOn() ) {
-                    memcachedStore ( memcachedId, dxfRecord );
-                }
-
-                if( rsc.isDbCacheOn() ) {
-                    DipProxyDAO.getDxfRecordDAO().create( dxfRecord );
-                }
-
-                //*** return valid dxf       
-                return dxfRecord;
-            } 
-        } else {
-            if( dxfExpired ) {
-                return expiredDxf;
-            }
-        }
-        
-        if ( proxyFault != null ) {
-            log.warn( "getDxf: throw proxyFault. " );
-            throw proxyFault;
-        } 
-
-        return null;
+ 
+        return dxfRecord;
     }
+
 
     //-------------------------------------------------------------------------- 
 
@@ -439,6 +461,18 @@ public class CachingService extends RemoteNativeService {
         return false;
     }
 
+    //--------------------------------------------------------------------------
+    
+    boolean isDxfDatasetValid( DatasetType  dxfDataset ) throws ProxyFault { ;
+                
+        if( dxfDataset != null 
+            && !dxfDataset.getNode().isEmpty()
+            && !dxfDataset.getNode().get(0).getAc().equals("") ) {
+            return true; 
+        } 
+        
+        return false;
+    }
     
     //--------------------------------------------------------------------------
 
