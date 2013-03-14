@@ -6,21 +6,23 @@
 <hibernate-mapping>
   <class name="edu.ucla.mbi.cache.NativeRecord" table="native_record" lazy="false">
     <id name="id" column="pk">
-<!--      <generator class="increment"/> -->
-	<generator class="sequence">
-		<param name="sequence">native_record_pk_seq</param>
-	</generator>
+	    <generator class="sequence">
+		    <param name="sequence">native_record_pk_seq</param>
+	    </generator>
     </id>
+    
+    <properties name="unique_nr" unique="true" insert="true" update="true">
+        <property name="provider"/>
+        <property name="service"/>
+        <property name="ns"/>
+        <property name="ac"/>
+    </properties>
 
-    <property name="provider" column="provider" />
-    <property name="service" column="service" />
-    <property name="ns"  column="ns"/>
-    <property name="ac"  column="ac"/>
     <property name="nativeXml" column="native_xml"/>
     <property name="createTime" column="create_time"/>
     <property name="queryTime" column="query_time"/> 
     <property name="expireTime" column="expire_time"/> 
-<!--    <property name="ttl" column="ttl"/>  -->
+
   </class>
 </hibernate-mapping>
 

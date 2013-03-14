@@ -11,15 +11,19 @@
 	</generator>
     </id>
 
-    <property name="provider" column="provider" />
-    <property name="service" column="service" />
-    <property name="ns"  column="ns"/>
-    <property name="ac"  column="ac"/>
-    <property name="detail"  column="detail"/>
+    <properties name="unique_dxf" unique="true" insert="true" update="true">
+        <property name="provider"/>
+        <property name="service"/>
+        <property name="ns"/>
+        <property name="ac"/>
+        <property name="detail"/>
+    </properties>
+
     <property name="dxf" column="dxf"/>
     <property name="createTime" column="create_time"/>
     <property name="queryTime" column="query_time"/>
     <property name="expireTime" column="expire_time"/>    
+
   </class>
 </hibernate-mapping>
 
