@@ -29,9 +29,31 @@ public class NativeRecordDAO extends AbstractDAO {
         super( util );
     } 
 
-    public void create( NativeRecord nativer 
-                        ) throws DAOException {
-        saveOrUpdate( nativer );
+    public void create( NativeRecord nativer )
+        throws DAOException {
+
+        this.saveOrUpdate( nativer );
+    }
+
+    public void saveOrUpdate( NativeRecord nativer )
+        throws DAOException {
+    
+        try {
+            super.saveOrUpdate ( nativer );
+
+        } catch( DAOException ex ){
+            log.warn( "saveOrUpdate get exception. then call find(). " );
+        
+            NativeRecord nr = this.find( nativer.getProvider(),
+                nativer.getService(), nativer.getNs(), nativer.getAc() );
+
+            if( nr != null ) {
+                nativer.setId( nr.getId() );
+                super.update ( nativer );
+            } else {
+                throw ex;
+            }
+        }
     }
 
     public void delete( NativeRecord nativer 

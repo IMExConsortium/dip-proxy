@@ -30,9 +30,32 @@ public class DxfRecordDAO extends AbstractDAO {
     }
  
     public void create( DxfRecord dxfr ) throws DAOException {
-        super.saveOrUpdate( dxfr );
+        this.saveOrUpdate( dxfr );
     }
 
+    public void saveOrUpdate( DxfRecord dxfr )
+        throws DAOException {
+
+        try {
+            super.saveOrUpdate ( dxfr );
+        
+        } catch( DAOException ex ){
+            
+            log.warn ( "saveOrUpdate get excepiton. then call find(). " );
+
+            DxfRecord dxfRecord = this.find( dxfr.getProvider(), 
+                dxfr.getService(), dxfr.getNs(), dxfr.getAc(), 
+                dxfr.getDetail() );
+
+            if( dxfRecord != null ) {
+                dxfr.setId( dxfRecord.getId() );
+                super.update ( dxfr );
+            } else {
+                throw ex;
+            }
+        }
+    }
+    
     public void delete ( DxfRecord dxfr ) throws DAOException{
        super.delete( dxfr );
     }
