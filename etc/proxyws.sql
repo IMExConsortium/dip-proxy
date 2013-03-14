@@ -8,7 +8,8 @@ CREATE TABLE dxf_record (
     dxf text NOT NULL,
     create_time timestamp without time zone NOT NULL,
     query_time timestamp without time zone NOT NULL,
-    expire_time timestamp without time zone NOT NULL
+    expire_time timestamp without time zone NOT NULL,
+    CONSTRAINT unique_dxf UNIQUE ( provider, service, ns, ac, detail )
 );
 
 CREATE TABLE native_record (
@@ -20,7 +21,8 @@ CREATE TABLE native_record (
     native_xml text NOT NULL,
     create_time timestamp without time zone NOT NULL,
     query_time timestamp without time zone NOT NULL,
-    expire_time timestamp without time zone NOT NULL
+    expire_time timestamp without time zone NOT NULL,
+    CONSTRAINT unique_nr UNIQUE ( provider, service, ns, ac )
 );
 
 CREATE TABLE native_audit (
@@ -34,11 +36,11 @@ CREATE TABLE native_audit (
     status integer DEFAULT 0 NOT NULL 
 );
 
-CREATE INDEX native_idx1 ON native_record (provider, service, ns, ac);
+/* CREATE INDEX native_idx1 ON native_record (provider, service, ns, ac); */
 CREATE INDEX native_idx2 ON native_record (expire_time);
 CREATE INDEX native_idx3 ON native_record (query_time);
 
-CREATE INDEX dxf_idx1 ON dxf_record (provider, service, ns, ac, detail);
+/* CREATE INDEX dxf_idx1 ON dxf_record (provider, service, ns, ac, detail); */
 CREATE INDEX dxf_idx2 ON dxf_record (expire_time);
 CREATE INDEX dxf_idx3 ON dxf_record (query_time);
 
