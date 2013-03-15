@@ -49,7 +49,6 @@ public class ProxyPortImpl implements ProxyPort {
         
         try {
             Router router =
-                //WSContext.getServerContext( provider ).createRouter() ;
                 WSContext.getServerContext( provider ).getRouter();
 
             log.info( "getRecord: router=" + router );
@@ -61,8 +60,8 @@ public class ProxyPortImpl implements ProxyPort {
                                     WSContext.getServerContext( provider ) );
 
             if ( format.equalsIgnoreCase( "dxf" ) 
-                    || format.equalsIgnoreCase( "both" ) ) {
-                
+                 || format.equalsIgnoreCase( "both" ) ) {
+                 
                 DxfRecord dxfRec = cachingSrv.getDxfRecord ( 
                                         provider, service, ns, ac, detail );
 
@@ -86,7 +85,7 @@ public class ProxyPortImpl implements ProxyPort {
             }
 
             if ( format.equalsIgnoreCase( "native" ) 
-                    ||  format.equalsIgnoreCase( "both" ) ) {
+                 ||  format.equalsIgnoreCase( "both" ) ) {
 
                 NativeRecord natRec =
                     cachingSrv.getNative( provider, service, ns, ac );
