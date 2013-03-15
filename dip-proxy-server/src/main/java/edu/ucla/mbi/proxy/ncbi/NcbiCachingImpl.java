@@ -86,13 +86,9 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
             
-            if ( format == null || format.equals( "" ) ||
-                 format.equalsIgnoreCase( "dxf" ) ||
-                 format.equalsIgnoreCase( "both" ) ) {
-                
-                //DatasetType result 
-                //  = cachingSrv.getDxf( provider, service, 
-                //                       ns, ac, detail );
+            if ( format == null || format.equals( "" ) 
+                 || format.equalsIgnoreCase( "dxf" ) 
+                 || format.equalsIgnoreCase( "both" ) ) {
                 
                 DatasetType result 
                     = cachingSrv.getDatasetType( provider, service, 
@@ -105,10 +101,9 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 		        }
             }
 	    
-            if ( format != null &&
-                 ( format.equalsIgnoreCase( "native" ) ||
-                   format.equalsIgnoreCase( "both" ) )
-                 ) {
+            if ( format != null 
+                 && ( format.equalsIgnoreCase( "native" ) 
+                      || format.equalsIgnoreCase( "both" ) ) ) {
                 
                 NativeRecord natRec = 
                     cachingSrv.getNative( provider, service, ns, ac );
@@ -189,13 +184,13 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
             
-            if ( format == null || format.equals( "" ) ||
-                 format.equalsIgnoreCase( "dxf" ) ||
-                 format.equalsIgnoreCase( "both" ) ) {
+            if ( format == null || format.equals( "" ) 
+                 || format.equalsIgnoreCase( "dxf" ) 
+                 || format.equalsIgnoreCase( "both" ) ) {
                 
-                DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
-
+                DatasetType result
+                    = cachingSrv.getDatasetType( provider, service,
+                                                 ns, ac, detail );
                 if ( result != null ) {
                     dataset.value = result ;
                 } else {
@@ -204,10 +199,9 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 		        }
             }
 	    
-            if ( format != null &&
-                 ( format.equalsIgnoreCase( "native" ) ||
-                   format.equalsIgnoreCase( "both" ) )
-                 ) {
+            if ( format != null 
+                 && ( format.equalsIgnoreCase( "native" ) 
+                      || format.equalsIgnoreCase( "both" ) ) ) {
                 
                 NativeRecord natRec = 
                     cachingSrv.getNative( provider, service, ns, ac );
@@ -284,13 +278,13 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
             
-            if ( format == null || format.equals( "" ) ||
-                 format.equalsIgnoreCase( "dxf" ) ||
-                 format.equalsIgnoreCase( "both" )
-                 ) {
+            if ( format == null || format.equals( "" ) 
+                 || format.equalsIgnoreCase( "dxf" ) 
+                 || format.equalsIgnoreCase( "both" ) ) {
                 
-                DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                DatasetType result
+                    = cachingSrv.getDatasetType( provider, service,
+                                                 ns, ac, detail );
                 if ( result != null ) {
                     dataset.value = result;     
                 } else {
@@ -299,10 +293,9 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 		        }      
             }
             
-            if ( format != null &&
-                 ( format.equalsIgnoreCase( "native" ) ||
-                   format.equalsIgnoreCase( "both" ) )
-                 ) {
+            if ( format != null 
+                 && ( format.equalsIgnoreCase( "native" ) 
+                      || format.equalsIgnoreCase( "both" ) ) ) {
 
                 NativeRecord natRec = 
 		                cachingSrv.getNative( provider, service, ns, ac );
@@ -377,13 +370,13 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
 
-            if ( format == null || format.equals( "" ) ||
-                 format.equalsIgnoreCase( "dxf" ) ||
-                 format.equalsIgnoreCase( "both" )
-                 ) {
+            if ( format == null || format.equals( "" ) 
+                 || format.equalsIgnoreCase( "dxf" ) 
+                 || format.equalsIgnoreCase( "both" ) ) {
                 
-                DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                DatasetType result
+                    = cachingSrv.getDatasetType( provider, service,
+                                                 ns, ac, detail );
                 if ( result != null ) {
                     dataset.value = result;
                 } else {
@@ -392,13 +385,13 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 		        }
             }
             
-            if ( format != null &&
-                 ( format.equalsIgnoreCase( "native" ) ||
-                   format.equalsIgnoreCase( "both" ) )
-                 ) {
+            if ( format != null 
+                 && ( format.equalsIgnoreCase( "native" ) 
+                      || format.equalsIgnoreCase( "both" ) ) ) {
 
 		        NativeRecord natRec =
                     cachingSrv.getNative( provider, service, ns, ac );
+
                 if ( natRec != null ) {
                     nativerecord.value = natRec.getNativeXml();
                     timestamp.value = 
@@ -473,13 +466,13 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                 new CachingService( provider, router,
                                     WSContext.getServerContext( provider ) );
             
-            if ( format == null || format.equals( "" ) ||
-                 format.equalsIgnoreCase( "dxf" ) ||
-                 format.equalsIgnoreCase( "both" )
-                 ) {
+            if ( format == null || format.equals( "" ) 
+                 || format.equalsIgnoreCase( "dxf" ) 
+                 || format.equalsIgnoreCase( "both" ) ) {
                 
-                DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                DatasetType result
+                    = cachingSrv.getDatasetType( provider, service,
+                                                 ns, ac, detail );
 
                 if ( result != null ) {
                     dataset.value = result;
@@ -489,13 +482,13 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                 }
             }
             
-            if ( format != null &&
-                 ( format.equalsIgnoreCase( "native" ) ||
-                   format.equalsIgnoreCase( "both" ) )
-                 ) {
+            if ( format != null 
+                 && ( format.equalsIgnoreCase( "native" ) 
+                      || format.equalsIgnoreCase( "both" ) ) ) {
 
                 NativeRecord natRec =
                     cachingSrv.getNative( provider, service, ns, ac );
+
                 if ( natRec != null ) {
                     nativerecord.value = natRec.getNativeXml();
                     timestamp.value = 

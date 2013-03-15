@@ -79,11 +79,12 @@ public class DipCachingImpl implements DipProxyPort {
                                     WSContext.getServerContext( provider ) );
             
             if ( format == null || format.equals( "" )
-                    || format.equalsIgnoreCase( "dxf" )
+                 || format.equalsIgnoreCase( "dxf" )
                  || format.equalsIgnoreCase( "both" ) ) {
                 
-                DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                DatasetType result
+                    = cachingSrv.getDatasetType( provider, service,
+                                                 ns, ac, detail ); 
                 if ( result != null ) {
                     dataset.value = result;
 
@@ -94,8 +95,8 @@ public class DipCachingImpl implements DipProxyPort {
             }
 
             if ( format != null
-                 && (format.equalsIgnoreCase( "native" ) || format
-                     .equalsIgnoreCase( "both" )) ) {
+                 && ( format.equalsIgnoreCase( "native" ) 
+                      || format.equalsIgnoreCase( "both" ) ) ) {
                 
                 NativeRecord natRec = 
                     cachingSrv.getNative( provider, service,
@@ -103,9 +104,12 @@ public class DipCachingImpl implements DipProxyPort {
                 
                 if ( natRec != null && natRec.getNativeXml() != null
                      && natRec.getNativeXml().length() > 0 ) {
+
                     nativerecord.value = natRec.getNativeXml();
+
                     timestamp.value = 
                         TimeStamp.toXmlDate( natRec.getQueryTime() );
+
                 } else {
                     log.info( "return dataset is null " );
                     throw FaultFactory.newInstance( Fault.NO_RECORD );

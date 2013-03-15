@@ -89,9 +89,11 @@ public class EbiCachingImpl implements EbiProxyPort {
             if ( format == null || format.equals( "" )
                  || format.equalsIgnoreCase( "dxf" )
                  || format.equalsIgnoreCase( "both" ) ) {
-                
-                DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+               
+                DatasetType result
+                    = cachingSrv.getDatasetType( provider, service,
+                                                 ns, ac, detail );
+ 
                 if ( result != null ) {
                     dataset.value = result;
                 } else {
@@ -101,8 +103,8 @@ public class EbiCachingImpl implements EbiProxyPort {
             }
 
             if ( format != null
-                 && (format.equalsIgnoreCase( "native" ) || format
-                     .equalsIgnoreCase( "both" )) ) {
+                 && ( format.equalsIgnoreCase( "native" ) 
+                      || format.equalsIgnoreCase( "both" ) ) ) {
                 
                 NativeRecord natRec = 
                     cachingSrv.getNative( provider, service, ns, ac );
@@ -171,11 +173,12 @@ public class EbiCachingImpl implements EbiProxyPort {
                                     WSContext.getServerContext( provider ) );
 
             if ( format == null || format.equals( "" )
-                    || format.equalsIgnoreCase( "dxf" )
-                    || format.equalsIgnoreCase( "both" ) ) {
+                 || format.equalsIgnoreCase( "dxf" )
+                 || format.equalsIgnoreCase( "both" ) ) {
                 
-                DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                DatasetType result
+                    = cachingSrv.getDatasetType( provider, service,
+                                                 ns, ac, detail );
 
                 if ( result != null ) {
                     dataset.value = result;
@@ -186,9 +189,8 @@ public class EbiCachingImpl implements EbiProxyPort {
             }
             
             if ( format != null 
-                    && (format.equalsIgnoreCase( "native" ) 
-                            || format.equalsIgnoreCase( "both" ) ) ) 
-            {
+                 && (format.equalsIgnoreCase( "native" ) 
+                     || format.equalsIgnoreCase( "both" ) ) ) {
                 
                 NativeRecord natRec = 
                     cachingSrv.getNative( provider, service, ns, ac );

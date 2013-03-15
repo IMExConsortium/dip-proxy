@@ -82,9 +82,9 @@ public class ProlinksCachingImpl implements ProlinksProxyPort {
                  || format.equalsIgnoreCase( "dxf" )
                  || format.equalsIgnoreCase( "both" ) ) {
                 
-                DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
-
+                DatasetType result
+                    = cachingSrv.getDatasetType( provider, service,
+                                                 ns, ac, detail );
                 if ( result != null ) {
                     dataset.value = result;
                 } else {
@@ -94,8 +94,8 @@ public class ProlinksCachingImpl implements ProlinksProxyPort {
             }
 
             if ( format != null
-                 && (format.equalsIgnoreCase( "native" ) || format
-                     .equalsIgnoreCase( "both" )) ) {
+                 && ( format.equalsIgnoreCase( "native" ) 
+                      || format.equalsIgnoreCase( "both" ) ) ) {
                 
                 NativeRecord natRec = 
                     cachingSrv.getNative( provider, service, ns, ac );
