@@ -218,6 +218,16 @@ public class CachingService extends RemoteNativeService {
     
     //--------------------------------------------------------------------------
 
+    public  DatasetType getDatasetType( String provider, String service,
+                                        String ns, String ac, String detail
+                                        ) throws ProxyFault {
+        
+        DxfRecord dxfRecord = getDxfRecord( provider,service, ns,ac, detail);
+        return getDatasetType( dxfRecord );
+    }
+    
+    //--------------------------------------------------------------------------
+
     public DxfRecord getDxfRecord( String provider,
                                    String service,
                                    String ns,

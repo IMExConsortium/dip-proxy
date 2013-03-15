@@ -90,8 +90,13 @@ public class NcbiCachingImpl implements NcbiProxyPort {
                  format.equalsIgnoreCase( "dxf" ) ||
                  format.equalsIgnoreCase( "both" ) ) {
                 
-                DatasetType result = 
-                    cachingSrv.getDxf( provider, service, ns, ac, detail );
+                //DatasetType result 
+                //  = cachingSrv.getDxf( provider, service, 
+                //                       ns, ac, detail );
+                
+                DatasetType result 
+                    = cachingSrv.getDatasetType( provider, service, 
+                                                 ns, ac, detail );
                 if ( result != null ) {
                     dataset.value = result ;
                 } else {
