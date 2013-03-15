@@ -28,7 +28,6 @@ public class NativeRecord implements Record {
     private Date createTime = null;
     private Date queryTime = null;
     private Date expireTime = null;
-    //private int ttl = 0;  // time-to-live (units: seconds)
 
     public NativeRecord() { };
 
@@ -41,7 +40,7 @@ public class NativeRecord implements Record {
 	    this.ac = ac;
 	
 	    this.createTime = Calendar.getInstance().getTime();
-	    this.queryTime = Calendar.getInstance().getTime(); // not sure if needed ???
+	    this.queryTime = Calendar.getInstance().getTime(); 
     }
 
     // setters
@@ -92,15 +91,6 @@ public class NativeRecord implements Record {
         return this;
     }
 
-    /* set time-to-live (units - seconds) */
-
-    //public NativeRecord setTtl( int time ){
-    //    if ( time > 0 ){
-    //        this.ttl = time;
-    //    }
-    //    return this;
-    //}
-   
     // getters
     //--------
     
@@ -140,10 +130,6 @@ public class NativeRecord implements Record {
         return expireTime;
     }
 
-    //public int getTtl(){
-    //    return ttl;
-    //}
-    
     public String toString(){
 
         int lastPos = nativeXml.length()-1;
@@ -185,7 +171,6 @@ public class NativeRecord implements Record {
         expCal.setTime( queryTime );
         expCal.add( Calendar.SECOND, ttl );	
         expireTime = expCal.getTime();
-        //this.ttl = ttl;
     }
 
     public void resetExpireTime( Date now, int ttl ) {
@@ -200,17 +185,5 @@ public class NativeRecord implements Record {
         expCal.setTime( queryTime );
         expCal.add( Calendar.SECOND, ttl );	
         expireTime = expCal.getTime();
-        //this.ttl = ttl;
     }
-
-    /*
-    public Date getQueryTime() {
-	                                                                           
-        Calendar qCal = Calendar.getInstance();
-        qCal.setTime( expireTime );
-        qCal.add( Calendar.SECOND, -ttl );	
-	
-        return qCal.getTime();
-    }
-    */
 }
