@@ -177,7 +177,7 @@ public class CachingService extends RemoteNativeService {
                 memcachedStore ( memcachedId, nativeRecord );
             }
 
-            return remoteRecord;
+            return nativeRecord;
 
         }  else if( expiredRecord != null ){
 
