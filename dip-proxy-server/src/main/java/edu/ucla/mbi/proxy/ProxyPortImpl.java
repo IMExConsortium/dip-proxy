@@ -78,10 +78,12 @@ public class ProxyPortImpl implements ProxyPort {
                         throw FaultFactory.newInstance( Fault.MARSHAL );
                     }
 
-                } else {
+                }
+                /* 
+                else {
                     log.info("getRecord: return dataset is null ");
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
-                }
+                }*/
             }
 
             if ( format.equalsIgnoreCase( "native" ) 
@@ -94,13 +96,16 @@ public class ProxyPortImpl implements ProxyPort {
                      natRec.getNativeXml().length() > 0 ) {
 
                     nativerecord.value = natRec.getNativeXml();
+                    log.info( "natRec queryTime=" + natRec.getQueryTime() );
                     timestamp.value =
                         TimeStamp.toXmlDate( natRec.getQueryTime() );
 
-                } else {
+                }
+                /* 
+                else {
                     log.info("return dataset is null ");
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
-                }
+                }*/
             }
 
         }catch ( ProxyFault fault ) {

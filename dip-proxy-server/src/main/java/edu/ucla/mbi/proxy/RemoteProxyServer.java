@@ -45,10 +45,11 @@ public class RemoteProxyServer implements NativeServer {
     
     private String proxyAddress;
     private Map<String,Object> context;
-
+   
+    /* 
     public boolean isNative(){
         return false;
-    }
+    }*/
    
     public String getAddress(){
         return proxyAddress;
@@ -72,15 +73,16 @@ public class RemoteProxyServer implements NativeServer {
     public void initialize() {
         log.info( "initialize service=" + this );
     }
- 
+    /*
     public RemoteServer getRemoteServerInstance() {
         return null;
-    }
+    }*/
 
     public RemoteProxyServer getRemoteProxyServerInstance( String url) {
         return new RemoteProxyServer( url );
     }
-    
+
+    /*    
     public DatasetType transform( String strNative,
 				                  String ns, String ac, String detail,
 	        			          String provider, 
@@ -140,7 +142,7 @@ public class RemoteProxyServer implements NativeServer {
 
         return this.transform( strNative, ns, ac, detail, provider, service );
     }
-
+    */
 
 
 
@@ -191,11 +193,13 @@ public class RemoteProxyServer implements NativeServer {
             port.getRecord( provider, service, ns, ac, "", "", "native", 
                                  "", 0, timestamp, resDataset, resNative );
 
+            String resultStr = resNative.value;
             XMLGregorianCalendar qtime = timestamp.value;
 
             NativeRecord record = new NativeRecord( provider, service, ns, ac );
             record.setNativeXml( resNative.value );
-            record.setCreateTime( qtime.toGregorianCalendar().getTime() );
+            //record.setCreateTime( qtime.toGregorianCalendar().getTime() );
+            record.setQueryTime( qtime.toGregorianCalendar().getTime() );
 
             return record;
 
