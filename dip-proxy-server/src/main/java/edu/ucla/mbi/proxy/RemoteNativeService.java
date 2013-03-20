@@ -160,23 +160,8 @@ class RemoteNativeService { // extends Observable {
 
         log.info( "valid record="+ remoteRecord);
         
-        /*
-        if( remoteRecord.getExpireTime() == null ) {
-            
-            //*** remoteRecord is newly created from remote native 
-            
-            remoteRecord.resetExpireTime( remoteRecord.getCreateTime(), 
-                                          rsc.getTtl() );
-        } else {
-            //*** remoteRecord got from remote proxy
-            remoteRecord.resetExpireTime( remoteRecord.getQueryTime(),
-                                          rsc.getTtl() );
-        }*/
-
-        remoteRecord.resetExpireTime( remoteRecord.getQueryTime(),
-                                      rsc.getTtl() );
- 
-         
+        remoteRecord.resetExpireTime( rsc.getTtl() );
+          
         if( rsc.isDbCacheOn() ) {
 
             DhtRouterMessage message =
