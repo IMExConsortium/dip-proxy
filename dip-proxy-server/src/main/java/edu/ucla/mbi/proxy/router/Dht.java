@@ -351,7 +351,7 @@ public class Dht {
         log.info( " got val=" + val );
         boolean newFlag = true;
        
-        DhtRouterList newDpl = new DhtRouterList(); 
+        DhtRouterList newDpl = new DhtRouterList( rid ); 
 
         if ( val != null && val.size() > 0 ) {
             long firstQuery = 0;
