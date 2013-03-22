@@ -349,7 +349,7 @@ public class Dht {
         if( vis != null ) {
 
             if( vis.size() != 1 ) {
-                log.warn( "Fault: DHT return empty set or " +
+                log.info( "Fault: DHT return empty set or " +
                           "more DhtRouterList. " );
                 return null;
             }
@@ -515,7 +515,6 @@ public class Dht {
         if( removeFlag ) {
             try {
 
-                //proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
                 if( drl.size() == 0 ) {
                     // remove empty drl
                     proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
