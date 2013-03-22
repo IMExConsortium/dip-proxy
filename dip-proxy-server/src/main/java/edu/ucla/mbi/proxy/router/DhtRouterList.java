@@ -37,8 +37,11 @@ public class DhtRouterList implements Serializable {
         this.id = id;
     }
 
+    public ID getId() {
+        return this.id;
+    }
     public DhtRouterItem getItem( int i){ 
-	return items.get( i );
+	    return items.get( i );
     }
     
     public void addItem( DhtRouterItem item ) {
@@ -61,9 +64,12 @@ public class DhtRouterList implements Serializable {
         return items.iterator();
     }
 
+    public void setItem ( int index, DhtRouterItem item ) {
+        items.set( index, item );
+    }
     //--------------------------------------------------------------------------
     
-    boolean equals( Object obj ){
+    public boolean equals( Object obj ){
         
         if ( this == obj ) return true;
         if ( obj == null || !(obj instanceof DhtRouterList ) ) return false;
