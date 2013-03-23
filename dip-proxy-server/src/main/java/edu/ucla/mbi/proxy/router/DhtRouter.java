@@ -81,7 +81,10 @@ public class DhtRouter implements Router {
         
         ID rid = this.getRecordID( provider, service,
                                    namespace, accession );  
-        return proxyDht.getDhtRouterList( rid );
+        
+        List<DhtRouterList> drl = new ArrayList<DhtRouterList>();
+        drl.add( proxyDht.getDhtRouterList( rid ) );
+        return drl; 
     }    
 
     //--------------------------------------------------------------------------

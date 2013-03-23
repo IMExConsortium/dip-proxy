@@ -332,7 +332,7 @@ public class Dht {
     } */
 
     
-    public DhtRouterList getDhtRouterListObj ( ID rid ) {
+    public DhtRouterList getDhtRouterList( ID rid ) {
 
         Log log = LogFactory.getLog( Dht.class );
         Set<ValueInfo<DhtRouterList>> vis = null;
@@ -343,14 +343,12 @@ public class Dht {
             log.warn( "Fault: routing exception: " + re.toString() );
             return null;
         }
-
+        
         log.info( " got value info set ..." );
 
-        if( vis != null ) {
-            if( vis.size() == 0 ) {
-                return null;
-            }
-            /*
+        if( vis == null || vis.size() == 0 ) return null;
+
+        /*
             if( vis.size() != 1 ) {
                 log.info( "Fault: DHT return empty set or " +
                           "more DhtRouterList. " );
@@ -361,51 +359,52 @@ public class Dht {
             DhtRouterList drl = vi.getValue();
             log.info( " DhtRouterList=" + drl );
             return drl;
-            */
+        */
             
-            DhtRouterList newDrl = new DhtRouterList( rid );
+        DhtRouterList newDrl = new DhtRouterList( rid );
 
-            for( Iterator<ValueInfo<DhtRouterList>> i = vis.iterator();
-                 i.hasNext(); ){
+        for( Iterator<ValueInfo<DhtRouterList>> i = vis.iterator();
+             i.hasNext(); ){
+            
+            ValueInfo<DhtRouterList> vi = i.next();
+            
+            log.info( "  list=" + vi.getValue() );
+            
+            DhtRouterList drl = vi.getValue();
+            
+            log.info( " DhtRouterList=" + drl );
 
-                ValueInfo<DhtRouterList> vi = i.next();
-
-                log.info( "  list=" + vi.getValue() );
-
-                DhtRouterList drl = vi.getValue();
-
-                log.info( " DhtRouterList=" + drl );
-                int count = 0;
-                for( Iterator<DhtRouterItem> pi = drl.iterator();
-                     pi.hasNext(); ){
-
-                    DhtRouterItem item = pi.next();
-                    count++;
-                    log.info( "count=" + count + ":" );
-                    log.info( "item=" + item.toString() );
-                    log.info( "item.ExpireTime=" + item.getExpireTime() );
-                    log.info( "item.CreateTime=" + item.getCreateTime());
-                    
-                    if( newDrl.contains( item ) ) {
-                        log.info( "newDrl contains item. " );
-                        int index = newDrl.indexOf( item );
-                        DhtRouterItem oldItem = newDrl.getItem( index );
-                        if( oldItem.getCreateTime() < item.getCreateTime() ) {
-                            log.info( "newDrl set the item. " ); 
-                            //*** keep most recently item
-                            newDrl.setItem ( index, item );
-                        }
-                    } else {
-                        log.info( "newDrl add the item. " );
-                        newDrl.addItem ( item );
+            int count = 0;
+            for( Iterator<DhtRouterItem> pi = drl.iterator();
+                 pi.hasNext(); ){
+                
+                DhtRouterItem item = pi.next();
+                count++;
+                log.info( "count=" + count + ":" );
+                log.info( "item=" + item.toString() );
+                log.info( "item.ExpireTime=" + item.getExpireTime() );
+                log.info( "item.CreateTime=" + item.getCreateTime());
+                
+                // check if item is not expired. ignore expired itenms
+                
+                if( newDrl.contains( item ) ) {
+                    log.info( "newDrl contains item. " );
+                    int index = newDrl.indexOf( item );
+                    DhtRouterItem oldItem = newDrl.getItem( index );
+                    if( oldItem.getCreateTime() < item.getCreateTime() ) {
+                        log.info( "newDrl set the item. " ); 
+                        //*** keep most recently item
+                        newDrl.setItem ( index, item );
                     }
+                } else {
+                    log.info( "newDrl add the item. " );
+                    newDrl.addItem ( item );
                 }
             }
-            log.info( "getDhtRouterListObj: newDrl=" + newDrl );
-            return newDrl;
         }
-
-        return null;
+        
+        log.info( "getDhtRouterList: newDrl=" + newDrl );
+        return newDrl;
     }
     
     public void updateItem( ID rid, DhtRouterItem newItem ) {
@@ -414,7 +413,7 @@ public class Dht {
 
         log.info( "updateItem entering with newItem=" + newItem );
 
-        DhtRouterList drl = getDhtRouterListObj ( rid );
+        DhtRouterList drl = getDhtRouterList( rid );
         
         boolean newFlag = true;
       
@@ -478,7 +477,7 @@ public class Dht {
         
         Log log = LogFactory.getLog(Dht.class);
 
-        DhtRouterList drl = getDhtRouterListObj ( rid );
+        DhtRouterList drl = getDhtRouterList( rid );
                  
         boolean removeFlag = false;
  
@@ -524,7 +523,10 @@ public class Dht {
         
         Log log = LogFactory.getLog(Dht.class);
 
-        DhtRouterList drl = getDhtRouterListObj ( rid );        
+        DhtRouterList drl = getDhtRouterList( rid );        
+
+        DhtRouterList nDrl =  new DhtRouterList( rid );
+        
         boolean removeFlag = false;
 
         if( drl == null ) {
@@ -543,25 +545,21 @@ public class Dht {
                     lastCreate = item.getCreateTime();
                     lastCrUrl = item.getAddress();
                 }
-
+                nDrl.addItem( item );
             } else {
-                //*** remove expired item
-                drl.removeItem ( i );
-                i--;
                 removeFlag = true;
             }
         }
 
         if( removeFlag ) {
-            try {
-
-                if( drl.size() == 0 ) {
+            try {   
+                if( nDrl.size() == 0 ) {
                     // remove empty drl
                     proxyDht.remove( rid, new ByteArray( rid.getValue() ) );
                 } else {
                     // update dht record
                     proxyDht.setHashedSecretForPut( new ByteArray( rid.getValue() ) );
-                    proxyDht.put( rid, drl );
+                    proxyDht.put( rid, nDrl );
                 }
             } catch ( Exception e ) {
                 log.info( "dht exception:" + e.toString() );
@@ -579,10 +577,16 @@ public class Dht {
         ID rid = getRecordID( provider, service,
                               namespace, accession );
            
-        return getDhtRouterList( rid );
+        List<DhtRouterList> drl = new ArrayList<DhtRouterList>();
+        drl.add( getDhtRouterList( rid ) );
+        
+        return drl;
     }
+
+
     
-     
+    /*     
+    
     public List<DhtRouterList> getDhtRouterList( ID rid ){
         
         Log log = LogFactory.getLog( Dht.class );
@@ -613,5 +617,6 @@ public class Dht {
         }
         
         return dhtList;
-    }  
+    } 
+    */ 
 }
