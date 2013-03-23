@@ -64,9 +64,19 @@ public class DhtRouterList implements Serializable {
         return items.iterator();
     }
 
+    //--------------------------------------------------------------------------
     public void setItem ( int index, DhtRouterItem item ) {
         items.set( index, item );
     }
+
+    public boolean contains( DhtRouterItem item ) {
+        return items.contains( item );
+    }
+
+    public int indexOf( DhtRouterItem item ) {
+        return items.indexOf( item );
+    }
+
     //--------------------------------------------------------------------------
     
     public boolean equals( Object obj ){

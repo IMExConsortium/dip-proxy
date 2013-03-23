@@ -347,7 +347,10 @@ public class Dht {
         log.info( " got value info set ..." );
 
         if( vis != null ) {
-
+            if( vis.size() == 0 ) {
+                return null;
+            }
+            /*
             if( vis.size() != 1 ) {
                 log.info( "Fault: DHT return empty set or " +
                           "more DhtRouterList. " );
@@ -355,12 +358,51 @@ public class Dht {
             }
 
             ValueInfo<DhtRouterList> vi = vis.iterator().next();
-
             DhtRouterList drl = vi.getValue();
-
             log.info( " DhtRouterList=" + drl );
-            
             return drl;
+            */
+            
+            DhtRouterList newDrl = new DhtRouterList( rid );
+
+            for( Iterator<ValueInfo<DhtRouterList>> i = vis.iterator();
+                 i.hasNext(); ){
+
+                ValueInfo<DhtRouterList> vi = i.next();
+
+                log.info( "  list=" + vi.getValue() );
+
+                DhtRouterList drl = vi.getValue();
+
+                log.info( " DhtRouterList=" + drl );
+                int count = 0;
+                for( Iterator<DhtRouterItem> pi = drl.iterator();
+                     pi.hasNext(); ){
+
+                    DhtRouterItem item = pi.next();
+                    count++;
+                    log.info( "count=" + count + ":" );
+                    log.info( "item=" + item.toString() );
+                    log.info( "item.ExpireTime=" + item.getExpireTime() );
+                    log.info( "item.CreateTime=" + item.getCreateTime());
+                    
+                    if( newDrl.contains( item ) ) {
+                        log.info( "newDrl contains item. " );
+                        int index = newDrl.indexOf( item );
+                        DhtRouterItem oldItem = newDrl.getItem( index );
+                        if( oldItem.getCreateTime() < item.getCreateTime() ) {
+                            log.info( "newDrl set the item. " ); 
+                            //*** keep most recently item
+                            newDrl.setItem ( index, item );
+                        }
+                    } else {
+                        log.info( "newDrl add the item. " );
+                        newDrl.addItem ( item );
+                    }
+                }
+            }
+            log.info( "getDhtRouterListObj: newDrl=" + newDrl );
+            return newDrl;
         }
 
         return null;
@@ -492,9 +534,7 @@ public class Dht {
         for( int i = 0; i < drl.size(); i++ ) {
 
             DhtRouterItem item = drl.getItem( i );                    
-            log.info( "   item=" + item.toString() );
-            log.info( "   item.ExpireTime=" + item.getExpireTime() );
-            log.info( "   item.CreateTime=" + item.getCreateTime());
+            log.info( "getlastAddress: item=" + item.toString() );
         
             long now = Calendar.getInstance().getTimeInMillis();
 

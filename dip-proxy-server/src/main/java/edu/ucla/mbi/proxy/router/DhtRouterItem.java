@@ -65,5 +65,17 @@ public class DhtRouterItem implements Serializable {
             " (" + cre.getTimeInMillis() + "|" + 
             exp.getTimeInMillis() + ")"; 
     }
-    
+
+    //--------------------------------------------------------------------------
+    public boolean equals( Object obj ) {
+        if( this == obj ) return true;
+        if( obj == null || !(obj instanceof DhtRouterItem ) ) return false;
+        
+        DhtRouterItem dri = ( DhtRouterItem ) obj;
+        return this.address.equals( dri.getAddress() );
+    }    
+
+    public int hashCode() {
+        return this.address.hashCode();
+    }
 }
