@@ -216,6 +216,12 @@ public class Dht {
             
             dhtc.setRoutingAlgorithm( routingAlg );
             
+            // set directory type/location
+            //----------------------------
+            
+            dhtc.setDirectoryType( "BerkeleyDB" );
+            dhtc.setWorkingDirectory("/tmp/dip-proxy/dht");
+
             // propagate old records to incoming nodes ? 
             //-------------------------------------------
             
@@ -223,6 +229,8 @@ public class Dht {
 
             proxyDht = DHTFactory.getDHT( dhtc, proxyId );
                         
+
+
             
             // join overlay
             //-------------

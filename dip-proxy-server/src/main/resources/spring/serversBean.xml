@@ -29,6 +29,7 @@
   
   <property name="bootServers">
     <list>
+<!--
      <value>10.1.200.201</value>
      <value>10.1.200.202</value>
      <value>10.1.200.203</value>
@@ -36,6 +37,7 @@
      <value>10.1.200.205</value>
      <value>10.1.200.206</value>
      <value>10.1.200.207</value>
+-->
      <value>10.1.200.208</value>
      <value>10.1.200.209</value>
      <value>10.1.200.210</value>

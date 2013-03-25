@@ -4,7 +4,7 @@ use XML::XPath;
 use XML::XPath::XMLParser;
 
 my $URL= "http://dip.doe-mbi.ucla.edu/dip-proxy";
-my $PURL= "http://10.1.1.%%%:8080/dip-proxy-server";
+my $PURL= "http://10.1.200.%%%:8080/dip-proxy";
 
 my ( $ip, $srv, $mth, $ns, $ac, $format, $prv ) = @ARGV;
 
@@ -52,6 +52,38 @@ for( my $i = 0; $i<@ARGV; $i++ ) {
     if ( $ARGV[$i] =~ /DET=(.+)/ ) {
         $prv=$1;
     }   
+
+    if ( $ARGV[$i] =~ /PRV=(.+)/ ) {
+        $prv=$1;
+    }   
+}
+
+
+print "URL: $URL\n";
+
+my $som="";
+my $rns ="";    
+
+
+
+
+if($mth eq "get-record"){
+
+    $rns ="http://mbi.ucla.edu/proxy";    
+    my $url=$URL."/proxy-service";
+
+    print "URL:".$url." NS=".$rns." PRV=".$prv." SRV=".$srv." NS=".$ns." AC=".$ac."\n";
+
+    $som=SOAP::Lite->uri($url)
+        ->proxy($url)
+        ->default_ns($rns)
+        ->outputxml('true')
+        -> getRecord(SOAP::Data->name("provider" => $prv),
+                     SOAP::Data->name("service" => $srv),
+                     SOAP::Data->name("ns" => $ns),
+                     SOAP::Data->name("ac" => $ac),
+                     SOAP::Data->name("format" => $format));
+    print $som,"\n";
 }
 
 
@@ -61,10 +93,6 @@ for( my $i = 0; $i<@ARGV; $i++ ) {
 
 
 
-print "URL: $URL\n";
-
-my $som="";
-my $rns ="";    
 if($srv eq "DHT"){
 
     $rns ="http://mbi.ucla.edu/proxy/dht";    

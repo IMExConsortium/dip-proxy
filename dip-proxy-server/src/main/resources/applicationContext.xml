@@ -107,7 +107,7 @@
        </entry>
         
        <entry key="ramCache" value="off"/>
-       <entry key="dbCache" value="off"/>
+       <entry key="dbCache" value="on"/>
        <entry key="remoteProxy" value="on"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
