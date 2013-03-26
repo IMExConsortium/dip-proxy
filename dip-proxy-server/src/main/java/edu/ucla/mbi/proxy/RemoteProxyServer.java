@@ -198,7 +198,10 @@ public class RemoteProxyServer implements NativeServer {
 
             NativeRecord record = new NativeRecord( provider, service, ns, ac );
             record.setNativeXml( resNative.value );
+
             //record.setCreateTime( qtime.toGregorianCalendar().getTime() );
+
+            //*** new change
             record.setQueryTime( qtime.toGregorianCalendar().getTime() );
 
             return record;
