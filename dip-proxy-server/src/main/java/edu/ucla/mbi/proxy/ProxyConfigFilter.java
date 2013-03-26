@@ -1,4 +1,4 @@
-package org.hupo.psi.mi.psicquic.server;
+package edu.ucla.mbi.proxy;
 
 /* =============================================================================
  # $Id:: PsqStoreDispatchFilter.java 1821 2013-03-16 16:56:02Z lukasz99        $
@@ -20,6 +20,8 @@ import javax.servlet.http.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import edu.ucla.mbi.server.WSContext;
+
 public class ProxyConfigFilter  implements Filter{
     
     public void init( FilterConfig config ) throws ServletException{
@@ -38,7 +40,11 @@ public class ProxyConfigFilter  implements Filter{
             log.info( " path=" + path );
          
             System.setProperty( "dip.proxy.home", path );
-        } catch(Exception ex){ ex.printStackTrace();}       
+        } catch(Exception ex){ ex.printStackTrace();}
+
+
+        WSContext.getDht().initialize();
+
     }
     
     public void doFilter( ServletRequest request, 

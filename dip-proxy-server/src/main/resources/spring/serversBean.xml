@@ -15,8 +15,9 @@
 
  <!-- distributed hash configuration -->
 
+       <!--init-method="initialize"  -->
  <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
-       init-method="initialize" destroy-method="cleanup">
+        destroy-method="cleanup">
 
   <property name="overlayMode" value="${dht.mode}" />
 

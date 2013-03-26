@@ -121,7 +121,7 @@ public class Dht {
     }
 
     //--------------------------------------------------------------------------
-
+    
     public void initialize() {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "initializing(mode=" + routingAlg +")" );
