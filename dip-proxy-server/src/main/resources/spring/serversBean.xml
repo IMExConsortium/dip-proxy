@@ -14,6 +14,7 @@
       http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
  <!-- distributed hash configuration -->
+
  <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
        init-method="initialize" destroy-method="cleanup">
 
@@ -22,16 +23,23 @@
   <property name="routingAlgorithm">
     <value>${dht.routing}</value>
   </property>
-  
+
+  <property name="directoryType">
+    <value>BerkeleyDB</value>
+  </property>
+
+  <property name="workingDirectory">
+   <value>/tmp/dip-proxy/dht</value>
+  </property>
+ 
   <property name="dhtPort">
     <value>55666</value>    
   </property>
   
   <property name="bootServers">
     <list>
-<!--
      <value>10.1.200.201</value>
-     <value>10.1.200.202</value>
+<!--     <value>10.1.200.202</value>
      <value>10.1.200.203</value>
      <value>10.1.200.204</value>
      <value>10.1.200.205</value>
