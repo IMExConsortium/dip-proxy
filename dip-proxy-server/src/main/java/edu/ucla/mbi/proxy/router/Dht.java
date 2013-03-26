@@ -126,6 +126,12 @@ public class Dht {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "initializing(mode=" + routingAlg +")" );
         log.info( " boot servers=" + bootServers);
+
+        String proxyHome = System.getProperty( "dip.proxy.home");
+        log.info( " proxyHome=" + proxyHome );
+        // if workingDirectory starts with File.separator() keep it
+        // otherwise use proxyHome + File.separator() + workingDirectory
+        // (provided proxyHome is set)
         
         String proxyTime  = null;
         String proxyIdStr = null;
