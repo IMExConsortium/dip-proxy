@@ -37,9 +37,9 @@ public class Dht {
     private String overlayMode = "networked";
     private String dhtPort = null;
     private String routingAlg = null;
-
+    private String directoryType = null;
+    private String workingDirectory = null; 
     private String proxyHost = null;
-
 
     private List<String> bootServers = null;
 
@@ -51,19 +51,35 @@ public class Dht {
         this.routingAlg = algorithm;
     }
 
-    public String getRoutingAlgorithm() {
-        return this.routingAlg;
+    public void setDirectoryType( String dirType ) {
+        this.directoryType = dirType;
+    }
+
+    public void setWorkingDirectory ( String workingDir ) {
+        this.workingDirectory = workingDir;
     }
 
     public void setDhtPort( String port ){
         this.dhtPort = port;
     }
 
-    public String getProxyHost() {
+    public String getRoutingAlgorithm(){
+        return this.routingAlg;
+    }
+
+    public String getDirectoryType(){
+        return this.directoryType;
+    }
+
+    public String getWorkingDirectory(){
+        return this.workingDirectory;
+    }
+
+    public String getProxyHost(){
         return this.proxyHost;
     }
 
-    public String getDhtPort() {
+    public String getDhtPort(){
         return this.dhtPort;
     }
 
@@ -219,8 +235,8 @@ public class Dht {
             // set directory type/location
             //----------------------------
             
-            dhtc.setDirectoryType( "BerkeleyDB" );
-            dhtc.setWorkingDirectory("/tmp/dip-proxy/dht");
+            dhtc.setDirectoryType( directoryType );
+            dhtc.setWorkingDirectory( workingDirectory );
 
             // propagate old records to incoming nodes ? 
             //-------------------------------------------
