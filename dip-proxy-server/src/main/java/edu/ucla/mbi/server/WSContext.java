@@ -26,7 +26,7 @@ import edu.ucla.mbi.util.struts.action.*;
 public class WSContext{
     
     private static final int DEFAULT_TTL     = 14;     // two weeks
-    private static final int DEFAULT_TIMEOUT = 30000;  // 30s
+    private static final int DEFAULT_TIMEOUT = 300;  // 300s
     private static final int DEFAULT_DEBUG = 0;        // 
     
     private static Map<String,Map> services;
@@ -148,7 +148,9 @@ public class WSContext{
 	    
 	        String ttl = 
 		        (String) ( (Map) services.get( service ) ).get( "ttl" );
+
 	        int intTtl = DEFAULT_TTL*60*60*24;
+
 	        if ( ttl != null ) {
 		        if (ttl.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
 		            try {
@@ -159,21 +161,11 @@ public class WSContext{
 		            } catch ( NumberFormatException nfe ) {
 			            log.info( "ProxyWS: ttl=" + ttl +
 				                  " :format error. Using default." );
-                        throw nfe;
-                                                  
 		            }
-		        } else {
-		            log.info( "ProxyWS: ttl="+ttl+
-				              " :unknown units/format. Using default.");
-		            ttl = String.valueOf( DEFAULT_TTL );
 		        }
-	        } else {
-		        log.info( "ProxyWS: ttl not specified: Using default." );
-		        ttl = String.valueOf( DEFAULT_TTL );
 	        }
 	         
-                ( (Map) services.get( service ) ).put( "ttl", intTtl );
-                
+            ( (Map) services.get( service ) ).put( "ttl", intTtl );
                 
 	        // Remote Service Timeout
 	        //-----------------------
@@ -181,51 +173,46 @@ public class WSContext{
 	        String timeout =
                     (String) ( (Map) services.get( service ) ).get( "timeout" );
 	    
-	        int intTimeout = DEFAULT_TIMEOUT;
+	        int intTimeout = DEFAULT_TIMEOUT * 1000 ; // convert to millis
+
 	        if( timeout != null ) {
-                    if ( timeout.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
-                        try {
-                            // detault units: seconds
-                            intTimeout = Integer.parseInt( timeout );
-                            // convert to miliseconds
-                            intTimeout = intTimeout*1000; 
-                        } catch( NumberFormatException nfe ) {
-                            log.info( "ProxyWS: timeout=" + timeout +
-                                      " :format error. Using default." );
+                if ( timeout.replaceAll( "\\s+", "" ).matches( "^\\d+$" ) ) {
+                    try {
+                        // detault units: seconds
+                        intTimeout = Integer.parseInt( timeout );
+                        // convert to miliseconds
+                        intTimeout = intTimeout*1000; 
+                    } catch( NumberFormatException nfe ) {
+                        log.info( "ProxyWS: timeout=" + timeout +
+                                  " :format error. Using default." );
                     }
-                    } else {
-                        log.info("ProxyWS: timeout=" + timeout +
-                                 " :unknown units/format. Using default.");
-                        timeout=String.valueOf(DEFAULT_TIMEOUT);
-                    }
-                } else {
-                    log.info( "ProxyWS: ttl not specified: Using default." );
-                    timeout=String.valueOf( DEFAULT_TIMEOUT );
-                }
-                
-                ( (Map) services.get( service ) ).put( "timeout", intTimeout );
+                    
+                } 
+            }
+     
+            ( (Map) services.get( service ) ).put( "timeout", intTimeout );
                 
 	        log.info( "ProxyWS:  " + service + " (ttl: " + ttl + " days; " +
 		              "timeout=" + timeout + " s)" );
                 
 
 	        // ramCache flag
-                //------------
+            //------------
 
-                String ramCacheOn =
-                    (String) ( (Map) services.get( service ) ).get( "ramCache" );
-                boolean isRamCacheOn = true;
+            String ramCacheOn =
+                (String) ( (Map) services.get( service ) ).get( "ramCache" );
+            boolean isRamCacheOn = true;
                 
-                if ( ramCacheOn != null ) {
-                if ( ramCacheOn.equalsIgnoreCase( "true" ) ||
-                     ramCacheOn.equalsIgnoreCase( "on" ) ||
-                     ramCacheOn.equalsIgnoreCase( "yes" )) {
+            if ( ramCacheOn != null ) {
+                if ( ramCacheOn.equalsIgnoreCase( "true" ) 
+                     || ramCacheOn.equalsIgnoreCase( "on" ) 
+                     || ramCacheOn.equalsIgnoreCase( "yes" ) ) {
 
                     isRamCacheOn = true;
 
-                } else if ( ramCacheOn.equalsIgnoreCase( "false" ) ||
-                            ramCacheOn.equalsIgnoreCase( "off" ) ||
-                            ramCacheOn.equalsIgnoreCase( "no" ) ) {
+                } else if ( ramCacheOn.equalsIgnoreCase( "false" ) 
+                            || ramCacheOn.equalsIgnoreCase( "off" ) 
+                            || ramCacheOn.equalsIgnoreCase( "no" ) ) {
 
                     isRamCacheOn = false;
 
@@ -233,9 +220,9 @@ public class WSContext{
                     throw new ProxyException( "Service: " + service +
                                               " ramCache flag format error");
                 }
-                log.info( "ProxyWS:   ramCache=" + isRamCacheOn );
+                log.info( "ProxyWS: ramCache=" + isRamCacheOn );
             } else {
-                log.info( "ProxyWS:   ramCache=" + isRamCacheOn +
+                log.info( "ProxyWS: ramCache=" + isRamCacheOn +
                           " (default)");
             }
 
@@ -249,21 +236,21 @@ public class WSContext{
             boolean isDbCacheOn = true;
 	    
             if ( dbCacheOn != null ) {
-                if ( dbCacheOn.equalsIgnoreCase( "true" ) ||
-                     dbCacheOn.equalsIgnoreCase( "on" ) ||
-                     dbCacheOn.equalsIgnoreCase( "yes" )) {
+                if ( dbCacheOn.equalsIgnoreCase( "true" ) 
+                     || dbCacheOn.equalsIgnoreCase( "on" ) 
+                     || dbCacheOn.equalsIgnoreCase( "yes" ) ) {
 
                     isDbCacheOn = true;
 
-                } else if ( dbCacheOn.equalsIgnoreCase( "false" ) ||
-                            dbCacheOn.equalsIgnoreCase( "off" ) ||
-                            dbCacheOn.equalsIgnoreCase( "no" ) ) {
+                } else if ( dbCacheOn.equalsIgnoreCase( "false" ) 
+                            || dbCacheOn.equalsIgnoreCase( "off" ) 
+                            || dbCacheOn.equalsIgnoreCase( "no" ) ) {
 
                     isDbCacheOn = false;
 
                 } else {
                     throw new ProxyException( "Service: " + service +
-                                              " dbCache flag format error");
+                                              " dbCache flag format error" );
                 }
                 log.info( "ProxyWS:   dbCache=" + isDbCacheOn );
             } else {
@@ -282,15 +269,15 @@ public class WSContext{
             boolean isMonitorOn = false;
 
             if ( monitorOn != null ) {
-                if ( monitorOn.equalsIgnoreCase( "true" ) ||
-                     monitorOn.equalsIgnoreCase( "on" ) ||
-                     monitorOn.equalsIgnoreCase( "yes" ) ) {
+                if ( monitorOn.equalsIgnoreCase( "true" ) 
+                     || monitorOn.equalsIgnoreCase( "on" ) 
+                     || monitorOn.equalsIgnoreCase( "yes" ) ) {
 
                     isMonitorOn = true;
 
-                } else if (monitorOn.equalsIgnoreCase( "false" ) ||
-                           monitorOn.equalsIgnoreCase( "off" ) ||
-                           monitorOn.equalsIgnoreCase( "no" ) ) {
+                } else if (monitorOn.equalsIgnoreCase( "false" ) 
+                           || monitorOn.equalsIgnoreCase( "off" ) 
+                           || monitorOn.equalsIgnoreCase( "no" ) ) {
 
                     isMonitorOn = false;
 
@@ -323,21 +310,21 @@ public class WSContext{
             boolean isRemoteProxyOn = false;
 
             if ( remoteProxyOn != null ) {
-                if ( remoteProxyOn.equalsIgnoreCase( "true" ) ||
-                     remoteProxyOn.equalsIgnoreCase( "on" ) ||
-                     remoteProxyOn.equalsIgnoreCase( "yes" ) ) {
+                if ( remoteProxyOn.equalsIgnoreCase( "true" ) 
+                     || remoteProxyOn.equalsIgnoreCase( "on" ) 
+                     || remoteProxyOn.equalsIgnoreCase( "yes" ) ) {
 
                     isRemoteProxyOn = true;
 
-                } else if (remoteProxyOn.equalsIgnoreCase( "false" ) ||
-                           remoteProxyOn.equalsIgnoreCase( "off" ) ||
-                           remoteProxyOn.equalsIgnoreCase( "no" ) ) {
+                } else if ( remoteProxyOn.equalsIgnoreCase( "false" ) 
+                            || remoteProxyOn.equalsIgnoreCase( "off" ) 
+                            || remoteProxyOn.equalsIgnoreCase( "no" ) ) {
 
                     isRemoteProxyOn = false;
 
                 } else {
                     throw new ProxyException( "Provider: " + service +
-                                              " remote proxy flag format error");
+                                              " remote proxy flag format error" );
                 }
                 log.info( "ProxyWS:   remote proxy=" + isRemoteProxyOn );
             } else {
@@ -350,9 +337,6 @@ public class WSContext{
 	        // proxy prototype
 	        //----------------
 
-            //RemoteProxyServer proxyProto = 
-            //    (RemoteProxyServer) ( (Map) services.get( service ) ).get( "proxyProto" );
-            
             NativeServer proxyProto =         
                 (NativeServer) ( (Map) services.get( service ) ).get( "proxyProto" );
             ( (Map) services.get( service ) ).put( "proxyProto", proxyProto );
