@@ -30,7 +30,7 @@ import edu.ucla.mbi.cache.*;
 
 public class Dht {
 
-    public final static int MAX_DPL_SIZE = 2;
+    public final static int MAX_DRL_SIZE = 2;
     
     private Properties dhtProperties = null;
     
@@ -40,6 +40,8 @@ public class Dht {
     private String directoryType = null;
     private String workingDirectory = null; 
     private String proxyHost = null;
+    private int maxDrlSize = MAX_DRL_SIZE;
+    private long defaultTTL = 0;
 
     private List<String> bootServers = null;
 
@@ -63,6 +65,14 @@ public class Dht {
         this.dhtPort = port;
     }
 
+    public void setMaxDrlSize ( int size ) {
+        this.maxDrlSize = size;
+    }
+
+    public void setDefaultTTL ( long ttl ) {
+        this.defaultTTL = ttl * 60 * 60 * 1000;
+    }
+
     public String getRoutingAlgorithm(){
         return this.routingAlg;
     }
@@ -81,6 +91,14 @@ public class Dht {
 
     public String getDhtPort(){
         return this.dhtPort;
+    }
+
+    public int getMaxDrlSize() {
+        return this.maxDrlSize;
+    }
+
+    public long getDefaultTTL () {
+        return this.defaultTTL;
     }
 
     public void setBootServers( List bootServers ){
@@ -126,13 +144,19 @@ public class Dht {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "initializing(mode=" + routingAlg +")" );
         log.info( " boot servers=" + bootServers);
+        log.info( " defaultTTL=" + defaultTTL );
 
         String proxyHome = System.getProperty( "dip.proxy.home");
         log.info( " proxyHome=" + proxyHome );
-        // if workingDirectory starts with File.separator() keep it
-        // otherwise use proxyHome + File.separator() + workingDirectory
-        // (provided proxyHome is set)
-        
+
+        if( !workingDirectory.startsWith( File.separator )  
+            && proxyHome != null && !proxyHome.isEmpty() ) {
+
+            workingDirectory = proxyHome + File.separator + workingDirectory;
+        }     
+
+        log.info( "workingDir= " + workingDirectory );
+
         String proxyTime  = null;
         String proxyIdStr = null;
         BigInteger proxyIdSHA1 = null;
@@ -225,7 +249,7 @@ public class Dht {
             //--------------
 
             dhtc.setDoUPnPNATTraversal( false );
-
+            
             // use UDP (default)
             //------------------
 
@@ -236,13 +260,22 @@ public class Dht {
 
             log.info( "  DHTConfiguration: RoutingAlgorithm=" +  routingAlg );
             
-            dhtc.setRoutingAlgorithm( routingAlg );
-            
+            if( routingAlg != null && !routingAlg.isEmpty() ){
+                dhtc.setRoutingAlgorithm( routingAlg );
+            }
             // set directory type/location
             //----------------------------
-            
-            dhtc.setDirectoryType( directoryType );
-            dhtc.setWorkingDirectory( workingDirectory );
+            if( directoryType != null && !directoryType.isEmpty() ) {
+                dhtc.setDirectoryType( directoryType );
+            }
+
+            if( workingDirectory != null && !workingDirectory.isEmpty() ) {
+                dhtc.setWorkingDirectory( workingDirectory );
+            }
+
+            if( defaultTTL != 0 ){
+                dhtc.setDefaultTTL ( defaultTTL );
+            }
 
             // propagate old records to incoming nodes ? 
             //-------------------------------------------
@@ -482,7 +515,7 @@ public class Dht {
                 DhtRouterItem dpi = newItem;
                 drl.addItem( dpi );
                     
-                if ( drl.size() > MAX_DPL_SIZE ){
+                if ( drl.size() > maxDrlSize ){
                     drl.removeItem( firstQueryItem );
                 }
             }
