@@ -15,11 +15,16 @@
 
  <!-- distributed hash configuration -->
 
-       <!--init-method="initialize"  -->
+ <!-- init-method="initialize"  -->
+
  <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
-        destroy-method="cleanup">
+       destroy-method="cleanup">
 
   <property name="overlayMode" value="${dht.mode}" />
+ 
+  <property name="maxDrlSize">
+    <value>2</value>
+  </property>
 
   <property name="routingAlgorithm">
     <value>${dht.routing}</value>
@@ -30,7 +35,12 @@
   </property>
 
   <property name="workingDirectory">
-   <value>/tmp/dip-proxy/dht</value>
+   <!--<value>/tmp/dip-proxy/dht</value> -->
+   <value>dht</value>
+  </property>
+
+  <property name="defaultTTL">
+    <value>3</value> <!-- 3 hours -->
   </property>
  
   <property name="dhtPort">
