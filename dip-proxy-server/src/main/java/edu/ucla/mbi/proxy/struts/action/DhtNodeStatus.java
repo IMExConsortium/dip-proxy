@@ -76,8 +76,8 @@ public class DhtNodeStatus extends PortalSupport {
         log.info( "messaging address:" + 
                   idap.getAddress().getHostnameOrHostAddress() );        
         nodeStatus.put( "address", 
-                        idap.getAddress().getHostnameOrHostAddress() );
-
+        //                idap.getAddress().getHostnameOrHostAddress() );
+                          idap.getAddress().getHostAddress() );
         log.info( "messaging port:" + idap.getAddress().getPort() ); 
         nodeStatus.put( "port", 
                         Integer.toString( idap.getAddress().getPort() ) );
