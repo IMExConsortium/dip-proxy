@@ -97,27 +97,24 @@
       org.springframework.web.context.ContextLoaderListener
     </listener-class>
   </listener>
-
   
   <!-- ================================================= JAX-WS listener -->
-<!--
   <listener>
    <listener-class>
     com.sun.xml.ws.transport.http.servlet.WSServletContextListener
    </listener-class>
   </listener>
--->
+
   <!-- ======================================= WSContextManager listener -->
-<!--
   <listener>
    <listener-class>
     edu.ucla.mbi.server.WSContextManager
    </listener-class>
   </listener>
--->
-<!-- =================================================== =============== -->
-<!-- =================================================== Servlet startup -->
-<!-- =================================================== =============== -->
+
+  <!-- =================================================== =============== -->
+  <!-- =================================================== Servlet startup -->
+  <!-- =================================================== =============== -->
 
   <servlet>
    <servlet-name>dip-proxy</servlet-name>
