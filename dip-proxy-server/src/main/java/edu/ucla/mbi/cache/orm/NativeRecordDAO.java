@@ -407,6 +407,18 @@ public class NativeRecordDAO extends AbstractDAO {
         return result;
     }
 
+    //---------------------------------------------------------------------------
+    
+    public List<String[]> 
+        getQueryFirst( String provider ) throws DAOException {
+        
+        
+        
+        return null;
+    }
+    
+    //---------------------------------------------------------------------------
+    
     public List<String[]> 
         getExpireFirst( String provider ) throws DAOException {
         

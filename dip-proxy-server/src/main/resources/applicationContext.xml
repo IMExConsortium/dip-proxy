@@ -32,7 +32,7 @@
 
  <!-- ========================================================== SCHEDULER -->
 
- <!--<import resource="spring/schedulerBean.xml" /> -->
+<import resource="spring/schedulerBean.xml" /> 
 
  <!-- ========================================================== AOP AUDIT -->
 

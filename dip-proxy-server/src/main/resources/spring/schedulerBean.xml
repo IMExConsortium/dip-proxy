@@ -29,7 +29,7 @@
    <ref bean="wsContext"/>
   </property>
   
-  <property name="threadCount" value="0" />
+  <property name="threadCount" value="1" />
 
   <property name="agents">
    <map>
@@ -37,7 +37,11 @@
      <map>
       <entry key="interval" value="60" />
       <entry key="agent-instance">
-       <bean class="edu.ucla.mbi.monitor.NativeAgent"/>
+       <bean class="edu.ucla.mbi.monitor.NativeAgent">
+<!--          <property name="order">expiration-first</property>  -->
+<!--          <property name="order">query-first</property>  -->
+<!--          <property name="order">expiration-first</property>  -->
+       </bean>
       </entry>
      </map>
     </entry>       

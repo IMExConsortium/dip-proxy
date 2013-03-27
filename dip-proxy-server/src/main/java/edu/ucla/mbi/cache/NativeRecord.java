@@ -37,10 +37,10 @@ public class NativeRecord implements Record {
         this.provider = provider;
         this.service = service;
         this.ns = ns;
-	    this.ac = ac;
-	
-	    this.createTime = Calendar.getInstance().getTime();
-	    this.queryTime = Calendar.getInstance().getTime(); 
+        this.ac = ac;
+        
+        this.createTime = Calendar.getInstance().getTime();
+        this.queryTime = Calendar.getInstance().getTime(); 
     }
 
     // setters
