@@ -32,7 +32,7 @@
 
  <!-- ========================================================== SCHEDULER -->
 
-<import resource="spring/schedulerBean.xml" /> 
+ <import resource="spring/schedulerBean.xml" /> 
 
  <!-- ========================================================== AOP AUDIT -->
 
@@ -66,11 +66,10 @@
    <ref bean="dht"/>
   </property> 
   
-  <!--
+  
   <property name="scheduler">
    <ref bean="scheduler"/>
   </property> 
-  -->
 
   <property name="waitMillis" value="5000"/>
 

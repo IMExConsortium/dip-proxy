@@ -12,9 +12,9 @@
     <proxy.bld>$Rev$</proxy.bld>
 
     <dbid></dbid>
-    <dht.mode>networked</dht.mode>  
-    <dht.routing>Chord</dht.routing>  
+    <dht.mode>networked</dht.mode> 
     <!-- <dht.mode>local</dht.mode> -->
+    <dht.routing>Chord</dht.routing>  
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
     <hibernate.connection.portnum>5432</hibernate.connection.portnum>
 
@@ -150,8 +150,8 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-<!--      <version>2.5.6</version> -->
-      <version>3.1.3.RELEASE</version>
+      <version>2.5.6</version> 
+      <!--<version>3.1.3.RELEASE</version>-->
     </dependency>
     
     <dependency>

@@ -10,7 +10,7 @@
          "disabled":"false",
          menu:[
             {label:"Status",
-             link:"node-status",
+             link:"page?id=status",
              "disabled":"false",
              menu:[
                 {label:"Local cache",
