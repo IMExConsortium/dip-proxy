@@ -24,11 +24,11 @@
 
  <bean id="scheduler" init-method="start" destroy-method="shutdown"
        class="edu.ucla.mbi.monitor.Scheduler" >
-
+  <!--
   <property name="context">
    <ref bean="wsContext"/>
   </property>
-  
+  -->
   <property name="threadCount" value="1" />
 
   <property name="agents">
@@ -37,15 +37,31 @@
      <map>
       <entry key="interval" value="60" />
       <entry key="agent-instance">
+        <ref bean="nativeAgent"/>
+
+       <!--
        <bean class="edu.ucla.mbi.monitor.NativeAgent">
-<!--          <property name="order">expiration-first</property>  -->
-<!--          <property name="order">query-first</property>  -->
-<!--          <property name="order">expiration-first</property>  -->
-       </bean>
+          <property name="order">expiration-first</property>  
+          <property name="order">query-first</property>  
+          <property name="order">expiration-first</property>  
+       </bean> 
+       -->
+
       </entry>
      </map>
     </entry>       
    </map>
   </property>
  </bean>
+
+ <bean id="nativeAgent" class="edu.ucla.mbi.monitor.NativeAgent">
+    <property name="context">
+        <ref bean="wsContext"/>
+    </property>
+
+    <!--<property name="order" value="expiration-first"/> -->
+    <property name="order" value="query-first"/>  
+
+ </bean>
+
 </beans>

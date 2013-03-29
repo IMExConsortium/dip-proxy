@@ -24,7 +24,8 @@ import edu.ucla.mbi.proxy.ProxyFault;
 
 public class NativeAgent implements Agent {
 
-    WSContext context = null;
+    private WSContext context = null;
+    private String order = "expiration-first";
 
     public void setContext( WSContext context ) {
 
@@ -32,6 +33,10 @@ public class NativeAgent implements Agent {
 
         Log log = LogFactory.getLog( NativeAgent.class );
         log.info( "configured" );
+    }
+
+    public void setOrder ( String order ) {
+        this.order = order;
     }
 
     public void run() {
@@ -54,8 +59,15 @@ public class NativeAgent implements Agent {
 
                 RemoteServerContext rsc = WSContext.getServerContext( prv );
 
+                List<String[]> oldList = null;
                 try {
-                    List<String[]> oldList = ndo.getExpireFirst( prv );
+                    if( order.equals( "query-first" ) ) {
+                        log.info( "call queryFirst. " );
+                        oldList = ndo.getQueryFirst( prv );
+                    } else {
+                        log.info( "call expireFirst. " );
+                        oldList = ndo.getExpireFirst( prv );
+                    }
 
                     for ( Iterator<String[]> jj = oldList.iterator(); jj
                             .hasNext(); ) {

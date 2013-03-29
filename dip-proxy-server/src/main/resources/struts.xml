@@ -97,8 +97,7 @@
    <!-- native sparkline -->
 
    <action name="native-sparkline" class="nativeSparkAction" >
-     <result name="success">cachestatus</result>
-
+     <!--<result name="success">nativestatus</result> -->
     <result name="png" type="stream">
       <param name="contentType">image/png</param>
       <param name="inputName">imageStream</param>

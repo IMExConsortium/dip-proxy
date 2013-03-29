@@ -412,9 +412,60 @@ public class NativeRecordDAO extends AbstractDAO {
     public List<String[]> 
         getQueryFirst( String provider ) throws DAOException {
         
+        Session session = hibernateOrmUtil.getCurrentSession();
+        Transaction tx = session.beginTransaction();
+
+        List<String[]> result = new ArrayList<String[]>();
         
-        
-        return null;
+        try {
+
+            // get services
+            //-------------
+            Set<String> services = WSContext.getServerContext( 
+                                            provider.toUpperCase() )
+                                            .getServiceSet();
+
+ 
+            // get oldest entries
+            //-------------------
+            
+            for ( Iterator<String> ii = services.iterator(); 
+                  ii.hasNext(); ) {
+                
+                String service = ii.next();
+                Query query = session
+                    .createQuery( "select nr.ns, nr.ac, nr.queryTime " +
+                                  " from NativeRecord nr " +
+                                  " where nr.queryTime = " +
+                                  " (select min(nr.queryTime) " +
+                                  "   from NativeRecord nr " +
+                                  "   where nr.provider = :prv " +
+                                  "   and nr.service = :srv ) " +
+                                  " and nr.provider = :prv " +
+                                  " and nr.service = :srv" );
+                query.setParameter( "prv", provider.toUpperCase() );
+                query.setParameter( "srv", service.toLowerCase() );
+                List items = query.list();
+                
+                for ( Iterator<Object[]> jj = items.iterator(); 
+                      jj.hasNext(); ) {
+                
+                    Object[] j = jj.next();
+                    String[] entry = new String[3];
+                    entry[0] = service;
+                    entry[1] = (String) j[0];
+                    entry[2] = (String) j[1];
+                    result.add( entry );
+                }
+            }
+            tx.commit();
+        } catch ( HibernateException e ) {
+            handleException( e );
+        } finally {
+            session.close();
+        }
+
+        return result;
     }
     
     //---------------------------------------------------------------------------
@@ -433,9 +484,6 @@ public class NativeRecordDAO extends AbstractDAO {
             //-------------
             Set<String> services = WSContext.getServerContext( 
                                             provider.toUpperCase() )
-           //                                 .getTransformer().getTransfMap()
-           //                                 .getNativeServerMap()
-           //                                 .keySet();
                                             .getServiceSet();
 
  

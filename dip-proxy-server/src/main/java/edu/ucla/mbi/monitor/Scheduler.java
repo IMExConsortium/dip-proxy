@@ -25,7 +25,7 @@ public class Scheduler {
 
     ScheduledThreadPoolExecutor executor = null;
 
-    WSContext context = null;
+    //WSContext context = null;
     
     private int threadCount = 0;
     private Map agents = null;
@@ -36,10 +36,10 @@ public class Scheduler {
 
     //---------------------------------------------------------------------
     
-
+    /*
     public void setContext( WSContext context ) {
         this.context = context;
-    }
+    } */
 
     //---------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ public class Scheduler {
                 String interval = (String) agent.get( "interval" );
                 Agent agentInstance = (Agent) agent.get( "agent-instance" );
                 
-                agentInstance.setContext( context );
+                //agentInstance.setContext( context );
 
                 executor.scheduleAtFixedRate( agentInstance, 0L, 
                                               1000L*parseInterval( interval ), 
