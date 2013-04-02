@@ -407,7 +407,7 @@ public class Dht {
             return null;
         }
         
-        log.info( " got value info set ..." );
+        //log.info( " got value info set ..." );
 
         if( vis == null || vis.size() == 0 ) return null;
 
@@ -474,7 +474,7 @@ public class Dht {
         
         Log log = LogFactory.getLog(Dht.class);
 
-        log.info( "updateItem entering with newItem=" + newItem );
+        //log.info( "updateItem entering with newItem=" + newItem );
 
         DhtRouterList drl = getDhtRouterList( rid );
         
@@ -492,7 +492,7 @@ public class Dht {
             
                 DhtRouterItem proxyItem = drl.getItem(i);                   
 
-                log.info( "   item=" + proxyItem.toString() );
+                //log.info( "   item=" + proxyItem.toString() );
                 
                 if ( proxyItem.getAddress().equals(newItem.getAddress()) ){
                     newFlag = false;
@@ -511,7 +511,7 @@ public class Dht {
             }
 
             if( newFlag ) {
-                log.info( "updateItem: newFlag=true: add newItem=" + newItem );
+                //log.info( "updateItem: newFlag=true: add newItem=" + newItem );
                 DhtRouterItem dpi = newItem;
                 drl.addItem( dpi );
                     
@@ -527,13 +527,13 @@ public class Dht {
 
             proxyDht.put( rid, drl );
 
-            log.info( "updateItem: after put: dht rc=" + proxyDht.get(rid) );
+            //log.info( "updateItem: after put: dht rc=" + proxyDht.get(rid) );
 
         } catch ( Exception e ) {
             log.info( "dht exception:" + e.toString() );
         }
 
-        log.info( "update(UPDATE): done" );
+        //log.info( "update(UPDATE): done" );
     }
 
     public void deleteItem( ID rid, DhtRouterItem newItem ) {
@@ -548,7 +548,7 @@ public class Dht {
             for( int i = 0; i < drl.size(); i++ ) {
                     
                 DhtRouterItem proxyItem = drl.getItem( i );                   
-                log.info( "   item=" + proxyItem.toString() );
+                //log.info( "   item=" + proxyItem.toString() );
                     
                 if( proxyItem.getAddress().equals(newItem.getAddress()) ){
                     drl.removeItem( i );
@@ -573,7 +573,7 @@ public class Dht {
             }
         } 
 
-        log.info( "update(DELETE): done" );
+        //log.info( "update(DELETE): done" );
     }
     
     public String getLastAddress( ID rid ){
