@@ -32,6 +32,17 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class ProxyPortImpl implements ProxyPort {
 
     private Log log = LogFactory.getLog( ProxyPortImpl.class );
+    
+    private String foo="";
+
+    public void setFoo( String foo){
+        this.foo=foo;
+    }
+    
+    public void initialize(){
+        log.debug("initialize() called");
+        log.debug("foo=" + foo );
+    }
 
     public void getRecord( String provider, String service,
                            String ns, String ac, String match,
@@ -44,6 +55,8 @@ public class ProxyPortImpl implements ProxyPort {
 
         ns = this.validateCheck( provider, service, ns, ac, detail, format );
         
+        log.debug( "foo=" + foo );
+
         log.info( "getRecord: ns= " + ns + " and ac=" + ac +
                   " and detail=" + detail + " format=" + format + "." );
         

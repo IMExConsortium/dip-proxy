@@ -14,13 +14,22 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:tx="http://www.springframework.org/schema/tx"
+
+    xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+    xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
+
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans 
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/tx 
         http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
         http://www.springframework.org/schema/aop 
-        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+
+        http://jax-ws.dev.java.net/spring/core
+        http://jax-ws.dev.java.net/spring/core.xsd
+        http://jax-ws.dev.java.net/spring/servlet
+        http://jax-ws.dev.java.net/spring/servlet.xsd">
 
  <!-- ========================================================== CONTEXT -->
 
@@ -303,5 +312,35 @@
   <property name="failureMode" value="Redistribute"/>
   <property name="useNagleAlgorithm" value="false"/>
  </bean>
+
+
+<!--
+ <bean id="proxy-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.ProxyPortImpl" >
+   <property name="wsContext" ref="wsContext"/>
+ </bean>
+
+ <bean id="dht-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.ProxyPortImpl" >
+   <property name="wsContext" ref="wsContext"/>
+ </bean>
+
+ <bean id="ncbi-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.ProxyPortImpl" >
+   <property name="wsContext" ref="wsContext"/>
+ </bean>
+
+ <bean id="ebi-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.ProxyPortImpl" >
+   <property name="wsContext" ref="wsContext"/>
+ </bean>
+-->
+
+ <ws:service  id="proxy-service-id" bean="#proxy-service-bean"/>
+ <wss:binding url="/proxy-service" service="#proxy-service-id" />
+
+ <ws:service  id="dht-service-id" bean="#dht-service-bean"/>
+ <wss:binding url="/dht-service" service="#dht-service-id" />
+
 
 </beans>

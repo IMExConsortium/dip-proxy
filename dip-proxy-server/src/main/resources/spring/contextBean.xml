@@ -15,7 +15,7 @@
 
     <!-- Context: Configuration files -->
     <bean id="portalContext" class="edu.ucla.mbi.util.context.PortalContext">
-
+<!--
         <property name="portal">
             <map>
                 <entry key="skin-path" value="/skin" />
@@ -31,13 +31,12 @@
                         <entry key="skin" value="icentral" />
                         <entry key="menu-config"><ref bean="menuContext"/></entry>
                         <entry key="page-config"><ref bean="pageContext"/></entry>
-                        <!--           
-                        <entry key="news-config"><ref bean="newsContext"/></entry>  
-                        -->
+                        
                     </map>
                 </entry>
             </map>
         </property>
+-->
     </bean>
 
     <bean id="pageContext" class="edu.ucla.mbi.util.context.JsonContext">

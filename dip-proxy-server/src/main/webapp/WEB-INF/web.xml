@@ -99,6 +99,8 @@
   </listener>
   
   <!-- ================================================= JAX-WS listener -->
+
+
   <listener>
    <listener-class>
     com.sun.xml.ws.transport.http.servlet.WSServletContextListener
@@ -112,10 +114,14 @@
    </listener-class>
   </listener>
 
+
+
+
   <!-- =================================================== =============== -->
   <!-- =================================================== Servlet startup -->
   <!-- =================================================== =============== -->
 
+<!--  STD JAVA Web Services
   <servlet>
    <servlet-name>dip-proxy</servlet-name>
    <servlet-class>
@@ -123,6 +129,17 @@
    </servlet-class>
    <load-on-startup>1</load-on-startup>
   </servlet>
+-->
+
+ <!-- Spring Web Services  -->
+
+  <servlet>
+   <servlet-name>dip-proxy</servlet-name>
+   <servlet-class>
+    com.sun.xml.ws.transport.http.servlet.WSSpringServlet
+   </servlet-class>
+  </servlet>
+
 
 <!-- =================================================== =============== -->
 <!-- =================================================== Servlet mapping -->
