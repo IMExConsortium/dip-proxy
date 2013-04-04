@@ -313,28 +313,35 @@
   <property name="useNagleAlgorithm" value="false"/>
  </bean>
 
-
-<!--
  <bean id="proxy-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ProxyPortImpl" >
-   <property name="wsContext" ref="wsContext"/>
+   <property name="context" ref="wsContext"/> 
  </bean>
 
  <bean id="dht-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.ProxyPortImpl" >
-   <property name="wsContext" ref="wsContext"/>
+       class="edu.ucla.mbi.proxy.dht.DhtProxyImpl" >
+   <property name="context" ref="wsContext"/>
  </bean>
 
  <bean id="ncbi-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.ProxyPortImpl" >
-   <property name="wsContext" ref="wsContext"/>
+       class="edu.ucla.mbi.proxy.ncbi.NcbiCachingImpl" >
+   <property name="context" ref="wsContext"/>
  </bean>
 
  <bean id="ebi-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.ProxyPortImpl" >
-   <property name="wsContext" ref="wsContext"/>
+       class="edu.ucla.mbi.proxy.ebi.EbiCachingImpl" >
+   <property name="context" ref="wsContext"/>
  </bean>
--->
+
+ <bean id="dip-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.dip.DipCachingImpl" >
+   <property name="context" ref="wsContext"/>
+ </bean>
+
+ <bean id="prolinks-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.prolinks.ProlinksCachingImpl" >
+   <property name="context" ref="wsContext"/>
+ </bean>
 
  <ws:service  id="proxy-service-id" bean="#proxy-service-bean"/>
  <wss:binding url="/proxy-service" service="#proxy-service-id" />
@@ -342,5 +349,15 @@
  <ws:service  id="dht-service-id" bean="#dht-service-bean"/>
  <wss:binding url="/dht-service" service="#dht-service-id" />
 
+ <ws:service  id="ncbi-service-id" bean="#ncbi-service-bean"/>
+ <wss:binding url="/ncbi-service" service="#ncbi-service-id" />
 
+ <ws:service  id="ebi-service-id" bean="#ebi-service-bean"/>
+ <wss:binding url="/ebi-service" service="#ebi-service-id" />
+
+ <ws:service  id="dip-service-id" bean="#dip-service-bean"/>
+ <wss:binding url="/dip-service" service="#dip-service-id" />
+
+ <ws:service  id="prolinks-service-id" bean="#prolinks-service-bean"/>
+ <wss:binding url="/prolinks-service" service="#prolinks-service-id" />
 </beans>

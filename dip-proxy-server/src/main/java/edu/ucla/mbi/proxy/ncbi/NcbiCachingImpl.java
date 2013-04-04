@@ -26,14 +26,14 @@ import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.TimeStamp;
-import edu.ucla.mbi.server.WSContext;
+import edu.ucla.mbi.server.*;
 
 import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.proxy.router.Router;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.NcbiProxyPort")
 
-public class NcbiCachingImpl implements NcbiProxyPort {
+public class NcbiCachingImpl extends StrutsPortImpl implements NcbiProxyPort {
     
     /* 
      * Fetch journal from nlm
@@ -78,13 +78,20 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 	        detail = "full";
 	    } 
         
+        RemoteServerContext rsc = context.getServerContext( provider );
+
+        Router router = rsc.getRouter();
+
+        if( rsc == null || router == null ) {
+            log.warn( "rsc or router is null for the provider(" + provider +
+                      "). " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
         try {
-            Router router = 
-                WSContext.getServerContext( provider ).createRouter() ;
 
             CachingService cachingSrv = 
-                new CachingService( provider, router,
-                                    WSContext.getServerContext( provider ) );
+                new CachingService( provider, router, rsc );
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -176,13 +183,19 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 	        detail = "full";
 	    } 
         
-        try {
-            Router router = 
-                WSContext.getServerContext( provider ).createRouter() ;
+        RemoteServerContext rsc = context.getServerContext( provider );
 
+        Router router = rsc.getRouter();
+
+        if( rsc == null || router == null ) {
+            log.warn( "rsc or router is null for the provider(" + provider +
+                      "). " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        try {
             CachingService cachingSrv = 
-                new CachingService( provider, router,
-                                    WSContext.getServerContext( provider ) );
+                new CachingService( provider, router, rsc );
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -270,13 +283,19 @@ public class NcbiCachingImpl implements NcbiProxyPort {
 	        detail = "full";
 	    }   
 	
-	    try {
-            Router router = 
-                WSContext.getServerContext( provider ).createRouter() ;
+        RemoteServerContext rsc = context.getServerContext( provider );
 
+        Router router = rsc.getRouter();
+
+        if( rsc == null || router == null ) {
+            log.warn( "rsc or router is null for the provider(" + provider +
+                      "). " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+	    try {
             CachingService cachingSrv = 
-                new CachingService( provider, router,
-                                    WSContext.getServerContext( provider ) );
+                new CachingService( provider, router, rsc );
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -361,14 +380,21 @@ public class NcbiCachingImpl implements NcbiProxyPort {
         } else {
             detail = "full";
         }
-        
+       
+        RemoteServerContext rsc = context.getServerContext( provider );
+
+        Router router = rsc.getRouter();
+
+        if( rsc == null || router == null ) {
+            log.warn( "rsc or router is null for the provider(" + provider +
+                      "). " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+ 
 	    try {
-            Router router = 
-                WSContext.getServerContext( provider ).createRouter() ;
 
             CachingService cachingSrv = 
-                new CachingService( provider, router,
-                                    WSContext.getServerContext( provider ) );
+                new CachingService( provider, router, rsc );
 
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -458,13 +484,20 @@ public class NcbiCachingImpl implements NcbiProxyPort {
             detail = "full";
         }
 	
+        RemoteServerContext rsc = context.getServerContext( provider );
+
+        Router router = rsc.getRouter();
+
+        if( rsc == null || router == null ) {
+            log.warn( "rsc or router is null for the provider(" + provider +
+                      "). " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
 	    try {
-            Router router = 
-                WSContext.getServerContext( provider ).createRouter() ;
 
             CachingService cachingSrv = 
-                new CachingService( provider, router,
-                                    WSContext.getServerContext( provider ) );
+                new CachingService( provider, router, rsc );
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 

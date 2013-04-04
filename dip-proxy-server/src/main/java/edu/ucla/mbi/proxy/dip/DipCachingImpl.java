@@ -21,7 +21,7 @@ import edu.ucla.mbi.cache.*;
 
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.TimeStamp;
-import edu.ucla.mbi.server.WSContext;
+import edu.ucla.mbi.server.*;
 
 import javax.jws.WebService;
 import javax.xml.ws.Holder;
@@ -31,7 +31,7 @@ import edu.ucla.mbi.proxy.router.Router;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 @WebService(endpointInterface = "edu.ucla.mbi.proxy.DipProxyPort")
-public class DipCachingImpl implements DipProxyPort {
+public class DipCachingImpl extends StrutsPortImpl implements DipProxyPort {
 
     /*
      * Fetch record from Dip
@@ -70,13 +70,21 @@ public class DipCachingImpl implements DipProxyPort {
         } else {
             detail = "full";
         }
+
+        RemoteServerContext rsc = context.getServerContext( provider );
+
+        Router router = rsc.getRouter();
+
+        if( rsc == null || router == null ) {
+            log.warn( "rsc or router is null for the provider(" + provider +
+                      "). " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
         try {
-            Router router = 
-                WSContext.getServerContext( provider ).createRouter();
 
             CachingService cachingSrv = 
-                new CachingService( provider, router,
-                                    WSContext.getServerContext( provider ) );
+                new CachingService( provider, router, rsc );
             
             if ( format == null || format.equals( "" )
                  || format.equalsIgnoreCase( "dxf" )

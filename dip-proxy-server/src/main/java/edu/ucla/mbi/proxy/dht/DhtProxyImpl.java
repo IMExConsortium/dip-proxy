@@ -24,10 +24,11 @@ import javax.xml.ws.Holder;
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.server.WSContext;
 import edu.ucla.mbi.proxy.router.*;
+import edu.ucla.mbi.proxy.StrutsPortImpl;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.dht.DhtProxyPort")
 
-public class DhtProxyImpl implements DhtProxyPort {
+public class DhtProxyImpl extends StrutsPortImpl implements DhtProxyPort {
     
     public Result getDhtConfig() throws DhtFault {
 
@@ -44,9 +45,8 @@ public class DhtProxyImpl implements DhtProxyPort {
 
         //-----------------------------------------------------------------
         
-        Dht proxyDht = WSContext.getDht();
+        Dht proxyDht = context.getDht();
 
-                                         
         return result;
     }
 
@@ -76,7 +76,7 @@ public class DhtProxyImpl implements DhtProxyPort {
                 = new edu.ucla.mbi.dxf14.ObjectFactory();
         
         DatasetType dht = dxf.createDatasetType();        
-        Dht proxyDht = WSContext.getDht();
+        Dht proxyDht = context.getDht();
         int id=1;
 
         log.info( "dht: PR=" + provider + " SRV=" + service + 

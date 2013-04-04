@@ -17,7 +17,7 @@ import edu.ucla.mbi.util.TimeStamp;
 
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.proxy.router.Router;
-import edu.ucla.mbi.server.WSContext;
+import edu.ucla.mbi.server.*;
 
 import java.util.*;
 import org.apache.commons.logging.Log;
@@ -29,20 +29,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.ProxyPort")
 
-public class ProxyPortImpl implements ProxyPort {
+public class ProxyPortImpl extends StrutsPortImpl implements ProxyPort {
 
     private Log log = LogFactory.getLog( ProxyPortImpl.class );
-    
-    private String foo="";
-
-    public void setFoo( String foo){
-        this.foo=foo;
-    }
-    
-    public void initialize(){
-        log.debug("initialize() called");
-        log.debug("foo=" + foo );
-    }
 
     public void getRecord( String provider, String service,
                            String ns, String ac, String match,
@@ -55,22 +44,25 @@ public class ProxyPortImpl implements ProxyPort {
 
         ns = this.validateCheck( provider, service, ns, ac, detail, format );
         
-        log.debug( "foo=" + foo );
-
         log.info( "getRecord: ns= " + ns + " and ac=" + ac +
                   " and detail=" + detail + " format=" + format + "." );
+       
+        RemoteServerContext rsc = context.getServerContext( provider );
+
+        Router router = rsc.getRouter();
+
+        if( rsc == null || router == null ) {
+            log.warn( "rsc or router is null for the provider(" + provider + 
+                      "). " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        log.info( "getRecord: router=" + router );
+        log.info( "getRecord: rsc=" + rsc );
         
         try {
-            Router router =
-                WSContext.getServerContext( provider ).getRouter();
-
-            log.info( "getRecord: router=" + router );
-            log.info( "getRecord: router.rsc=" 
-                       + router.getRemoteServerContext().getProvider() );
-
             CachingService cachingSrv =
-                new CachingService( provider, router,
-                                    WSContext.getServerContext( provider ) );
+                new CachingService( provider, router, rsc );
 
             if ( format.equalsIgnoreCase( "dxf" ) 
                  || format.equalsIgnoreCase( "both" ) ) {
@@ -92,11 +84,6 @@ public class ProxyPortImpl implements ProxyPort {
                     }
 
                 }
-                /* 
-                else {
-                    log.info("getRecord: return dataset is null ");
-                    throw FaultFactory.newInstance( Fault.NO_RECORD );
-                }*/
             }
 
             if ( format.equalsIgnoreCase( "native" ) 
@@ -114,11 +101,6 @@ public class ProxyPortImpl implements ProxyPort {
                         TimeStamp.toXmlDate( natRec.getQueryTime() );
 
                 }
-                /* 
-                else {
-                    log.info("return dataset is null ");
-                    throw FaultFactory.newInstance( Fault.NO_RECORD );
-                }*/
             }
 
         }catch ( ProxyFault fault ) {
