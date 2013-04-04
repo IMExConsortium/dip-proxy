@@ -129,13 +129,13 @@ public class ProxyPortImpl extends StrutsPortImpl implements ProxyPort {
 
         provider = provider.toUpperCase();
 
-        if( WSContext.getProvider( provider ) == null) {
+        if( context.getProvider( provider ) == null) {
             log.info( "This provider(" + provider + ") doesn't exist " +
                       "in the server. " );
             throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
-        if( !WSContext.getServerContext( provider )
+        if( !context.getServerContext( provider )
                         .getServiceSet().contains( service ) ) {
 
             log.info( "This service(" + service + ") doesn't exist " +
