@@ -16,8 +16,8 @@ import org.apache.commons.logging.LogFactory;
 import edu.ucla.mbi.orm.HibernateOrmUtil;
 
 public class DipProxyDAO {
-    private static HibernateOrmUtil hibernateOrmUtil;
-    
+    private HibernateOrmUtil hibernateOrmUtil;
+
     private static NativeRecordDAO nativeRecordDAO; 
     private static DxfRecordDAO dxfRecordDAO; 
     private static NativeAuditDAO nativeAuditDAO;
@@ -35,7 +35,6 @@ public class DipProxyDAO {
 
     
     //*** getter
-
     public static NativeRecordDAO getNativeRecordDAO () {
         return nativeRecordDAO;
     }
