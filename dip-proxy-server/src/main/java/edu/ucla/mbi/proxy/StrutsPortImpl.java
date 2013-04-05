@@ -1,9 +1,9 @@
 package edu.ucla.mbi.proxy;
 
 /*==============================================================================
- * $HeadURL$
- * $Id$
- * Version: $Rev$
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
  *==============================================================================
  *
  * StrutsPortImpl - super class used to set WSContext 
