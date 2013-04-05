@@ -24,11 +24,11 @@ import javax.xml.ws.Holder;
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.server.WSContext;
 import edu.ucla.mbi.proxy.router.*;
-import edu.ucla.mbi.proxy.StrutsPortImpl;
+import edu.ucla.mbi.proxy.*;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.dht.DhtProxyPort")
 
-public class DhtProxyImpl extends StrutsPortImpl implements DhtProxyPort {
+public class DhtProxyImpl extends ConfigurablePortImpl implements DhtProxyPort {
     
     public Result getDhtConfig() throws DhtFault {
 

@@ -32,7 +32,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import edu.ucla.mbi.proxy.router.Router;
 
 @WebService(endpointInterface = "edu.ucla.mbi.proxy.EbiProxyPort")
-public class EbiCachingImpl extends StrutsPortImpl implements EbiProxyPort {
+public class EbiCachingImpl extends ConfigurablePortImpl 
+    implements EbiProxyPort {
 
     /*
      * Fetch uniprot from ebi dbfetch

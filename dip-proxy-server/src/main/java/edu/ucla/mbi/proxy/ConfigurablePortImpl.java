@@ -6,7 +6,7 @@ package edu.ucla.mbi.proxy;
  * Version: $Rev::                                                             $
  *==============================================================================
  *
- * StrutsPortImpl - super class used to set WSContext 
+ * ConfigurablePortImpl - super class used to set WSContext 
  *                                  
  *=========================================================================== */
 
@@ -15,7 +15,7 @@ import edu.ucla.mbi.server.WSContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class StrutsPortImpl {
+public class ConfigurablePortImpl {
     
     protected WSContext context;   
 
@@ -25,7 +25,7 @@ public class StrutsPortImpl {
 
     public void initialize() {
 
-        Log log = LogFactory.getLog( StrutsPortImpl.class );
+        Log log = LogFactory.getLog( this.getClass() );
         log.info( "StrutsPortImpl initializing..." );
     } 
 }

@@ -39,7 +39,11 @@ import edu.ucla.mbi.proxy.router.Router;
 
 public class ProxyDxfTransformer {
 
-    public ProxyDxfTransformer(){}
+    private WSContext wsContext;
+    
+    public ProxyDxfTransformer( WSContex context ){
+        wsContext = context;
+    }
     
     public DatasetType transform( String strNative,
                                   String ns, String ac, String detail,
@@ -61,7 +65,7 @@ public class ProxyDxfTransformer {
 	        JAXBResult result = new JAXBResult( dxfJc );
                 
 	        //*** transform into DXF
-	        ProxyTransformer pTrans = WSContext.getTransformer();
+	        ProxyTransformer pTrans = wsContext.getTransformer();
                 
             // Node: later on to think here for synchronizing
             // --------------------------------------------------
@@ -126,7 +130,7 @@ public class ProxyDxfTransformer {
         Log log = LogFactory.getLog( ProxyDxfTransformer.class );
         
         // -----------------------------------------------------------------
-        RemoteServerContext rsc = WSContext.getServerContext( "MBI" );
+        RemoteServerContext rsc = wsContext.getServerContext( "MBI" );
         
         String ncbiProxyAddress = ( String ) rsc.getNcbiProxyAddress();  //XX
 

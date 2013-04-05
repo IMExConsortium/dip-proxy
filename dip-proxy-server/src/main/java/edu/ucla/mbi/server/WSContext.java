@@ -44,7 +44,7 @@ public class WSContext{
     
     private static int threadRunMinutes = 10; // 10 minutes
 
-    private static ProxyTransformer transformer;
+    private ProxyTransformer transformer;
 
     private static McClient mcClient;
 
@@ -85,8 +85,8 @@ public class WSContext{
     public static int getPort() {
         return port;
     }
-
-    public static ProxyTransformer getTransformer () {
+    
+    public  ProxyTransformer getTransformer () {
         return transformer;
     }
 

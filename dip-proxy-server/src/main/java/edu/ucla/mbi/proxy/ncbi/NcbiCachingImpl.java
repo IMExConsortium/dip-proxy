@@ -33,7 +33,8 @@ import edu.ucla.mbi.proxy.router.Router;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.NcbiProxyPort")
 
-public class NcbiCachingImpl extends StrutsPortImpl implements NcbiProxyPort {
+public class NcbiCachingImpl extends ConfigurablePortImpl 
+    implements NcbiProxyPort {
     
     /* 
      * Fetch journal from nlm

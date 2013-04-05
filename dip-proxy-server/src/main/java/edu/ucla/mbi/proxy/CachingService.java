@@ -387,7 +387,7 @@ public class CachingService extends RemoteNativeService {
         String ac = nativeRecord.getAc();
         String nativeXml = nativeRecord.getNativeXml();
         
-        ProxyDxfTransformer pdt = new ProxyDxfTransformer();
+        ProxyDxfTransformer pdt = new ProxyDxfTransformer( );
 
         dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail,
                                   provider, service );

@@ -29,7 +29,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.ProxyPort")
 
-public class ProxyPortImpl extends StrutsPortImpl implements ProxyPort {
+public class ProxyPortImpl extends ConfigurablePortImpl implements ProxyPort {
 
     private Log log = LogFactory.getLog( ProxyPortImpl.class );
 
@@ -62,7 +62,7 @@ public class ProxyPortImpl extends StrutsPortImpl implements ProxyPort {
         
         try {
             CachingService cachingSrv =
-                new CachingService( provider, router, rsc );
+                new CachingService( context, provider  );
 
             if ( format.equalsIgnoreCase( "dxf" ) 
                  || format.equalsIgnoreCase( "both" ) ) {

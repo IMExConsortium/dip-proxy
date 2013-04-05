@@ -29,6 +29,14 @@ class RemoteNativeService { // extends Observable {
     protected RemoteServerContext rsc;
     protected Router router;
 
+    protected WSContext wsContext;
+
+    protected RemoteNativeService( WSContext context, String provider ){
+        wsContext = context;
+        this.provider = provider;
+    }
+    
+    /*
     protected RemoteNativeService( String provider, 
                                    Router router, 
                                    RemoteServerContext rsc ) {
@@ -41,6 +49,7 @@ class RemoteNativeService { // extends Observable {
         this.rsc = rsc;
 
     }
+    */
     
     protected RemoteNativeService() { }
     
