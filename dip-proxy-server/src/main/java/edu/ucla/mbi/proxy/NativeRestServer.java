@@ -218,6 +218,10 @@ public class NativeRestServer implements NativeServer, ContextListener {
             throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
 
+        if( service.equals( "nlmefetch" ) ) {
+            service = "nlm";
+        }
+
         NativeRecord record = new NativeRecord( provider, service, ns, ac );
         record.setNativeXml( retVal );
         return record;
