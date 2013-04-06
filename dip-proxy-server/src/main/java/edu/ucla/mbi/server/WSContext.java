@@ -44,7 +44,8 @@ public class WSContext{
 
     private ProxyTransformer transformer;
 
-    private static McClient mcClient;
+    //private static McClient mcClient;
+    private McClient mcClient;
 
     //*** setter
     public void setPort( int port ) {
@@ -104,7 +105,8 @@ public class WSContext{
         return threadRunMinutes;
     }
 
-    public static McClient getMcClient() {
+    //public static McClient getMcClient() {
+    public McClient getMcClient() {
         return mcClient;
     }
 
