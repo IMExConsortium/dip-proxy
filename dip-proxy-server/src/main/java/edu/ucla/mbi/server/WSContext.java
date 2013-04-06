@@ -38,8 +38,6 @@ public class WSContext{
 
     private static int port = 80;
 
-    private static Scheduler scheduler;
- 
     private static long waitMillis = 5000;
     
     private static int threadRunMinutes = 10; // 10 minutes
@@ -59,10 +57,6 @@ public class WSContext{
 
     public void setDht( Dht dht ) {
         proxyDht = dht;
-    }
-
-    public void setScheduler( Scheduler scheduler) {
-        this.scheduler = scheduler;
     }
 
     public void setWaitMillis( long time ){
@@ -100,10 +94,6 @@ public class WSContext{
     
     public static Map getProvider( String provider ) {
         return (Map) services.get( provider );
-    }
-
-    public static Scheduler getScheduler() {
-        return scheduler;
     }
 
     public static long getWaitMillis(){

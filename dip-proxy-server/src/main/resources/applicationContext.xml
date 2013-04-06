@@ -75,11 +75,6 @@
    <ref bean="dht"/>
   </property> 
   
-  
-  <property name="scheduler">
-   <ref bean="scheduler"/>
-  </property> 
-
   <property name="waitMillis" value="5000"/>
 
   <property name="threadRunMinutes" value="10"/>
