@@ -123,20 +123,11 @@
   </property>
  </bean>
 
- <bean id="remoteServerImpl" 
-       class="edu.ucla.mbi.proxy.RemoteServerImpl">
-  <property name="nativeRestServer">
-    <ref bean="nativeRestServer"/>
-  </property>
- </bean>
-
  <!-- REST SERVER -->
 
  <bean id="nativeRestServer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
-  <!--<property name="restServerContext" ref="restServerContext"/> 
-     <property name="contextTop" value="restServer"/>
-   -->
+
     <property name="context">
         <map>
             <entry key="restServerContext">
@@ -186,8 +177,6 @@
 
  <!-- NCBI proxy services -->
  
-<!-- <bean id="ncbiReferenceServer" parent="remoteServerImpl" 
-       class="edu.ucla.mbi.proxy.ncbi.NcbiServer"> -->
  <bean id="ncbiReferenceServer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.ncbi.NcbiServer">
 

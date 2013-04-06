@@ -31,25 +31,21 @@ class RemoteNativeService { // extends Observable {
 
     protected WSContext wsContext;
 
-    protected RemoteNativeService( WSContext context, String provider ){
-        wsContext = context;
-        this.provider = provider;
-    }
-    
-    /*
-    protected RemoteNativeService( String provider, 
-                                   Router router, 
-                                   RemoteServerContext rsc ) {
-        this.provider = provider;
-        this.router = router;
+    protected RemoteNativeService( WSContext context, String provider ) 
+        throws ProxyFault {
 
-        log.info( " adding observer..." );
-        this.addObserver( router );
-        
-        this.rsc = rsc;
+        this.wsContext = context;
+        this.provider = provider;
 
+        this.rsc = wsContext.getServerContext( provider );
+        this.router = rsc.getRouter();
+
+        if( rsc == null || router == null ) {
+            log.warn( "rsc or router is null for the provider(" + provider +
+                      "). " );
+            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
     }
-    */
     
     protected RemoteNativeService() { }
     

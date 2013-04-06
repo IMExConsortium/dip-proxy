@@ -45,7 +45,7 @@ public class DhtProxyImpl extends ConfigurablePortImpl implements DhtProxyPort {
 
         //-----------------------------------------------------------------
         
-        Dht proxyDht = context.getDht();
+        Dht proxyDht = wsContext.getDht();
 
         return result;
     }
@@ -58,9 +58,6 @@ public class DhtProxyImpl extends ConfigurablePortImpl implements DhtProxyPort {
         throws DhtFault {
 
         DatasetType dht = dataset.value;
-
-
-
     }
     
 
@@ -76,7 +73,7 @@ public class DhtProxyImpl extends ConfigurablePortImpl implements DhtProxyPort {
                 = new edu.ucla.mbi.dxf14.ObjectFactory();
         
         DatasetType dht = dxf.createDatasetType();        
-        Dht proxyDht = context.getDht();
+        Dht proxyDht = wsContext.getDht();
         int id=1;
 
         log.info( "dht: PR=" + provider + " SRV=" + service + 

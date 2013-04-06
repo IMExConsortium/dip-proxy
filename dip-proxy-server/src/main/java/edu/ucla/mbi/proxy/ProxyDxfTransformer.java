@@ -41,7 +41,7 @@ public class ProxyDxfTransformer {
 
     private WSContext wsContext;
     
-    public ProxyDxfTransformer( WSContex context ){
+    public ProxyDxfTransformer( WSContext context ){
         wsContext = context;
     }
     

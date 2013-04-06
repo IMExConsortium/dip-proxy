@@ -46,23 +46,10 @@ public class ProxyPortImpl extends ConfigurablePortImpl implements ProxyPort {
         
         log.info( "getRecord: ns= " + ns + " and ac=" + ac +
                   " and detail=" + detail + " format=" + format + "." );
-       
-        RemoteServerContext rsc = context.getServerContext( provider );
-
-        Router router = rsc.getRouter();
-
-        if( rsc == null || router == null ) {
-            log.warn( "rsc or router is null for the provider(" + provider + 
-                      "). " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
-
-        log.info( "getRecord: router=" + router );
-        log.info( "getRecord: rsc=" + rsc );
-        
+     
         try {
             CachingService cachingSrv =
-                new CachingService( context, provider  );
+                new CachingService( wsContext, provider  );
 
             if ( format.equalsIgnoreCase( "dxf" ) 
                  || format.equalsIgnoreCase( "both" ) ) {
@@ -129,13 +116,13 @@ public class ProxyPortImpl extends ConfigurablePortImpl implements ProxyPort {
 
         provider = provider.toUpperCase();
 
-        if( context.getProvider( provider ) == null) {
+        if( wsContext.getProvider( provider ) == null) {
             log.info( "This provider(" + provider + ") doesn't exist " +
                       "in the server. " );
             throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
-        if( !context.getServerContext( provider )
+        if( !wsContext.getServerContext( provider )
                         .getServiceSet().contains( service ) ) {
 
             log.info( "This service(" + service + ") doesn't exist " +

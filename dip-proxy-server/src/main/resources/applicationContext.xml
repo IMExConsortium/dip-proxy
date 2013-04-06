@@ -313,32 +313,32 @@
 
  <bean id="proxy-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ProxyPortImpl" >
-   <property name="context" ref="wsContext"/> 
+   <property name="wsContext" ref="wsContext"/> 
  </bean>
 
  <bean id="dht-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.dht.DhtProxyImpl" >
-   <property name="context" ref="wsContext"/>
+   <property name="wsContext" ref="wsContext"/>
  </bean>
 
  <bean id="ncbi-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ncbi.NcbiCachingImpl" >
-   <property name="context" ref="wsContext"/>
+   <property name="wsContext" ref="wsContext"/>
  </bean>
 
  <bean id="ebi-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ebi.EbiCachingImpl" >
-   <property name="context" ref="wsContext"/>
+   <property name="wsContext" ref="wsContext"/>
  </bean>
 
  <bean id="dip-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.dip.DipCachingImpl" >
-   <property name="context" ref="wsContext"/>
+   <property name="wsContext" ref="wsContext"/>
  </bean>
 
  <bean id="prolinks-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksCachingImpl" >
-   <property name="context" ref="wsContext"/>
+   <property name="wsContext" ref="wsContext"/>
  </bean>
 
  <ws:service  id="proxy-service-id" bean="#proxy-service-bean"/>

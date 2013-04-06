@@ -72,20 +72,10 @@ public class DipCachingImpl extends ConfigurablePortImpl
             detail = "full";
         }
 
-        RemoteServerContext rsc = context.getServerContext( provider );
-
-        Router router = rsc.getRouter();
-
-        if( rsc == null || router == null ) {
-            log.warn( "rsc or router is null for the provider(" + provider +
-                      "). " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
-
         try {
 
             CachingService cachingSrv = 
-                new CachingService( provider, router, rsc );
+                new CachingService( wsContext, provider );
             
             if ( format == null || format.equals( "" )
                  || format.equalsIgnoreCase( "dxf" )

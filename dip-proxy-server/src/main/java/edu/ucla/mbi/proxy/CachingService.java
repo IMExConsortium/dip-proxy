@@ -36,11 +36,10 @@ public class CachingService extends RemoteNativeService {
     private static DxfRecordDAO dxfDAO = DipProxyDAO.getDxfRecordDAO();
     private static McClient mcClient = WSContext.getMcClient();
 
-    public CachingService( String provider, 
-                           Router router, 
-                           RemoteServerContext rsc ) {
-
-        super( provider, router, rsc );
+    public CachingService( WSContext wsContext, String provider ) 
+        throws ProxyFault {
+ 
+        super( wsContext, provider );
     }
     
     private CachingService() { }
@@ -387,7 +386,7 @@ public class CachingService extends RemoteNativeService {
         String ac = nativeRecord.getAc();
         String nativeXml = nativeRecord.getNativeXml();
         
-        ProxyDxfTransformer pdt = new ProxyDxfTransformer( );
+        ProxyDxfTransformer pdt = new ProxyDxfTransformer( wsContext );
 
         dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail,
                                   provider, service );

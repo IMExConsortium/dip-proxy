@@ -17,10 +17,10 @@ import org.apache.commons.logging.LogFactory;
 
 public class ConfigurablePortImpl {
     
-    protected WSContext context;   
+    protected WSContext wsContext;   
 
-    public void setContext ( WSContext context ) {
-        this.context = context;
+    public void setWsContext ( WSContext context ) {
+        this.wsContext = context;
     }     
 
     public void initialize() {
