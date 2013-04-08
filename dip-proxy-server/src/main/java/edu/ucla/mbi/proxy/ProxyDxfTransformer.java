@@ -67,16 +67,12 @@ public class ProxyDxfTransformer {
 	        //*** transform into DXF
 	        ProxyTransformer pTrans = wsContext.getTransformer();
                 
-            // Node: later on to think here for synchronizing
-            // --------------------------------------------------
-            //synchronize{
-
+            synchronized ( pTrans ) {
                 pTrans.setTransformer( provider, service );
                 pTrans.setParameters( detail, ns, ac );
                 pTrans.transform( ssNative, result );
                 
-            //}
-            // ----------------------------------------------------
+            }
     
             DatasetType dxfResult  = 
                 (DatasetType) ( (JAXBElement) result.getResult() ).getValue();
