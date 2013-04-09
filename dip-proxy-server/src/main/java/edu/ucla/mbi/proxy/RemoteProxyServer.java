@@ -32,7 +32,6 @@ import com.sun.xml.ws.developer.JAXWSProperties;
 
 import edu.ucla.mbi.dxf14.DatasetType;
 import edu.ucla.mbi.dxf14.DxfJAXBContext;
-import edu.ucla.mbi.server.WSContext;
 import edu.ucla.mbi.fault.*;
 
 import edu.ucla.mbi.cache.NativeRecord;
@@ -45,11 +44,6 @@ public class RemoteProxyServer implements NativeServer {
     
     private String proxyAddress;
     private Map<String,Object> context;
-   
-    /* 
-    public boolean isNative(){
-        return false;
-    }*/
    
     public String getAddress(){
         return proxyAddress;
@@ -73,82 +67,10 @@ public class RemoteProxyServer implements NativeServer {
     public void initialize() {
         log.info( "initialize service=" + this );
     }
-    /*
-    public RemoteServer getRemoteServerInstance() {
-        return null;
-    }*/
 
     public RemoteProxyServer getRemoteProxyServerInstance( String url) {
         return new RemoteProxyServer( url );
     }
-
-    /*    
-    public DatasetType transform( String strNative,
-				                  String ns, String ac, String detail,
-	        			          String provider, 
-                                  String service
-                                  ) throws ProxyFault {
-	
-	    try {
-	        // native data in string representationa as input
-	    
-	        ByteArrayInputStream bisNative =
-		    new ByteArrayInputStream( strNative.getBytes( "UTF-8" ) );
-	        StreamSource ssNative = new StreamSource( bisNative );
-	    
-	        // dxf as JAXBResult result of the transformation
-	    
-	        JAXBContext dxfJc = DxfJAXBContext.getDxfContext();
-	        // JAXBContext.newInstance( "edu.ucla.mbi.dxf14" );
-	        JAXBResult result = new JAXBResult( dxfJc );
-	    
-	        //transform into DXF
-            ProxyTransformer pTrans = WSContext.getTransformer();
-	        pTrans.setTransformer( provider, service );
-
-    	    pTrans.setParameters( detail, ns, ac );
-            log.info( "transform: before transform.");
-    	    pTrans.transform( ssNative, result );
-	    
-	        DatasetType dxfResult  = 
-		    (DatasetType) ( (JAXBElement) result.getResult() ).getValue();
-	    
-            //test if dxfResult is empty
-	        if ( dxfResult.getNode().isEmpty() 
-                 || dxfResult.getNode().get(0).getAc().equals("") ) {
- 
-		        throw FaultFactory.newInstance( Fault.TRANSFORM ); 
-	        }	    
-	    
-	        return dxfResult;
-	    
-	    } catch ( ProxyFault fault ) { 
-	        log.info( "Transformer fault: empty dxfResult ");
-	        throw fault;
-        } catch ( Exception e ) {
-	        log.info( "Exception="+e.toString() );
-	        throw FaultFactory.newInstance( Fault.TRANSFORM );  
-	    }   
-    }
-        
-    public DatasetType buildDxf( String strNative, String ns, String ac,
-				                 String detail, String provider, String service 
-                                 ) throws ProxyFault 
-    {
-	
-    	// NOTE: overload if dxf building more complex than
-	    //       a simple xslt transformation
-        log.info( "buildDxf entering ... " );	
-
-        return this.transform( strNative, ns, ac, detail, provider, service );
-    }
-    */
-
-
-
-    //--------------------------------------------------------------------------
-    //--------------------------------------------------------------------------
-
 
     public RemoteProxyServer(){};
 
@@ -159,8 +81,7 @@ public class RemoteProxyServer implements NativeServer {
 
     public NativeRecord getNative( String provider, String service,
                                    String ns, String ac, int timeout 
-                                   ) throws ProxyFault 
-    {
+                                   ) throws ProxyFault {
 
         log.info( "getNative(NS=" + ns + " AC=" + ac + " OP=" + service + ")" );
 
@@ -199,9 +120,6 @@ public class RemoteProxyServer implements NativeServer {
             NativeRecord record = new NativeRecord( provider, service, ns, ac );
             record.setNativeXml( resNative.value );
 
-            //record.setCreateTime( qtime.toGregorianCalendar().getTime() );
-
-            //*** new change
             record.setQueryTime( qtime.toGregorianCalendar().getTime() );
 
             return record;
@@ -222,6 +140,5 @@ public class RemoteProxyServer implements NativeServer {
             }
         }
     }
-    
 }
 
