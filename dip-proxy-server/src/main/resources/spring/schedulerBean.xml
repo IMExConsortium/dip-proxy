@@ -31,7 +31,8 @@
    <map>
     <entry key="native-agent">
      <map>
-      <entry key="interval" value="60" />
+      <!--<entry key="interval" value="60" /> --> <!-- 60 sec -->
+      <entry key="interval" value="3600" /> <!-- test 60 mins -->
       <entry key="agent-instance">
         <ref bean="nativeAgent"/>
       </entry>

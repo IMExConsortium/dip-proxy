@@ -34,7 +34,6 @@ public class CachingService extends RemoteNativeService {
 
     private static NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO();    
     private static DxfRecordDAO dxfDAO = DipProxyDAO.getDxfRecordDAO();
-    //private static McClient mcClient = WSContext.getMcClient();
     private static McClient mcClient = null;
 
     public CachingService( WSContext wsContext, String provider ) 

@@ -26,6 +26,6 @@ public class ConfigurablePortImpl {
     public void initialize() {
 
         Log log = LogFactory.getLog( this.getClass() );
-        log.info( "StrutsPortImpl initializing..." );
+        log.info( "ConfigurablePortImpl initializing..." );
     } 
 }
