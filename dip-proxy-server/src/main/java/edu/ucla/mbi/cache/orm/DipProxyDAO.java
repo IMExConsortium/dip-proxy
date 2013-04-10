@@ -14,9 +14,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.ucla.mbi.orm.HibernateOrmUtil;
+import edu.ucla.mbi.server.WSContext;
 
 public class DipProxyDAO {
     private HibernateOrmUtil hibernateOrmUtil;
+    private WSContext wsContext;
+
+    public void setWsContext( WSContext context ) {
+        this.wsContext = context;
+    }
 
     private static NativeRecordDAO nativeRecordDAO; 
     private static DxfRecordDAO dxfRecordDAO; 
@@ -28,12 +34,11 @@ public class DipProxyDAO {
         log.info( "DipProxyDAO aware constructor create." );
         this.hibernateOrmUtil = hibernateOrmUtil;
 
-        this.nativeRecordDAO = new NativeRecordDAO( hibernateOrmUtil );
+        this.nativeRecordDAO = new NativeRecordDAO( hibernateOrmUtil, wsContext );
         this.dxfRecordDAO = new DxfRecordDAO ( hibernateOrmUtil );
-        this.nativeAuditDAO = new NativeAuditDAO ( hibernateOrmUtil );
+        this.nativeAuditDAO = new NativeAuditDAO ( hibernateOrmUtil, wsContext );
     }
 
-    
     //*** getter
     public static NativeRecordDAO getNativeRecordDAO () {
         return nativeRecordDAO;

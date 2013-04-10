@@ -23,8 +23,11 @@ import edu.ucla.mbi.server.*;
 
 public class NativeAuditDAO extends AbstractDAO {
 
-    public NativeAuditDAO ( HibernateOrmUtil util ) {
+    private WSContext wsContext;
+
+    public NativeAuditDAO ( HibernateOrmUtil util, WSContext context ) {
         super( util );
+        this.wsContext = context;
     }
 
     public void create( NativeAudit nativer 
@@ -167,11 +170,8 @@ public class NativeAuditDAO extends AbstractDAO {
             // get services
             //-------------
             log.info("delayAll: before wsContext.");
-            Set<String> services = WSContext.getServerContext( provider )
-            //                                .getTransformer().getTransfMap()
-            //                                .getNativeServerMap()
-            //                                .keySet();
-                                              .getServiceSet();
+            Set<String> services = wsContext.getServerContext( 
+                provider.toUpperCase() ).getServiceSet();
 
             log.info("delayAll: afer wsContext.");
             // get newest entries

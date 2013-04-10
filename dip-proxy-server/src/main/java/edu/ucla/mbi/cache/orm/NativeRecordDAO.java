@@ -24,9 +24,11 @@ import org.apache.commons.logging.LogFactory;
 public class NativeRecordDAO extends AbstractDAO {
 
     private Log log = LogFactory.getLog( NativeRecordDAO.class );
+    private WSContext wsContext;
 
-    public NativeRecordDAO ( HibernateOrmUtil util ) {
+    public NativeRecordDAO ( HibernateOrmUtil util, WSContext context ) {
         super( util );
+        this.wsContext = context;
     } 
 
     public void create( NativeRecord nativer )
@@ -358,12 +360,8 @@ public class NativeRecordDAO extends AbstractDAO {
             
             // get services
             //-------------
-            Set<String> services = WSContext.getServerContext(
-                                            provider.toUpperCase() )
-            //                                 .getTransformer().getTransfMap()
-            //                                .getNativeServerMap()
-            //                                .keySet();
-                                              .getServiceSet();
+            Set<String> services = wsContext.getServerContext(
+                provider.toUpperCase() ).getServiceSet();
 
             // get oldest entries
             //-------------------
@@ -421,9 +419,8 @@ public class NativeRecordDAO extends AbstractDAO {
 
             // get services
             //-------------
-            Set<String> services = WSContext.getServerContext( 
-                                            provider.toUpperCase() )
-                                            .getServiceSet();
+            Set<String> services = wsContext.getServerContext( 
+                provider.toUpperCase() ).getServiceSet();
 
  
             // get oldest entries
@@ -482,9 +479,8 @@ public class NativeRecordDAO extends AbstractDAO {
 
             // get services
             //-------------
-            Set<String> services = WSContext.getServerContext( 
-                                            provider.toUpperCase() )
-                                            .getServiceSet();
+            Set<String> services = wsContext.getServerContext( 
+                provider.toUpperCase() ).getServiceSet();
 
  
             // get oldest entries
