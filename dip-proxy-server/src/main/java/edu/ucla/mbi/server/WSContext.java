@@ -29,7 +29,8 @@ public class WSContext{
     private static final int DEFAULT_TIMEOUT = 300;  // 300s
     private static final int DEFAULT_DEBUG = 0;        // 
     
-    private static Map<String,Map> services;
+    //private static Map<String,Map> services;
+    private Map<String,Map> services;
 
     private static Map<String, RemoteServerContext> serverContexts 
                                 = new HashMap<String, RemoteServerContext>();
@@ -97,7 +98,8 @@ public class WSContext{
 	    return services;
     }
     
-    public static Map getProvider( String provider ) {
+    //public static Map getProvider( String provider ) {
+    public Map getProvider( String provider ) {
         return (Map) services.get( provider );
     }
 
@@ -116,7 +118,9 @@ public class WSContext{
 
     //---------------------------------------------------------------------
 
-    public static RemoteServerContext getServerContext( String provider ) {
+    //public static RemoteServerContext getServerContext( String provider ) {
+    public RemoteServerContext getServerContext( String provider ) {
+ 
 	    Log log = LogFactory.getLog( WSContext.class );
 	    log.info( "ProxyWS: WSContext.getServerContext(" + provider + ")" );
 
