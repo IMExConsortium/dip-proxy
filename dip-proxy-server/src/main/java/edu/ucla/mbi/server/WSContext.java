@@ -35,7 +35,7 @@ public class WSContext{
     private static Map<String, RemoteServerContext> serverContexts 
                                 = new HashMap<String, RemoteServerContext>();
 
-    //private static Dht proxyDht;
+    private static Dht proxyDht;
 
     //private static int port = 80;
 
@@ -57,11 +57,6 @@ public class WSContext{
     public void setTransformer ( ProxyTransformer tf ) {
         this.transformer = tf;
     }
-    /*
-    public void setDht( Dht dht ) {
-        proxyDht = dht;
-    }*/
-
     
     public void setWaitMillis( long time ){
         waitMillis = time;
@@ -89,10 +84,9 @@ public class WSContext{
         return transformer;
     }
 
-    /*
     public static Dht getDht() {
         return proxyDht;
-    }*/
+    }
 
     public Map<String,Map> getServices() {
 	    return services;
