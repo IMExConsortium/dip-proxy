@@ -63,14 +63,6 @@
 
  <import resource="spring/struts-actions.xml" /> 
 
- <!-- ====================================================== CONFIG FILTER -->
-
- <bean id="proxyConfigFilterBean" class="edu.ucla.mbi.proxy.ProxyConfigFilter">
-    <property name="dht">
-      <ref bean="dht"/>
-    </property>
- </bean> 
-    
 
  <!-- ===================================================== PROXY SERVICES -->
 
@@ -78,11 +70,11 @@
        class="edu.ucla.mbi.server.WSContext">
    
   <!--<property name="port" value="8080" /> -->
-  <!--
+
   <property name="dht">
    <ref bean="dht"/>
   </property> 
-  -->
+
   <property name="waitMillis" value="5000"/> 
 
   <property name="threadRunMinutes" value="10"/>
@@ -329,10 +321,9 @@
    <property name="wsContext" ref="wsContext"/>
  </bean>
 
- <bean id="dht-service-bean" class="edu.ucla.mbi.proxy.dht.DhtProxyImpl" >
-        <!--init-method="initialize" -->
-   <!--<property name="wsContext" ref="wsContext"/> -->
-   <property name="proxyDht" ref="dht"/>
+ <bean id="dht-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.dht.DhtProxyImpl" >
+   <property name="wsContext" ref="wsContext"/> 
  </bean>
 
  <bean id="dip-service-bean" init-method="initialize"
