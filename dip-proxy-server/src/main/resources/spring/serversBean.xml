@@ -84,30 +84,35 @@
   <property name="dht">
    <ref bean="dht"/>
   </property>
+  <property name="proxyPort" value="8080"/>
  </bean>
 
  <bean id="ncbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
   </property>
+  <property name="proxyPort" value="8080"/>
  </bean>
 
  <bean id="mbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
   </property>
+  <property name="proxyPort" value="8080"/>
  </bean>
 
  <bean id="dipDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
   </property>
+  <property name="proxyPort" value="8080"/>
  </bean>
 
  <bean id="yeastMineDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
   <property name="dht">
    <ref bean="dht"/>
   </property>
+  <property name="proxyPort" value="8080"/>
  </bean>
 
  <!-- reference proxy -->

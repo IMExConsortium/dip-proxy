@@ -31,8 +31,9 @@ import edu.ucla.mbi.cache.*;
 public class DhtRouter implements Router {
     
     private RemoteServerContext rsc = null;
-    private Dht proxyDht = null;
-    
+    private Dht proxyDht;
+    private int proxyPort;
+
     private NativeServer currentServer = null;
     
     private DhtRouter() { }
@@ -46,10 +47,14 @@ public class DhtRouter implements Router {
         return new DhtRouter( this.rsc, this.proxyDht);
     }
     
+    // setter
     public void setDht( Dht dht ){
         this.proxyDht = dht;
     }
     
+    public void setProxyPort ( int port ) {
+        this.proxyPort = port;
+    }
 
     public void setRemoteServerContext( RemoteServerContext rsc ){
         Log log = LogFactory.getLog(DhtRouter.class);
@@ -120,14 +125,14 @@ public class DhtRouter implements Router {
             
             log.info( "  DhtRouter.update: " );
         
-            String address = "";
+            //String address = "";
         
-            log.info( "local proxy address:" );
+            //log.info( "local proxy address:" );
 
-            String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
+            //String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
             
             //address = rsc.getProxyProto().getAddress();
-            address = this.getLocalAddress();
+            String address = this.getLocalAddress();
 
             //address = address.replaceAll( "%%URL%%", url );
             log.info( "update: UPDATE: address=" + address );
@@ -229,7 +234,8 @@ public class DhtRouter implements Router {
             log.info( "lastAddress not equals localAddress. " ); 
             log.info( "remote come from RemoteProxyServer. " );
             remote = rsc.getProxyProto().getRemoteProxyServerInstance( 
-                                                                lastAddress );
+                lastAddress );
+
             log.info( "   remote URL=" + lastAddress );
             
         } else {            
@@ -261,7 +267,8 @@ public class DhtRouter implements Router {
 
         // local proxy address/port
         //-------------------------
-        String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
+        //String url = proxyDht.getProxyHost() + ":" + WSContext.getPort();
+        String url = proxyDht.getProxyHost() + ":" + proxyPort;
 
         log.info( "url="+ url );
 

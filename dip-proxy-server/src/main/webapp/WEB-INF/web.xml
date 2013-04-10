@@ -49,10 +49,6 @@
     </filter-class>
   </filter> 
   -->
-  <!-- using spring bean as a fitler-->
-  <filter>
-    <filter-name>proxyConfigFilterBean</filter-name>
-  </filter>
 
   <!-- ================================================== STRUTS2 filter -->
 

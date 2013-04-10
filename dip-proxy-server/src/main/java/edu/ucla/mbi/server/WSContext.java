@@ -36,21 +36,22 @@ public class WSContext{
 
     //private static Dht proxyDht;
 
-    private static int port = 80;
+    //private static int port = 80;
 
-    private static long waitMillis = 5000;
+    private long waitMillis = 5000;
     
     private static int threadRunMinutes = 10; // 10 minutes
 
     private ProxyTransformer transformer;
 
-    //private static McClient mcClient;
     private McClient mcClient;
 
+
     //*** setter
+    /*
     public void setPort( int port ) {
         this.port = port;
-    }
+    }*/
     
     public void setTransformer ( ProxyTransformer tf ) {
         this.transformer = tf;
@@ -60,6 +61,7 @@ public class WSContext{
         proxyDht = dht;
     }*/
 
+    
     public void setWaitMillis( long time ){
         waitMillis = time;
     }
@@ -77,9 +79,10 @@ public class WSContext{
     }
 
     //*** getter
+    /*
     public static int getPort() {
         return port;
-    }
+    }*/
     
     public  ProxyTransformer getTransformer () {
         return transformer;
@@ -98,15 +101,15 @@ public class WSContext{
         return (Map) services.get( provider );
     }
 
-    public static long getWaitMillis(){
+    
+    public long getWaitMillis(){
         return waitMillis;
-    }
+    } 
 
     public static int getThreadRunMinutes() {
         return threadRunMinutes;
     }
 
-    //public static McClient getMcClient() {
     public McClient getMcClient() {
         return mcClient;
     }

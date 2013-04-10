@@ -84,8 +84,6 @@ class RemoteNativeService { // extends Observable {
         int retry = rsc.getMaxRetry();
         NativeRecord remoteRecord = null;
         ProxyFault retryFault = null;
-
-
         
         while ( retry > 0 && remoteRecord == null ) {    
 
@@ -197,7 +195,6 @@ class RemoteNativeService { // extends Observable {
         observerList.add( router );
     }
 
-
     public void notifyObservers( Object arg){
 
         for(Iterator<Router> io = observerList.iterator(); io.hasNext(); ){
@@ -206,9 +203,6 @@ class RemoteNativeService { // extends Observable {
 
             log.info("updating router="+ r);
             r.update( this, arg );
-
         }
-
     }
-   
 }

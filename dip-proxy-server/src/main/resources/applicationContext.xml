@@ -77,13 +77,13 @@
  <bean id="wsContext" init-method="initialize" destroy-method="cleanup"
        class="edu.ucla.mbi.server.WSContext">
    
-  <property name="port" value="8080" />
+  <!--<property name="port" value="8080" /> -->
   <!--
   <property name="dht">
    <ref bean="dht"/>
   </property> 
   -->
-  <property name="waitMillis" value="5000"/>
+  <property name="waitMillis" value="5000"/> 
 
   <property name="threadRunMinutes" value="10"/>
 
@@ -319,12 +319,6 @@
    <property name="wsContext" ref="wsContext"/> 
  </bean>
 
- <bean id="dht-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.dht.DhtProxyImpl" >
-   <!--<property name="wsContext" ref="wsContext"/> -->
-   <property name="proxyDht" ref="dht"/>
- </bean>
-
  <bean id="ncbi-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ncbi.NcbiCachingImpl" >
    <property name="wsContext" ref="wsContext"/>
@@ -333,6 +327,12 @@
  <bean id="ebi-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ebi.EbiCachingImpl" >
    <property name="wsContext" ref="wsContext"/>
+ </bean>
+
+ <bean id="dht-service-bean" class="edu.ucla.mbi.proxy.dht.DhtProxyImpl" >
+        <!--init-method="initialize" -->
+   <!--<property name="wsContext" ref="wsContext"/> -->
+   <property name="proxyDht" ref="dht"/>
  </bean>
 
  <bean id="dip-service-bean" init-method="initialize"

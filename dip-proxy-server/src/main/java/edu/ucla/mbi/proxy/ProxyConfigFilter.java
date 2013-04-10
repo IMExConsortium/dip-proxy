@@ -27,7 +27,7 @@ import org.springframework.web.filter.GenericFilterBean;
 //public class ProxyConfigFilter  implements Filter{
 public class ProxyConfigFilter extends GenericFilterBean {
     
-    private Dht dht = null;
+    private Dht dht;
 
     public void setDht ( Dht dht ) {
         this.dht = dht;
@@ -56,6 +56,7 @@ public class ProxyConfigFilter extends GenericFilterBean {
 
 
         //WSContext.getDht().initialize();
+        log.info( "dht=" + dht );
         dht.initialize();
         log.info( "after dht initialize ");
 
