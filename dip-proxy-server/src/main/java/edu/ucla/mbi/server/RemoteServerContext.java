@@ -46,8 +46,13 @@ public class RemoteServerContext {
     //*** constructor
     public RemoteServerContext(){};
 
-    public RemoteServerContext ( Map<String, Map> context ) {
-        this.services = context;
+    public RemoteServerContext ( Map<String, Map> services ) {
+        this.services = services;
+    }  
+
+    public RemoteServerContext ( Map<String, Map> services, String provider ) {
+        this.services = services;
+        _init( provider );
     }  
 
     //*** getter
@@ -103,13 +108,6 @@ public class RemoteServerContext {
         return proxyServer;
     }
     
-    // -----------------------------------------
-    // Note:  why need it??????????????? 
-    public Router createRouter() {
-      	return router.createRouter();
-    }
-
-    // Node: new adding
     public Router getRouter() {
         return router;
     }
@@ -127,10 +125,11 @@ public class RemoteServerContext {
         return serviceSet;
     }
 
+    //--------------------------------------------------------------------------
 
-    public void init( String provider ) {
+    private void _init( String provider ) {
        	Log log = LogFactory.getLog( RemoteServerContext.class );
-
+        
         log.info( "rsc=" + this );
         log.info( "configure(" + provider + ")" );
 
