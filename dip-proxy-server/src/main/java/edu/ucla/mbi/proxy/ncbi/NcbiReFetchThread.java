@@ -43,12 +43,6 @@ public class NcbiReFetchThread extends Thread {
     private String nlmid = "";
     private Map<String, Object> context;
 
-    /*
-    private int ttl = WSContext.getServerContext("NCBI").getTtl();
-    private int timeOut = WSContext.getServerContext("NCBI").getTimeout();
-    private int threadRunMinutes = WSContext.getThreadRunMinutes();
-    private long waitMillis = threadRunMinutes * 60 * 1000;
-    */
     private int ttl;
     private int timeOut;
     private long waitMillis;  
@@ -205,13 +199,28 @@ public class NcbiReFetchThread extends Thread {
 
                 NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO(); 
                    
-                synchronized( this ) { 
-                    NativeRecord cacheRecord = nDAO.find( provider, service, ns, ac );
-                    
-                    Date remoteQueryTime = record.getCreateTime();
+                //synchronized( this ) { 
+                synchronized( nDAO ) {
 
+                    NativeRecord cacheRecord = nDAO.find( 
+                        provider, service, ns, ac );
+                    
+                    if( cacheRecord != null ) {
+                        record.setId( cacheRecord.getId() );
+                        record.setCreateTime( cacheRecord.getCreateTime() );
+                    }
+
+                    record.resetExpireTime( ttl );
+                    nDAO.create( record );
+                    log.info( "NcbiReFetchThread: getNative: native record " +
+                              "is create/updated.");
+
+                    /*
+                    //Date remoteQueryTime = record.getCreateTime();
+                    
                     if ( cacheRecord == null ) { // local record does not present
-                        record.resetExpireTime( remoteQueryTime, ttl );
+                        //record.resetExpireTime( remoteQueryTime, ttl );
+                        record.resetExpireTime( ttl );
                         nDAO.create( record ); // store/update native record locally
                         log.info( "NcbiReFetchThread: getNative: new native record is created.");
                     } else {
@@ -223,11 +232,12 @@ public class NcbiReFetchThread extends Thread {
 
                         if ( currentTime.after( expirationTime ) ) {
                             cacheRecord.setNativeXml ( retVal );
+                            cacheRecord.setQueryTime ( 
                             cacheRecord.resetExpireTime ( remoteQueryTime, ttl );
                             nDAO.create( cacheRecord ); // store/update native record locally
                             log.info( "NcbiReFetchThread: getNative: native record is updated.");
                         }
-                    }
+                    }*/
                 }
             }
         }

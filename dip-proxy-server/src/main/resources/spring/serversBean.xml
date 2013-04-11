@@ -192,7 +192,7 @@
        </entry>
 
        <!-- param used by NcbiReFetchThread class -->
-       <entry key="isRetry" value="true"/>
+       <entry key="isRetry" value="true"/><!-- dbCache is on -->
        <entry key="timeout" value="600"/>
        <entry key="ttl" value="30"/>
        <entry key="threadRunMinutes" value="10"/> <!-- mins -->

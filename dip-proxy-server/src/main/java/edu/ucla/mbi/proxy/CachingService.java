@@ -147,6 +147,8 @@ public class CachingService extends RemoteNativeService {
         if( remoteRecord != null ) {
             if( expiredRecord != null ){
                 remoteRecord.setId( expiredRecord.getId() );
+                remoteRecord.setCreateTime( expiredRecord.getCreateTime() );
+
                 log.info( "getNativeRecord: remoteRecord set expiredR " +
                           "Id and remoteRecord=" + remoteRecord );
             }
