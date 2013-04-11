@@ -64,10 +64,16 @@ public class NcbiServer implements NativeServer {
                                    ) throws ProxyFault {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
-        
-        int retry = 1; //default value 
-        if( context.get( "retry" ) != null ) {
-            retry= Integer.parseInt( (String) context.get( "retry" ) );
+
+        boolean isRetry = false;
+        String retryOn = (String)context.get( "isRetry" );
+        if( retryOn != null ) {
+            if( retryOn.equals( "true" )
+                || retryOn.equalsIgnoreCase( "on" )
+                || retryOn.equalsIgnoreCase( "yes" ) ) {
+                
+                isRetry = true;
+            }
         } 
 
         if ( !service.equals( "nlm" ) ) {
@@ -106,26 +112,22 @@ public class NcbiServer implements NativeServer {
                 // get retry from context 
 
                 if( rootElementEsearch.getChildNodes().getLength() ==  0 ) {
-                    if( retry > 0 ) {
-                        log.info( "getNative: nlm esearch get empty return." + 
-                                  "retry=" + retry + ", continue to try. ");
-                        return null; // try again
-                    } else {
+
+                    log.info( "getNative: nlm esearch get empty return." );
+
+                    if( isRetry ) {
                         try {    
 
                             NcbiReFetchThread thread = new NcbiReFetchThread(
                                                             ns, ac, "", 
-                                                            nativeRestServer );
+                                                            nativeRestServer,
+                                                            context );
 
                             thread.start();
                             log.warn( "getNative: nlm esearch return " +
                                       "an empty set." );
                             log.info( "getNative: nlm esearch thread starting." );
 
-                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-
-                        } catch ( ProxyFault fault ) {
-                            throw fault;
                         } catch ( RuntimeException e ) {
                             if( e.getMessage().equals( "NO_RECORD" ) ) {
                                 throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -136,6 +138,8 @@ public class NcbiServer implements NativeServer {
                             }
                         }
                     }
+           
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
                 } 
 
                 String ncbi_error = xPath.evaluate(
@@ -153,24 +157,20 @@ public class NcbiServer implements NativeServer {
                                             rootElementEsearch );
 
                 if( ncbi_nlmid.equals("") ){
-                    if( retry > 0 ) {
-                        log.info( "getNative: nlm esearch return wrong xml " +
-                                  "style." + " retry=" + retry + 
-                                  ", continue to try. ");
-                        return null; // try again
-                    } else {
+
+                    log.info( "getNative: nlm esearch return wrong xml style. " );
+                    
+                    if( isRetry ) {
                         try { 
 
                             NcbiReFetchThread thread = new NcbiReFetchThread( 
                                                             ns, ac, "",
-                                                            nativeRestServer);
+                                                            nativeRestServer,
+                                                            context );
 
                             thread.start();
-
                             log.info( "getNative: nlm: ncbi fetch thread starting... " );
-                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                        } catch ( ProxyFault fault ) {
-                                throw fault;
+
                         } catch ( RuntimeException e ) {
                             if( e.getMessage().equals( "NO_RECORD" ) ) {
                                 throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -183,6 +183,8 @@ public class NcbiServer implements NativeServer {
                             }
                         }
                     }
+
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
                 }
 
                 //--------------------------------------------------------------                
@@ -213,24 +215,17 @@ public class NcbiServer implements NativeServer {
                                rootElementEfetch, XPathConstants.NODE );
 
                 if( testNode == null ) {
-                    if( retry > 0 ) {
-                        log.info( "getNative: nlm native server return " +
-                                  "empty set. " + " retry=" + retry +
-                                  ", continue to try. ");
-                        return null; // try again
-                    } else {
+                    if( isRetry ) {
                         try { 
 
                             NcbiReFetchThread thread = new NcbiReFetchThread( 
                                                             ns, ac, ncbi_nlmid,
-                                                            nativeRestServer);
+                                                            nativeRestServer,
+                                                            context );
 
                             thread.start();
-
                             log.info( "getNative: nlm: ncbi fetch thread starting..." );                     
-                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-                        } catch ( ProxyFault fault ) {
-                            throw fault;
+
                         } catch ( RuntimeException e ) {
                             if( e.getMessage().equals( "NO_RECORD" ) ) {
                                 throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -241,6 +236,9 @@ public class NcbiServer implements NativeServer {
                             }
                         }
                     }
+
+                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+
                 } else {
                     log.info( "getNative: nlm: testNode != null " +
                               " and ncbi_nlmid=" + ncbi_nlmid + " . " );
@@ -283,29 +281,20 @@ public class NcbiServer implements NativeServer {
                                 "</NLMCatalogRecordSet>" ) ) {
 
                             log.info( "getNative: nlm: retVal is empty set. " );
-                            
-                            if( retry > 0 ) {
-                                log.info( "getNative: nlm retVal is empty set. " +
-                                          " retry=" + retry + 
-                                          ", continue to try. ");
-                                return null; // try again
-                            } else {
 
+                            if( isRetry ) {
                                 try {    
 
                                     NcbiReFetchThread thread 
                                         = new NcbiReFetchThread ( 
                                                         ns, ac, ncbi_nlmid,
-                                                        nativeRestServer);
+                                                        nativeRestServer,
+                                                        context );
 
                                     thread.start();
 
                                     log.info( "getNative: ncbi fetch thread starting." );
 
-                                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-
-                                } catch ( ProxyFault fault ) {
-                                    throw fault;
                                 } catch ( RuntimeException e ) {
                                     if( e.getMessage().equals( "NO_RECORD" ) ) {
                                         throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -316,6 +305,8 @@ public class NcbiServer implements NativeServer {
                                     }
                                 }
                             }
+
+                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
                         }
                     }
                 }

@@ -41,20 +41,34 @@ public class NcbiReFetchThread extends Thread {
     private Log log = LogFactory.getLog( NcbiReFetchThread.class );
     private String ns, ac;
     private String nlmid = "";
+    private Map<String, Object> context;
+
+    /*
     private int ttl = WSContext.getServerContext("NCBI").getTtl();
     private int timeOut = WSContext.getServerContext("NCBI").getTimeout();
     private int threadRunMinutes = WSContext.getThreadRunMinutes();
-    private long waitMillis = threadRunMinutes * 60 * 1000;  
+    private long waitMillis = threadRunMinutes * 60 * 1000;
+    */
+    private int ttl;
+    private int timeOut;
+    private long waitMillis;  
+
     private String provider = "NCBI";
     private String service = "nlm";
     private NativeRestServer nativeRestServer = null;
 
     public NcbiReFetchThread( String ns, String ac, String nlmid, 
-                              NativeRestServer nativeRestServer ) {
+                              NativeRestServer nativeRestServer,
+                              Map<String, Object> context ) {
         this.ns = ns;
         this.ac = ac;
         this.nlmid = nlmid;
         this.nativeRestServer = nativeRestServer;
+        this.context = context;
+        this.ttl = Integer.parseInt( (String)context.get( "ttl" ) );
+        this.timeOut = Integer.parseInt( (String)context.get("timeout" ) );
+        this.waitMillis = Integer.parseInt( 
+            (String)context.get("threadRunMinutes") ) * 60 * 1000;
     }
 
     public void run() {

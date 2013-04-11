@@ -20,6 +20,9 @@
         <constructor-arg index="0">
             <ref bean="hibernateOrmUtil"/>
         </constructor-arg>
+        <property name="wsContext">
+            <ref bean="wsContext"/>
+        </property>
     </bean>
 
 </beans>

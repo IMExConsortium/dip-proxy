@@ -25,10 +25,11 @@ public class ServiceContext {
 	    return rsc.get( serverName );
     }
 
+    /*
     public static void addRemoteServer( String serverName ) {
 	
 	    RemoteServerContext newRsc= new RemoteServerContext();
 	    newRsc.init( serverName );
 	    rsc.put( serverName, newRsc );
-    }
+    }*/
 }  

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- =======================================================================
- ! $HeadURL::                                                              $
- ! $Id::                                                                   $
- ! Version: $Rev::                                                         $
- !==========================================================================
+<!-- ===========================================================================
+ ! $HeadURL::                                                                  $
+ ! $Id::                                                                       $
+ ! Version: $Rev::                                                             $
+ !==============================================================================
  !
  ! dip-proxy: application context
  !
- !====================================================================== -->
+ !========================================================================== -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -31,27 +31,27 @@
         http://jax-ws.dev.java.net/spring/servlet
         http://jax-ws.dev.java.net/spring/servlet.xsd">
 
- <!-- ========================================================== CONTEXT -->
+ <!-- ============================================================== CONTEXT -->
 
  <import resource="spring/contextBean.xml" />
 
- <!-- ===================================================== REMOTE SERVERS -->
+ <!-- ======================================================= REMOTE SERVERS -->
 
  <import resource="spring/serversBean.xml" />
 
- <!-- ========================================================== SCHEDULER -->
+ <!-- ============================================================ SCHEDULER -->
 
  <import resource="spring/schedulerBean.xml" /> 
 
- <!-- ========================================================== AOP AUDIT -->
+ <!-- ============================================================ AOP AUDIT -->
 
  <import resource="spring/auditBean.xml" /> 
 
- <!-- ========================================================== DAO -->
+ <!-- ================================================================== DAO -->
 
  <import resource="spring/daoBean.xml"/>
 
- <!--========================================================  TRANSFORMER -->
+ <!--==========================================================  TRANSFORMER -->
 
  <bean id="proxyTransformer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.ProxyTransformer">
@@ -59,25 +59,18 @@
   <property name="contextTop" value="transformer"/>
  </bean>
 
- <!-- ===================================================== STRUTS ACTIONS -->
+ <!-- ======================================================= STRUTS ACTIONS -->
 
  <import resource="spring/struts-actions.xml" /> 
 
-
- <!-- ===================================================== PROXY SERVICES -->
+ <!-- ======================================================= PROXY SERVICES -->
 
  <bean id="wsContext" init-method="initialize" destroy-method="cleanup"
        class="edu.ucla.mbi.server.WSContext">
    
-  <!--<property name="port" value="8080" /> -->
-
   <property name="dht">
    <ref bean="dht"/>
   </property> 
-
-  <property name="waitMillis" value="5000"/> 
-
-  <property name="threadRunMinutes" value="10"/>
 
   <property name="transformer">
     <ref bean="proxyTransformer"/>
@@ -106,7 +99,7 @@
 
        <entry key="router">
         <ref bean="ebiDhtRouter"/> 
-<!--        <ref bean="ebiSimpleRouter"/>  -->
+        <!-- <ref bean="ebiSimpleRouter"/>  -->
        </entry>
         
        <entry key="ramCache" value="off"/>
@@ -174,11 +167,10 @@
        </entry>      
 
        <entry key="ncbiProxyAddress">
-            <!--<value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> -->
-            <value> http://10.1.200.201:8080/dip-proxy-server/proxy-service</value>
+         <!--<value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> -->
+         <value> http://10.1.200.201:8080/dip-proxy-server/proxy-service</value>
        </entry>
 
-       <!--        
        <entry key="proxyProto"> 
         <ref bean="referenceProxy"/>
        </entry>      
@@ -186,7 +178,6 @@
        <entry key="router">
         <ref bean="mbiDhtRouter"/> 
        </entry>
-       -->
 
        <entry key="ramCache" value="off"/>
        <entry key="dbCache" value="off"/>
@@ -213,7 +204,6 @@
         <ref bean="dipReferenceServer"/>
        </entry>      
 
-       <!--
        <entry key="proxyProto">
         <ref bean="referenceProxy"/>
        </entry>
@@ -221,7 +211,6 @@
        <entry key="router">
         <ref bean="dipDhtRouter"/> 
        </entry>
-       -->
 
        <entry key="ramCache" value="off"/>
        <entry key="dbCache" value="off"/>
@@ -249,7 +238,6 @@
          <ref bean="nativeRestServer"/>
        </entry>
 
-       <!--
        <entry key="proxyProto">
         <ref bean="referenceProxy"/>
        </entry>
@@ -257,7 +245,6 @@
        <entry key="router">
          <ref bean="yeastMineDhtRouter"/> 
        </entry>
-       -->
 
        <entry key="ramCache" value="off"/>
        <entry key="dbCache" value="off"/>
@@ -277,7 +264,7 @@
   </property>
  </bean>
 
- <!-- =========================================================== MEMCACHED -->
+ <!-- ============================================================ MEMCACHED -->
 
  <bean id="mcClient" class="edu.ucla.mbi.util.cache.McClient">
   <property name="mcf">
@@ -305,6 +292,8 @@
   <property name="failureMode" value="Redistribute"/>
   <property name="useNagleAlgorithm" value="false"/>
  </bean>
+
+ <!-- ========================================================= WEB SERVICES -->
 
  <bean id="proxy-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ProxyPortImpl" >

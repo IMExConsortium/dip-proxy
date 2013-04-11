@@ -190,7 +190,13 @@
        <entry key="nativeRestServer">
             <ref bean="nativeRestServer"/>
        </entry>
-       <entry key="retry" value="3"/>
+
+       <!-- param used by NcbiReFetchThread class -->
+       <entry key="isRetry" value="true"/>
+       <entry key="timeout" value="600"/>
+       <entry key="ttl" value="30"/>
+       <entry key="threadRunMinutes" value="10"/> <!-- mins -->
+
     </map>
   </property>
 

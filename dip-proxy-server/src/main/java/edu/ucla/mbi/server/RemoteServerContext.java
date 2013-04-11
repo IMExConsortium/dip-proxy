@@ -20,6 +20,8 @@ import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.proxy.ProxyTransformer;
 
 public class RemoteServerContext {
+
+    private Map<String,Map> services;
     
     private String provider = "";
     private boolean initialized = false;
@@ -40,7 +42,14 @@ public class RemoteServerContext {
     private Set serviceSet = new HashSet();
 
     private String ncbiProxyAddress = "";
- 
+
+    //*** constructor
+    public RemoteServerContext(){};
+
+    public RemoteServerContext ( Map<String, Map> context ) {
+        this.services = context;
+    }  
+
     //*** getter
     public int getTimeout() {
 	    return timeout;
@@ -127,7 +136,7 @@ public class RemoteServerContext {
 
         this.provider = provider;
 	
-        Map<String, Object> context = WSContext.getProvider( provider );
+        Map<String, Object> context = services.get( provider );
         
         timeout = (Integer) context.get( "timeout" );
         log.info( "  timeout=" + timeout );

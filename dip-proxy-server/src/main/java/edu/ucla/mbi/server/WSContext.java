@@ -29,41 +29,22 @@ public class WSContext{
     private static final int DEFAULT_TIMEOUT = 300;  // 300s
     private static final int DEFAULT_DEBUG = 0;        // 
     
-    //private static Map<String,Map> services;
     private Map<String,Map> services;
 
     private static Map<String, RemoteServerContext> serverContexts 
                                 = new HashMap<String, RemoteServerContext>();
 
-    private static Dht proxyDht;
-
-    //private static int port = 80;
-
-    private long waitMillis = 5000;
-    
-    private static int threadRunMinutes = 10; // 10 minutes
-
+    private static Dht dht;
     private ProxyTransformer transformer;
-
     private McClient mcClient;
 
-
     //*** setter
-    /*
-    public void setPort( int port ) {
-        this.port = port;
-    }*/
-    
+    public void setDht ( Dht dht ) {
+        this.dht = dht;
+    }
+ 
     public void setTransformer ( ProxyTransformer tf ) {
         this.transformer = tf;
-    }
-    
-    public void setWaitMillis( long time ){
-        waitMillis = time;
-    }
-
-    public void setThreadRunMinutes ( int time ) {
-        threadRunMinutes = time;
     }
 
     public void setServices( Map<String,Map> services ) {
@@ -75,35 +56,21 @@ public class WSContext{
     }
 
     //*** getter
-    /*
-    public static int getPort() {
-        return port;
-    }*/
-    
     public  ProxyTransformer getTransformer () {
         return transformer;
     }
 
     public static Dht getDht() {
-        return proxyDht;
+        return dht;
     }
 
     public Map<String,Map> getServices() {
 	    return services;
     }
-    
-    //public static Map getProvider( String provider ) {
+   
+     
     public Map getProvider( String provider ) {
         return (Map) services.get( provider );
-    }
-
-    
-    public long getWaitMillis(){
-        return waitMillis;
-    } 
-
-    public static int getThreadRunMinutes() {
-        return threadRunMinutes;
     }
 
     public McClient getMcClient() {
@@ -112,14 +79,13 @@ public class WSContext{
 
     //---------------------------------------------------------------------
 
-    //public static RemoteServerContext getServerContext( String provider ) {
     public RemoteServerContext getServerContext( String provider ) {
  
 	    Log log = LogFactory.getLog( WSContext.class );
 	    log.info( "ProxyWS: WSContext.getServerContext(" + provider + ")" );
 
 	    if( serverContexts.get( provider ) == null ) {
-	        RemoteServerContext rsc = new RemoteServerContext();
+	        RemoteServerContext rsc = new RemoteServerContext( services );
 	        rsc.init( provider );
 	        serverContexts.put( provider, rsc );
 	    }
@@ -290,7 +256,6 @@ public class WSContext{
 	    
 	        // Monitor Interval
 	        //-----------------
- 
 
 	        // Monitor query
 	        //--------------
