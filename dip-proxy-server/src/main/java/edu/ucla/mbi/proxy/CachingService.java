@@ -32,9 +32,7 @@ public class CachingService extends RemoteNativeService {
 
     private Log log = LogFactory.getLog( CachingService.class );
 
-    private static NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO();    
-    private static DxfRecordDAO dxfDAO = DipProxyDAO.getDxfRecordDAO();
-    private static McClient mcClient = null;
+    private McClient mcClient = null;
 
     public CachingService( WSContext wsContext, String provider ) 
         throws ProxyFault {
@@ -64,8 +62,7 @@ public class CachingService extends RemoteNativeService {
                   + router.getRemoteServerContext().getProvider() + ")" );
         log.info( " ramCacheOn=" + rsc.isRamCacheOn() );
         log.info( " dbCacheon=" + rsc.isDbCacheOn() );
-
-
+        
         NativeRecord nativeRecord = null;
         NativeRecord expiredRecord = null;
         NativeRecord remoteRecord = null;
@@ -100,9 +97,13 @@ public class CachingService extends RemoteNativeService {
             NativeRecord cacheRecord = null;
 
             try {
-                cacheRecord = DipProxyDAO.getNativeRecordDAO()
-                    .find( provider, service, ns, ac );
+                //cacheRecord = DipProxyDAO.getNativeRecordDAO()
+                //    .find( provider, service, ns, ac );
 
+                cacheRecord = 
+                    DipProxyDAO.findNativeRecord( provider, service, ns, ac );
+                
+                
             } catch ( DAOException ex ) {
                 proxyFault = FaultFactory.newInstance( Fault.TRANSACTION );
             }
@@ -112,7 +113,10 @@ public class CachingService extends RemoteNativeService {
                 String natXml = cacheRecord.getNativeXml();
                 
                 if( natXml == null || natXml.isEmpty() ) {
-                    DipProxyDAO.getNativeRecordDAO().delete( cacheRecord );
+                    //DipProxyDAO.getNativeRecordDAO().delete( cacheRecord );
+
+                    DipProxyDAO.deleteNativeRecord( cacheRecord );
+
                     // remove dht record here ?
                     cacheRecord = null;
                 } else {
@@ -174,7 +178,9 @@ public class CachingService extends RemoteNativeService {
             //*** dbCache update                           
             if( rsc.isDbCacheOn() ) {               
                 log.info( "db create nativeR. " );
-                DipProxyDAO.getNativeRecordDAO().create( nativeRecord );
+                //DipProxyDAO.getNativeRecordDAO().create( nativeRecord );
+                
+                DipProxyDAO.createNativeRecord( nativeRecord );                
             }
 
             //*** memcached store
@@ -188,7 +194,8 @@ public class CachingService extends RemoteNativeService {
 
             if( rsc.isDbCacheOn() ){
                 log.info( "db create expiredR. " );
-                DipProxyDAO.getNativeRecordDAO().create( expiredRecord );
+                //DipProxyDAO.getNativeRecordDAO().create( expiredRecord );
+                DipProxyDAO.createNativeRecord( expiredRecord );
             }
             
             return expiredRecord;
