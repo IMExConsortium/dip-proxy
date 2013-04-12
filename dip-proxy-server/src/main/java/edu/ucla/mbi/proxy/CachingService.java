@@ -96,17 +96,16 @@ public class CachingService extends RemoteNativeService {
 
             NativeRecord cacheRecord = null;
 
-            try {
-                //cacheRecord = DipProxyDAO.getNativeRecordDAO()
-                //    .find( provider, service, ns, ac );
-
-                cacheRecord = 
+            cacheRecord =
                     DipProxyDAO.findNativeRecord( provider, service, ns, ac );
-                
-                
+            /*
+            try {
+                cacheRecord = DipProxyDAO.getNativeRecordDAO()
+                    .find( provider, service, ns, ac );
+
             } catch ( DAOException ex ) {
                 proxyFault = FaultFactory.newInstance( Fault.TRANSACTION );
-            }
+            } */
 
             if ( cacheRecord != null ) { // local record present
 
@@ -278,12 +277,17 @@ public class CachingService extends RemoteNativeService {
         if( dxfRecord == null && rsc.isDbCacheOn() ){
             
             DxfRecord cacheDxfRecord = null;
+
+            cacheDxfRecord = DipProxyDAO.findDxfRecord ( provider,
+                    service, ns, ac, detail );
+            /*
             try {
                 cacheDxfRecord = DipProxyDAO.getDxfRecordDAO()
                     .find( provider, service, ns, ac, detail );
+
             } catch ( DAOException ex ) {
                 proxyFault = FaultFactory.newInstance( Fault.TRANSACTION );
-            }     
+            }*/     
 
             if( cacheDxfRecord != null ) {
                 
@@ -300,12 +304,14 @@ public class CachingService extends RemoteNativeService {
                         dxfRecord = cacheDxfRecord;
                     }
                 } else {
+                    DipProxyDAO.deleteDxfRecord ( dxfRecord );
+                    /*
                     try {
                         DipProxyDAO.getDxfRecordDAO().delete( dxfRecord );
                     } catch ( DAOException ex ) {
                         proxyFault = FaultFactory
                             .newInstance( Fault.TRANSACTION );
-                    }
+                    }*/
                 }
             }
         }
@@ -355,7 +361,8 @@ public class CachingService extends RemoteNativeService {
         if( dxfRecord != null ) {
 
             if( rsc.isDbCacheOn() ) {
-                DipProxyDAO.getDxfRecordDAO().create( dxfRecord );
+                //DipProxyDAO.getDxfRecordDAO().create( dxfRecord );
+                DipProxyDAO.createDxfRecord ( dxfRecord );
             }
             
             if( rsc.isRamCacheOn() ) {
@@ -367,7 +374,8 @@ public class CachingService extends RemoteNativeService {
         } else if( expiredDxf != null ){
             
             if( rsc.isDbCacheOn() ){
-                DipProxyDAO.getDxfRecordDAO().create( expiredDxf ); 
+                //DipProxyDAO.getDxfRecordDAO().create( expiredDxf ); 
+                DipProxyDAO.createDxfRecord ( expiredDxf );
             }
             
             return expiredDxf;
