@@ -15,7 +15,7 @@
 
     <bean id="dipProxyDAO" class="edu.ucla.mbi.cache.orm.DipProxyDAO" >
       <property name="nativeRecordDAO" ref="nativeRecordDAO"/>
-      <property name="NativeAuditDAO" ref="nativeAuditDAO"/>
+      <property name="nativeAuditDAO" ref="nativeAuditDAO"/>
       <property name="dxfRecordDAO" ref="dxfRecordDAO"/>
     </bean>
 

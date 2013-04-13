@@ -35,7 +35,7 @@ public class NativeAuditDAO extends AbstractDAO {
     }
 
     public void setWsContext( WSContext context){
-        wsContext = context;
+        this.wsContext = context;
     }
     
     public void create( NativeAudit nativer 

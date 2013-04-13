@@ -78,8 +78,10 @@ public class NcbiReFetchThread extends Thread {
 
         DipProxyDAO dpd =
             (DipProxyDAO) context.get("dipProxyDAO");
-        
-        if( ! dpd.getNativeRecordDAO().isDbCacheOn( "NCBI" ) ) return;
+       
+        NativeRecordDAO nativeRecordDAO = dpd.getNativeRecordDAO();
+ 
+        if( ! nativeRecordDAO.isDbCacheOn( "NCBI" ) ) return;
             
 
         if( nlmid.equals( "" ) ) {
@@ -203,17 +205,12 @@ public class NcbiReFetchThread extends Thread {
                 
                 record.setNativeXml( retVal );
 
-                //NativeRecordDAO nDAO = DipProxyDAO.getNativeRecordDAO(); 
-                   
-                //synchronized( this ) { 
-                synchronized( this ) {
+                synchronized( nativeRecordDAO ) {
 
-                    //NativeRecord cacheRecord = nDAO.find( 
-                    //    provider, service, ns, ac );
                     try {
                        
-                        NativeRecord cacheRecord = dpd
-                            .findNativeRecord( provider, service, ns, ac );
+                        NativeRecord cacheRecord = nativeRecordDAO
+                            .find( provider, service, ns, ac );
                         
                         if( cacheRecord != null ) {
                             record.setId( cacheRecord.getId() );
@@ -221,16 +218,17 @@ public class NcbiReFetchThread extends Thread {
                         }
 
                         record.resetExpireTime( ttl );
-                        //nDAO.create( record );
-                        dpd.createNativeRecord ( record );
+
+                        nativeRecordDAO.create( record );
                         
                         log.info( "NcbiReFetchThread: getNative: native record " +
                               "is create/updated.");
 
-                    } catch ( ProxyFault fault ) {
+                    } catch ( Exception ex ) {
                         throw new RuntimeException( "TRANSACTION" ) ;
                     }
                 }
+
             }
         }
 

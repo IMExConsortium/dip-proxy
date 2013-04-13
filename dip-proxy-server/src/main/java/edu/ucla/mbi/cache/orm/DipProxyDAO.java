@@ -24,41 +24,21 @@ public class DipProxyDAO {
 
     private HibernateOrmUtil hibernateOrmUtil;
  
-    //private WSContext wsContext;
-    //
-    //public void setWsContext( WSContext context ) {
-    //    this.wsContext = context;
-    //}
-
     private NativeRecordDAO nativeRecordDAO; 
     private DxfRecordDAO dxfRecordDAO; 
     private NativeAuditDAO nativeAuditDAO;
    
-    //*** constructor
-
-    /*
-    public DipProxyDAO( HibernateOrmUtil hibernateOrmUtil ) {
-        Log log = LogFactory.getLog( DipProxyDAO.class );
-        log.info( "DipProxyDAO aware constructor create." );
-        this.hibernateOrmUtil = hibernateOrmUtil;
-
-        this.nativeRecordDAO = new NativeRecordDAO( hibernateOrmUtil, wsContext );
-        this.dxfRecordDAO = new DxfRecordDAO ( hibernateOrmUtil );
-        this.nativeAuditDAO = new NativeAuditDAO ( hibernateOrmUtil, wsContext );
-    }
-    */
-
     //*** setters
     public void setNativeRecordDAO ( NativeRecordDAO dao) {
-        nativeRecordDAO = dao;
+        this.nativeRecordDAO = dao;
     }
     
     public void setDxfRecordDAO( DxfRecordDAO dao) {
-        dxfRecordDAO = dao;
+        this.dxfRecordDAO = dao;
     }
 
     public void setNativeAuditDAO ( NativeAuditDAO dao) {
-        nativeAuditDAO = dao;
+        this.nativeAuditDAO = dao;
     }
     
     //*** getter

@@ -30,8 +30,8 @@ public class NativeTracker {
 
     private WSContext wsContext;
 
-    private void setWsContext(WSContext context){
-        wsContext = context;
+    public void setWsContext(WSContext context){
+        this.wsContext = context;
     }
     
     public void initialize(){

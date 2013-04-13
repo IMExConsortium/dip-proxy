@@ -188,7 +188,7 @@
   <property name="context">
     <map>
        <entry key="nativeRestServer">
-            <ref bean="nativeRestServer"/>
+         <ref bean="nativeRestServer"/>
        </entry>
 
        <!-- param used by NcbiReFetchThread class -->
@@ -196,7 +196,9 @@
        <entry key="timeout" value="600"/>
        <entry key="ttl" value="30"/>
        <entry key="threadRunMinutes" value="10"/> <!-- mins -->
-       <entry key="dipProxyDAO" ref="dipProxyDAO"/>
+       <entry key="dipProxyDAO">
+         <ref bean="dipProxyDAO"/>
+       </entry>
     </map>
   </property>
 
