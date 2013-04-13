@@ -27,6 +27,12 @@ public class NativeTracker {
 
     public static final int DEFAULT_INTERVAL = 0;
     private int interval = DEFAULT_INTERVAL;  // units: milliseconds
+
+    private WSContext wsContext;
+
+    private void setWsContext(WSContext context){
+        wsContext = context;
+    }
     
     public void initialize(){
         
@@ -65,7 +71,8 @@ public class NativeTracker {
                   " prv=" + args[0] + " srv=" + args[1] + 
                   " ns=" + args[2] + " ac=" + args[3] );
         
-        NativeAuditDAO nad = DipProxyDAO.getNativeAuditDAO();
+        NativeAuditDAO nad = 
+            wsContext.getDipProxyDAO().getNativeAuditDAO();
 
         NativeAudit lastAudit = nad.findLast( (String) args[0],
                                               (String) args[1] );

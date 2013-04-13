@@ -39,6 +39,8 @@ public class NcbiServer implements NativeServer {
     private NativeRestServer nativeRestServer = null;
     private Map<String,Object> context = null;
 
+    
+
     public void setContext( Map<String,Object> context ) {
         this.context = context;
     }
@@ -118,10 +120,11 @@ public class NcbiServer implements NativeServer {
                     if( isRetry ) {
                         try {    
 
-                            NcbiReFetchThread thread = new NcbiReFetchThread(
-                                                            ns, ac, "", 
-                                                            nativeRestServer,
-                                                            context );
+                            NcbiReFetchThread thread = 
+                                new NcbiReFetchThread(
+                                                      ns, ac, "", 
+                                                      nativeRestServer,
+                                                      context );
 
                             thread.start();
                             log.warn( "getNative: nlm esearch return " +

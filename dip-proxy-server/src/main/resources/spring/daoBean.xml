@@ -13,16 +13,32 @@
       http://www.springframework.org/schema/aop 
       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
+    <bean id="dipProxyDAO" class="edu.ucla.mbi.cache.orm.DipProxyDAO" >
+      <property name="nativeRecordDAO" ref="nativeRecordDAO"/>
+      <property name="NativeAuditDAO" ref="nativeAuditDAO"/>
+      <property name="dxfRecordDAO" ref="dxfRecordDAO"/>
+    </bean>
 
     <bean id="hibernateOrmUtil" class="edu.ucla.mbi.orm.HibernateUtil"/>
 
-    <bean id="dipProxyDAO" class="edu.ucla.mbi.cache.orm.DipProxyDAO" >
+    <bean id="nativeRecordDAO" class="edu.ucla.mbi.cache.orm.NativeRecordDAO" >
         <constructor-arg index="0">
             <ref bean="hibernateOrmUtil"/>
         </constructor-arg>
-        <property name="wsContext">
-            <ref bean="wsContext"/>
-        </property>
+        <property name="wsContext" ref="wsContext" />
+    </bean>
+
+    <bean id="dxfRecordDAO" class="edu.ucla.mbi.cache.orm.DxfRecordDAO" >
+        <constructor-arg index="0">
+            <ref bean="hibernateOrmUtil"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="nativeAuditDAO" class="edu.ucla.mbi.cache.orm.NativeAuditDAO" >
+        <constructor-arg index="0">
+            <ref bean="hibernateOrmUtil"/>
+        </constructor-arg>
+        <property name="wsContext" ref="wsContext"/>
     </bean>
 
 </beans>

@@ -44,13 +44,11 @@
 
  <bean id="nativeAgent" init-method="initialize"
        class="edu.ucla.mbi.monitor.NativeAgent">
-    
-    <property name="context">
-        <ref bean="wsContext"/>
-    </property>
+  
+  <property name="wsContext" ref="wsContext"/>
    
-    <!--<property name="order" value="expiration-first"/> -->
-    <property name="order" value="query-first"/>  
+  <!--<property name="order" value="expiration-first"/> -->
+  <property name="order" value="query-first"/>  
 
  </bean>
 

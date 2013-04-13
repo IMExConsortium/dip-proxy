@@ -25,11 +25,19 @@ public class NativeAuditDAO extends AbstractDAO {
 
     private WSContext wsContext;
 
+    public NativeAuditDAO ( HibernateOrmUtil util ) {
+        super( util );
+    }
+    
     public NativeAuditDAO ( HibernateOrmUtil util, WSContext context ) {
         super( util );
         this.wsContext = context;
     }
 
+    public void setWsContext( WSContext context){
+        wsContext = context;
+    }
+    
     public void create( NativeAudit nativer 
                         ) throws DAOException {
         saveOrUpdate( nativer );

@@ -26,14 +26,28 @@ public class NativeRecordDAO extends AbstractDAO {
     private Log log = LogFactory.getLog( NativeRecordDAO.class );
     private WSContext wsContext;
 
+    public NativeRecordDAO ( HibernateOrmUtil util){
+        super( util );
+    }
+
     public NativeRecordDAO ( HibernateOrmUtil util, WSContext context ) {
         super( util );
         this.wsContext = context;
     } 
-
+    
+    public void setWsContext( WSContext context){
+        wsContext = context;
+    }
+    
+    public boolean isDbCacheOn( String provider ){
+        
+        return wsContext.getServerContext( provider )
+            .isDbCacheOn();
+    }
+    
     public void create( NativeRecord nativer )
         throws DAOException {
-
+        
         this.saveOrUpdate( nativer );
     }
 

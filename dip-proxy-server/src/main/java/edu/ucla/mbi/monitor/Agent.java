@@ -15,6 +15,6 @@ import edu.ucla.mbi.server.WSContext;
 
 public interface Agent extends Runnable {
 
-    public void setContext( WSContext context );
+    public void setWsContext( WSContext context );
 
 }

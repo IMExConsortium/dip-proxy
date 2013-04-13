@@ -96,8 +96,8 @@ public class CachingService extends RemoteNativeService {
 
             NativeRecord cacheRecord = null;
 
-            cacheRecord =
-                    DipProxyDAO.findNativeRecord( provider, service, ns, ac );
+            cacheRecord = wsContext.getDipProxyDAO()
+                .findNativeRecord( provider, service, ns, ac );
             /*
             try {
                 cacheRecord = DipProxyDAO.getNativeRecordDAO()
@@ -114,8 +114,9 @@ public class CachingService extends RemoteNativeService {
                 if( natXml == null || natXml.isEmpty() ) {
                     //DipProxyDAO.getNativeRecordDAO().delete( cacheRecord );
 
-                    DipProxyDAO.deleteNativeRecord( cacheRecord );
-
+                    wsContext.getDipProxyDAO()
+                        .deleteNativeRecord( cacheRecord );
+                    
                     // remove dht record here ?
                     cacheRecord = null;
                 } else {
@@ -179,7 +180,8 @@ public class CachingService extends RemoteNativeService {
                 log.info( "db create nativeR. " );
                 //DipProxyDAO.getNativeRecordDAO().create( nativeRecord );
                 
-                DipProxyDAO.createNativeRecord( nativeRecord );                
+                wsContext.getDipProxyDAO()
+                    .createNativeRecord( nativeRecord );                
             }
 
             //*** memcached store
@@ -194,7 +196,8 @@ public class CachingService extends RemoteNativeService {
             if( rsc.isDbCacheOn() ){
                 log.info( "db create expiredR. " );
                 //DipProxyDAO.getNativeRecordDAO().create( expiredRecord );
-                DipProxyDAO.createNativeRecord( expiredRecord );
+                wsContext.getDipProxyDAO()
+                    .createNativeRecord( expiredRecord );
             }
             
             return expiredRecord;
@@ -278,10 +281,10 @@ public class CachingService extends RemoteNativeService {
             
             DxfRecord cacheDxfRecord = null;
 
-            cacheDxfRecord = DipProxyDAO.findDxfRecord ( provider,
-                    service, ns, ac, detail );
+            cacheDxfRecord = wsContext.getDipProxyDAO()
+                .findDxfRecord ( provider, service, ns, ac, detail );
             /*
-            try {
+              try {
                 cacheDxfRecord = DipProxyDAO.getDxfRecordDAO()
                     .find( provider, service, ns, ac, detail );
 
@@ -304,7 +307,8 @@ public class CachingService extends RemoteNativeService {
                         dxfRecord = cacheDxfRecord;
                     }
                 } else {
-                    DipProxyDAO.deleteDxfRecord ( dxfRecord );
+                    wsContext.getDipProxyDAO()
+                        .deleteDxfRecord ( dxfRecord );
                     /*
                     try {
                         DipProxyDAO.getDxfRecordDAO().delete( dxfRecord );
@@ -362,7 +366,8 @@ public class CachingService extends RemoteNativeService {
 
             if( rsc.isDbCacheOn() ) {
                 //DipProxyDAO.getDxfRecordDAO().create( dxfRecord );
-                DipProxyDAO.createDxfRecord ( dxfRecord );
+                wsContext.getDipProxyDAO()
+                    .createDxfRecord ( dxfRecord );
             }
             
             if( rsc.isRamCacheOn() ) {
@@ -375,7 +380,8 @@ public class CachingService extends RemoteNativeService {
             
             if( rsc.isDbCacheOn() ){
                 //DipProxyDAO.getDxfRecordDAO().create( expiredDxf ); 
-                DipProxyDAO.createDxfRecord ( expiredDxf );
+                wsContext.getDipProxyDAO()
+                    .createDxfRecord ( expiredDxf );
             }
             
             return expiredDxf;

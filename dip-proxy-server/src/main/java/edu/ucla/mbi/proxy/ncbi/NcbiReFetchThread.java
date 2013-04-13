@@ -75,7 +75,13 @@ public class NcbiReFetchThread extends Thread {
         DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();
         long startTime = System.currentTimeMillis();
         NativeRecord record = null;
- 
+
+        DipProxyDAO dpd =
+            (DipProxyDAO) context.get("dipProxyDAO");
+        
+        if( ! dpd.getNativeRecordDAO().isDbCacheOn( "NCBI" ) ) return;
+            
+
         if( nlmid.equals( "" ) ) {
             log.info( "NcbiReFetchThread: nlmid is empty. " );
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
@@ -204,10 +210,11 @@ public class NcbiReFetchThread extends Thread {
 
                     //NativeRecord cacheRecord = nDAO.find( 
                     //    provider, service, ns, ac );
-                    try { 
-                        NativeRecord cacheRecord = DipProxyDAO.findNativeRecord (
-                            provider, service, ns, ac );
-
+                    try {
+                       
+                        NativeRecord cacheRecord = dpd
+                            .findNativeRecord( provider, service, ns, ac );
+                        
                         if( cacheRecord != null ) {
                             record.setId( cacheRecord.getId() );
                             record.setCreateTime( cacheRecord.getCreateTime() );
@@ -215,8 +222,8 @@ public class NcbiReFetchThread extends Thread {
 
                         record.resetExpireTime( ttl );
                         //nDAO.create( record );
-                        DipProxyDAO.createNativeRecord ( record );
-
+                        dpd.createNativeRecord ( record );
+                        
                         log.info( "NcbiReFetchThread: getNative: native record " +
                               "is create/updated.");
 

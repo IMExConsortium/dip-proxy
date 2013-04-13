@@ -27,6 +27,7 @@
  <bean id="nativeTracker" init-method="initialize"
           class="edu.ucla.mbi.proxy.advice.NativeTracker">
 
+    <property name="wsContext" ref="wsContext" />
     <property name="minInterval" value="15" />
    
  </bean>

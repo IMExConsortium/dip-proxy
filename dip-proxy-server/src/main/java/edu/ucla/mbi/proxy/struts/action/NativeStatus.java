@@ -49,9 +49,10 @@ public class NativeStatus extends PortalSupport {
 
         log.info( " NativeStatus execute..." );
         delays = new TreeMap<String,Map>();
-
+        
         try {
-            NativeAuditDAO ado = DipProxyDAO.getNativeAuditDAO();
+            NativeAuditDAO ado = 
+                wsContext.getDipProxyDAO().getNativeAuditDAO();
 
             // go over providers
             //------------------

@@ -67,18 +67,12 @@
 
  <bean id="wsContext" init-method="initialize" destroy-method="cleanup"
        class="edu.ucla.mbi.server.WSContext">
-   
-  <property name="dht">
-   <ref bean="dht"/>
-  </property> 
 
-  <property name="transformer">
-    <ref bean="proxyTransformer"/>
-  </property>
+  <property name="dipProxyDAO" ref="dipProxyDAO" />   
 
-  <property name="mcClient">
-    <ref bean="mcClient"/>
-  </property>
+  <property name="dht" ref="dht" />
+  <property name="transformer" ref="proxyTransformer" />
+  <property name="mcClient" ref="mcClient" />
 
   <property name="services">
    <map>

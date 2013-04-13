@@ -24,7 +24,7 @@ import edu.ucla.mbi.proxy.ProxyFault;
 
 public class NativeAgent implements Agent {
 
-    private WSContext context = null;
+    private WSContext wsContext = null;
     private String order = "expiration-first";
     
     private Map<String, Router> observerMap = new HashMap<String, Router>();
@@ -42,9 +42,9 @@ public class NativeAgent implements Agent {
     }
 
     
-    public void setContext( WSContext context ) {
+    public void setWsContext( WSContext context ) {
 
-        this.context = context;
+        this.wsContext = context;
 
         Log log = LogFactory.getLog( NativeAgent.class );
         log.info( "after setContext" );
@@ -59,13 +59,13 @@ public class NativeAgent implements Agent {
         log.info( "initializing... " );
         //Set<String> providers = WSContext.getServices().keySet();
 
-        Set<String> providers = context.getServices().keySet();
+        Set<String> providers = wsContext.getServices().keySet();
 
         for ( Iterator<String> ii = providers.iterator(); ii.hasNext(); ) {
 
             String prv = ii.next();
 
-            RemoteServerContext rsc = context.getServerContext( prv );
+            RemoteServerContext rsc = wsContext.getServerContext( prv );
 
             log.info( "provider=" + prv );
             observerMap.put( prv, rsc.getRouter() );
@@ -77,21 +77,22 @@ public class NativeAgent implements Agent {
         Log log = LogFactory.getLog( NativeAgent.class );
         log.info( "running" );
 
-        NativeRecordDAO ndo = DipProxyDAO.getNativeRecordDAO();
+        NativeRecordDAO ndo = 
+            wsContext.getDipProxyDAO().getNativeRecordDAO();
 
         if ( ndo != null ) {
 
             // go over providers
             // ------------------
 
-            Set<String> providers = context.getServices().keySet();
+            Set<String> providers = wsContext.getServices().keySet();
             //Set<String> providers = WSContext.getServices().keySet();
 
             for ( Iterator<String> ii = providers.iterator(); ii.hasNext(); ) {
 
                 String prv = ii.next();
 
-                RemoteServerContext rsc = context.getServerContext( prv );
+                RemoteServerContext rsc = wsContext.getServerContext( prv );
 
                 List<String[]> oldList = null;
                 try {

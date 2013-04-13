@@ -37,8 +37,14 @@ public class WSContext{
     private static Dht dht;
     private ProxyTransformer transformer;
     private McClient mcClient;
+    private DipProxyDAO dipProxyDAO;
 
     //*** setter
+
+    public void setDipProxyDAO( DipProxyDAO dao ){
+        this.dipProxyDAO = dao;
+    }
+
     public void setDht ( Dht dht ) {
         this.dht = dht;
     }
@@ -56,6 +62,11 @@ public class WSContext{
     }
 
     //*** getter
+
+    public DipProxyDAO getDipProxyDAO(){
+        return dipProxyDAO;
+    }
+
     public  ProxyTransformer getTransformer () {
         return transformer;
     }

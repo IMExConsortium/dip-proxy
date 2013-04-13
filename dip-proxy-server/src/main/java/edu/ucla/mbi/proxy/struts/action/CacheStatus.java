@@ -84,7 +84,7 @@ public class CacheStatus extends PortalSupport {
 
         try {
 
-            NativeRecordDAO ndo = DipProxyDAO.getNativeRecordDAO();
+            NativeRecordDAO ndo = wsContext.getDipProxyDAO().getNativeRecordDAO();
 
             if ( ndo != null ){
 
@@ -128,9 +128,10 @@ public class CacheStatus extends PortalSupport {
 
         try {
 
-            DxfRecordDAO ddo = DipProxyDAO.getDxfRecordDAO();
+            DxfRecordDAO ddo = wsContext.getDipProxyDAO()
+                .getDxfRecordDAO();
             if ( ddo != null ){
-
+                
                 // go over providers
                 //------------------
 

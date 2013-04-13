@@ -77,7 +77,8 @@ public class NativeSparkline extends ActionSupport {
         
         Log log = LogFactory.getLog( NativeSparkline.class );
 
-        NativeAuditDAO nad = DipProxyDAO.getNativeAuditDAO();
+        NativeAuditDAO nad = 
+            wsContext.getDipProxyDAO().getNativeAuditDAO();
         int lastAuditStatus = 0;       
 
         int count = 12*24; // 1 day

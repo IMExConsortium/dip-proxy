@@ -196,7 +196,7 @@
        <entry key="timeout" value="600"/>
        <entry key="ttl" value="30"/>
        <entry key="threadRunMinutes" value="10"/> <!-- mins -->
-
+       <entry key="dipProxyDAO" ref="dipProxyDAO"/>
     </map>
   </property>
 

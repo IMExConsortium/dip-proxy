@@ -21,18 +21,22 @@ import edu.ucla.mbi.orm.*;
 import edu.ucla.mbi.fault.*;
 
 public class DipProxyDAO {
+
     private HibernateOrmUtil hibernateOrmUtil;
-    private WSContext wsContext;
+ 
+    //private WSContext wsContext;
+    //
+    //public void setWsContext( WSContext context ) {
+    //    this.wsContext = context;
+    //}
 
-    public void setWsContext( WSContext context ) {
-        this.wsContext = context;
-    }
-
-    private static NativeRecordDAO nativeRecordDAO; 
-    private static DxfRecordDAO dxfRecordDAO; 
-    private static NativeAuditDAO nativeAuditDAO;
-
+    private NativeRecordDAO nativeRecordDAO; 
+    private DxfRecordDAO dxfRecordDAO; 
+    private NativeAuditDAO nativeAuditDAO;
+   
     //*** constructor
+
+    /*
     public DipProxyDAO( HibernateOrmUtil hibernateOrmUtil ) {
         Log log = LogFactory.getLog( DipProxyDAO.class );
         log.info( "DipProxyDAO aware constructor create." );
@@ -42,21 +46,36 @@ public class DipProxyDAO {
         this.dxfRecordDAO = new DxfRecordDAO ( hibernateOrmUtil );
         this.nativeAuditDAO = new NativeAuditDAO ( hibernateOrmUtil, wsContext );
     }
+    */
 
+    //*** setters
+    public void setNativeRecordDAO ( NativeRecordDAO dao) {
+        nativeRecordDAO = dao;
+    }
+    
+    public void setDxfRecordDAO( DxfRecordDAO dao) {
+        dxfRecordDAO = dao;
+    }
+
+    public void setNativeAuditDAO ( NativeAuditDAO dao) {
+        nativeAuditDAO = dao;
+    }
+    
     //*** getter
-    public static NativeRecordDAO getNativeRecordDAO () {
+
+    public NativeRecordDAO getNativeRecordDAO () {
         return nativeRecordDAO;
     }
 
-    public static DxfRecordDAO getDxfRecordDAO () {
+    public DxfRecordDAO getDxfRecordDAO () {
         return dxfRecordDAO;
     }
 
-    public static NativeAuditDAO getNativeAuditDAO () {
+    public NativeAuditDAO getNativeAuditDAO () {
         return nativeAuditDAO;
     }
 
-    public static void createNativeRecord ( NativeRecord record ) 
+    public void createNativeRecord ( NativeRecord record ) 
         throws ProxyFault {
         
         try {
@@ -66,7 +85,7 @@ public class DipProxyDAO {
         }
     }
 
-    public static void deleteNativeRecord ( NativeRecord record )
+    public void deleteNativeRecord ( NativeRecord record )
         throws ProxyFault {
         
         try {
@@ -76,7 +95,7 @@ public class DipProxyDAO {
         }
     }
 
-    public static NativeRecord findNativeRecord ( String provider, 
+    public NativeRecord findNativeRecord ( String provider, 
         String service, String ns, String ac ) throws ProxyFault {
         
         try {
@@ -86,7 +105,7 @@ public class DipProxyDAO {
         }
     }
 
-    public static void createDxfRecord ( DxfRecord record )
+    public void createDxfRecord ( DxfRecord record )
         throws ProxyFault {
 
         try {
@@ -96,7 +115,7 @@ public class DipProxyDAO {
         }
     }
 
-    public static void deleteDxfRecord ( DxfRecord record )
+    public void deleteDxfRecord ( DxfRecord record )
         throws ProxyFault {
 
         try {
@@ -106,7 +125,7 @@ public class DipProxyDAO {
         }
     }
 
-    public static DxfRecord findDxfRecord ( String provider, String service,
+    public DxfRecord findDxfRecord ( String provider, String service,
         String ns, String ac, String detail ) throws ProxyFault {
 
         try {
