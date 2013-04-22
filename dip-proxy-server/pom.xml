@@ -26,25 +26,11 @@
   <profiles>
 
     <profile>
-      <id>server-tomcat</id>
-      <activation>
-        <property>
-          <name>server</name>
-          <value>tomcat</value>
-        </property>
-      </activation>
-      <properties>
-        <!--- using JNDI for tomcat server-->
-      </properties>
-    </profile>
-
-    <profile>
       <id>dip-proxy-dev</id>
       <activation>
         <activeByDefault>false</activeByDefault>        
       </activation>
       <properties>
-        <environment.srv>tomcat</environment.srv>
         <dip-proxy.css>icentral-test.css</dip-proxy.css>
 
         <!--- using JNDI -->
