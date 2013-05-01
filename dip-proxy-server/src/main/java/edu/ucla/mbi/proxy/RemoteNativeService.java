@@ -25,18 +25,15 @@ class RemoteNativeService { // extends Observable {
 
     private Log log = LogFactory.getLog( RemoteNativeService.class );
 
-    protected String provider;
-    protected RemoteServerContext rsc;
-    protected Router router;
+    private Router router;
 
-    protected WSContext wsContext;
+    public WSContext wsContext;
+    public RemoteServerContext rsc;
 
-    protected RemoteNativeService( WSContext context, String provider ) 
+    public RemoteNativeService( WSContext context, String provider ) 
         throws ProxyFault {
 
         this.wsContext = context;
-        this.provider = provider;
-
         this.rsc = wsContext.getServerContext( provider );
         this.router = rsc.getRouter();
 
@@ -47,7 +44,7 @@ class RemoteNativeService { // extends Observable {
         }
     }
     
-    protected RemoteNativeService() { }
+    public RemoteNativeService() { }
     
     //--------------------------------------------------------------------------
         
@@ -75,7 +72,7 @@ class RemoteNativeService { // extends Observable {
 
     }
 
-    protected NativeRecord getNativeFromRemote ( String provider, 
+    public NativeRecord getNativeFromRemote ( String provider, 
                                                  String service, 
                                                  String ns, 
                                                  String ac 

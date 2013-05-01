@@ -28,19 +28,20 @@ import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.server.*;
 import edu.ucla.mbi.util.cache.*;
 
-public class CachingService extends RemoteNativeService {
+public class CachingService {
 
     private Log log = LogFactory.getLog( CachingService.class );
 
     private McClient mcClient = null;
+    private RemoteNativeService rns = null;
 
     public CachingService( WSContext wsContext, String provider ) 
         throws ProxyFault {
  
-        super( wsContext, provider );
-        
+        rns = new RemoteNativeService ( wsContext, provider );
+
         if( mcClient == null ) {
-            mcClient = wsContext.getMcClient();
+            mcClient = rns.wsContext.getMcClient();
         }
     }
     
@@ -57,11 +58,8 @@ public class CachingService extends RemoteNativeService {
         String id = provider + "_" + service + "_" + ns + "_" + ac;
 
         log.info( "getNative(provider=" + provider + ")" );
-        log.info( "         (router=" + router + ")" );
-        log.info( "         (router.rsc="
-                  + router.getRemoteServerContext().getProvider() + ")" );
-        log.info( " ramCacheOn=" + rsc.isRamCacheOn() );
-        log.info( " dbCacheon=" + rsc.isDbCacheOn() );
+        log.info( " ramCacheOn=" + rns.rsc.isRamCacheOn() );
+        log.info( " dbCacheon=" + rns.rsc.isDbCacheOn() );
         
         NativeRecord nativeRecord = null;
         NativeRecord expiredRecord = null;
@@ -75,7 +73,7 @@ public class CachingService extends RemoteNativeService {
                              "_" + ns + "_" + ac;
 
         //*** retrieve from memcached
-        if( rsc.isRamCacheOn() ) {
+        if( rns.rsc.isRamCacheOn() ) {
             NativeRecord memcachedRec = null;
             try {
                 memcachedRec = (NativeRecord)mcClient.fetch( memcachedId );
@@ -92,11 +90,11 @@ public class CachingService extends RemoteNativeService {
         }
 
         //*** retrieve from local database
-        if ( nativeRecord == null && rsc.isDbCacheOn() ) {
+        if ( nativeRecord == null && rns.rsc.isDbCacheOn() ) {
 
             NativeRecord cacheRecord = null;
 
-            cacheRecord = wsContext.getDipProxyDAO()
+            cacheRecord = rns.wsContext.getDipProxyDAO()
                 .findNativeRecord( provider, service, ns, ac );
 
             if ( cacheRecord != null ) { // local record present
@@ -105,7 +103,7 @@ public class CachingService extends RemoteNativeService {
                 
                 if( natXml == null || natXml.isEmpty() ) {
 
-                    wsContext.getDipProxyDAO()
+                    rns.wsContext.getDipProxyDAO()
                         .deleteNativeRecord( cacheRecord );
                     
                     cacheRecord = null;
@@ -135,7 +133,7 @@ public class CachingService extends RemoteNativeService {
         log.info( "getNative: before getNativeFromRemote. " );
         
         if( nativeRecord == null ){
-            remoteRecord = getNativeFromRemote ( provider, service, ns, ac );
+            remoteRecord = rns.getNativeFromRemote ( provider, service, ns, ac );
         }
         
         if( remoteRecord != null ) {
@@ -166,14 +164,14 @@ public class CachingService extends RemoteNativeService {
 
         if( nativeRecord != null ){
             //*** dbCache update                           
-            if( rsc.isDbCacheOn() ) {               
+            if( rns.rsc.isDbCacheOn() ) {               
                 log.info( "db create nativeR. " );
-                wsContext.getDipProxyDAO()
+                rns.wsContext.getDipProxyDAO()
                     .createNativeRecord( nativeRecord );                
             }
 
             //*** memcached store
-            if( rsc.isRamCacheOn() ) {
+            if( rns.rsc.isRamCacheOn() ) {
                 memcachedStore ( memcachedId, nativeRecord );
             }
 
@@ -181,9 +179,9 @@ public class CachingService extends RemoteNativeService {
 
         }  else if( expiredRecord != null ){
 
-            if( rsc.isDbCacheOn() ){
+            if( rns.rsc.isDbCacheOn() ){
                 log.info( "db create expiredR. " );
-                wsContext.getDipProxyDAO()
+                rns.wsContext.getDipProxyDAO()
                     .createNativeRecord( expiredRecord );
             }
             
@@ -247,7 +245,7 @@ public class CachingService extends RemoteNativeService {
         
 
         //*** retrieve from memcached
-        if( rsc.isRamCacheOn() ){
+        if( rns.rsc.isRamCacheOn() ){
             DxfRecord memcachedRec = null;
             try {
                 memcachedRec = (DxfRecord)mcClient.fetch( memcachedId );
@@ -263,11 +261,11 @@ public class CachingService extends RemoteNativeService {
         }
 
         //*** retrieve from local database 
-        if( dxfRecord == null && rsc.isDbCacheOn() ){
+        if( dxfRecord == null && rns.rsc.isDbCacheOn() ){
             
             DxfRecord cacheDxfRecord = null;
 
-            cacheDxfRecord = wsContext.getDipProxyDAO()
+            cacheDxfRecord = rns.wsContext.getDipProxyDAO()
                 .findDxfRecord ( provider, service, ns, ac, detail );
 
             if( cacheDxfRecord != null ) {
@@ -285,7 +283,7 @@ public class CachingService extends RemoteNativeService {
                         dxfRecord = cacheDxfRecord;
                     }
                 } else {
-                    wsContext.getDipProxyDAO()
+                    rns.wsContext.getDipProxyDAO()
                         .deleteDxfRecord ( dxfRecord );
                 }
             }
@@ -335,12 +333,12 @@ public class CachingService extends RemoteNativeService {
         
         if( dxfRecord != null ) {
 
-            if( rsc.isDbCacheOn() ) {
-                wsContext.getDipProxyDAO()
+            if( rns.rsc.isDbCacheOn() ) {
+                rns.wsContext.getDipProxyDAO()
                     .createDxfRecord ( dxfRecord );
             }
             
-            if( rsc.isRamCacheOn() ) {
+            if( rns.rsc.isRamCacheOn() ) {
                 memcachedStore ( memcachedId, dxfRecord );
             }
 
@@ -348,8 +346,8 @@ public class CachingService extends RemoteNativeService {
 
         } else if( expiredDxf != null ){
             
-            if( rsc.isDbCacheOn() ){
-                wsContext.getDipProxyDAO()
+            if( rns.rsc.isDbCacheOn() ){
+                rns.wsContext.getDipProxyDAO()
                     .createDxfRecord ( expiredDxf );
             }
             
@@ -382,7 +380,7 @@ public class CachingService extends RemoteNativeService {
         String ac = nativeRecord.getAc();
         String nativeXml = nativeRecord.getNativeXml();
         
-        ProxyDxfTransformer pdt = new ProxyDxfTransformer( wsContext );
+        ProxyDxfTransformer pdt = new ProxyDxfTransformer( rns.wsContext );
 
         dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail,
                                   provider, service );
@@ -400,7 +398,7 @@ public class CachingService extends RemoteNativeService {
             
             dxfRecord.setDxf( dxfString );
             dxfRecord.resetExpireTime ( nativeRecord.getQueryTime(),
-                                        rsc.getTtl() );                
+                                        rns.rsc.getTtl() );                
 
         }
  

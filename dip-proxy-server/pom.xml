@@ -28,11 +28,11 @@
     <profile>
       <id>dip-proxy-dev</id>
       <activation>
-        <activeByDefault>false</activeByDefault>        
+        <activeByDefault>true</activeByDefault>        
       </activation>
       <properties>
         <dip-proxy.css>icentral-test.css</dip-proxy.css>
-
+        <dbid>201</dbid>
         <!--- using JNDI -->
         <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
         <hibernate.connection.servername>10.1.200.1</hibernate.connection.servername>
