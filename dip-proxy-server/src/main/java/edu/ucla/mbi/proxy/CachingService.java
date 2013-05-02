@@ -41,7 +41,7 @@ public class CachingService {
         rns = new RemoteNativeService ( wsContext, provider );
 
         if( mcClient == null ) {
-            mcClient = rns.wsContext.getMcClient();
+            mcClient = rns.getWsContext().getMcClient();
         }
     }
     
@@ -58,8 +58,8 @@ public class CachingService {
         String id = provider + "_" + service + "_" + ns + "_" + ac;
 
         log.info( "getNative(provider=" + provider + ")" );
-        log.info( " ramCacheOn=" + rns.rsc.isRamCacheOn() );
-        log.info( " dbCacheon=" + rns.rsc.isDbCacheOn() );
+        log.info( " ramCacheOn=" + rns.getRsc().isRamCacheOn() );
+        log.info( " dbCacheon=" + rns.getRsc().isDbCacheOn() );
         
         NativeRecord nativeRecord = null;
         NativeRecord expiredRecord = null;
@@ -73,7 +73,7 @@ public class CachingService {
                              "_" + ns + "_" + ac;
 
         //*** retrieve from memcached
-        if( rns.rsc.isRamCacheOn() ) {
+        if( rns.getRsc().isRamCacheOn() ) {
             NativeRecord memcachedRec = null;
             try {
                 memcachedRec = (NativeRecord)mcClient.fetch( memcachedId );
@@ -90,11 +90,11 @@ public class CachingService {
         }
 
         //*** retrieve from local database
-        if ( nativeRecord == null && rns.rsc.isDbCacheOn() ) {
+        if ( nativeRecord == null && rns.getRsc().isDbCacheOn() ) {
 
             NativeRecord cacheRecord = null;
 
-            cacheRecord = rns.wsContext.getDipProxyDAO()
+            cacheRecord = rns.getWsContext().getDipProxyDAO()
                 .findNativeRecord( provider, service, ns, ac );
 
             if ( cacheRecord != null ) { // local record present
@@ -103,7 +103,7 @@ public class CachingService {
                 
                 if( natXml == null || natXml.isEmpty() ) {
 
-                    rns.wsContext.getDipProxyDAO()
+                    rns.getWsContext().getDipProxyDAO()
                         .deleteNativeRecord( cacheRecord );
                     
                     cacheRecord = null;
@@ -164,14 +164,14 @@ public class CachingService {
 
         if( nativeRecord != null ){
             //*** dbCache update                           
-            if( rns.rsc.isDbCacheOn() ) {               
+            if( rns.getRsc().isDbCacheOn() ) {               
                 log.info( "db create nativeR. " );
-                rns.wsContext.getDipProxyDAO()
+                rns.getWsContext().getDipProxyDAO()
                     .createNativeRecord( nativeRecord );                
             }
 
             //*** memcached store
-            if( rns.rsc.isRamCacheOn() ) {
+            if( rns.getRsc().isRamCacheOn() ) {
                 memcachedStore ( memcachedId, nativeRecord );
             }
 
@@ -179,9 +179,9 @@ public class CachingService {
 
         }  else if( expiredRecord != null ){
 
-            if( rns.rsc.isDbCacheOn() ){
+            if( rns.getRsc().isDbCacheOn() ){
                 log.info( "db create expiredR. " );
-                rns.wsContext.getDipProxyDAO()
+                rns.getWsContext().getDipProxyDAO()
                     .createNativeRecord( expiredRecord );
             }
             
@@ -245,7 +245,7 @@ public class CachingService {
         
 
         //*** retrieve from memcached
-        if( rns.rsc.isRamCacheOn() ){
+        if( rns.getRsc().isRamCacheOn() ){
             DxfRecord memcachedRec = null;
             try {
                 memcachedRec = (DxfRecord)mcClient.fetch( memcachedId );
@@ -261,11 +261,11 @@ public class CachingService {
         }
 
         //*** retrieve from local database 
-        if( dxfRecord == null && rns.rsc.isDbCacheOn() ){
+        if( dxfRecord == null && rns.getRsc().isDbCacheOn() ){
             
             DxfRecord cacheDxfRecord = null;
 
-            cacheDxfRecord = rns.wsContext.getDipProxyDAO()
+            cacheDxfRecord = rns.getWsContext().getDipProxyDAO()
                 .findDxfRecord ( provider, service, ns, ac, detail );
 
             if( cacheDxfRecord != null ) {
@@ -283,7 +283,7 @@ public class CachingService {
                         dxfRecord = cacheDxfRecord;
                     }
                 } else {
-                    rns.wsContext.getDipProxyDAO()
+                    rns.getWsContext().getDipProxyDAO()
                         .deleteDxfRecord ( dxfRecord );
                 }
             }
@@ -333,12 +333,12 @@ public class CachingService {
         
         if( dxfRecord != null ) {
 
-            if( rns.rsc.isDbCacheOn() ) {
-                rns.wsContext.getDipProxyDAO()
+            if( rns.getRsc().isDbCacheOn() ) {
+                rns.getWsContext().getDipProxyDAO()
                     .createDxfRecord ( dxfRecord );
             }
             
-            if( rns.rsc.isRamCacheOn() ) {
+            if( rns.getRsc().isRamCacheOn() ) {
                 memcachedStore ( memcachedId, dxfRecord );
             }
 
@@ -346,8 +346,8 @@ public class CachingService {
 
         } else if( expiredDxf != null ){
             
-            if( rns.rsc.isDbCacheOn() ){
-                rns.wsContext.getDipProxyDAO()
+            if( rns.getRsc().isDbCacheOn() ){
+                rns.getWsContext().getDipProxyDAO()
                     .createDxfRecord ( expiredDxf );
             }
             
@@ -380,7 +380,7 @@ public class CachingService {
         String ac = nativeRecord.getAc();
         String nativeXml = nativeRecord.getNativeXml();
         
-        ProxyDxfTransformer pdt = new ProxyDxfTransformer( rns.wsContext );
+        ProxyDxfTransformer pdt = new ProxyDxfTransformer( rns.getWsContext() );
 
         dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail,
                                   provider, service );
@@ -398,7 +398,7 @@ public class CachingService {
             
             dxfRecord.setDxf( dxfString );
             dxfRecord.resetExpireTime ( nativeRecord.getQueryTime(),
-                                        rns.rsc.getTtl() );                
+                                        rns.getRsc().getTtl() );                
 
         }
  

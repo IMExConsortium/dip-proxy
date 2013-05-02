@@ -26,9 +26,8 @@ class RemoteNativeService { // extends Observable {
     private Log log = LogFactory.getLog( RemoteNativeService.class );
 
     private Router router;
-
-    public WSContext wsContext;
-    public RemoteServerContext rsc;
+    private WSContext wsContext;
+    private RemoteServerContext rsc;
 
     public RemoteNativeService( WSContext context, String provider ) 
         throws ProxyFault {
@@ -45,7 +44,15 @@ class RemoteNativeService { // extends Observable {
     }
     
     public RemoteNativeService() { }
-    
+   
+    public WSContext getWsContext() {
+        return wsContext;
+    } 
+
+    public RemoteServerContext getRsc() {
+        return rsc;
+    }
+
     //--------------------------------------------------------------------------
         
     private  NativeServer selectNextRemoteServer( String provider,
