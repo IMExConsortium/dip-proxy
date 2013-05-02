@@ -19,7 +19,6 @@
 
     <display-name>ProxyWS: Proxy Web Services</display-name>
 
-    <!-- ===================================================== ============= -->
     <!-- ===================================================== CONTEXT setup -->
     <!-- ===================================================== ============= -->
 
@@ -136,6 +135,20 @@
         </servlet-class>
     </servlet>
 
+
+  <!-- ================================================= Web service servlet -->
+
+
+  <servlet>
+    <servlet-name>cxf-service</servlet-name>
+    <display-name>cxf-service</display-name>
+    <description>Apache CXF Endpoint</description>
+    <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
+
     <!-- =================================================== =============== -->
     <!-- =================================================== Servlet mapping -->
     <!-- =================================================== =============== -->
@@ -169,6 +182,14 @@
         <servlet-name>dip-proxy</servlet-name>
         <url-pattern>/prolinks-service</url-pattern>
     </servlet-mapping>
+
+ <!-- ============================================= Cxf Web Service mappings -->
+
+  <servlet-mapping>
+    <servlet-name>cxf-service</servlet-name>
+    <url-pattern>/cxf/*</url-pattern>
+  </servlet-mapping>
+
 
     <mime-mapping>
         <extension>inc</extension>
