@@ -1,7 +1,12 @@
 #!/bin/sh
 
-java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.$1:8080/dip-proxy/proxy-service $2 $3 $4 $5 $6 $7 $8 $9 
+if [ "$1" = "proxy-service" ]; then
+java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.$2:8080/dip-proxy/proxy-service $3 $4 $5 $6 $7 $8 $9 
+fi
 
+if [ "$1" = "cxf-proxy-service" ]; then
+java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.$2:8080/dip-proxy/cxf/proxy-service $3 $4 $5 $6 $7 $8 $9
+fi
 
 #if [ "$1" = "proxy-service-209" ]; then
 #java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.209:8080/dip-proxy/proxy-service $2 $3 $4 $5 $6 $7 $8 $9 $10

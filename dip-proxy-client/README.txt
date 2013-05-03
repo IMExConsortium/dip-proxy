@@ -22,10 +22,11 @@ command exmaple:
 
 Java Client:
 
-format like this ./dipProxyClient.sh proxy-service provider service AC= NS= FORMAT= DETAIL=
+format like this ./dipProxyClient.sh service-name dbid provider service AC= NS= FORMAT= DETAIL=
 
 exmaples:
-./dipProxyClient.sh dbid EBI picr AC=NP_500606 NS=refseq FORMAT=dxf DETAIL=base
+./dipProxyClient.sh proxy-service dbid EBI picr AC=NP_500606 NS=refseq FORMAT=dxf DETAIL=base
+./dipProxyClient.sh cxf-proxy-service dbid EBI picr AC=NP_500606 NS=refseq FORMAT=dxf DETAIL=base
 ./dipProxyClient.sh dbid EBI picr AC=NP_500606 NS=refseq FORMAT=native
 
 ./dipProxyClient.sh dbid NCBI nlm AC=101526034 FORMAT=dxf DETAIL=full
