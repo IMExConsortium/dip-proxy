@@ -13,11 +13,22 @@
   <jaxws:endpoint id="cxf-proxy-ws-current" address="/soap/proxy-service"
          implementor="#proxy-service-bean" />
 
+  <jaxws:endpoint id="cxf-ncbi-ws-current" address="/soap/ncbi-service"
+         implementor="#ncbi-service-bean" />
 
-<!--
-  <jaxws:endpoint id="psq-ws-v1.1" address="/soap/current/v1.1"
-         implementor="#psq-ws-imp" />
+  <jaxws:endpoint id="cxf-ebi-ws-current" address="/soap/ebi-service"
+         implementor="#ebi-service-bean" />
 
+  <jaxws:endpoint id="cxf-dht-ws-current" address="/soap/dht-service"
+         implementor="#dht-service-bean" />
+
+  <jaxws:endpoint id="cxf-dip-ws-current" address="/soap/dip-service"
+         implementor="#dip-service-bean" />
+
+  <jaxws:endpoint id="cxf-prolinks-ws-current" address="/soap/prolinks-service"
+         implementor="#prolinks-service-bean" />
+
+  <!--
   <jaxrs:server id="psq-rs-current" address="/rest/current">
     <jaxrs:serviceBeans>
       <ref bean="psq-rs-imp" />
@@ -29,5 +40,5 @@
       <ref bean="psq-rs-imp" />
     </jaxrs:serviceBeans>
   </jaxrs:server>
--->
+ -->
 </beans>
