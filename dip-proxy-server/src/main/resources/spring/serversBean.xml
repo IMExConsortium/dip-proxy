@@ -146,7 +146,9 @@
 
  <!-- EBI proxy services -->
  
- <bean id="ebiReferenceServer" init-method="initialize" 
+ <!--<bean id="ebiReferenceServer" init-method="initialize" 
+       class="edu.ucla.mbi.proxy.ebi.EbiServer"> -->
+ <bean id="ebiReferenceServer"  
        class="edu.ucla.mbi.proxy.ebi.EbiServer">
 
   <property name="context">

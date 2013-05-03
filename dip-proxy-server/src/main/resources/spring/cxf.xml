@@ -10,6 +10,19 @@
          http://cxf.apache.org/jaxrs
            http://cxf.apache.org/schemas/jaxrs.xsd">
 
+  <jaxws:endpoint id="cxf-proxy-ws-current" address="http://10.1.200.201:8081/dip-proxy/cxf/proxy-cxf"
+         implementor="#proxy-service-bean" />
+
+  <jaxws:endpoint id="cxf-proxy-ws" address="/cxf/proxy-cxf"
+         implementor="#proxy-service-bean" />
+
+  <jaxws:endpoint id="cxf-ncbi-ws-current" address="/soap/ncbi-cxf"
+         implementor="#ncbi-service-bean" />
+
+  <jaxws:endpoint id="cxf-ebi-ws-current" address="/soap/ebi-service"
+         implementor="#ebi-service-bean" />
+
+  <!--
   <jaxws:endpoint id="cxf-proxy-ws-current" address="/soap/proxy-service"
          implementor="#proxy-service-bean" />
 
@@ -27,7 +40,7 @@
 
   <jaxws:endpoint id="cxf-prolinks-ws-current" address="/soap/prolinks-service"
          implementor="#prolinks-service-bean" />
-
+  -->
   <!--
   <jaxrs:server id="psq-rs-current" address="/rest/current">
     <jaxrs:serviceBeans>

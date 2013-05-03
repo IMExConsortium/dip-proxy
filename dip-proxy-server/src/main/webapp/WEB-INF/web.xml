@@ -133,21 +133,8 @@
         <servlet-class>
             com.sun.xml.ws.transport.http.servlet.WSSpringServlet
         </servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
-
-
-  <!-- ================================================= Web service servlet -->
-
-
-  <servlet>
-    <servlet-name>cxf-service</servlet-name>
-    <display-name>cxf-service</display-name>
-    <description>Apache CXF Endpoint</description>
-    <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-
-    <load-on-startup>2</load-on-startup>
-  </servlet>
-
 
     <!-- =================================================== =============== -->
     <!-- =================================================== Servlet mapping -->
@@ -183,11 +170,22 @@
         <url-pattern>/prolinks-service</url-pattern>
     </servlet-mapping>
 
+ <!-- ================================================= Cxf Web service servlet -->
+
+  <servlet>
+    <servlet-name>cxf-service</servlet-name>
+    <display-name>cxf-service</display-name>
+    <description>Apache CXF Endpoint</description>
+    <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
  <!-- ============================================= Cxf Web Service mappings -->
 
   <servlet-mapping>
     <servlet-name>cxf-service</servlet-name>
-    <url-pattern>/cxf/*</url-pattern>
+    <url-pattern>/cxf/*</url-pattern> 
   </servlet-mapping>
 
 
