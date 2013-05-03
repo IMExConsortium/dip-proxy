@@ -16,11 +16,8 @@
   <jaxws:endpoint id="cxf-proxy-ws" address="/cxf/proxy-cxf"
          implementor="#proxy-service-bean" />
 
-  <jaxws:endpoint id="cxf-ncbi-ws-current" address="/soap/ncbi-cxf"
-         implementor="#ncbi-service-bean" />
-
-  <jaxws:endpoint id="cxf-ebi-ws-current" address="/soap/ebi-service"
-         implementor="#ebi-service-bean" />
+  <jaxws:endpoint id="cxf-proxy-ws-old" address="/soap/proxy-cxf"
+         implementor="#proxy-service-bean" />
 
   <!--
   <jaxws:endpoint id="cxf-proxy-ws-current" address="/soap/proxy-service"
