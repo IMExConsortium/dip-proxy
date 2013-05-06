@@ -14,19 +14,19 @@
   <jaxws:endpoint id="cxf-proxy-ws-a" address="/proxy-service"
          implementor="#proxy-service-bean" />
  
-  <jaxws:endpoint id="cxf-ncbi-ws-current" address="/soap/ncbi-service"
+  <jaxws:endpoint id="cxf-ncbi-ws-current" address="/ncbi-service"
          implementor="#ncbi-service-bean" />
 
-  <jaxws:endpoint id="cxf-ebi-ws-current" address="/soap/ebi-service"
+  <jaxws:endpoint id="cxf-ebi-ws-current" address="/ebi-service"
          implementor="#ebi-service-bean" />
 
-  <jaxws:endpoint id="cxf-dht-ws-current" address="/soap/dht-service"
+  <jaxws:endpoint id="cxf-dht-ws-current" address="/dht-service"
          implementor="#dht-service-bean" />
 
-  <jaxws:endpoint id="cxf-dip-ws-current" address="/soap/dip-service"
+  <jaxws:endpoint id="cxf-dip-ws-current" address="/dip-service"
          implementor="#dip-service-bean" />
 
-  <jaxws:endpoint id="cxf-prolinks-ws-current" address="/soap/prolinks-service"
+  <jaxws:endpoint id="cxf-prolinks-ws-current" address="/prolinks-service"
          implementor="#prolinks-service-bean" />
 
   <!--
