@@ -10,32 +10,35 @@
          http://cxf.apache.org/jaxrs
            http://cxf.apache.org/schemas/jaxrs.xsd">
 
+  <!-- SOAP -->
 
-  <jaxws:endpoint id="cxf-proxy-ws-a" address="/proxy-service"
+  <jaxws:endpoint id="cxf-proxy-ws-current" address="/soap/proxy-service"
          implementor="#proxy-service-bean" />
  
-  <jaxws:endpoint id="cxf-ncbi-ws-current" address="/ncbi-service"
+  <jaxws:endpoint id="cxf-ncbi-ws-current" address="/soap/ncbi-service"
          implementor="#ncbi-service-bean" />
 
-  <jaxws:endpoint id="cxf-ebi-ws-current" address="/ebi-service"
+  <jaxws:endpoint id="cxf-ebi-ws-current" address="/soap//ebi-service"
          implementor="#ebi-service-bean" />
 
-  <jaxws:endpoint id="cxf-dht-ws-current" address="/dht-service"
+  <jaxws:endpoint id="cxf-dht-ws-current" address="/soap/dht-service"
          implementor="#dht-service-bean" />
 
-  <jaxws:endpoint id="cxf-dip-ws-current" address="/dip-service"
+  <jaxws:endpoint id="cxf-dip-ws-current" address="/soap/dip-service"
          implementor="#dip-service-bean" />
 
-  <jaxws:endpoint id="cxf-prolinks-ws-current" address="/prolinks-service"
+  <jaxws:endpoint id="cxf-prolinks-ws-current" address="/soap/prolinks-service"
          implementor="#prolinks-service-bean" />
 
-  <!--
-  <jaxrs:server id="psq-rs-current" address="/rest/current">
+ <!-- REST -->
+
+  <jaxrs:server id="cxf-proxy-rs-current" address="/rest/proxy-service">
     <jaxrs:serviceBeans>
-      <ref bean="psq-rs-imp" />
+      <ref bean="proxy-rest-service-bean" />
     </jaxrs:serviceBeans>
   </jaxrs:server>
 
+<!--
   <jaxrs:server id="psq-rs-v1.3" address="/rest/v1.3">
     <jaxrs:serviceBeans>
       <ref bean="psq-rs-imp" />

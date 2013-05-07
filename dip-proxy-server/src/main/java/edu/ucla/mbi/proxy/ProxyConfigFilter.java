@@ -1,8 +1,8 @@
 package edu.ucla.mbi.proxy;
 
 /* =============================================================================
- # $Id:: PsqStoreDispatchFilter.java 1821 2013-03-16 16:56:02Z lukasz99        $
- # Version: $Rev:: 1821                                                        $
+ # $Id::                                                                       $
+ # Version: $Rev::                                                             $
  #==============================================================================
  #
  # ProxyConfigFilter: Customized  initialization

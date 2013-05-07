@@ -338,6 +338,13 @@
  <ws:service  id="prolinks-service-id" bean="#prolinks-service-bean"/>
  <wss:binding url="/prolinks-service" service="#prolinks-service-id" />
 
+ <!-- REST -->
+
+  <bean id="proxy-rest-service-bean" init-method="initialize"
+    class="edu.ucla.mbi.proxy.ProxyRestImpl">
+  </bean>
+
+
 
  <import resource="spring/cxf.xml" />
 

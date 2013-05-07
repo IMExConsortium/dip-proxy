@@ -185,15 +185,17 @@
 
  <!-- ============================================= Cxf Web Service mappings -->
 
+<!--
   <servlet-mapping>
     <servlet-name>cxf-service</servlet-name>
                  
     <url-pattern>/current/soap/*</url-pattern> 
   </servlet-mapping>
+-->
 
   <servlet-mapping>
     <servlet-name>cxf-service</servlet-name>
-    <url-pattern>/current/rest/*</url-pattern> 
+    <url-pattern>/current/*</url-pattern> 
   </servlet-mapping>
 
     <mime-mapping>
