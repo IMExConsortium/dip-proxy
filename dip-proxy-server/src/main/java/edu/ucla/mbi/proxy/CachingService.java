@@ -45,7 +45,7 @@ public class CachingService {
         }
     }
     
-    private CachingService() { }
+    public CachingService() { }
 
     //--------------------------------------------------------------------------
 

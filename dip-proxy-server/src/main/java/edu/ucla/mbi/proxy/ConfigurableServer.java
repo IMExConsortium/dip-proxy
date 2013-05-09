@@ -26,6 +26,6 @@ public class ConfigurableServer {
     public void initialize() {
 
         Log log = LogFactory.getLog( this.getClass() );
-        log.info( "ConfigurablePortImpl initializing..." );
+        log.info( "ConfigurableServer initializing..." );
     } 
 }

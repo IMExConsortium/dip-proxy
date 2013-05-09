@@ -30,13 +30,25 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 public class ProxyServerRecord  {
 
-    DatasetType dataset;
-    String nativerecord;
-    XMLGregorianCalendar timestamp;
+    private DatasetType dataset;
+    private String nativeRecord;
+    private XMLGregorianCalendar timestamp;
     
     public ProxyServerRecord( DatasetType dataset,
-                              String nativerecord,
-                              XMLGregorianCalendar timestamp){
-        
+                              String nativeRecord,
+                              XMLGregorianCalendar timestamp ) {
+
+        this.dataset = dataset;
+        this.nativeRecord = nativeRecord;
+        this.timestamp = timestamp;
     }
+
+    public DatasetType getDataset() {
+        return dataset;
+    }
+
+    public String getNativeRecord() {
+        return nativeRecord;
+    }
+
 }

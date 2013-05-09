@@ -342,6 +342,7 @@
 
   <bean id="proxy-rest-service-bean" init-method="initialize"
     class="edu.ucla.mbi.proxy.ProxyRestImpl">
+    <property name="wsContext" ref="wsContext"/>
   </bean>
 
 

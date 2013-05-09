@@ -14,7 +14,8 @@ import javax.ws.rs.*;
 public interface ProxyRest {
 
     @GET @Path("/native-record/{provider}/{service}/{ns}/{ac}")
-        Object getNativeRecord( @PathParam("provider") String provider,
+        Object getNativeRecord( @DefaultValue("")
+                                @PathParam("provider") String provider,
                                 @DefaultValue("")
                                 @PathParam("service") String service,
                                 @DefaultValue("")
@@ -24,7 +25,8 @@ public interface ProxyRest {
         throws ProxyFault;
 
     @GET @Path("/dxf-record/{provider}/{service}/{ns}/{ac}")
-        Object getDxfRecord( @PathParam("provider") String provider,
+        Object getDxfRecord( @DefaultValue("")
+                             @PathParam("provider") String provider,
                              @DefaultValue("")
                              @PathParam("service") String service,
                              @DefaultValue("")
