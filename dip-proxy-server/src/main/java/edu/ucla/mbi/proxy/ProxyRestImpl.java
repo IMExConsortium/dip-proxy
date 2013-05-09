@@ -8,6 +8,7 @@ package edu.ucla.mbi.proxy;
  # RESTful Web service implementation
  #
  #=========================================================================== */
+
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.fault.*;
@@ -17,9 +18,15 @@ import java.io.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
+
 import com.sun.xml.ws.developer.JAXWSProperties;
 
-public class ProxyRestImpl extends ConfigurableServer implements ProxyRest{
+public class ProxyRestImpl implements ProxyRest{
 
     private Log log = LogFactory.getLog( ProxyRestImpl.class );
 
@@ -31,19 +38,24 @@ public class ProxyRestImpl extends ConfigurableServer implements ProxyRest{
 
     //--------------------------------------------------------------------------
 
+    private ProxyServer proxyServer;
+
+    public void setProxyServer( ProxyServer server){
+        
+        proxyServer = server;
+    }
+
     //==========================================================================
     // REST SERVICE OPERATIONS
     //========================
 
     public Object getNativeRecord( String provider, String service,
-                            String ns, String ac ) throws ProxyFault{
+                                   String ns, String ac ) throws ServerFault{
 
         String res = "NativeRecord: ns=" + ns + "ac=" + ac;
 
         log.info( "res = " + res );
-
-        ProxyServer proxyServer = new ProxyServer( wsContext );
-
+        
         try{
             
             ProxyServerRecord prxRec = proxyServer.getRecord( provider, service,
@@ -54,24 +66,26 @@ public class ProxyRestImpl extends ConfigurableServer implements ProxyRest{
             log.info( "prxRec native=" + 
                        prxRec.getNativeRecord().substring(0, 200 ) );
 
-            return prxRec.getNativeRecord();
+            return prepareResponse( prxRec.getNativeRecord(), 
+                                    prxRec.getTimestamp() );
+            
+        } catch( ServerFault psf ){
+            
+            
+        } catch( IOException iox){
 
-        } catch( ProxyFault psf ){
-            
-            
         }
-        return res;        
+        return  res;        
     }
 
     public Object getDxfRecord( String provider, String service,
                          String ns, String ac, 
-                         String detail) throws ProxyFault{
+                         String detail) throws ServerFault{
 
         String res = "DxfRecord: ac=" + ac + " detail=" + detail;
         
         DatasetType dataset = null;
-        ProxyServer proxyServer = new ProxyServer( wsContext );
-
+        
         try{
 
             ProxyServerRecord prxRec = proxyServer.getRecord( provider, service,
@@ -97,10 +111,11 @@ public class ProxyRestImpl extends ConfigurableServer implements ProxyRest{
                 String resultStr = sw.toString();
             
                 log.info( "dxf resultStr=" + resultStr.substring( 0, 200 ) );
-                return resultStr;
+                return prepareResponse( resultStr,
+                                        prxRec.getTimestamp() );
 
             }
-        } catch( ProxyFault psf ){
+        } catch( ServerFault psf ){
 
 
         } catch ( Exception ex ) {
@@ -108,4 +123,19 @@ public class ProxyRestImpl extends ConfigurableServer implements ProxyRest{
         }
         return res; 
     }
+
+    //--------------------------------------------------------------------------
+
+    protected Response prepareResponse( String record, 
+                                              XMLGregorianCalendar timestamp ) 
+        throws IOException {
+        
+        Response.ResponseBuilder rb = Response.status( 200 );
+        rb.type( "text/plain");
+        rb.entity( new GenericEntity<String>( record ){} );
+        rb.header( "X-PROXY-timestamp", timestamp.toString() );
+
+        return rb.build();
+    }
+
 }

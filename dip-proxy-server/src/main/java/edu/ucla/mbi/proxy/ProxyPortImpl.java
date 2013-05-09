@@ -29,10 +29,20 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.ProxyPort")
 
-public class ProxyPortImpl extends ConfigurablePortImpl implements ProxyPort {
+//public class ProxyPortImpl extends ConfigurablePortImpl implements ProxyPort {
+public class ProxyPortImpl implements ProxyPort {
 
     private Log log = LogFactory.getLog( ProxyPortImpl.class );
 
+    
+
+    private ProxyServer proxyServer;
+
+    public void setProxyServer( ProxyServer server){
+
+        proxyServer = server;
+    }
+    
     public void getRecord( String provider, String service,
                            String ns, String ac, String match,
                            String detail, String format,

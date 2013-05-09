@@ -13,7 +13,7 @@
 
     <dbid></dbid>
     <dht.mode>networked</dht.mode> 
-    <!-- <dht.mode>local</dht.mode> -->
+    <!-- <dht.mode>local</dht.mode>  -->
     <dht.routing>Chord</dht.routing>  
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
     <hibernate.connection.portnum>5432</hibernate.connection.portnum>

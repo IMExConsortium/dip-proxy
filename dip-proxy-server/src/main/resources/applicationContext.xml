@@ -290,9 +290,16 @@
 
  <!-- ========================================================= WEB SERVICES -->
 
+  <bean id="proxy-server-bean" init-method="initialize"
+    class="edu.ucla.mbi.proxy.ProxyServer">
+    <property name="wsContext" ref="wsContext"/>
+  </bean>
+
+
  <bean id="proxy-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ProxyPortImpl" >
-   <property name="wsContext" ref="wsContext"/> 
+<!--    <property name="wsContext" ref="wsContext"/>  -->
+   <property name="proxyServer" ref="proxy-server-bean"/> 
  </bean>
 
  <bean id="ncbi-service-bean" init-method="initialize"
@@ -340,11 +347,10 @@
 
  <!-- REST -->
 
-  <bean id="proxy-rest-service-bean" init-method="initialize"
+ <bean id="proxy-rest-service-bean" init-method="initialize"
     class="edu.ucla.mbi.proxy.ProxyRestImpl">
-    <property name="wsContext" ref="wsContext"/>
-  </bean>
-
+    <property name="proxyServer" ref="proxy-server-bean"/>
+ </bean>
 
 
  <import resource="spring/cxf.xml" />

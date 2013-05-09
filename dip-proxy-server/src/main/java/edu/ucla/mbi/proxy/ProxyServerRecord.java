@@ -51,4 +51,9 @@ public class ProxyServerRecord  {
         return nativeRecord;
     }
 
+    public XMLGregorianCalendar getTimestamp() {
+        return timestamp;
+    }
+
+
 }

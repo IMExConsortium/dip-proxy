@@ -10,6 +10,7 @@ package edu.ucla.mbi.proxy;
  #=========================================================================== */
 
 import javax.ws.rs.*;
+import edu.ucla.mbi.fault.*;
 
 public interface ProxyRest {
 
@@ -22,7 +23,7 @@ public interface ProxyRest {
                                 @PathParam("ns") String ns,
                                 @DefaultValue("")
                                 @PathParam("ac") String ac ) 
-        throws ProxyFault;
+        throws ServerFault;
 
     @GET @Path("/dxf-record/{provider}/{service}/{ns}/{ac}")
         Object getDxfRecord( @DefaultValue("")
@@ -35,7 +36,7 @@ public interface ProxyRest {
                              @PathParam("ac") String ac,
                              @DefaultValue("base")
                              @QueryParam("detail") String detail ) 
-        throws ProxyFault;
+        throws ServerFault;
 
     /*
     @GET @Path("/interaction/{interactionAc}")

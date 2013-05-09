@@ -27,17 +27,19 @@ import javax.jws.WebService;
 import javax.xml.ws.Holder;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-//public class ProxyServer extends ConfigurableServer {
-public class ProxyServer {
+
+public class ProxyServer extends ConfigurableServer {
+
+//public class ProxyServer {
 
     private Log log = LogFactory.getLog( ProxyServer.class );
 
-    private WSContext wsContext;
+    //private WSContext wsContext;
 
     //*** constructor
-    public ProxyServer ( WSContext wsContext ) {
-        this.wsContext = wsContext;
-    }
+    //public ProxyServer ( WSContext wsContext ) {
+    //    this.wsContext = wsContext;
+    //}
 
     public ProxyServer () {}
 
@@ -46,7 +48,7 @@ public class ProxyServer {
                                         String detail, String format,
                                         String client, Integer depth ) 
 
-        throws ProxyFault{
+        throws ServerFault{
 
         DatasetType dataset = null;
         String nativeRecord = null;
@@ -82,7 +84,8 @@ public class ProxyServer {
                             TimeStamp.toXmlDate( dxfRec.getQueryTime() );
 
                     } else {
-                        throw FaultFactory.newInstance( Fault.MARSHAL );
+                        //throw ServerFaultFactory.newInstance( Fault.MARSHAL );
+                        throw ServerFaultFactory.newInstance( );
                     }
                 }
             }
@@ -105,7 +108,7 @@ public class ProxyServer {
 
                 }
             }
-        } catch ( ProxyFault fault ) {
+        } catch ( ServerFault fault ) {
 
         }   
          
@@ -120,14 +123,19 @@ public class ProxyServer {
     private String validateNs ( String provider, String service,
                                 String ns, String ac, String detail, 
                                 String format ) 
-        throws ProxyFault {
+        throws ServerFault {
+
+
+        log.debug( "ProxyServer: wsContext=" + wsContext);
+
 
         
         //*** validation of provider and service
         if ( provider == null || provider.equals( "" )
                 || service == null || service.equals( "" ) ) {
             log.info( "provider or server is missed" );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            //throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            throw ServerFaultFactory.newInstance();
         }
 
         provider = provider.toUpperCase();
@@ -135,7 +143,8 @@ public class ProxyServer {
         if( wsContext.getProvider( provider ) == null) {
             log.info( "This provider(" + provider + ") doesn't exist " +
                       "in the server. " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            //throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            throw ServerFaultFactory.newInstance();
         }
 
         if( !wsContext.getServerContext( provider )
@@ -143,7 +152,8 @@ public class ProxyServer {
 
             log.info( "This service(" + service + ") doesn't exist " +
                       "in the server. " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            //throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            throw ServerFaultFactory.newInstance();
         }
 
         
@@ -152,7 +162,8 @@ public class ProxyServer {
         //*** validation of ac 
         if ( ac == null || ac.equals( "" ) ) {
             log.info( "missing accession" );
-            throw FaultFactory.newInstance( Fault.MISSING_ID );
+            //throw FaultFactory.newInstance( Fault.MISSING_ID );
+            throw ServerFaultFactory.newInstance();
         }
 
         //*** validation of detail
@@ -178,8 +189,9 @@ public class ProxyServer {
         } else if ( !format.equalsIgnoreCase( "native" ) 
                     && !format.equalsIgnoreCase( "dxf" ) 
                     && !format.equalsIgnoreCase( "both" ) ) {
-
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
+            
+            //throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
+            throw ServerFaultFactory.newInstance();
         }
 
         //validation of ns 
@@ -225,7 +237,8 @@ public class ProxyServer {
 
         if( ns == null || ns.equals( "" ) ) {
             log.info( " ns is missed. " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            //throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            throw ServerFaultFactory.newInstance();
         }
 
         log.info( "getRecord: ns= " + ns + " and ac=" + ac +

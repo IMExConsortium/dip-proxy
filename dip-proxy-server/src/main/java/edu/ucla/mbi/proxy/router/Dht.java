@@ -280,7 +280,7 @@ public class Dht {
             // propagate old records to incoming nodes ? 
             //-------------------------------------------
             
-            dhtc.setDoReputOnReplicas( true );
+            // dhtc.setDoReputOnReplicas( true );
 
             proxyDht = DHTFactory.getDHT( dhtc, proxyId );
                         

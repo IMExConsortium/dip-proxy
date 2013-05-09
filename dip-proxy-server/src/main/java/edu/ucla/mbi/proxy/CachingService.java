@@ -36,9 +36,13 @@ public class CachingService {
     private RemoteNativeService rns = null;
 
     public CachingService( WSContext wsContext, String provider ) 
-        throws ProxyFault {
- 
-        rns = new RemoteNativeService ( wsContext, provider );
+        throws ServerFault {
+        
+        try{
+            rns = new RemoteNativeService ( wsContext, provider );
+        } catch( ProxyFault fault){
+            throw ServerFaultFactory.newInstance();            
+        }
 
         if( mcClient == null ) {
             mcClient = rns.getWsContext().getMcClient();
@@ -53,7 +57,10 @@ public class CachingService {
                                    String service, 
                                    String ns,
                                    String ac 
-                                   ) throws ProxyFault {
+                                   ) throws ServerFault {
+
+
+        try{
 
         String id = provider + "_" + service + "_" + ns + "_" + ac;
 
@@ -65,7 +72,7 @@ public class CachingService {
         NativeRecord expiredRecord = null;
         NativeRecord remoteRecord = null;
         
-        ProxyFault proxyFault = null;
+        ServerFault serverFault = null;
 
         Date currentTime = Calendar.getInstance().getTime();
         
@@ -79,7 +86,7 @@ public class CachingService {
                 memcachedRec = (NativeRecord)mcClient.fetch( memcachedId );
             } catch ( Exception ex ) {
                 log.warn ( "FAULT: CACHE_FAULT: " + ex.toString() );
-                proxyFault = FaultFactory.newInstance( Fault.CACHE_FAULT ); 
+                serverFault = ServerFaultFactory.newInstance( Fault.CACHE_FAULT ); 
             }
 
             log.info( "getNative: memcachedRec=" + memcachedRec );
@@ -187,10 +194,10 @@ public class CachingService {
             
             return expiredRecord;
 
-        } else if ( proxyFault != null ) {
+        } else if ( serverFault != null ) {
 
-            log.warn( "getNative: throw a proxyFault. " );
-            throw proxyFault;
+            log.warn( "getNative: throw a serverFault. " );
+            throw serverFault;
 
         } else {
 
@@ -198,12 +205,16 @@ public class CachingService {
             return null;
 
         }
+
+        } catch( ProxyFault fault){
+            throw ServerFaultFactory.newInstance();            
+        }
     }
 
     //--------------------------------------------------------------------------
 
     public DatasetType getDatasetType( DxfRecord dxfRecord )
-        throws ProxyFault{
+        throws ServerFault{
 
         if( dxfRecord != null && dxfRecord.getDxf() != null 
             && !dxfRecord.getDxf().isEmpty() ) {
@@ -212,13 +223,14 @@ public class CachingService {
         }
  
         return null;
+
     }
     
     //--------------------------------------------------------------------------
 
     public  DatasetType getDatasetType( String provider, String service,
                                         String ns, String ac, String detail
-                                        ) throws ProxyFault {
+                                        ) throws ServerFault {
         
         DxfRecord dxfRecord = getDxfRecord( provider,service, ns,ac, detail);
         return getDatasetType( dxfRecord );
@@ -231,18 +243,19 @@ public class CachingService {
                                    String ns,
                                    String ac,
                                    String detail
-                                   ) throws ProxyFault {
+                                   ) throws ServerFault {
         
         DxfRecord dxfRecord = null;
         DxfRecord expiredDxf = null;
 
-        ProxyFault proxyFault = null;
+        ServerFault serverFault = null;
 
         String memcachedId = "DXF_" + provider + "_" + service + "_" + ns +
                              "_" + ac + "_" + detail;
 
         Date currentTime = Calendar.getInstance().getTime();
-        
+
+        try{        
 
         //*** retrieve from memcached
         if( rns.getRsc().isRamCacheOn() ){
@@ -250,7 +263,7 @@ public class CachingService {
             try {
                 memcachedRec = (DxfRecord)mcClient.fetch( memcachedId );
             } catch ( Exception ex ) {
-                proxyFault = FaultFactory.newInstance( Fault.CACHE_FAULT );
+                serverFault = ServerFaultFactory.newInstance( Fault.CACHE_FAULT );
             }
 
             log.info( "getDxf: memcachedRec=" + memcachedRec );
@@ -297,9 +310,9 @@ public class CachingService {
             
             try { 
                 nativeRecord  = getNative( provider, service, ns, ac );
-            } catch ( ProxyFault fault ) {
+            } catch ( ServerFault fault ) {
                 log.warn( "getDxf: getNative fault. " ); 
-                proxyFault = fault;
+                serverFault = fault;
             } 
 
             if( nativeRecord != null ){
@@ -324,9 +337,9 @@ public class CachingService {
                             dxfRecord = dxfr;
                         }
                     }
-                } catch ( ProxyFault fault ) {
+                } catch ( ServerFault fault ) {
                     log.warn( "getDxf: buildDxfRecord. " );
-                    proxyFault = fault;
+                    serverFault = fault;
                 }
             }    
         }
@@ -353,13 +366,19 @@ public class CachingService {
             
             return expiredDxf;
 
-        } else if ( proxyFault != null ) {
-            log.warn( "getDxf: throw a proxyFault. " );
-            throw proxyFault;
+        } else if ( serverFault != null ) {
+            log.warn( "getDxf: throw a serverFault. " );
+            throw serverFault;
         } else {
             log.info( "getDxf: return a null. " );
             return null;
         }
+
+
+        } catch( ProxyFault fault){
+            throw ServerFaultFactory.newInstance();            
+        }
+
     }
 
     
@@ -367,12 +386,12 @@ public class CachingService {
 
     private DxfRecord buildDxfRecord( NativeRecord nativeRecord,
                                       String detail ) 
-        throws ProxyFault{
+        throws ServerFault{
         
         DxfRecord dxfRecord = null;
         
         DatasetType dxfResult = null;
-        ProxyFault proxyFault = null;
+        ServerFault serverFault = null;
 
         String provider = nativeRecord.getProvider();
         String service = nativeRecord.getService();
@@ -382,9 +401,15 @@ public class CachingService {
         
         ProxyDxfTransformer pdt = new ProxyDxfTransformer( rns.getWsContext() );
 
+        try{
+
         dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail,
                                   provider, service );
                 
+
+        } catch( ProxyFault fault){
+            throw ServerFaultFactory.newInstance();            
+        }
         
         if ( isDxfDatasetValid( dxfResult ) ){
             
@@ -408,7 +433,7 @@ public class CachingService {
 
     //-------------------------------------------------------------------------- 
 
-    private boolean isDxfValid( String dxfString ) throws ProxyFault { 
+    private boolean isDxfValid( String dxfString ) throws ServerFault { 
 
         DatasetType dxfResult = unmarshall( dxfString );
         
@@ -441,7 +466,7 @@ public class CachingService {
         }
     }
 
-    private String marshall( DatasetType record ) throws ProxyFault {
+    private String marshall( DatasetType record ) throws ServerFault {
 
         try {
 
@@ -463,12 +488,12 @@ public class CachingService {
 
         } catch ( Exception e ) {
             log.warn( "marshall(): exception: " + e.toString() );
-            throw FaultFactory.newInstance( Fault.MARSHAL );
+            throw ServerFaultFactory.newInstance( Fault.MARSHAL );
         }
     }
 
     private DatasetType unmarshall( String dxfString ) 
-        throws ProxyFault {
+        throws ServerFault {
         
         try {
             // unmarshall into DatasetType
@@ -490,7 +515,7 @@ public class CachingService {
             
         } catch ( Exception e ) {
             log.warn( "unmarshall(): exception: " + e.toString() );
-            throw FaultFactory.newInstance( Fault.MARSHAL );
+            throw ServerFaultFactory.newInstance( Fault.MARSHAL );
         }
     }
 }
