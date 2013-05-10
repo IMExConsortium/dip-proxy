@@ -38,12 +38,8 @@ public class CachingService {
     public CachingService( WSContext wsContext, String provider ) 
         throws ServerFault {
         
-        try{
-            rns = new RemoteNativeService ( wsContext, provider );
-        } catch( ProxyFault fault){
-            throw ServerFaultFactory.newInstance();            
-        }
-
+        rns = new RemoteNativeService ( wsContext, provider );
+        
         if( mcClient == null ) {
             mcClient = rns.getWsContext().getMcClient();
         }
@@ -60,7 +56,7 @@ public class CachingService {
                                    ) throws ServerFault {
 
 
-        try{
+        
 
         String id = provider + "_" + service + "_" + ns + "_" + ac;
 
@@ -206,9 +202,10 @@ public class CachingService {
 
         }
 
-        } catch( ProxyFault fault){
-            throw ServerFaultFactory.newInstance();            
-        }
+        //} catch( ProxyFault fault){
+        //    throw ServerFaultFactory
+        //        .newInstance( fault.getFaultInfo().getFaultCode() );            
+        //}
     }
 
     //--------------------------------------------------------------------------
@@ -255,7 +252,7 @@ public class CachingService {
 
         Date currentTime = Calendar.getInstance().getTime();
 
-        try{        
+        
 
         //*** retrieve from memcached
         if( rns.getRsc().isRamCacheOn() ){
@@ -373,12 +370,7 @@ public class CachingService {
             log.info( "getDxf: return a null. " );
             return null;
         }
-
-
-        } catch( ProxyFault fault){
-            throw ServerFaultFactory.newInstance();            
-        }
-
+        
     }
 
     
@@ -408,7 +400,8 @@ public class CachingService {
                 
 
         } catch( ProxyFault fault){
-            throw ServerFaultFactory.newInstance();            
+            throw ServerFaultFactory
+                .newInstance( fault.getFaultInfo().getFaultCode() );            
         }
         
         if ( isDxfDatasetValid( dxfResult ) ){

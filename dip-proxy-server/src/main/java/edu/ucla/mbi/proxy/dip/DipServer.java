@@ -135,7 +135,7 @@ public class DipServer implements NativeServer {
     // ---------------------------------------------------------------------
 
     public NativeRecord getNative( String provider, String service, String ns,
-                                   String ac, int timeout ) throws ProxyFault { 
+                                   String ac, int timeout ) throws ServerFault { 
     
         Log log = LogFactory.getLog( DipServer.class );
         log.info( "srv=" + service + " ns=" + ns + " ac=" + ac );
@@ -146,13 +146,13 @@ public class DipServer implements NativeServer {
         
         if ( !ns.equals( "dip" ) ) {
             log.warn( "getNative: ns=" + ns + " is a unrecognized namespace. " );
-            throw FaultFactory.newInstance( Fault.INVALID_ID );
+            throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
         }
 
         if ( service.equals( "dip" ) ) {
             if( dipPort == null ) {
                 log.warn( "getNative: dipPort initailizing fault." );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
             } else {
                 ((BindingProvider) dipPort).getRequestContext()
                             .put( JAXWSProperties.CONNECT_TIMEOUT,
@@ -169,10 +169,10 @@ public class DipServer implements NativeServer {
                     retList = dipPort.getLink( "dip", ac, "", detail, "dxf" );
                 } catch ( DipDbFault fault ) {
                     if( fault.getFaultInfo().getFaultCode() == 5 ) { 
-                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                        throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
                         log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
+                        throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT ); 
                     }
                 }
             } else if ( ac.substring( ac.length()-2, ac.length()-1 )
@@ -183,10 +183,10 @@ public class DipServer implements NativeServer {
                     retList = dipPort.getEvidence( "dip", ac, "", detail, "dxf" );
                 } catch ( DipDbFault fault ) {
                     if( fault.getFaultInfo().getFaultCode() == 5 ) {
-                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                        throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
                         log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                        throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                     }
                 }
             } else if ( ac.substring( ac.length()-2, ac.length()-1 )
@@ -197,10 +197,10 @@ public class DipServer implements NativeServer {
                     retList = dipPort.getSource( "dip", ac, "", detail, "dxf" );
                 } catch ( DipDbFault fault ) {
                     if( fault.getFaultInfo().getFaultCode() == 5 ) {
-                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                        throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
                         log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                        throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                     }
                 }
             } else if ( ac.substring( ac.length()-2, ac.length()-1 )
@@ -212,20 +212,20 @@ public class DipServer implements NativeServer {
                     retList = dipPort.getNode( "dip", ac, "", detail, "dxf" );
                 } catch ( DipDbFault fault ) {
                     if( fault.getFaultInfo().getFaultCode() == 5 ) {
-                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                        throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
                         log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
-                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                        throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                     }
                 }
             } else {
                 log.warn( "getNative: ac=" + ac + " is invalid id. " );
-                throw FaultFactory.newInstance( Fault.INVALID_ID );
+                throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
             }
         } else if ( service.equals( "diplegacy" ) ) {
             if( dipLegacyPort == null ) {
                 log.warn( "getNative: dipLegacyPort initailizing fault." );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
             } else {
                 ((BindingProvider) dipLegacyPort).getRequestContext()
                             .put( JAXWSProperties.CONNECT_TIMEOUT,
@@ -237,41 +237,41 @@ public class DipServer implements NativeServer {
                     retList = dipLegacyPort.getLink( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
-                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT ); 
                 }
             } else if ( ac.matches( "DIP-\\d+N" ) ) {
                 try {
                     retList = dipLegacyPort.getNode( "dip", ac, "", "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
-                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                 }
             } else if ( ac.matches( "DIP-\\d+X" ) ) {
                 try {
                     retList = dipLegacyPort.getEvidence( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
-                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                 }
             } else if ( ac.matches( "DIP-\\d+S" ) ) {
                 try {
                     retList = dipLegacyPort.getSource( "dip", ac, "", detail, "dxf" );
                 } catch ( Exception ex ) {
                     log.info( "exception=" + ex.toString() );
-                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                 }
             } else {
                 log.warn( "getNative: ac=" + ac + " is invalid id. " );
-                throw FaultFactory.newInstance( Fault.INVALID_ID );
+                throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
             }
         } else {
             log.warn( "getNative: service=" + service + " is a invalid service. " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
         if ( retList == null || retList.size() == 0 ) {
             log.info( "no record found " );
-            throw FaultFactory.newInstance( Fault.NO_RECORD );
+            throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
         } else {
             log.info( "getNative: retList.size=" + retList.size() ); 
         }
@@ -286,7 +286,7 @@ public class DipServer implements NativeServer {
         return record;
     }
 
-    private String marshall( List<NodeType> nodeList ) throws ProxyFault {
+    private String marshall( List<NodeType> nodeList ) throws ServerFault {
 
         Log log = LogFactory.getLog( DipServer.class );
         log.info( "initialize service" );
@@ -321,7 +321,7 @@ public class DipServer implements NativeServer {
         } catch ( Exception e ) {
 
             log.info( "marshalling exception " + e.toString() );
-            throw FaultFactory.newInstance( Fault.MARSHAL );
+            throw ServerFaultFactory.newInstance( Fault.MARSHAL );
         }
     }
 }

@@ -53,58 +53,53 @@ public class ProxyServer extends ConfigurableServer {
         log.info( "after validateNs: ns=" + ns );
         // get record from the server
         
-        try {
+                   
+        CachingService cachingSrv =
+            new CachingService( wsContext, provider  );
             
-            CachingService cachingSrv =
-                new CachingService( wsContext, provider  );
+        if ( format.equalsIgnoreCase( "dxf" )
+             || format.equalsIgnoreCase( "both" ) ) {
+
+            DxfRecord dxfRec = 
+                cachingSrv.getDxfRecord ( provider, service, ns, ac, detail );
             
-            if ( format.equalsIgnoreCase( "dxf" )
-                 || format.equalsIgnoreCase( "both" ) ) {
-
-                DxfRecord dxfRec = cachingSrv.getDxfRecord (
-                    provider, service, ns, ac, detail );
-
-                if( dxfRec != null && dxfRec.getDxf() != null ) {
-
-                    dataset = cachingSrv.getDatasetType ( dxfRec );
-
-                    if( dataset != null ) {
-                        timestamp  =
-                            TimeStamp.toXmlDate( dxfRec.getQueryTime() );
-
-                    } else {
-                        //throw ServerFaultFactory.newInstance( Fault.MARSHAL );
-                        throw ServerFaultFactory.newInstance( );
-                    }
+            if( dxfRec != null && dxfRec.getDxf() != null ) {
+                
+                dataset = cachingSrv.getDatasetType ( dxfRec );
+                
+                if( dataset != null ) {
+                    timestamp  =
+                        TimeStamp.toXmlDate( dxfRec.getQueryTime() );
+                    
+                } else {
+                    throw ServerFaultFactory.newInstance( Fault.MARSHAL );
                 }
             }
+        }
 
-            if ( format.equalsIgnoreCase( "native" )
-                 ||  format.equalsIgnoreCase( "both" ) ) {
-
-                NativeRecord natRec =
-                    cachingSrv.getNative( provider, service, ns, ac );
-
-                if ( natRec != null && natRec.getNativeXml() != null &&
-                    natRec.getNativeXml().length() > 0 ) {
-
-                    nativeRecord = natRec.getNativeXml();
-                    log.info( "natRecord =" + nativeRecord.substring(0, 200 ) );
-
-                    log.info( "natRec queryTime=" + natRec.getQueryTime() );
-                    timestamp =
-                        TimeStamp.toXmlDate( natRec.getQueryTime() );
-
-                }
+        if ( format.equalsIgnoreCase( "native" )
+             ||  format.equalsIgnoreCase( "both" ) ) {
+            
+            NativeRecord natRec =
+                cachingSrv.getNative( provider, service, ns, ac );
+            
+            if ( natRec != null && natRec.getNativeXml() != null &&
+                 natRec.getNativeXml().length() > 0 ) {
+                
+                nativeRecord = natRec.getNativeXml();
+                log.info( "natRecord =" + nativeRecord.substring(0, 200 ) );
+                
+                log.info( "natRec queryTime=" + natRec.getQueryTime() );
+                timestamp =
+                    TimeStamp.toXmlDate( natRec.getQueryTime() );
+                
             }
-        } catch ( ServerFault fault ) {
-
-        }   
-         
+        }
+        
         if( dataset != null || nativeRecord != null ) { 
 
             psr = new ProxyServerRecord( dataset, nativeRecord, timestamp);
-       }
+        }
 
         return psr;
     }
@@ -121,8 +116,7 @@ public class ProxyServer extends ConfigurableServer {
         if ( provider == null || provider.equals( "" )
                 || service == null || service.equals( "" ) ) {
             log.info( "provider or server is missed" );
-            //throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-            throw ServerFaultFactory.newInstance();
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
         provider = provider.toUpperCase();
@@ -130,8 +124,7 @@ public class ProxyServer extends ConfigurableServer {
         if( wsContext.getProvider( provider ) == null) {
             log.info( "This provider(" + provider + ") doesn't exist " +
                       "in the server. " );
-            //throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-            throw ServerFaultFactory.newInstance();
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
         if( !wsContext.getServerContext( provider )
@@ -139,8 +132,7 @@ public class ProxyServer extends ConfigurableServer {
 
             log.info( "This service(" + service + ") doesn't exist " +
                       "in the server. " );
-            //throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-            throw ServerFaultFactory.newInstance();
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
         
@@ -149,8 +141,7 @@ public class ProxyServer extends ConfigurableServer {
         //*** validation of ac 
         if ( ac == null || ac.equals( "" ) ) {
             log.info( "missing accession" );
-            //throw FaultFactory.newInstance( Fault.MISSING_ID );
-            throw ServerFaultFactory.newInstance();
+            throw ServerFaultFactory.newInstance( Fault.MISSING_ID );
         }
 
         //*** validation of detail
@@ -177,8 +168,7 @@ public class ProxyServer extends ConfigurableServer {
                     && !format.equalsIgnoreCase( "dxf" ) 
                     && !format.equalsIgnoreCase( "both" ) ) {
             
-            //throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
-            throw ServerFaultFactory.newInstance();
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP ); 
         }
 
         //validation of ns 
@@ -224,14 +214,12 @@ public class ProxyServer extends ConfigurableServer {
 
         if( ns == null || ns.equals( "" ) ) {
             log.info( " ns is missed. " );
-            //throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-            throw ServerFaultFactory.newInstance();
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
         log.info( "getRecord: ns= " + ns + " and ac=" + ac +
                   " and detail=" + detail + " format=" + format + "." );
 
         return ns;
-       
     } 
 }

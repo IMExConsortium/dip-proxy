@@ -16,11 +16,11 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 
+import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.server.*;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
 import edu.ucla.mbi.proxy.router.*;
-import edu.ucla.mbi.proxy.ProxyFault;
 
 public class NativeAgent implements Agent {
 
@@ -158,7 +158,7 @@ public class NativeAgent implements Agent {
                                 this.notifyObserver( prv, message );
                             }
 
-                        } catch ( ProxyFault fault ) {
+                        } catch ( ServerFault fault ) {
                             log.info( "remote service (" + prv + ") " + fault );
                         }
                     }

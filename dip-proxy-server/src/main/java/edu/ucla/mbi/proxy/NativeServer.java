@@ -27,6 +27,6 @@ public interface NativeServer {
 
     public NativeRecord getNative( String provider, String service, 
                                    String ns, String ac, int timeout 
-                                   ) throws ProxyFault; 
+                                   ) throws ServerFault; 
 
 }

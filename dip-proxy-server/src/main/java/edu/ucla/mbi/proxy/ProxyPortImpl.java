@@ -58,7 +58,7 @@ public class ProxyPortImpl implements ProxyPort {
             timestamp.value = prxRec.getTimestamp();
 
         } catch ( ServerFault fault ) {
-            throw FaultFactory.newInstance( fault.getCode() );
+            throw FaultFactory.newInstance( fault.getFaultCode() );
         }
             
         return;

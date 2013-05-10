@@ -30,7 +30,7 @@ class RemoteNativeService { // extends Observable {
     private RemoteServerContext rsc;
 
     public RemoteNativeService( WSContext context, String provider ) 
-        throws ProxyFault {
+        throws ServerFault {
 
         this.wsContext = context;
         this.rsc = wsContext.getServerContext( provider );
@@ -39,7 +39,7 @@ class RemoteNativeService { // extends Observable {
         if( rsc == null || router == null ) {
             log.warn( "rsc or router is null for the provider(" + provider +
                       "). " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
     }
     
@@ -83,11 +83,11 @@ class RemoteNativeService { // extends Observable {
                                                  String service, 
                                                  String ns, 
                                                  String ac 
-                                                 ) throws ProxyFault {
+                                                 ) throws ServerFault {
 
         int retry = rsc.getMaxRetry();
         NativeRecord remoteRecord = null;
-        ProxyFault retryFault = null;
+        ServerFault retryFault = null;
         
         while ( retry > 0 && remoteRecord == null ) {    
 
@@ -118,18 +118,18 @@ class RemoteNativeService { // extends Observable {
                 
             try {                
                 remoteRecord = nativeServer.getNative( 
-                    provider, service, ns, ac, rsc.getTimeout() );
+                     provider, service, ns, ac, rsc.getTimeout() );
 
-            } catch( ProxyFault fault ) {
+            } catch( ServerFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
-                          "fault: " + fault.getFaultInfo().getMessage()); 
+                          "fault: " + fault.getMessage()); 
                 retryFault = fault;
                 deleteFlag = true;
                 
             } catch ( Exception ex ) {
                 log.warn( "getNativeFromRemote: ex=" + ex.toString() );
                 deleteFlag = true;
-                retryFault = FaultFactory.newInstance( Fault.UNKNOWN );
+                retryFault = ServerFaultFactory.newInstance( Fault.UNKNOWN );
             }
             
             log.info( "getNativeFromRemote: after got remoteRecord=" + 
@@ -138,7 +138,7 @@ class RemoteNativeService { // extends Observable {
             if( remoteRecord != null && !isRecordValid( remoteRecord ) ) {
 
                 deleteFlag = true;
-                retryFault = FaultFactory.newInstance( Fault.VALIDATION_ERROR );
+                retryFault = ServerFaultFactory.newInstance( Fault.VALIDATION_ERROR );
                 remoteRecord = null;
             }
             

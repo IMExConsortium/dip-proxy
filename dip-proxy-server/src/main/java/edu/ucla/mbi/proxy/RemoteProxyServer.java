@@ -81,7 +81,7 @@ public class RemoteProxyServer implements NativeServer {
 
     public NativeRecord getNative( String provider, String service,
                                    String ns, String ac, int timeout 
-                                   ) throws ProxyFault {
+                                   ) throws ServerFault {
 
         log.info( "getNative(NS=" + ns + " AC=" + ac + " OP=" + service + ")" );
 
@@ -98,7 +98,7 @@ public class RemoteProxyServer implements NativeServer {
             // ---------------------
 
             ((BindingProvider) port).getRequestContext().put(
-                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url );
+                         BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url );
 
             // set client Timeout
             // ------------------
@@ -125,18 +125,18 @@ public class RemoteProxyServer implements NativeServer {
             return record;
 
         } catch ( ProxyFault fault ) {
-            throw fault;
+            throw ServerFaultFactory.newInstance( fault.getFaultInfo().getFaultCode() );
         } catch ( Exception e ) {
             log.info( "getNative: exception: " + e.toString() );
             if ( e.toString().contains( "No result found" ) ) {
-                throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
+                throw ServerFaultFactory.newInstance( Fault.NO_RECORD ); // no hits
             } else if ( e.toString().contains( "Read timed out" ) ) {
-                throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT ); // timeout
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_TIMEOUT ); // timeout
             } else if( e.toString().contains( 
                         "ConnectException: Connection refused" ) ) {
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); //remote down
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT ); //remote down
             } else {
-                throw FaultFactory.newInstance( Fault.UNKNOWN ); // unknown
+                throw ServerFaultFactory.newInstance( Fault.UNKNOWN ); // unknown
             }
         }
     }
