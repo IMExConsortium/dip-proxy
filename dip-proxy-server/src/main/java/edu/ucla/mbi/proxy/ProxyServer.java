@@ -30,16 +30,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 public class ProxyServer extends ConfigurableServer {
 
-//public class ProxyServer {
-
     private Log log = LogFactory.getLog( ProxyServer.class );
-
-    //private WSContext wsContext;
-
-    //*** constructor
-    //public ProxyServer ( WSContext wsContext ) {
-    //    this.wsContext = wsContext;
-    //}
 
     public ProxyServer () {}
 
@@ -127,8 +118,6 @@ public class ProxyServer extends ConfigurableServer {
 
 
         log.debug( "ProxyServer: wsContext=" + wsContext);
-
-
         
         //*** validation of provider and service
         if ( provider == null || provider.equals( "" )

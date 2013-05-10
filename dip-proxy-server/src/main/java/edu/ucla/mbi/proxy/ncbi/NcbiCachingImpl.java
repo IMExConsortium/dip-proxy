@@ -33,7 +33,7 @@ import edu.ucla.mbi.proxy.router.Router;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.NcbiProxyPort")
 
-public class NcbiCachingImpl extends ConfigurablePortImpl 
+public class NcbiCachingImpl extends ConfigurableServer 
     implements NcbiProxyPort {
     
     /* 

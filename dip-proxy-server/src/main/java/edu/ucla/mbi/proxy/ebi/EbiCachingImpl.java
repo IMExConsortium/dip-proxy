@@ -32,7 +32,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import edu.ucla.mbi.proxy.router.Router;
 
 @WebService(endpointInterface = "edu.ucla.mbi.proxy.EbiProxyPort")
-public class EbiCachingImpl extends ConfigurablePortImpl 
+public class EbiCachingImpl extends ConfigurableServer 
     implements EbiProxyPort {
 
     /*

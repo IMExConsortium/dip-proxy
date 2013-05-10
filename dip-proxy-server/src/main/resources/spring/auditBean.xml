@@ -28,7 +28,8 @@
           class="edu.ucla.mbi.proxy.advice.NativeTracker">
 
     <property name="wsContext" ref="wsContext" />
-    <property name="minInterval" value="15" />
+    <!--<property name="minInterval" value="15" /> -->
+    <property name="minInterval" value="600" /> <!-- unit second -->
    
  </bean>
 

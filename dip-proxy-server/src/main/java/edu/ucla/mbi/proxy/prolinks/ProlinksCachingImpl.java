@@ -34,7 +34,7 @@ import javax.xml.ws.Holder;
 import edu.ucla.mbi.proxy.router.Router;
 
 @WebService(endpointInterface = "edu.ucla.mbi.proxy.ProlinksProxyPort")
-public class ProlinksCachingImpl extends ConfigurablePortImpl 
+public class ProlinksCachingImpl extends ConfigurableServer 
     implements ProlinksProxyPort {
 
     public void getProlinks( String ns, String ac, String match, 

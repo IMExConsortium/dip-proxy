@@ -31,7 +31,7 @@ import edu.ucla.mbi.proxy.router.Router;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 @WebService(endpointInterface = "edu.ucla.mbi.proxy.DipProxyPort")
-public class DipCachingImpl extends ConfigurablePortImpl 
+public class DipCachingImpl extends ConfigurableServer 
     implements DipProxyPort {
 
     /*

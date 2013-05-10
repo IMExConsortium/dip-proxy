@@ -28,7 +28,7 @@ import edu.ucla.mbi.proxy.*;
 
 @WebService(endpointInterface="edu.ucla.mbi.proxy.dht.DhtProxyPort")
 
-public class DhtProxyImpl extends ConfigurablePortImpl implements DhtProxyPort {
+public class DhtProxyImpl extends ConfigurableServer implements DhtProxyPort {
 
     public Result getDhtConfig() throws DhtFault {
 
