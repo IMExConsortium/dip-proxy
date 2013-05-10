@@ -15,6 +15,7 @@ import edu.ucla.mbi.fault.*;
 
 import javax.xml.bind.*;
 import java.io.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -22,9 +23,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-
-
-import com.sun.xml.ws.developer.JAXWSProperties;
 
 public class ProxyRestImpl implements ProxyRest{
 
