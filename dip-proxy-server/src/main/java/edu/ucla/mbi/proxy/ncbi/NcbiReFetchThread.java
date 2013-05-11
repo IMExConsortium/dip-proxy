@@ -16,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.ucla.mbi.server.WSContext;
 import edu.ucla.mbi.proxy.NativeRestServer;
-import edu.ucla.mbi.proxy.ProxyFault;
 import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.fault.*;
 
@@ -112,7 +111,7 @@ public class NcbiReFetchThread extends Thread {
 
                         if( !ncbi_error.equals("")){
                             log.warn("getNative: nlm esearch: No items found");
-                            throw FaultFactory.newInstance( Fault.NO_RECORD );
+                            throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                         }
                 
                         nlmid = (String) xPath.evaluate( 
@@ -175,7 +174,7 @@ public class NcbiReFetchThread extends Thread {
                                                         provider, "nlmefetch",
                                                         ns, nlmid, timeOut );
 
-                            } catch ( ProxyFault fault ) {
+                            } catch ( ServerFault fault ) {
                                 throw fault;
                             }
 

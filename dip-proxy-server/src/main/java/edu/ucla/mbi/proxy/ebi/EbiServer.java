@@ -89,7 +89,7 @@ public class EbiServer implements NativeServer {
 
     //--------------------------------------------------------------------------
     
-    public void initialize() throws ProxyFault {
+    public void initialize() throws ServerFault {
         Log log = LogFactory.getLog( EbiServer.class );
         log.info( "initializing: " );
 
@@ -98,7 +98,7 @@ public class EbiServer implements NativeServer {
         if(  context == null ) {
             log.warn( "EbiServer: initializing failed " + 
                       "because context is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
  
         nativeRestServer = ( NativeRestServer)context.get( "nativeRestServer" );
@@ -106,7 +106,7 @@ public class EbiServer implements NativeServer {
         if( nativeRestServer == null ) {
             log.warn( "EbiServer: initializing failed " +
                       "because nativeRestServer is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
         picrEndpoint = (String) context.get( "picrEndpoint" );
@@ -117,7 +117,7 @@ public class EbiServer implements NativeServer {
         } else {
             log.warn( "EbiServer: PICR service initializing failed " +
                       "because of the picrEndpoint is not set. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
         if( context.get( "searchDbList" ) != null ) {
@@ -134,7 +134,7 @@ public class EbiServer implements NativeServer {
         } else {
             log.warn( "EbiServer: initializing failed " +
                       "because searchDbList is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
         
         //*** call EBI PICR utility
@@ -153,7 +153,7 @@ public class EbiServer implements NativeServer {
         } catch ( Exception ex ) {
             log.warn( "EbiServer: PICR service initializing failed: "
                       + "reason=" + ex.toString() + "." );
-            throw FaultFactory.newInstance( Fault.UNKNOWN ); // temporary hiding
+            throw ServerFaultFactory.newInstance( Fault.UNKNOWN ); // temporary hiding
         }
     }
 
@@ -161,7 +161,7 @@ public class EbiServer implements NativeServer {
     
     public NativeRecord getNative( String provider, String service, 
                                    String ns, String ac, int timeout  
-                                   ) throws ProxyFault { 
+                                   ) throws ServerFault { 
     
         Log log = LogFactory.getLog( EbiServer.class );
         log.info( "NS=" + ns + " AC=" + ac + " SRV=" + service );
@@ -175,7 +175,7 @@ public class EbiServer implements NativeServer {
             
             if( picrPort == null ) {
                 log.warn( "getNative: picrPort initailizing fault." );
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
             } else {
                  ((BindingProvider) picrPort).getRequestContext()
                             .put( JAXWSProperties.CONNECT_TIMEOUT, timeout );
@@ -227,9 +227,9 @@ public class EbiServer implements NativeServer {
                     log.warn("EbiServer: getNative:" +
                              " picr service for AC " + ac +
                              ": no record found." );
-                    throw FaultFactory.newInstance( Fault.NO_RECORD );
+                    throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                 }
-            } catch ( ProxyFault fault ) {
+            } catch ( ServerFault fault ) {
                 throw fault;                
             } catch ( Exception e ) {
 
@@ -237,22 +237,22 @@ public class EbiServer implements NativeServer {
                           " exception: " + e.toString() );
 
                 if ( e.toString().contains( "Read timeout" ) ) {
-                    throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT );
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_TIMEOUT );
                 } else if ( e.toString().contains( "HTTP Status-Code 404: Not Found") ){
                     log.warn( "EbiServer: getNative:" +
                               " picr service for AC " + ac +
                               ": remote server is not available." );
-                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT);
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT);
                 } else if( e.toString().contains( "Unsupported Content-Type: text/html") ){
                     log.warn( "EbiServer: getNative:" +
                               " picr service for AC " + ac +
                               ": unsupported Content-Type: text/html.");
-                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT);
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT);
                 } else {
                     log.warn( "EbiServer: getNative:" +
                               " picr service for AC " + ac +                                             
                               ": get exception: " + e.toString() + ". ");
-                    throw FaultFactory.newInstance( Fault.UNKNOWN );
+                    throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
                 }
             }
 

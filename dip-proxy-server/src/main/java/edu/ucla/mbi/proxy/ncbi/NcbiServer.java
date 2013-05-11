@@ -45,11 +45,11 @@ public class NcbiServer implements NativeServer {
         this.context = context;
     }
 
-    public void initialize() throws ProxyFault {
+    public void initialize() throws ServerFault {
         if( context == null ) {
             log.warn( "NcbiServer: initializing failed " +
                       "because context is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
         nativeRestServer = (NativeRestServer) context.get( "nativeRestServer" );
@@ -57,13 +57,13 @@ public class NcbiServer implements NativeServer {
         if( nativeRestServer == null ) {
             log.warn( "NcbiServer: initializing failed " +
                       "because nativeRestServer is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
     }
 
     public NativeRecord getNative( String provider, String service, String ns,
                                    String ac, int timeout 
-                                   ) throws ProxyFault {
+                                   ) throws ServerFault {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
 
@@ -133,16 +133,16 @@ public class NcbiServer implements NativeServer {
 
                         } catch ( RuntimeException e ) {
                             if( e.getMessage().equals( "NO_RECORD" ) ) {
-                                throw FaultFactory.newInstance( Fault.NO_RECORD );
+                                throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                             } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
-                                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                             } else {
-                                throw FaultFactory.newInstance( Fault.UNKNOWN );
+                                throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
                             }
                         }
                     }
            
-                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT ); 
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT ); 
                 } 
 
                 String ncbi_error = xPath.evaluate(
@@ -152,7 +152,7 @@ public class NcbiServer implements NativeServer {
 
                 if( !ncbi_error.equals("") ) {
                     log.warn("getNative: nlm esearch: No items found");
-                    throw FaultFactory.newInstance( Fault.NO_RECORD );
+                    throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                 }
 
                 String ncbi_nlmid = xPath.evaluate( 
@@ -176,18 +176,18 @@ public class NcbiServer implements NativeServer {
 
                         } catch ( RuntimeException e ) {
                             if( e.getMessage().equals( "NO_RECORD" ) ) {
-                                throw FaultFactory.newInstance( Fault.NO_RECORD );
+                                throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                             } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
-                                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                             } else if ( e.getMessage().equals( "UNSUPPORTED_OP" ) ) {
-                                throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+                                throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
                             } else {
-                                throw FaultFactory.newInstance( Fault.UNKNOWN );
+                                throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
                             }
                         }
                     }
 
-                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                 }
 
                 //--------------------------------------------------------------                
@@ -231,16 +231,16 @@ public class NcbiServer implements NativeServer {
 
                         } catch ( RuntimeException e ) {
                             if( e.getMessage().equals( "NO_RECORD" ) ) {
-                                throw FaultFactory.newInstance( Fault.NO_RECORD );
+                                throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                             } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
-                                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );            
+                                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );            
                             } else {
-                                throw FaultFactory.newInstance( Fault.UNKNOWN );
+                                throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
                             }
                         }
                     }
 
-                    throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
 
                 } else {
                     log.info( "getNative: nlm: testNode != null " +
@@ -264,7 +264,7 @@ public class NcbiServer implements NativeServer {
                     if( !typeOfResource.equals("Serial") ) {
                         log.warn( "NcbiServer: nlm: " +
                                   "TypeOfResource is not Serial.");
-                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                        throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
                         //extract xml string
                         try {
@@ -273,7 +273,7 @@ public class NcbiServer implements NativeServer {
                                                         provider, "nlmefetch",
                                                         ns, ncbi_nlmid, timeout );
 
-                        } catch ( ProxyFault fault ) {
+                        } catch ( ServerFault fault ) {
                             throw fault;
                         }
 
@@ -300,25 +300,25 @@ public class NcbiServer implements NativeServer {
 
                                 } catch ( RuntimeException e ) {
                                     if( e.getMessage().equals( "NO_RECORD" ) ) {
-                                        throw FaultFactory.newInstance( Fault.NO_RECORD );
+                                        throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                                     } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
-                                        throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                                        throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                                     } else {
-                                        throw FaultFactory.newInstance( Fault.UNKNOWN );
+                                        throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
                                     }
                                 }
                             }
 
-                            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+                            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                         }
                     }
                 }
-            }catch( ProxyFault fault ) {
+            }catch( ServerFault fault ) {
                 throw fault;            
             }catch( Exception e ) {
                 log.warn( "NcbiServer: getNative: nlm: " +
                           "getService Exception:\n" + e.toString() + ". ");
-                throw FaultFactory.newInstance( Fault.UNKNOWN );
+                throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
             }
             return record;
         } 

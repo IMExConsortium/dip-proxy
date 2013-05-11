@@ -67,11 +67,11 @@ public class ProxyRestImpl implements ProxyRest{
             return prepareResponse( prxRec.getNativeRecord(), 
                                     prxRec.getTimestamp() );
             
-        } catch( ServerFault psf ){
-            
+        } catch( ServerFault sf ){
+            log.warn( "getNativeRec catch fault mes=" + sf.getMessage() );            
             
         } catch( IOException iox){
-
+            log.warn( "getNativeRec catch ioexception=" + iox.toString() );
         }
         return  res;        
     }
@@ -113,11 +113,11 @@ public class ProxyRestImpl implements ProxyRest{
                                         prxRec.getTimestamp() );
 
             }
-        } catch( ServerFault psf ){
-
+        } catch( ServerFault sf ){
+            log.warn( "getDxfRec catch fault mes=" + sf.getMessage() );
 
         } catch ( Exception ex ) {
-
+            log.warn( "getDxfRec catch ioexception=" + ex.toString() );
         }
         return res; 
     }
@@ -125,7 +125,7 @@ public class ProxyRestImpl implements ProxyRest{
     //--------------------------------------------------------------------------
 
     protected Response prepareResponse( String record, 
-                                              XMLGregorianCalendar timestamp ) 
+                                        XMLGregorianCalendar timestamp ) 
         throws IOException {
         
         Response.ResponseBuilder rb = Response.status( 200 );

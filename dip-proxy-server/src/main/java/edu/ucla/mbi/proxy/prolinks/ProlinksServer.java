@@ -43,11 +43,11 @@ public class ProlinksServer implements NativeServer{
         this.context = context;
     }
 
-    public void initialize() throws ProxyFault {
+    public void initialize() throws ServerFault {
         if(  context == null ) {
             log.warn( "ProlinksServer: initializing failed " +
                       "because context is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
         nativeRestServer = (NativeRestServer)context.get( "nativeRestServer" );
@@ -55,13 +55,13 @@ public class ProlinksServer implements NativeServer{
         if( nativeRestServer == null ) {
             log.warn( "ProlinksServer: initializing failed " +
                       "because nativeRestServer is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
     }
 
     public NativeRecord getNative( String provider, String service,
                                    String ns, String ac, int timeout  
-                                   ) throws ProxyFault {
+                                   ) throws ServerFault {
         
         return nativeRestServer.getNative( provider, service, ns, ac, timeout );
     }
@@ -72,7 +72,7 @@ public class ProlinksServer implements NativeServer{
 
     public DatasetType buildDxf( String strNative, String ns, String ac,
                                  String detail, String provider, 
-                                 String service ) throws ProxyFault 
+                                 String service ) throws ServerFault 
     {
         Log log = LogFactory.getLog( ProlinksServer.class );
         log.info( " buildDxf called: " + ac );
@@ -83,7 +83,7 @@ public class ProlinksServer implements NativeServer{
             ncbiProxyAddress = ncbiProxyAddress.replaceAll( "\\s", "" );
         } else {
             log.warn( "buildDxf: ncbiProxyAddress is not initialized. " );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
 
         edu.ucla.mbi.dxf14.DatasetType dxfResult = 
@@ -146,12 +146,12 @@ public class ProlinksServer implements NativeServer{
                                 (NodeType) dataset.getNode().get( 0 );
                         nodeNew.setId( node_id );
                         parttype.setNode( nodeNew );
-                    } catch ( ProxyFault fault ) {
+                    } catch ( ServerFault fault ) {
                         throw fault;
                     } catch ( Exception e ) {
                         log.info( "ProlinksServer: NCBI getRefseq: "
                                   + e.toString() );
-                        throw FaultFactory.newInstance( Fault.UNKNOWN );
+                        throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
                     }
                 }
             }

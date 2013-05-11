@@ -65,14 +65,14 @@ public class NativeRestServer implements NativeServer, ContextListener {
         return contextTop;
     }
 
-    public void initialize() throws ProxyFault {
+    public void initialize() throws ServerFault {
 
         log.info( "initialize starting... " );
 
         if(  context == null ) {
             log.warn( "NativeRestServer: initializing failed " +
                       "because context is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
         restServerContext = (JsonContext)context.get( "restServerContext" );
@@ -80,14 +80,14 @@ public class NativeRestServer implements NativeServer, ContextListener {
         if( restServerContext == null ) {
             log.warn( "NativeRestServer: initializing failed " +
                       "because restServerContext is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
         contextTop = (String) context.get( "contextTop" );
         if( contextTop == null ) {
             log.warn( "NativeRestServer: initializing failed " +
                       "because contextTop is null. " );
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
         FileResource fr = (FileResource) restServerContext
@@ -99,7 +99,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
             restServerContext.readJsonConfigDef( fr.getInputStream() );
         } catch ( Exception e ) {
             log.info( "initialize exception: " + e.toString() );
-            throw FaultFactory.newInstance ( Fault.JSON_CONFIGURATION ); 
+            throw ServerFaultFactory.newInstance ( Fault.JSON_CONFIGURATION ); 
         }
 
         Map<String, Object> jrs = restServerContext.getJsonConfig(); 
@@ -124,18 +124,18 @@ public class NativeRestServer implements NativeServer, ContextListener {
     }
 
     public String getRealUrl ( String provider, String service, String ac ) 
-        throws ProxyFault {
+        throws ServerFault {
 
         if( restServerMap.get(provider) == null ) {
             log.warn( "getRealUrl: provider=" + provider + " does not exist. " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
         
         if( ( (Map<String, Map>)restServerMap.get(provider) ).get(service)
                 == null ) 
         { 
             log.warn( "getRealUrl: service=" + service + " does not exist. " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
         String restAcTag =
@@ -150,7 +150,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
 
         if( restAcTag == null || restUrl == null ) {
             log.warn( "getRealUrl: restAcTag or restUrl is not configured. " );
-            throw FaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         } 
 
         restAcTag = restAcTag.replaceAll( "^\\s+", "" );
@@ -164,7 +164,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
 
     public NativeRecord getNative( String provider, String service, 
                                    String ns, String ac, int timeout 
-                                   ) throws ProxyFault {
+                                   ) throws ServerFault {
         String retVal = null;
         log.info( "getNative: PROVIDER=" + provider + " and SERVICE=" + 
                   service + " and NS=" + ns + " AC=" + ac );
@@ -176,26 +176,26 @@ public class NativeRestServer implements NativeServer, ContextListener {
         try {
             retVal = query( real_restUrl, timeout );
             
-        } catch( ProxyFault fault ) {
+        } catch( ServerFault fault ) {
             throw fault;
         }
 
         if( retVal.endsWith( "</cause></error></ResultSet>" ) ) {
             //*** this error for intermine server
             log.warn( "getNative: return error=" + retVal );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
 
         if( retVal.endsWith( "<ResultSet ></ResultSet>" ) ) {
             //**** this fault for intermine server
             log.warn( "getNative: return an empty set. " );
-            throw FaultFactory.newInstance( Fault.NO_RECORD );
+            throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
         }
 
         if( retVal.endsWith( "<TaxaSet></TaxaSet>" ) ) {
              //**** this fault for NCBI taxon server
             log.warn( "getNative: return an empty set. " );
-            throw FaultFactory.newInstance( Fault.NO_RECORD );
+            throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
         }
 
         if( retVal.contains("<INSDSet><Error>")
@@ -203,19 +203,19 @@ public class NativeRestServer implements NativeServer, ContextListener {
 
             //*** this fault for NCBI refseq
             log.warn( "getNative: refseq get wrong retVal for ac " + ac + "." );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
 
         //** this fault for MBI prolinks
         if( retVal.contains( "<faultCode>97</faultCode>" ) ) {
             log.info( "getNative: return faultCode 97. " );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
         } else if ( retVal.contains( "<faultCode>5</faultCode>" ) ) {
             log.info( "getNative: return faultCode 5. " );
-            throw FaultFactory.newInstance( Fault.NO_RECORD );
+            throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
         } else if ( retVal.contains( "</faultCode>") ) {
             log.warn( "getNative: return faultCode=" + retVal );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
 
         if( service.equals( "nlmefetch" ) ) {
@@ -228,7 +228,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
 
     }
 
-    private String query( String url, int timeout ) throws ProxyFault {
+    private String query( String url, int timeout ) throws ServerFault {
         String retVal = "";
 
         try {
@@ -239,7 +239,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
             if( conn.getResponseCode() == 404 ) {
                 //*** this fault for EBI uniprot
                 log.warn( "query: connection get 404 code ( Not Found). " );
-                throw FaultFactory.newInstance( Fault.NO_RECORD );
+                throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
             }
             
             if( conn.getResponseCode() != 200 ) {
@@ -248,7 +248,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
 
                 if( conn.getResponseMessage().equals( "Bad Request" ) ) {
                     //*** this fault for NCBI refseq
-                    throw FaultFactory.newInstance( Fault.NO_RECORD );
+                    throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                 } else {
                     throw new IOException( conn.getResponseMessage() );
                 }
@@ -275,26 +275,26 @@ public class NativeRestServer implements NativeServer, ContextListener {
             in.close();
             conn.disconnect();
 
-        } catch ( ProxyFault fault ) {
+        } catch ( ServerFault fault ) {
             throw fault;
         } catch ( Exception e ) {
             log.info( "query: exception: " + e.toString());
             if( e.toString().contains( "TimeoutException" )
                     || e.toString().contains( "Read timeout" ) )
             {
-                throw FaultFactory.newInstance( Fault.REMOTE_TIMEOUT );  // timeout
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_TIMEOUT );  // timeout
             } else if ( e.toString().contains( "No result found" ) ) {
-                throw FaultFactory.newInstance( Fault.NO_RECORD );
+                throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
             } else {
                 //*** including http status 503 Service Temporarily Unavailable
                 //***   and wrong url address
-                throw FaultFactory.newInstance( Fault.REMOTE_FAULT );  // unknown remote
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );  // unknown remote
             }
         }
 
         if( retVal == null ) {
             log.info( "query:  return null. " );
-            throw FaultFactory.newInstance( Fault.NO_RECORD ); // no hits
+            throw ServerFaultFactory.newInstance( Fault.NO_RECORD ); // no hits
         } else {
             return retVal;
         }
