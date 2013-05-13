@@ -136,4 +136,15 @@ public class ProxyRestImpl implements ProxyRest{
         return rb.build();
     }
 
+    //--------------------------------------------------------------------------
+
+    protected Response prepareFaultResponse( ServerFault sf ){
+        
+        Response.ResponseBuilder rb = Response.status( 500 );
+        rb.header( "X-PROXY-error-code", ... );
+        rb.header( "X-PROXY-error-message", ... );
+
+
+    }
+
 }
