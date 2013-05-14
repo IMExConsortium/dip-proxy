@@ -38,6 +38,31 @@ public interface ProxyRest {
                              @QueryParam("detail") String detail ) 
         throws ServerFault;
 
+    @POST @Path("/query-native")
+        Object queryNativeRecord( @DefaultValue("")
+                                  @QueryParam("provider") String provider,
+                                  @DefaultValue("")
+                                  @QueryParam("service") String service,
+                                  @DefaultValue("")
+                                  @QueryParam("ns") String ns,
+                                  @DefaultValue("")
+                                  @QueryParam("ac") String ac ) 
+        throws ServerFault;
+
+    @POST @Path("/query-dxf")
+        Object queryDxfRecord( @DefaultValue("")
+                               @QueryParam("provider") String provider,
+                               @DefaultValue("")
+                               @QueryParam("service") String service,
+                               @DefaultValue("")
+                               @QueryParam("ns") String ns,
+                               @DefaultValue("")
+                               @QueryParam("ac") String ac,
+                               @DefaultValue("base")
+                               @QueryParam("detail") String detail )
+        throws ServerFault;
+
+    
     /*
     @GET @Path("/interaction/{interactionAc}")
         Object getByInteraction( @PathParam("interactionAc") String intAc,

@@ -136,6 +136,19 @@ public class ProxyRestImpl implements ProxyRest{
         }
     }
 
+    public Object queryNativeRecord( String provider, String service,
+                                     String ns, String ac ) throws ServerFault{
+
+        return getNativeRecord( provider, service, ns, ac );
+    }
+
+    public Object queryDxfRecord( String provider, String service,
+                                String ns, String ac,
+                                String detail) throws ServerFault{
+        
+        return getDxfRecord( provider, service, ns, ac, detail );
+    }
+
     //--------------------------------------------------------------------------
 
     protected Response prepareResponse( String record, 
