@@ -64,24 +64,32 @@ public class ProxyRestImpl implements ProxyRest{
             log.info( "prxRec native=" + 
                        prxRec.getNativeRecord().substring(0, 200 ) );
 
-            return prepareResponse( prxRec.getNativeRecord(), 
-                                    prxRec.getTimestamp() );
-            
+            if( prxRec.getNativeRecord() != null ) {
+                return prepareResponse( prxRec.getNativeRecord(), 
+                                        prxRec.getTimestamp() );
+            } else {
+                return prepareFaultResponse(
+                    ServerFaultFactory.newInstance( Fault.UNKNOWN ) );
+            }
         } catch( ServerFault sf ){
             log.warn( "getNativeRec catch fault mes=" + sf.getMessage() );            
+            return prepareFaultResponse( sf );
             
         } catch( IOException iox){
             log.warn( "getNativeRec catch ioexception=" + iox.toString() );
+            return prepareFaultResponse(
+                ServerFaultFactory.newInstance( Fault.UNKNOWN ) );
+
         }
-        return  res;        
     }
 
     public Object getDxfRecord( String provider, String service,
-                         String ns, String ac, 
-                         String detail) throws ServerFault{
+                                String ns, String ac, 
+                                String detail) throws ServerFault{
 
         String res = "DxfRecord: ac=" + ac + " detail=" + detail;
-        
+        log.info( "res=" + res );    
+
         DatasetType dataset = null;
         
         try{
@@ -112,14 +120,20 @@ public class ProxyRestImpl implements ProxyRest{
                 return prepareResponse( resultStr,
                                         prxRec.getTimestamp() );
 
+            } else {
+                return prepareFaultResponse(
+                    ServerFaultFactory.newInstance( Fault.UNKNOWN ) );
             }
         } catch( ServerFault sf ){
             log.warn( "getDxfRec catch fault mes=" + sf.getMessage() );
+            return prepareFaultResponse( sf );
 
         } catch ( Exception ex ) {
             log.warn( "getDxfRec catch ioexception=" + ex.toString() );
+            return prepareFaultResponse( 
+                ServerFaultFactory.newInstance( Fault.UNKNOWN ) );
+
         }
-        return res; 
     }
 
     //--------------------------------------------------------------------------
@@ -141,10 +155,10 @@ public class ProxyRestImpl implements ProxyRest{
     protected Response prepareFaultResponse( ServerFault sf ){
         
         Response.ResponseBuilder rb = Response.status( 500 );
-        rb.header( "X-PROXY-error-code", ... );
-        rb.header( "X-PROXY-error-message", ... );
-
-
+        rb.header( "X-PROXY-error-code", sf.getFaultCode());
+        rb.header( "X-PROXY-error-message", sf.getMessage() );
+        
+        return rb.build();
     }
 
 }
