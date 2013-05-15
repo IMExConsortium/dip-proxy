@@ -60,7 +60,26 @@ curl --data @test http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-ser
 
 curl --data "{provider:'EBI', service:'picr', ns:'refseq', ac:'NP_500606', detail:'base'}" http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/query-dxf --header "Content-Type:application/json"
 
-RETRIEVE RESPONSE HEADER( including fault info )
+RETRIEVE GET RESPONSE HEADER( including fault info )
 curl --head **** or curl -I ***
+curl -I http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/native-record/EBI/picr/refseq/NP_500606
+HTTP/1.1 200 OK
+Date: Wed, 15 May 2013 23:41:47 GMT
+Server: Jetty(6.1.25)
+X-PROXY-timestamp: 2013-05-09T20:33:26.893Z
+Content-Type: text/plain
+
+
+RETRIEVE POST RESPONSE HEADER using -D-
+curl --data "{provider:'EBI', service:'pic', ns:'refseq', ac:'NP_500606'}" http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/query-native --header "Content-Type:application/json" -D-
+
+HTTP/1.1 500 Internal Server Error
+Date: Wed, 15 May 2013 23:53:25 GMT
+Server: Jetty(6.1.25)
+Content-Length: 0
+X-PROXY-error-code: 4
+X-PROXY-error-message: unsupported operation
+Connection: close
+Content-Type: text/plain
 
 ################################################################################
