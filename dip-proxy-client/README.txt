@@ -60,4 +60,7 @@ curl --data @test http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-ser
 
 curl --data "{provider:'EBI', service:'picr', ns:'refseq', ac:'NP_500606', detail:'base'}" http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/query-dxf --header "Content-Type:application/json"
 
+RETRIEVE RESPONSE HEADER( including fault info )
+curl --head **** or curl -I ***
+
 ################################################################################
