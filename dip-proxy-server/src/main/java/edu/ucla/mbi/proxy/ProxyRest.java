@@ -22,8 +22,7 @@ public interface ProxyRest {
                                 @DefaultValue("")
                                 @PathParam("ns") String ns,
                                 @DefaultValue("")
-                                @PathParam("ac") String ac ) 
-        throws ServerFault;
+                                @PathParam("ac") String ac );
 
     @GET @Path("/dxf-record/{provider}/{service}/{ns}/{ac}")
         Object getDxfRecord( @DefaultValue("")
@@ -35,18 +34,15 @@ public interface ProxyRest {
                              @DefaultValue("")
                              @PathParam("ac") String ac,
                              @DefaultValue("base")
-                             @QueryParam("detail") String detail ) 
-        throws ServerFault;
+                             @QueryParam("detail") String detail );
 
     @POST @Path("/query-native")
         @Consumes("application/json")
-        Object getByPostNativeRecord( String request ) 
-        throws ServerFault;
+        Object getByPostNativeRecord( String request );
 
     @POST @Path("/query-dxf")
         @Consumes("application/json")
-        Object getByPostDxfRecord( String request )
-        throws ServerFault;
+        Object getByPostDxfRecord( String request );
 
     
     /*

@@ -50,7 +50,7 @@ public class ProxyRestImpl implements ProxyRest{
     //========================
 
     public Object getNativeRecord( String provider, String service,
-                                   String ns, String ac ) throws ServerFault{
+                                   String ns, String ac ){
 
         String res = "NativeRecord: ns=" + ns + "ac=" + ac;
 
@@ -87,7 +87,7 @@ public class ProxyRestImpl implements ProxyRest{
 
     public Object getDxfRecord( String provider, String service,
                                 String ns, String ac, 
-                                String detail) throws ServerFault{
+                                String detail){
 
         String res = "DxfRecord: ac=" + ac + " detail=" + detail;
         log.info( "res=" + res );    
@@ -138,7 +138,7 @@ public class ProxyRestImpl implements ProxyRest{
         }
     }
 
-    public Object getByPostNativeRecord( String request ) throws ServerFault{
+    public Object getByPostNativeRecord( String request ){
 
         JSONObject jRequest = null;
 
@@ -159,7 +159,7 @@ public class ProxyRestImpl implements ProxyRest{
         }
     }
 
-    public Object getByPostDxfRecord( String request) throws ServerFault{
+    public Object getByPostDxfRecord( String request){
 
         JSONObject jRequest = null;
         String detail = null;
@@ -222,11 +222,6 @@ public class ProxyRestImpl implements ProxyRest{
 
         JSONObject jRequest = null;
 
-        String provider = "";
-        String service = "";
-        String ns = "";
-        String ac = "";
-        
         try{
             jRequest = new JSONObject( request );
         } catch( JSONException jx ){
@@ -237,47 +232,33 @@ public class ProxyRestImpl implements ProxyRest{
             throw ServerFaultFactory.newInstance( Fault.FORMAT );
         }
 
-        try{
-            provider = jRequest.getString( "provider" );
-        } catch( JSONException jx ){
-            throw ServerFaultFactory.newInstance( Fault.FORMAT );
-        }
-
-        if( provider == null || provider.isEmpty() ) {
-            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
-
-        try{
-            service = jRequest.getString( "service" );
-        } catch( JSONException jx ){
-            throw ServerFaultFactory.newInstance( Fault.FORMAT );
-        }
-
-        if( service == null || service.isEmpty() ) {
-            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
-
-        try{
-            ns = jRequest.getString( "ns" );
-        } catch( JSONException jx ){
-            throw ServerFaultFactory.newInstance( Fault.FORMAT );
-        }
-
-        if( ns == null || ns.isEmpty() ) {
-            throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
-        }
-
-        try{
-            ac = jRequest.getString( "ac" );
-        } catch( JSONException jx ){
-            throw ServerFaultFactory.newInstance( Fault.FORMAT );
-        }
-
-        if( ac == null || ac.isEmpty() ) {
-            throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
-        }
-
-        return jRequest;
+        jsonValidation( jRequest, "provider" );
+        jsonValidation( jRequest, "service" );
+        jsonValidation( jRequest, "ns" );
+        jsonValidation( jRequest, "ac" );
         
+        return jRequest;
+    }
+
+    private void jsonValidation ( JSONObject jRequest, String key )
+        throws ServerFault {
+        
+        String value = null;
+
+        try{
+            value = jRequest.getString( key );
+        } catch( JSONException jx ){
+            throw ServerFaultFactory.newInstance( Fault.FORMAT );
+        }
+
+        if( value == null || value.isEmpty() ) {
+            if( key.equals( "provider" ) || key.equals( "service" ) ) {
+                throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            } else {
+                throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
+            }
+        } 
+
+        return;
     }
 }
