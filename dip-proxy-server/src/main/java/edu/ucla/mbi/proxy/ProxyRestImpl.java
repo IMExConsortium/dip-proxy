@@ -140,62 +140,56 @@ public class ProxyRestImpl implements ProxyRest{
 
     public Object getByPostNativeRecord( String request ) throws ServerFault{
 
-        //{
-        // "provider":"",   Fault.UNSUPPORTED_OP
-        // "service":"",    Fault.UNSUPPORTED_OP
-        // "ns":"",         Fault.INVALID_ID
-        // "ac":""          Fault.INVALID_ID
-        //  "detail":"base" 
-        //}
-
-        // Fault.FORMAT when request not parsable 
-
         JSONObject jRequest = null;
 
-        String provider = "";
-        //String format = "tab25";
-        //String firstResult = "0";
-        //String maxResults = "500";
-
-        try{
-            jRequest = new JSONObject( request );
-        } catch( JSONException jx ){
-            //throw new PsicquicServiceException( "Wrong parameter format",
-            //                                    null );
+        try {
+            jRequest = requestValidation ( request );
+        } catch ( ServerFault sf ) {
+            return prepareFaultResponse( sf );
         }
 
-        if( jRequest == null ){
-            //throw new PsicquicServiceException( "Missing parameters",
-            //                                    null );
+        try {
+            return getNativeRecord( jRequest.getString( "provider" ), 
+                                    jRequest.getString( "service" ), 
+                                    jRequest.getString( "ns" ), 
+                                    jRequest.getString( "ac" ) );
+        } catch ( JSONException jx ){
+            return prepareFaultResponse(
+                ServerFaultFactory.newInstance( Fault.FORMAT ) );
         }
-
-        try{
-           provider = jRequest.getString( "provider" );
-        } catch( JSONException jx ){}
-
-        //try{
-        //    format = jRequest.getString( "format" );
-        //} catch( JSONException jx ){}
-        //
-        //try{
-        //    firstResult = jRequest.getString( "firstResult" );
-        //} catch( JSONException jx ){}
-        //
-        //try{
-        //    maxResults = jRequest.getString( "maxResults" );
-        //} catch( JSONException jx ){}
-
-
-
-
-        return getNativeRecord( provider, service, ns, ac );
     }
 
     public Object getByPostDxfRecord( String request) throws ServerFault{
 
-         
-        
-        return getDxfRecord( provider, service, ns, ac, detail );
+        JSONObject jRequest = null;
+        String detail = null;
+
+        try {
+            jRequest = requestValidation ( request );
+        } catch ( ServerFault sf ) {
+            return prepareFaultResponse( sf );
+        }
+
+        try {
+            detail = jRequest.getString( "detail" );
+        } catch ( JSONException jx ){
+            detail = "base";
+        }
+
+        if ( detail == null || detail.isEmpty() ) {
+            detail = "base"; 
+        }
+
+        try {
+            return getDxfRecord( jRequest.getString( "provider" ),
+                                 jRequest.getString( "service" ),
+                                 jRequest.getString( "ns" ),
+                                 jRequest.getString( "ac" ),
+                                 detail );
+        } catch ( JSONException jx ){
+            return prepareFaultResponse(
+                ServerFaultFactory.newInstance( Fault.FORMAT ) );
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -223,4 +217,67 @@ public class ProxyRestImpl implements ProxyRest{
         return rb.build();
     }
 
+    private JSONObject  requestValidation ( String request )
+        throws ServerFault {
+
+        JSONObject jRequest = null;
+
+        String provider = "";
+        String service = "";
+        String ns = "";
+        String ac = "";
+        
+        try{
+            jRequest = new JSONObject( request );
+        } catch( JSONException jx ){
+            throw ServerFaultFactory.newInstance( Fault.FORMAT );
+        }
+
+        if( jRequest == null ){
+            throw ServerFaultFactory.newInstance( Fault.FORMAT );
+        }
+
+        try{
+            provider = jRequest.getString( "provider" );
+        } catch( JSONException jx ){
+            throw ServerFaultFactory.newInstance( Fault.FORMAT );
+        }
+
+        if( provider == null || provider.isEmpty() ) {
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        try{
+            service = jRequest.getString( "service" );
+        } catch( JSONException jx ){
+            throw ServerFaultFactory.newInstance( Fault.FORMAT );
+        }
+
+        if( service == null || service.isEmpty() ) {
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        try{
+            ns = jRequest.getString( "ns" );
+        } catch( JSONException jx ){
+            throw ServerFaultFactory.newInstance( Fault.FORMAT );
+        }
+
+        if( ns == null || ns.isEmpty() ) {
+            throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
+        }
+
+        try{
+            ac = jRequest.getString( "ac" );
+        } catch( JSONException jx ){
+            throw ServerFaultFactory.newInstance( Fault.FORMAT );
+        }
+
+        if( ac == null || ac.isEmpty() ) {
+            throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
+        }
+
+        return jRequest;
+        
+    }
 }
