@@ -39,27 +39,13 @@ public interface ProxyRest {
         throws ServerFault;
 
     @POST @Path("/query-native")
-        Object queryNativeRecord( @DefaultValue("")
-                                  @QueryParam("provider") String provider,
-                                  @DefaultValue("")
-                                  @QueryParam("service") String service,
-                                  @DefaultValue("")
-                                  @QueryParam("ns") String ns,
-                                  @DefaultValue("")
-                                  @QueryParam("ac") String ac ) 
+        @Consumes("application/json")
+        Object getByPostNativeRecord( String request ) 
         throws ServerFault;
 
     @POST @Path("/query-dxf")
-        Object queryDxfRecord( @DefaultValue("")
-                               @QueryParam("provider") String provider,
-                               @DefaultValue("")
-                               @QueryParam("service") String service,
-                               @DefaultValue("")
-                               @QueryParam("ns") String ns,
-                               @DefaultValue("")
-                               @QueryParam("ac") String ac,
-                               @DefaultValue("base")
-                               @QueryParam("detail") String detail )
+        @Consumes("application/json")
+        Object getByPostDxfRecord( String request )
         throws ServerFault;
 
     

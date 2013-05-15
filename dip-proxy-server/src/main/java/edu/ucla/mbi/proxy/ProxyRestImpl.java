@@ -13,6 +13,8 @@ import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.fault.*;
 
+import org.json.*;
+
 import javax.xml.bind.*;
 import java.io.*;
 
@@ -136,15 +138,62 @@ public class ProxyRestImpl implements ProxyRest{
         }
     }
 
-    public Object queryNativeRecord( String provider, String service,
-                                     String ns, String ac ) throws ServerFault{
+    public Object getByPostNativeRecord( String request ) throws ServerFault{
+
+        //{
+        // "provider":"",   Fault.UNSUPPORTED_OP
+        // "service":"",    Fault.UNSUPPORTED_OP
+        // "ns":"",         Fault.INVALID_ID
+        // "ac":""          Fault.INVALID_ID
+        //  "detail":"base" 
+        //}
+
+        // Fault.FORMAT when request not parsable 
+
+        JSONObject jRequest = null;
+
+        String provider = "";
+        //String format = "tab25";
+        //String firstResult = "0";
+        //String maxResults = "500";
+
+        try{
+            jRequest = new JSONObject( request );
+        } catch( JSONException jx ){
+            //throw new PsicquicServiceException( "Wrong parameter format",
+            //                                    null );
+        }
+
+        if( jRequest == null ){
+            //throw new PsicquicServiceException( "Missing parameters",
+            //                                    null );
+        }
+
+        try{
+           provider = jRequest.getString( "provider" );
+        } catch( JSONException jx ){}
+
+        //try{
+        //    format = jRequest.getString( "format" );
+        //} catch( JSONException jx ){}
+        //
+        //try{
+        //    firstResult = jRequest.getString( "firstResult" );
+        //} catch( JSONException jx ){}
+        //
+        //try{
+        //    maxResults = jRequest.getString( "maxResults" );
+        //} catch( JSONException jx ){}
+
+
+
 
         return getNativeRecord( provider, service, ns, ac );
     }
 
-    public Object queryDxfRecord( String provider, String service,
-                                String ns, String ac,
-                                String detail) throws ServerFault{
+    public Object getByPostDxfRecord( String request) throws ServerFault{
+
+         
         
         return getDxfRecord( provider, service, ns, ac, detail );
     }
