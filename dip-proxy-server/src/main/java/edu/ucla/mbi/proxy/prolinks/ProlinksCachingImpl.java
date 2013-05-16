@@ -19,7 +19,8 @@ import org.apache.commons.logging.LogFactory;
 
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
-import edu.ucla.mbi.server.*;
+import edu.ucla.mbi.proxy.context.*;
+import edu.ucla.mbi.proxy.router.Router;
 
 import edu.ucla.mbi.cache.NativeRecord;
 
@@ -30,8 +31,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import javax.jws.WebService;
 import javax.xml.ws.Holder;
-
-import edu.ucla.mbi.proxy.router.Router;
 
 @WebService(endpointInterface = "edu.ucla.mbi.proxy.ProlinksProxyPort")
 public class ProlinksCachingImpl extends ConfigurableServer 

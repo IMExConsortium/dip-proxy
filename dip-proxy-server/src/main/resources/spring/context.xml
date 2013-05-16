@@ -72,7 +72,7 @@
  <!-- ================================================= PROXY SERVER CONTEXT -->
 
  <bean id="wsContext" init-method="initialize" destroy-method="cleanup"
-       class="edu.ucla.mbi.server.WSContext">
+       class="edu.ucla.mbi.proxy.context.WSContext">
 
   <property name="dipProxyDAO" ref="dipProxyDAO" />   
 

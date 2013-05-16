@@ -11,7 +11,7 @@ package edu.ucla.mbi.proxy.router;
  *
  *=========================================================================== */
 
-import edu.ucla.mbi.server.RemoteServerContext;
+import edu.ucla.mbi.proxy.context.RemoteServerContext;
 
 import edu.ucla.mbi.proxy.NativeServer;
 

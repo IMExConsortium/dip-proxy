@@ -24,7 +24,7 @@ import java.io.*;
 import java.util.*;
 import java.math.BigInteger;
 
-import edu.ucla.mbi.server.WSContext;
+import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.*;
 

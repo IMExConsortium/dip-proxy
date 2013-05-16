@@ -19,7 +19,7 @@ import java.util.*;
 import org.hibernate.*;
 import edu.ucla.mbi.orm.*;
 import edu.ucla.mbi.cache.*;
-import edu.ucla.mbi.server.*;
+import edu.ucla.mbi.proxy.context.*;
 
 public class NativeAuditDAO extends AbstractDAO {
 

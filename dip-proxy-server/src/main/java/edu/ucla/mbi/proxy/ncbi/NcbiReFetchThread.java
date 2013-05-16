@@ -14,7 +14,7 @@ package edu.ucla.mbi.proxy.ncbi;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import edu.ucla.mbi.server.WSContext;
+import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.proxy.NativeRestServer;
 import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.fault.*;

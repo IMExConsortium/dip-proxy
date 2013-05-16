@@ -23,13 +23,13 @@ import edu.ucla.mbi.cache.*;
 
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.TimeStamp;
-import edu.ucla.mbi.server.*;
 
 import javax.jws.WebService;
 import javax.xml.ws.Holder;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import edu.ucla.mbi.proxy.router.Router;
+import edu.ucla.mbi.proxy.context.*;
 
 @WebService(endpointInterface = "edu.ucla.mbi.proxy.EbiProxyPort")
 public class EbiCachingImpl extends ConfigurableServer 

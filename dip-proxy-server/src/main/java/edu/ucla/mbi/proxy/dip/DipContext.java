@@ -11,7 +11,7 @@ package edu.ucla.mbi.proxy.dip;
  *=========================================================================== */
 
 import edu.ucla.mbi.proxy.*;
-import edu.ucla.mbi.server.WSContext;
+import edu.ucla.mbi.proxy.context.WSContext;
 
 public class DipContext {
 

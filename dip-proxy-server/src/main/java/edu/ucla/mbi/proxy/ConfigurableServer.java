@@ -10,7 +10,7 @@ package edu.ucla.mbi.proxy;
  *                                  
  *=========================================================================== */
 
-import edu.ucla.mbi.server.WSContext;
+import edu.ucla.mbi.proxy.context.WSContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

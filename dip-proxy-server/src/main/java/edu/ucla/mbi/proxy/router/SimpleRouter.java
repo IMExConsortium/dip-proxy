@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import java.util.*;
 
-import edu.ucla.mbi.server.RemoteServerContext;
+import edu.ucla.mbi.proxy.context.RemoteServerContext;
 import edu.ucla.mbi.proxy.NativeServer;
 import edu.ucla.mbi.proxy.RemoteProxyServer;
 

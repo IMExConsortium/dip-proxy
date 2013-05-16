@@ -19,7 +19,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
-import edu.ucla.mbi.server.WSContext;
+import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.proxy.ProxyFault;
 import edu.ucla.mbi.fault.*;
 

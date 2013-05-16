@@ -25,7 +25,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import edu.ucla.mbi.dxf14.*;
 
-import edu.ucla.mbi.server.*;
+import edu.ucla.mbi.proxy.context.*;
 import edu.ucla.mbi.fault.*;
 
 import javax.xml.ws.BindingProvider;

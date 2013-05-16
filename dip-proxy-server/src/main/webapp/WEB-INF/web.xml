@@ -108,7 +108,7 @@
     <!-- ========================================= WSContextManager listener -->
     <listener>
         <listener-class>
-            edu.ucla.mbi.server.WSContextManager
+            edu.ucla.mbi.proxy.context.WSContextManager
         </listener-class>
     </listener>
 
