@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- =======================================================================
+ ! $HeadURL:: https://imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/mai#$
+ ! $Id:: applicationContext.xml 61 2009-05-20 19:44:59Z dip                $
+ ! Version: $Rev:: 61                                                      $
+ !==========================================================================
+ !
+ ! dip-proxy: application context
+ !
+ !====================================================================== -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+<!-- =============================================== NativeServer tracker -->
+
+ <bean id="nativeTracker" init-method="initialize"
+          class="edu.ucla.mbi.proxy.advice.NativeTracker">
+
+    <property name="wsContext" ref="wsContext" />
+    <!--<property name="minInterval" value="15" /> -->
+    <property name="minInterval" value="600" /> <!-- unit second -->
+   
+ </bean>
+
+ <aop:config proxy-target-class="true">
+  <aop:aspect ref="nativeTracker">
+   <aop:pointcut id="nativePointcut"  expression=
+       "execution(edu.ucla.mbi.cache.NativeRecord edu.ucla.mbi.proxy.NativeServer.getNative(..))" />
+
+   <aop:around method="invoke" pointcut-ref="nativePointcut"/>
+  </aop:aspect>
+ </aop:config>
+
+</beans>

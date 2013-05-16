@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+      http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+    
+      http://www.springframework.org/schema/tx 
+      http://www.springframework.org/schema/tx/spring-tx.xsd
+      
+      http://www.springframework.org/schema/aop 
+      http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="dipProxyDAO" class="edu.ucla.mbi.cache.orm.DipProxyDAO" >
+      <property name="nativeRecordDAO" ref="nativeRecordDAO"/>
+      <property name="nativeAuditDAO" ref="nativeAuditDAO"/>
+      <property name="dxfRecordDAO" ref="dxfRecordDAO"/>
+    </bean>
+
+    <bean id="hibernateOrmUtil" class="edu.ucla.mbi.orm.HibernateUtil"/>
+
+    <bean id="nativeRecordDAO" class="edu.ucla.mbi.cache.orm.NativeRecordDAO" >
+        <constructor-arg index="0">
+            <ref bean="hibernateOrmUtil"/>
+        </constructor-arg>
+        <property name="wsContext" ref="wsContext" />
+    </bean>
+
+    <bean id="dxfRecordDAO" class="edu.ucla.mbi.cache.orm.DxfRecordDAO" >
+        <constructor-arg index="0">
+            <ref bean="hibernateOrmUtil"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="nativeAuditDAO" class="edu.ucla.mbi.cache.orm.NativeAuditDAO" >
+        <constructor-arg index="0">
+            <ref bean="hibernateOrmUtil"/>
+        </constructor-arg>
+        <property name="wsContext" ref="wsContext"/>
+    </bean>
+
+</beans>

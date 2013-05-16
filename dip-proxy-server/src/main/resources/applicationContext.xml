@@ -15,9 +15,6 @@
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:tx="http://www.springframework.org/schema/tx"
 
-    xmlns:ws="http://jax-ws.dev.java.net/spring/core"
-    xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
-
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans 
         http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -33,23 +30,35 @@
 
  <!-- ============================================================== CONTEXT -->
 
- <import resource="spring/contextBean.xml" />
+ <import resource="spring/context.xml" />
 
  <!-- ======================================================= REMOTE SERVERS -->
 
- <import resource="spring/serversBean.xml" />
+ <import resource="spring/servers.xml" />
+
+ <!-- ============================================================== ROUTERS -->
+
+ <import resource="spring/routers.xml" />
 
  <!-- ============================================================ SCHEDULER -->
 
- <import resource="spring/schedulerBean.xml" /> 
+ <import resource="spring/scheduler.xml" /> 
 
  <!-- ============================================================ AOP AUDIT -->
 
- <import resource="spring/auditBean.xml" /> 
+ <import resource="spring/audit.xml" /> 
 
  <!-- ================================================================== DAO -->
 
- <import resource="spring/daoBean.xml"/>
+ <import resource="spring/dao.xml"/>
+
+ <!-- ======================================================= STRUTS ACTIONS -->
+
+ <import resource="spring/struts.xml" /> 
+
+ <!-- ========================================================= WEB SERVICES -->
+
+ <import resource="spring/webservices.xml" />
 
  <!--==========================================================  TRANSFORMER -->
 
@@ -59,205 +68,12 @@
   <property name="contextTop" value="transformer"/>
  </bean>
 
- <!-- ======================================================= STRUTS ACTIONS -->
+ <!-- ========================================================= PROXY SERVER -->
 
- <import resource="spring/struts-actions.xml" /> 
-
- <!-- ======================================================= PROXY SERVICES -->
-
- <bean id="wsContext" init-method="initialize" destroy-method="cleanup"
-       class="edu.ucla.mbi.server.WSContext">
-
-  <property name="dipProxyDAO" ref="dipProxyDAO" />   
-
-  <property name="dht" ref="dht" />
-  <property name="transformer" ref="proxyTransformer" />
-  <property name="mcClient" ref="mcClient" />
-
-  <property name="services">
-   <map>
-     <entry key="EBI">  
-      <map>
-       <entry key="timeout" value="600"/> <!-- NOTE: default unit seconds -->
-       <entry key="ttl" value="17"/>  <!-- NOTE: default unit days --> 
-       <entry key="maxRetry" value="3"/>
-
-       <entry key="nativeServer"> 
-            <ref bean="ebiReferenceServer"/>
-       </entry>      
-      
-       <entry key="proxyProto"> 
-        <ref bean="referenceProxy"/>
-       </entry>      
-    
-
-       <entry key="router">
-        <ref bean="ebiDhtRouter"/> 
-        <!-- <ref bean="ebiSimpleRouter"/>  -->
-       </entry>
-        
-       <entry key="ramCache" value="off"/>
-       <entry key="dbCache" value="on"/>
-       <entry key="remoteProxy" value="on"/>
-       <entry key="monitor" value="off"/>
-       <entry key="debug" value="0"/>
-
-       <entry key="serviceSet">
-         <set>
-           <value>uniprot</value>
-           <value>picr</value>
-           <value>olsmeta</value>
-           <value>olsname</value>
-         </set>
-       </entry>
-      </map>
-     </entry>
-
-     <entry key="NCBI"> 
-      <map> 
-       <entry key="timeout" value="600"/>
-       <entry key="ttl" value="30"/>
-       <entry key="maxRetry" value="3"/>
-
-       <entry key="nativeServer">
-        <ref bean="ncbiReferenceServer"/>
-       </entry>      
-              
-       <entry key="proxyProto"> 
-        <ref bean="referenceProxy"/>
-       </entry>      
-
-       <entry key="router">
-        <ref bean="ncbiDhtRouter"/> 
-       </entry>
-       
-       <entry key="ramCache" value="off"/>
-       <entry key="dbCache" value="on"/>
-       <entry key="remoteProxy" value="off"/>
-       <entry key="monitor" value="off"/>
-       <entry key="debug" value="0"/> 
-
-       <entry key="serviceSet">
-         <set>
-           <value>pubmed</value>
-           <value>refseq</value>
-           <value>nlm</value>
-           <value>entrezgene</value>
-           <value>taxon</value>
-         </set>
-       </entry>
-
-      </map>
-     </entry>
-
-     <entry key="MBI"> 
-      <map>
-       <entry key="timeout" value="600"/>
-       <entry key="ttl"     value="14"/>
-       <entry key="maxRetry" value="3"/> 
-
-       <entry key="nativeServer">  
-        <ref bean="prlReferenceServer"/>
-       </entry>      
-
-       <entry key="ncbiProxyAddress">
-         <!--<value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> -->
-         <value> http://10.1.200.201:8080/dip-proxy-server/proxy-service</value>
-       </entry>
-
-       <entry key="proxyProto"> 
-        <ref bean="referenceProxy"/>
-       </entry>      
-       
-       <entry key="router">
-        <ref bean="mbiDhtRouter"/> 
-       </entry>
-
-       <entry key="ramCache" value="off"/>
-       <entry key="dbCache" value="off"/>
-       <entry key="remoteProxy" value="off"/>
-       <entry key="monitor" value="off"/>
-       <entry key="debug" value="0"/>
-
-       <entry key="serviceSet">
-         <set>
-           <value>prolinks</value>
-         </set>
-       </entry>
-
-      </map>
-     </entry>
-
-     <entry key="DIP"> 
-      <map>
-       <entry key="timeout" value="600"/>
-       <entry key="ttl" value="14"/>
-       <entry key="maxRetry" value="3"/>
-
-       <entry key="nativeServer"> 
-        <ref bean="dipReferenceServer"/>
-       </entry>      
-
-       <entry key="proxyProto">
-        <ref bean="referenceProxy"/>
-       </entry>
-       
-       <entry key="router">
-        <ref bean="dipDhtRouter"/> 
-       </entry>
-
-       <entry key="ramCache" value="off"/>
-       <entry key="dbCache" value="off"/>
-       <entry key="remoteProxy" value="off"/>
-       <entry key="monitor" value="off"/>
-       <entry key="debug" value="0"/>
-  
-       <entry key="serviceSet">
-         <set>
-           <value>dip</value>
-           <value>diplegacy</value>
-         </set>
-       </entry>
-
-      </map>
-     </entry>
-
-     <entry key="SGD">
-      <map>
-       <entry key="timeout" value="600"/>
-       <entry key="ttl" value="14"/>
-       <entry key="maxRetry" value="3"/>
-
-       <entry key="nativeServer">
-         <ref bean="nativeRestServer"/>
-       </entry>
-
-       <entry key="proxyProto">
-        <ref bean="referenceProxy"/>
-       </entry>
-
-       <entry key="router">
-         <ref bean="yeastMineDhtRouter"/> 
-       </entry>
-
-       <entry key="ramCache" value="off"/>
-       <entry key="dbCache" value="off"/>
-       <entry key="remoteProxy" value="off"/>
-       <entry key="monitor" value="off"/>
-       <entry key="debug" value="0"/>
-
-       <entry key="serviceSet">
-         <set>
-           <value>yeastmine</value>
-         </set>
-       </entry>
-
-      </map>
-     </entry>
-   </map> 
-  </property>
-
- </bean>
+  <bean id="proxy-server-bean" init-method="initialize"
+    class="edu.ucla.mbi.proxy.ProxyServer">
+    <property name="wsContext" ref="wsContext"/>
+  </bean>
 
  <!-- ============================================================ MEMCACHED -->
 
@@ -287,72 +103,5 @@
   <property name="failureMode" value="Redistribute"/>
   <property name="useNagleAlgorithm" value="false"/>
  </bean>
-
- <!-- ========================================================= WEB SERVICES -->
-
-  <bean id="proxy-server-bean" init-method="initialize"
-    class="edu.ucla.mbi.proxy.ProxyServer">
-    <property name="wsContext" ref="wsContext"/>
-  </bean>
-
-
- <bean id="proxy-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.ProxyPortImpl" >
-<!--    <property name="wsContext" ref="wsContext"/>  -->
-   <property name="proxyServer" ref="proxy-server-bean"/> 
- </bean>
-
- <bean id="ncbi-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.ncbi.NcbiCachingImpl" >
-   <property name="wsContext" ref="wsContext"/>
- </bean>
-
- <bean id="ebi-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.ebi.EbiCachingImpl" >
-   <property name="wsContext" ref="wsContext"/>
- </bean>
-
- <bean id="dht-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.dht.DhtProxyImpl" >
-   <property name="wsContext" ref="wsContext"/> 
- </bean>
-
- <bean id="dip-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.dip.DipCachingImpl" >
-   <property name="wsContext" ref="wsContext"/>
- </bean>
-
- <bean id="prolinks-service-bean" init-method="initialize"
-       class="edu.ucla.mbi.proxy.prolinks.ProlinksCachingImpl" >
-   <property name="wsContext" ref="wsContext"/>
- </bean>
-
- <ws:service  id="proxy-service-id" bean="#proxy-service-bean"/>
- <wss:binding url="/proxy-service" service="#proxy-service-id" />
-
- <ws:service  id="dht-service-id" bean="#dht-service-bean"/>
- <wss:binding url="/dht-service" service="#dht-service-id" />
-
- <ws:service  id="ncbi-service-id" bean="#ncbi-service-bean"/>
- <wss:binding url="/ncbi-service" service="#ncbi-service-id" />
-
- <ws:service  id="ebi-service-id" bean="#ebi-service-bean"/>
- <wss:binding url="/ebi-service" service="#ebi-service-id" />
-
- <ws:service  id="dip-service-id" bean="#dip-service-bean"/>
- <wss:binding url="/dip-service" service="#dip-service-id" />
-
- <ws:service  id="prolinks-service-id" bean="#prolinks-service-bean"/>
- <wss:binding url="/prolinks-service" service="#prolinks-service-id" />
-
- <!-- REST -->
-
- <bean id="proxy-rest-service-bean" init-method="initialize"
-    class="edu.ucla.mbi.proxy.ProxyRestImpl">
-    <property name="proxyServer" ref="proxy-server-bean"/>
- </bean>
-
-
- <import resource="spring/cxf.xml" />
 
 </beans>

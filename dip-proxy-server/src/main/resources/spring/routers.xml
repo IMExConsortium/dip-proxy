@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+      http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+    
+      http://www.springframework.org/schema/tx 
+      http://www.springframework.org/schema/tx/spring-tx.xsd
+      
+      http://www.springframework.org/schema/aop 
+      http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+ <!-- DISTRIBUTED HASH (DHT) -->
+
+ <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
+       destroy-method="cleanup">
+
+  <property name="overlayMode" value="${dht.mode}" />
+ 
+  <property name="maxDrlSize">
+    <value>2</value>
+  </property>
+
+  <property name="routingAlgorithm">
+    <value>${dht.routing}</value>
+  </property>
+
+  <property name="directoryType">
+    <value>BerkeleyDB</value>
+  </property>
+
+  <property name="workingDirectory">
+   <!--<value>/tmp/dip-proxy/dht</value> -->
+   <value>dht</value>
+  </property>
+
+  <property name="defaultTTL">
+    <value>3</value> <!-- 3 hours -->
+  </property>
+ 
+  <property name="dhtPort">
+    <value>55666</value>    
+  </property>
+  
+  <property name="bootServers">
+    <list>
+     <value>10.1.200.201</value>
+<!--     <value>10.1.200.202</value>
+     <value>10.1.200.203</value>
+     <value>10.1.200.204</value>
+     <value>10.1.200.205</value>
+     <value>10.1.200.206</value>
+     <value>10.1.200.207</value>
+-->
+     <value>10.1.200.208</value>
+<!--
+     <value>10.1.200.209</value>
+     <value>10.1.200.210</value>
+-->
+    </list>
+  </property>
+
+ </bean>
+
+ <!-- ROUTERS -->
+
+ <bean id="ebiSimpleRouter" 
+    class="edu.ucla.mbi.proxy.router.SimpleRouter">
+
+  <property name="config">
+    <map>
+      <entry key="proxy-url-list">
+        <list>
+          <value>http://10.1.200.209:8080/dip-proxy-server/proxy-service</value>
+          <value>http://10.1.200.210:8080/dip-proxy-server/proxy-service</value>
+        </list>
+     </entry>
+    </map>
+  </property>
+ </bean>
+
+ <bean id="ebiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
+  <property name="proxyPort" value="8080"/>
+ </bean>
+
+ <bean id="ncbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
+  <property name="proxyPort" value="8080"/>
+ </bean>
+
+ <bean id="mbiDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
+  <property name="proxyPort" value="8080"/>
+ </bean>
+
+ <bean id="dipDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
+  <property name="proxyPort" value="8080"/>
+ </bean>
+
+ <bean id="yeastMineDhtRouter" class="edu.ucla.mbi.proxy.router.DhtRouter">
+  <property name="dht">
+   <ref bean="dht"/>
+  </property>
+  <property name="proxyPort" value="8080"/>
+ </bean>
+
+ </beans>

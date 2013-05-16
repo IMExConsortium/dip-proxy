@@ -1,0 +1,113 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+
+    xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+    xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
+
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://cxf.apache.org/jaxws
+           http://cxf.apache.org/schemas/jaxws.xsd
+         http://cxf.apache.org/jaxrs
+           http://cxf.apache.org/schemas/jaxrs.xsd
+
+         http://jax-ws.dev.java.net/spring/core
+           http://jax-ws.dev.java.net/spring/core.xsd
+         http://jax-ws.dev.java.net/spring/servlet
+           http://jax-ws.dev.java.net/spring/servlet.xsd">
+
+ <bean id="proxy-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.ProxyPortImpl" >
+   <property name="proxyServer" ref="proxy-server-bean"/> 
+ </bean>
+
+ <bean id="ncbi-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.ncbi.NcbiCachingImpl" >
+   <property name="wsContext" ref="wsContext"/>
+ </bean>
+
+ <bean id="ebi-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.ebi.EbiCachingImpl" >
+   <property name="wsContext" ref="wsContext"/>
+ </bean>
+
+ <bean id="dht-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.dht.DhtProxyImpl" >
+   <property name="wsContext" ref="wsContext"/> 
+ </bean>
+
+ <bean id="dip-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.dip.DipCachingImpl" >
+   <property name="wsContext" ref="wsContext"/>
+ </bean>
+
+ <bean id="prolinks-service-bean" init-method="initialize"
+       class="edu.ucla.mbi.proxy.prolinks.ProlinksCachingImpl" >
+   <property name="wsContext" ref="wsContext"/>
+ </bean>
+
+ <ws:service  id="proxy-service-id" bean="#proxy-service-bean"/>
+ <wss:binding url="/proxy-service" service="#proxy-service-id" />
+
+ <ws:service  id="dht-service-id" bean="#dht-service-bean"/>
+ <wss:binding url="/dht-service" service="#dht-service-id" />
+
+ <ws:service  id="ncbi-service-id" bean="#ncbi-service-bean"/>
+ <wss:binding url="/ncbi-service" service="#ncbi-service-id" />
+
+ <ws:service  id="ebi-service-id" bean="#ebi-service-bean"/>
+ <wss:binding url="/ebi-service" service="#ebi-service-id" />
+
+ <ws:service  id="dip-service-id" bean="#dip-service-bean"/>
+ <wss:binding url="/dip-service" service="#dip-service-id" />
+
+ <ws:service  id="prolinks-service-id" bean="#prolinks-service-bean"/>
+ <wss:binding url="/prolinks-service" service="#prolinks-service-id" />
+
+ <!-- REST -->
+
+ <bean id="proxy-rest-service-bean" init-method="initialize"
+    class="edu.ucla.mbi.proxy.ProxyRestImpl">
+    <property name="proxyServer" ref="proxy-server-bean"/>
+ </bean>
+
+
+  <!-- SOAP -->
+
+ <jaxws:endpoint id="cxf-proxy-ws-current" address="/soap/proxy-service"
+         implementor="#proxy-service-bean" />
+ 
+ <jaxws:endpoint id="cxf-ncbi-ws-current" address="/soap/ncbi-service"
+         implementor="#ncbi-service-bean" />
+
+ <jaxws:endpoint id="cxf-ebi-ws-current" address="/soap/ebi-service"
+         implementor="#ebi-service-bean" />
+
+ <jaxws:endpoint id="cxf-dht-ws-current" address="/soap/dht-service"
+         implementor="#dht-service-bean" />
+
+ <jaxws:endpoint id="cxf-dip-ws-current" address="/soap/dip-service"
+         implementor="#dip-service-bean" />
+
+ <jaxws:endpoint id="cxf-prolinks-ws-current" address="/soap/prolinks-service"
+         implementor="#prolinks-service-bean" />
+
+ <!-- REST -->
+
+ <jaxrs:server id="cxf-proxy-rs-current" address="/rest/proxy-service">
+    <jaxrs:serviceBeans>
+      <ref bean="proxy-rest-service-bean" />
+    </jaxrs:serviceBeans>
+ </jaxrs:server>
+
+ <!--
+  <jaxrs:server id="psq-rs-v1.3" address="/rest/v1.3">
+    <jaxrs:serviceBeans>
+      <ref bean="psq-rs-imp" />
+    </jaxrs:serviceBeans>
+  </jaxrs:server>
+  -->
+</beans>
