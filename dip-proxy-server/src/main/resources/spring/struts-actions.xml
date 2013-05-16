@@ -23,7 +23,7 @@
   </property>
 
   <property name="menuContext" ref="menuContext"/>
-  <property name="mst" value="1:1:1"/> 
+  <property name="mst" value="1:1:2"/> 
 
  </bean>
 
@@ -58,7 +58,7 @@
   <property name="dht" ref="dht"/>
 
   <property name="menuContext" ref="menuContext"/>
-  <property name="mst" value="1:1:2"/>
+  <property name="mst" value="1:1:3"/>
 
  </bean>
 
@@ -70,7 +70,7 @@
   </property>
 
   <property name="menuContext" ref="menuContext"/>
-  <property name="mst" value="1:1:3"/>
+  <property name="mst" value="1:1:1"/>
 
  </bean>
 
