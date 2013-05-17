@@ -48,7 +48,26 @@ public class Dht {
     private DHT proxyDht = null;
 
     public Dht() { }
+
     
+    private JsonContex dhtContext;
+
+    public void setDhtContext( JsonContex context ){
+        this.dhtContext = context;
+    }
+    
+    private void readDhtContext(){
+        
+        // read context
+
+        
+
+        // get properties
+        // set dht properites
+        
+    }
+
+
     public void setRoutingAlgorithm( String algorithm ){
         this.routingAlg = algorithm;
     }
@@ -141,6 +160,9 @@ public class Dht {
     //--------------------------------------------------------------------------
     
     public void initialize() {
+
+        readDhtContext();
+
         Log log = LogFactory.getLog( Dht.class );
         log.info( "initializing(mode=" + routingAlg +")" );
         log.info( " boot servers=" + bootServers);

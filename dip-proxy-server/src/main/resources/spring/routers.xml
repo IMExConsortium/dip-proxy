@@ -15,8 +15,28 @@
 
  <!-- DISTRIBUTED HASH (DHT) -->
 
+ <!--
+   <bean id="dhtContext" class="edu.ucla.mbi.util.context.JsonContext">
+        <property name="config">
+            <map>
+                <entry key="json-config" value="/etc/dht.json"/>
+                <entry key="json-source">
+                    <bean class="edu.ucla.mbi.util.context.SpringFileResource">
+                        <property name="file" value="/etc/dht.json"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+-->
+
+
  <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
        destroy-method="cleanup">
+
+  <property name="dhtContext" ref="dhtContext" /> 
+
 
   <property name="overlayMode" value="${dht.mode}" />
  
