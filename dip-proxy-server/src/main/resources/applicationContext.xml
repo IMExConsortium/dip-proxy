@@ -28,6 +28,10 @@
         http://jax-ws.dev.java.net/spring/servlet
         http://jax-ws.dev.java.net/spring/servlet.xsd">
 
+ <!-- ============================================================== ROUTERS -->
+
+ <import resource="spring/routers.xml" />
+
  <!-- ============================================================== CONTEXT -->
 
  <import resource="spring/context.xml" />
@@ -38,7 +42,7 @@
 
  <!-- ============================================================== ROUTERS -->
 
- <import resource="spring/routers.xml" />
+ <!-- <import resource="spring/routers.xml" /> -->
 
  <!-- ============================================================ SCHEDULER -->
 

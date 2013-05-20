@@ -15,11 +15,10 @@
 
  <!-- DISTRIBUTED HASH (DHT) -->
 
- <!--
-   <bean id="dhtContext" class="edu.ucla.mbi.util.context.JsonContext">
+ 
+ <bean id="dhtContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
-                <entry key="json-config" value="/etc/dht.json"/>
                 <entry key="json-source">
                     <bean class="edu.ucla.mbi.util.context.SpringFileResource">
                         <property name="file" value="/etc/dht.json"/>
@@ -27,9 +26,7 @@
                 </entry>
             </map>
         </property>
-    </bean>
-
--->
+ </bean>
 
 
  <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
@@ -37,7 +34,7 @@
 
   <property name="dhtContext" ref="dhtContext" /> 
 
-
+  <!--
   <property name="overlayMode" value="${dht.mode}" />
  
   <property name="maxDrlSize">
@@ -53,12 +50,11 @@
   </property>
 
   <property name="workingDirectory">
-   <!--<value>/tmp/dip-proxy/dht</value> -->
    <value>dht</value>
   </property>
 
   <property name="defaultTTL">
-    <value>3</value> <!-- 3 hours -->
+    <value>3</value>   --> <!-- 3 hours --> <!--
   </property>
  
   <property name="dhtPort">
@@ -68,21 +64,18 @@
   <property name="bootServers">
     <list>
      <value>10.1.200.201</value>
-<!--     <value>10.1.200.202</value>
+     <value>10.1.200.202</value>
      <value>10.1.200.203</value>
      <value>10.1.200.204</value>
      <value>10.1.200.205</value>
      <value>10.1.200.206</value>
      <value>10.1.200.207</value>
--->
      <value>10.1.200.208</value>
-<!--
      <value>10.1.200.209</value>
      <value>10.1.200.210</value>
--->
     </list>
   </property>
-
+  -->
  </bean>
 
  <!-- ROUTERS -->
