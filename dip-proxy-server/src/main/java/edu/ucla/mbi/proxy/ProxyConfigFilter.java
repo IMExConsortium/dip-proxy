@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.ucla.mbi.proxy.context.WSContext;
+import edu.ucla.mbi.fault.ServerFault;
 
 public class ProxyConfigFilter  implements Filter{
 
@@ -40,10 +41,13 @@ public class ProxyConfigFilter  implements Filter{
             log.info( " path=" + path );
          
             System.setProperty( "dip.proxy.home", path );
+
+            WSContext.getDht().initialize();
+        } catch ( ServerFault fault ) {
+            log.warn( " Dht initialized fault: message=" + fault.getMessage() );
         } catch(Exception ex){ ex.printStackTrace();}
 
 
-        WSContext.getDht().initialize();
 
         log.info( "after dht initialize ");
 

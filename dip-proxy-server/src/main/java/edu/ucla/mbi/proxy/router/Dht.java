@@ -9,7 +9,7 @@ package edu.ucla.mbi.proxy.router;
  * Dht:
  *   DHT access 
  *
- *============================================================================ */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +35,7 @@ import edu.ucla.mbi.util.context.*;
 public class Dht {
     public final static int MAX_DRL_SIZE = 2;
    
-    private Map<String, Object> dhtConfigMap;
+    private Map<String, Object> jsonOptionDefMap = new HashMap();
  
     private Properties dhtProperties = null;
     
@@ -44,24 +44,23 @@ public class Dht {
     private String routingAlg = null;
     private String directoryType = null;
     private String workingDirectory = null; 
-    private String proxyHost = null;
     private int maxDrlSize = MAX_DRL_SIZE;
     private long defaultTTL = 0;
-
     private List<String> bootServerList = null;
+
+    private String proxyHost = null;
 
     private DHT proxyDht = null;
 
     public Dht() { }
 
-    
     private JsonContext dhtContext;
 
     public void setDhtContext( JsonContext context ){
         this.dhtContext = context;
     }
-    
-    private void readDhtContext(){
+   
+    private void readDhtContext() throws ServerFault {
         
         Log log = LogFactory.getLog( Dht.class );
         log.info( "readDhtContext... " );
@@ -75,115 +74,124 @@ public class Dht {
             dhtContext.readJsonConfigDef( fr.getInputStream() );
         } catch ( Exception e ){
             log.warn( "initialize exception: " + e.toString() );
-            //throw ServerFaultFactory.newInstance ( Fault.JSON_CONFIGURATION );
+            throw ServerFaultFactory.newInstance ( Fault.JSON_CONFIGURATION );
         }
 
-        dhtConfigMap = dhtContext.getJsonConfig();
+        Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
 
-        Map<String, Object> optionDef = 
-            (Map<String, Object>)dhtConfigMap.get( "option-def" );
-       
-        Map<String, Object> nodeConfig = (Map)optionDef.get( "node-config" );
-        Map<String, Object> bootServer = (Map)optionDef.get( "boot-servers" );
+        log.info( "before retrieveOptionDef... " );
+        retrieveOptionDef ( dhtJsonMap );
 
-        List<String> nodeConfigOptions = 
-            new ArrayList( (List) nodeConfig.get( "options" ) );
+        log.info( "before setDhtProperty... " );
+        setDhtProperty();
+    }
 
-        Map<String, Object> nodeConfigOptionDef = 
-            (Map) nodeConfig.get( "option-def" );
+    private void retrieveOptionDef ( Map<String, Object> jsonMap ) 
+        throws ServerFault {
 
-        for ( int i = 0; i< nodeConfigOptions.size(); i++ ) {
-            String key = nodeConfigOptions.get( i );
-            Map<String, String> valueMap = 
-                (Map) nodeConfigOptionDef.get(key); 
+        if ( jsonMap.get( "options" ) != null ) {
+            List<String> options = 
+                new ArrayList( (List) jsonMap.get( "options" ) );
 
-            if( valueMap.get("type").equals("string" ) ) {
-                String value = valueMap.get( "value" );
-                setDhtProperty( key, value );
+            Map<String, Object> optionDef = 
+                (Map<String, Object>) jsonMap.get( "option-def" );
+
+            for ( int i = 0; i < options.size(); i++ ) {
+                String key = options.get( i );
+            
+                if( optionDef.containsKey ( key ) ) {
+                    if( ( (Map<String, Object>)optionDef.get( key ) )
+                            .get( "options" ) == null ) {
+
+                        jsonOptionDefMap.put( key, optionDef.get( key ) );  
+
+                    } else {
+                        retrieveOptionDef( 
+                            (Map<String, Object>)optionDef.get(key) );   
+                    }
+                } else {
+                    throw ServerFaultFactory.newInstance( 
+                        Fault.JSON_CONFIGURATION );
+                }
             }
         }
-        
-        if( ( (String)bootServer.get( "type" ) ).equals( "string-list" ) ) {
-            bootServerList = (List) bootServer.get( "value" );
-        }
-        
-        // read context
-        // get properties
-        // set dht properites
-        
+
     }
 
     /*
     public void contextUpdate ( JsonContext context ) {
 
-        Log log = LogFactory.getLog( ProxyTransformer.class );
+        Log log = LogFactory.getLog( Dht.class );
         log.info( "contextUpdate called. " );
 
-        dhtConfigMap = context.getJsonConfig();
-        readDhtContext();
+        initialize();
     }*/
 
-    private void setDhtProperty ( String key, String value ) {
-        if( key.equals( "overlay-mode" ) ){
-            if ( value != null ) {
-                if( value.equalsIgnoreCase( "networked" ) ) {
-                    overlayMode = value;
-                } else {
-                    overlayMode = "local";
-                }
+    private void setDhtProperty ( ) 
+        throws ServerFault {
+
+        Log log = LogFactory.getLog( Dht.class );
+        if( jsonOptionDefMap.size() == 0 ) {
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        }
+
+        Map<String, Object> propertyMap = new HashMap();
+ 
+        for( Iterator i = jsonOptionDefMap.keySet().iterator(); i.hasNext(); ) {
+            String key = (String)i.next();
+           
+            Map<String, Object > defMap = (Map)jsonOptionDefMap.get( key );
+            String type = (String)defMap.get( "type" );
+            Object value = defMap.get( "value" );
+
+            if( type.equalsIgnoreCase( "string" ) ) {
+                propertyMap.put( key, (String)value );
+            } else if( type.equalsIgnoreCase( "string-list" ) ) {
+                propertyMap.put( key, (List)value );
+            } else {
+                throw ServerFaultFactory.newInstance( 
+                    Fault.JSON_CONFIGURATION );
+            }
+        } 
+
+        if( propertyMap.containsKey( "overlay-mode" ) ) {
+            overlayMode = (String)propertyMap.get( "overlay-mode" );
+            if( !overlayMode.equals( "networked" ) ) {
+                overlayMode = "local";
             }
         }
 
-        if( key.equals( "max-drl-size" ) && value != null ) {
-            maxDrlSize = Integer.parseInt( value ) ;
+        if( propertyMap.containsKey( "max-drl-size" ) ) {
+            maxDrlSize = Integer.parseInt( 
+                (String)propertyMap.get( "max-drl-size" ) );
         }
 
-        if( key.equals( "routing-algorithm" ) ) {
-            routingAlg = value;
+        if( propertyMap.containsKey( "routing-algorithm" ) ) {
+            routingAlg = (String)propertyMap.get( "routing-algorithm" );
         }
 
-        if( key.equals( "directory-type" ) ) {
-            directoryType = value;
+        if( propertyMap.containsKey( "directory-type" ) ) {
+            directoryType = (String)propertyMap.get( "directory-type" );
         }
 
-        if( key.equals( "working-directory" ) ) {
-            workingDirectory = value;
+        if( propertyMap.containsKey( "working-directory" ) ) {
+            workingDirectory = (String)propertyMap.get( "working-directory" );
         }
 
-        if( key.equals( "default-ttl" ) ) {
-            defaultTTL = Long.parseLong( value ) * 60 * 60 * 1000;
+        if( propertyMap.containsKey( "default-ttl" ) ) {
+            defaultTTL = Long.parseLong( 
+                ((String)propertyMap.get( "default-ttl" ) ) ) * 60 * 60 * 1000;
         }
 
-        if( key.equals( "dht-port" ) ) {
-            dhtPort = value;
+        if( propertyMap.containsKey( "dht-port" ) ) {
+            dhtPort = (String)propertyMap.get( "dht-port" );
         }
+        
+        if( propertyMap.containsKey( "boot-servers" ) ) {
+            bootServerList = (List)propertyMap.get( "boot-servers" );
+        }   
     }
 
-    /*
-    public void setRoutingAlgorithm( String algorithm ){
-        this.routingAlg = algorithm;
-    }
-
-    public void setDirectoryType( String dirType ) {
-        this.directoryType = dirType;
-    }
-
-    public void setWorkingDirectory ( String workingDir ) {
-        this.workingDirectory = workingDir;
-    }
-
-    public void setDhtPort( String port ){
-        this.dhtPort = port;
-    }
-
-    public void setMaxDrlSize ( int size ) {
-        this.maxDrlSize = size;
-    }
-
-    public void setDefaultTTL ( long ttl ) {
-        this.defaultTTL = ttl * 60 * 60 * 1000;
-    }
-    */
     public String getRoutingAlgorithm(){
         return this.routingAlg;
     }
@@ -211,29 +219,6 @@ public class Dht {
         return this.defaultTTL;
     }
 
-    /*
-    public void setBootServers( List bootServers ){
-        this.bootServers = (List<String>) bootServers; 
-    }
-
-    public List<String> setBootServers() {
-        return this.bootServers;
-    }*/
-
-    /* 
-    public void setOverlayMode( String mode ) {
-        
-        Log log = LogFactory.getLog( Dht.class );
-        
-        if ( mode != null ){
-            if ( mode.equalsIgnoreCase( "networked" ) ) {
-                overlayMode = mode;
-            } else {
-                overlayMode = "local";
-            }
-        } 
-    }*/
-
     public String getOverlayMode() {
         return this.overlayMode;
     }
@@ -244,7 +229,7 @@ public class Dht {
 
     //--------------------------------------------------------------------------
     
-    public void initialize() {
+    public void initialize() throws ServerFault {
 
         Log log = LogFactory.getLog( Dht.class );
 
