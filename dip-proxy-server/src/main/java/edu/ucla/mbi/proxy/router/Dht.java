@@ -80,42 +80,42 @@ public class Dht {
         Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
 
         log.info( "before retrieveOptionDef... " );
-        retrieveOptionDef ( dhtJsonMap );
 
+        if ( dhtJsonMap.get( "option-def" ) != null ) {        
+            retrieveOptionDef ( dhtJsonMap );
+        } else {
+            throw ServerFaultFactory
+                .newInstance( Fault.JSON_CONFIGURATION );
+        }
+        
         log.info( "before setDhtProperty... " );
         setDhtProperty();
     }
-
-    private void retrieveOptionDef ( Map<String, Object> jsonMap ) 
+    
+    private void retrieveOptionDef( Map<String, Object> jsonMap ) 
         throws ServerFault {
 
-        if ( jsonMap.get( "options" ) != null ) {
-            List<String> options = 
-                new ArrayList( (List) jsonMap.get( "options" ) );
-
-            Map<String, Object> optionDef = 
-                (Map<String, Object>) jsonMap.get( "option-def" );
-
-            for ( int i = 0; i < options.size(); i++ ) {
-                String key = options.get( i );
+  
+        Map<String,Object> optionDef = 
+            (Map<String,Object>) jsonMap.get( "option-def" );
+                
+        Set<String> newDefs = optionDef.keySet();
+        
+        for( Iterator<String> is = newDefs.iterator(); is.hasNext(); ){
             
-                if( optionDef.containsKey ( key ) ) {
-                    if( ( (Map<String, Object>)optionDef.get( key ) )
-                            .get( "options" ) == null ) {
-
-                        jsonOptionDefMap.put( key, optionDef.get( key ) );  
-
-                    } else {
-                        retrieveOptionDef( 
-                            (Map<String, Object>)optionDef.get(key) );   
-                    }
-                } else {
-                    throw ServerFaultFactory.newInstance( 
-                        Fault.JSON_CONFIGURATION );
-                }
+            String key = is.next();
+            
+            Map<String, Object> def = 
+                (Map<String, Object>)optionDef.get( key );
+            
+            if( def.get( "value" ) != null ) {
+                jsonOptionDefMap.put( key, def );  
             }
-        }
-
+        
+            if( def.get( "option-def" ) != null ){
+                retrieveOptionDef( def );
+            }
+        }                    
     }
 
     /*
@@ -154,10 +154,30 @@ public class Dht {
             }
         } 
 
+        
+        // overlayMode
+        // maxDrlSize
+        // routingAlg
+        // directoryType
+        // workingDirectory
+        // defaultTTL
+        // dhtPort
+        // bootServerList
+
+        overlayMode = setString( jsonOptionDefMap, overlayMode );
+        maxDrlSize = setInteger( jsonOptionDefMap, overlayMode );
+        routingAlg = setString( jsonOptionDefMap, overlayMode );
+        directoryType = setString( jsonOptionDefMap, overlayMode );
+        workingDirectory = setString( jsonOptionDefMap, overlayMode );
+        defaultTTL = setLong( jsonOptionDefMap, overlayMode );
+        dhtPort = setString( jsonOptionDefMap, overlayMode );
+        bootServerList = setStringList( jsonOptionDefMap, overlayMode );
+
+        /*        
         if( propertyMap.containsKey( "overlay-mode" ) ) {
             overlayMode = (String)propertyMap.get( "overlay-mode" );
             if( !overlayMode.equals( "networked" ) ) {
-                overlayMode = "local";
+               overlayMode = "local";
             }
         }
 
@@ -190,6 +210,7 @@ public class Dht {
         if( propertyMap.containsKey( "boot-servers" ) ) {
             bootServerList = (List)propertyMap.get( "boot-servers" );
         }   
+        */
     }
 
     public String getRoutingAlgorithm(){
@@ -782,4 +803,25 @@ public class Dht {
         return dhtList;
     } 
     */ 
+
+
+    String setString(Map<String,Object> defs, String default){
+
+        return default;
+    }
+
+    String setInt(Map<String,Object> defs, String default){
+
+        return default;
+
+    }
+    String setLong(Map<String,Object> defs, String default){
+
+        return default;
+
+    }
+    String setStringList(Map<String,Object> defs, String default){
+        return default;
+    }
+
 }
