@@ -164,9 +164,13 @@ public class Dht {
         // dhtPort
         // bootServerList
 
-        overlayMode = setString( jsonOptionDefMap, overlayMode );
-        maxDrlSize = setInteger( jsonOptionDefMap, overlayMode );
-        routingAlg = setString( jsonOptionDefMap, overlayMode );
+        overlayMode = setString( jsonOptionDefMap.get("overlay-mode"), 
+                                 overlayMode );
+
+        maxDrlSize = setInt( jsonOptionDefMap.get("max-drl-size"), 
+                             maxDrlSize );
+
+        routingAlg = setString( jsonOptionDefMap.get(""), overlayMode );
         directoryType = setString( jsonOptionDefMap, overlayMode );
         workingDirectory = setString( jsonOptionDefMap, overlayMode );
         defaultTTL = setLong( jsonOptionDefMap, overlayMode );
@@ -805,11 +809,15 @@ public class Dht {
     */ 
 
 
-    String setString(Map<String,Object> defs, String default){
+    String setString( Map defs, String def ){
 
-        return default;
+        if( defs.get("value") != null 
+            && defs.get("type").equalsIgonreCase("string" ) ){
+            return (String) defs.get("value");
+        } 
+        return def;
     }
-
+    
     String setInt(Map<String,Object> defs, String default){
 
         return default;
