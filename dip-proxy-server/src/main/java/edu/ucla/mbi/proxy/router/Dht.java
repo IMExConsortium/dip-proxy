@@ -40,10 +40,10 @@ public class Dht {
     private Properties dhtProperties = null;
     
     private String overlayMode = "networked";
-    private String dhtPort = null;
-    private String routingAlg = null;
-    private String directoryType = null;
-    private String workingDirectory = null; 
+    private String dhtPort = "55666";
+    private String routingAlg = "Chord";
+    private String directoryType = "BerkeleyDB";
+    private String workingDirectory = "dht"; 
     private int maxDrlSize = MAX_DRL_SIZE;
     private long defaultTTL = 0;
     private List<String> bootServerList = null;
@@ -92,9 +92,7 @@ public class Dht {
         setDhtProperty();
     }
     
-    private void retrieveOptionDef( Map<String, Object> jsonMap ) 
-        throws ServerFault {
-
+    private void retrieveOptionDef( Map<String, Object> jsonMap ) {
   
         Map<String,Object> optionDef = 
             (Map<String,Object>) jsonMap.get( "option-def" );
@@ -131,90 +129,47 @@ public class Dht {
         throws ServerFault {
 
         Log log = LogFactory.getLog( Dht.class );
+
         if( jsonOptionDefMap.size() == 0 ) {
             throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
-        Map<String, Object> propertyMap = new HashMap();
- 
-        for( Iterator i = jsonOptionDefMap.keySet().iterator(); i.hasNext(); ) {
-            String key = (String)i.next();
-           
-            Map<String, Object > defMap = (Map)jsonOptionDefMap.get( key );
-            String type = (String)defMap.get( "type" );
-            Object value = defMap.get( "value" );
-
-            if( type.equalsIgnoreCase( "string" ) ) {
-                propertyMap.put( key, (String)value );
-            } else if( type.equalsIgnoreCase( "string-list" ) ) {
-                propertyMap.put( key, (List)value );
-            } else {
-                throw ServerFaultFactory.newInstance( 
-                    Fault.JSON_CONFIGURATION );
-            }
-        } 
-
-        
-        // overlayMode
-        // maxDrlSize
-        // routingAlg
-        // directoryType
-        // workingDirectory
-        // defaultTTL
-        // dhtPort
-        // bootServerList
-
-        overlayMode = setString( jsonOptionDefMap.get("overlay-mode"), 
+        overlayMode = setString( (Map<String, Object>)jsonOptionDefMap
+                                    .get("overlay-mode"), 
                                  overlayMode );
 
-        maxDrlSize = setInt( jsonOptionDefMap.get("max-drl-size"), 
+        if( !overlayMode.equals( "networked" ) ) {
+            overlayMode = "local";
+        }
+
+        maxDrlSize = setInt( (Map<String, Object>)jsonOptionDefMap
+                                .get("max-drl-size"), 
                              maxDrlSize );
 
-        routingAlg = setString( jsonOptionDefMap.get(""), overlayMode );
-        directoryType = setString( jsonOptionDefMap, overlayMode );
-        workingDirectory = setString( jsonOptionDefMap, overlayMode );
-        defaultTTL = setLong( jsonOptionDefMap, overlayMode );
-        dhtPort = setString( jsonOptionDefMap, overlayMode );
-        bootServerList = setStringList( jsonOptionDefMap, overlayMode );
+        routingAlg = setString( (Map<String, Object>)jsonOptionDefMap
+                                    .get("routing-algorithm"), 
+                                 routingAlg );
 
-        /*        
-        if( propertyMap.containsKey( "overlay-mode" ) ) {
-            overlayMode = (String)propertyMap.get( "overlay-mode" );
-            if( !overlayMode.equals( "networked" ) ) {
-               overlayMode = "local";
-            }
-        }
+        directoryType = setString( (Map<String, Object>)jsonOptionDefMap
+                                        .get("directory-type"), 
+                                   directoryType );
 
-        if( propertyMap.containsKey( "max-drl-size" ) ) {
-            maxDrlSize = Integer.parseInt( 
-                (String)propertyMap.get( "max-drl-size" ) );
-        }
+        workingDirectory = setString( (Map<String, Object>)jsonOptionDefMap
+                                           .get("working-directory"), 
+                                      workingDirectory );
 
-        if( propertyMap.containsKey( "routing-algorithm" ) ) {
-            routingAlg = (String)propertyMap.get( "routing-algorithm" );
-        }
+        defaultTTL = setLong( (Map<String, Object>)jsonOptionDefMap
+                                    .get("default-ttl"), 
+                              defaultTTL ) * 60 * 60 * 1000;
 
-        if( propertyMap.containsKey( "directory-type" ) ) {
-            directoryType = (String)propertyMap.get( "directory-type" );
-        }
+        dhtPort = setString( (Map<String, Object>)jsonOptionDefMap
+                                .get("dht-port"),  
+                              dhtPort );
 
-        if( propertyMap.containsKey( "working-directory" ) ) {
-            workingDirectory = (String)propertyMap.get( "working-directory" );
-        }
+        bootServerList = setStringList( (Map<String, Object>)jsonOptionDefMap
+                                            .get("boot-servers"), 
+                                        bootServerList );
 
-        if( propertyMap.containsKey( "default-ttl" ) ) {
-            defaultTTL = Long.parseLong( 
-                ((String)propertyMap.get( "default-ttl" ) ) ) * 60 * 60 * 1000;
-        }
-
-        if( propertyMap.containsKey( "dht-port" ) ) {
-            dhtPort = (String)propertyMap.get( "dht-port" );
-        }
-        
-        if( propertyMap.containsKey( "boot-servers" ) ) {
-            bootServerList = (List)propertyMap.get( "boot-servers" );
-        }   
-        */
     }
 
     public String getRoutingAlgorithm(){
@@ -809,27 +764,46 @@ public class Dht {
     */ 
 
 
-    String setString( Map defs, String def ){
+    private String setString( Map defs, String defaultValue) {
 
         if( defs.get("value") != null 
-            && defs.get("type").equalsIgonreCase("string" ) ){
+            && ((String)defs.get("type")).equalsIgnoreCase("string" ) ) {
+
             return (String) defs.get("value");
         } 
-        return def;
+        return defaultValue;
     }
     
-    String setInt(Map<String,Object> defs, String default){
+    private int setInt(Map<String,Object> defs, int defaultValue ) {
+        if( defs.get("value") != null
+            && ((String)defs.get("type")).equalsIgnoreCase("string" ) ){
+            
+            return Integer.parseInt( (String) defs.get("value") );
+        }
 
-        return default;
+        return defaultValue;
 
     }
-    String setLong(Map<String,Object> defs, String default){
 
-        return default;
+    private long setLong(Map<String,Object> defs, long defaultValue){
 
+        if( defs.get("value") != null
+            && ((String)defs.get("type")).equalsIgnoreCase("string" ) ){
+
+            return Long.parseLong( (String) defs.get("value") );
+        }
+
+        return defaultValue;
     }
-    String setStringList(Map<String,Object> defs, String default){
-        return default;
+
+    private List setStringList(Map<String,Object> defs, List defaultValue ){
+        if( defs.get("value") != null
+            && ((String)defs.get("type")).equalsIgnoreCase("string-list" ) ) {
+
+            return (List)defs.get("value");
+        }
+
+        return defaultValue;
     }
 
 }
