@@ -42,13 +42,11 @@ public class ProxyConfigFilter  implements Filter{
          
             System.setProperty( "dip.proxy.home", path );
 
-            WSContext.getDht().initialize( true );
+            WSContext.getDht().initialize();
 
         } catch ( ServerFault fault ) {
             log.warn( " Dht initialized fault: message=" + fault.getMessage() );
         } catch(Exception ex){ ex.printStackTrace();}
-
-
 
         log.info( "after dht initialize ");
 
