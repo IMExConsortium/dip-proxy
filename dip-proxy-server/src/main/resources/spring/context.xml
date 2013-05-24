@@ -18,7 +18,8 @@
     <bean id="pageContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
-                <!--<entry key="json-config" value="/etc/pages.json"/>-->
+                <entry key="json-config" value="/etc/pages.json"/>
+
                 <entry key="json-source">
                     <bean class="edu.ucla.mbi.util.context.SpringFileResource">
                         <property name="file" value="etc/pages.json"/>
@@ -31,7 +32,7 @@
     <bean id="menuContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
-                <!--<entry key="json-config" value="/etc/menu.json"/>-->
+                <entry key="json-config" value="/etc/menu.json"/>
                 <entry key="json-source">
                     <bean class="edu.ucla.mbi.util.context.SpringFileResource">
                         <property name="file" value="etc/menu.json"/>
@@ -46,7 +47,7 @@
     <bean id="restServerContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
-                <!--<entry key="json-config" value="/etc/restserver.json"/>-->
+                <entry key="json-config" value="/etc/restserver.json"/>
                 <entry key="json-source">
                     <bean class="edu.ucla.mbi.util.context.SpringFileResource">
                         <property name="file" value="etc/restserver.json"/>
@@ -59,7 +60,7 @@
     <bean id="transformerContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
-                <!--<entry key="json-config" value="/etc/transformer.json"/>-->
+                <entry key="json-config" value="/etc/transformer.json"/>
                 <entry key="json-source">
                     <bean class="edu.ucla.mbi.util.context.SpringFileResource">
                         <property name="file" value="etc/transformer.json"/>

@@ -46,6 +46,15 @@ public class DhtNodeStatus extends PortalSupport {
         return nodeStatus;
     }
 
+
+    //---------------------------------------------------------------------
+
+    String update = "false";
+
+    public void setUpdate( String update ) {
+        this.update = update;
+    }
+
     //---------------------------------------------------------------------
 
     public String execute() throws Exception {
@@ -106,6 +115,12 @@ public class DhtNodeStatus extends PortalSupport {
         
 
         setMessage(getText(MESSAGE));
+
+
+        if( update.equalsIgnoreCase("true")){
+            dht.reinitialize( true );
+        }
+
         return SUCCESS;
     }
 
