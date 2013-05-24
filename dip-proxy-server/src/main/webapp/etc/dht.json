@@ -4,7 +4,7 @@
   "option-def":{
       "node-config": {
          "legend":"Local Node Configuration",     
-         "options":["overlay-mode","max-drl-size","routing-algorithm","directory-type","working-directory","default-ttl","dht-port"],
+         "options":[ "overlay-mode" ],
          "option-def":{
              "overlay-mode": {
               "label": "overlay-mode",

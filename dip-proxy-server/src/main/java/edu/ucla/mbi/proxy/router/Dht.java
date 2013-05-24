@@ -338,7 +338,15 @@ public class Dht implements ContextListener {
             
             //dhtc.setDoReputOnReplicas( true );
 
-            proxyDht = DHTFactory.getDHT( dhtc, proxyId );
+            // if startup 
+
+            if( proxyDht == null ){
+                proxyDht = DHTFactory.getDHT( dhtc, proxyId );
+            }
+
+            if( force ){
+                proxyDht.clearRoutingTable();
+            }
 
             /*
             DHTConfiguration dhtcR = proxyDht.getConfiguration();
