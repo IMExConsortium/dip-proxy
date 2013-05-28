@@ -1057,11 +1057,6 @@ public class Dht implements ContextListener {
         try {
             File propertiesFile = new File( propertiesFN );
 
-            if( propertiesFile.exists() ) {
-                propertiesFile.delete();
-                log.info( "delete already existed properties file. " );
-            }
-
             OutputStream fos =
                 new FileOutputStream( propertiesFile );
                 
