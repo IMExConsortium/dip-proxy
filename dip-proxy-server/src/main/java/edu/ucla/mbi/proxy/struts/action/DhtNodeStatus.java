@@ -49,7 +49,7 @@ public class DhtNodeStatus extends PortalSupport {
 
     //---------------------------------------------------------------------
 
-    String update = "false";
+    private String update = "false";
 
     public void setUpdate( String update ) {
         this.update = update;

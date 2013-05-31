@@ -35,7 +35,7 @@ public class Dht implements ContextListener {
 //public class Dht {
     private final static int MAX_DRL_SIZE = 2;
 
-    private final String propertiesFN = "dhtrouter.properties";
+    private final String propertiesFN = "/tmp/dhtrouter.properties";
    
     private Map<String, Object> jsonOptionDefMap = new HashMap();
  
@@ -53,6 +53,9 @@ public class Dht implements ContextListener {
     private String proxyHost = null;
 
     private DHT proxyDht = null;
+
+    private short applicationID = 2;
+    private short applicationVersion = 2;
 
     public Dht() { }
 
@@ -248,14 +251,15 @@ public class Dht implements ContextListener {
 
         log.info( "workingDir= " + workingDirectory );
 
+        /*
         String proxyTime  = null;
         String proxyIdStr = null;
         BigInteger proxyIdSHA1 = null;
-
         ID proxyId = null;
-
         dhtProperties = new Properties();
+        */
 
+        /*
         if( !force ) {
             try{
                 InputStream fis = new FileInputStream(propertiesFN); 
@@ -283,7 +287,9 @@ public class Dht implements ContextListener {
 
         } else {
             writeRouterPropertyFile ( dhtPort );
-        }
+        }*/
+
+        ID proxyId = writeRouterPropertyFile ( dhtPort );
 
         try {
             DHTConfiguration dhtc = DHTFactory.getDefaultConfiguration();
@@ -336,17 +342,41 @@ public class Dht implements ContextListener {
             // propagate old records to incoming nodes ? 
             //-------------------------------------------
             
-            //dhtc.setDoReputOnReplicas( true );
+            dhtc.setDoReputOnReplicas( true );
 
             // if startup 
 
+            /*
             if( proxyDht == null ){
                 proxyDht = DHTFactory.getDHT( dhtc, proxyId );
+            }*/
+            if( force ) {
+                 
+                log.info( "before dht leaving... " );
+                proxyDht.getRoutingService().leave();
+                log.info( "after dht leaving and proxyDht=" + proxyDht );
+                
+                /* 
+                log.info( "before dht stop... " );
+                //proxyDht.clearRoutingTable();
+                proxyDht.stop();
+                log.info( "after dht stop and proxyDht=" + proxyDht );
+                */
             }
 
+            //proxyDht = DHTFactory.getDHT( dhtc, proxyId );
+            //proxyDht = DHTFactory.getDHT( ++applicationID, ++applicationVersion, dhtc );
+
+            /*
             if( force ){
+                log.info( "dht before suspend. " );
+                proxyDht.suspend();
+                log.info( "dht before clear routing table. " );
                 proxyDht.clearRoutingTable();
-            }
+                log.info( "dht before resume. " );
+                proxyDht.resume();
+                log.info( "dht after resume. proxyDht=" + proxyDht );
+            } */
 
             /*
             DHTConfiguration dhtcR = proxyDht.getConfiguration();
@@ -368,6 +398,8 @@ public class Dht implements ContextListener {
             }
             
             if ( overlayMode.equalsIgnoreCase( "networked" ) ){
+                
+                proxyDht = DHTFactory.getDHT( (short)1, (short)1, dhtc );  
 
                 log.info( "  local host=" +
                            localAddress.getHostAddress() );
@@ -403,6 +435,16 @@ public class Dht implements ContextListener {
             
             if( bootServerList.contains( localAddress.getHostAddress() )
                 && ma == null ) {
+               
+                
+                if( overlayMode.equalsIgnoreCase( "networked" ) ) { 
+                    proxyDht = DHTFactory.getDHT( (short)1, (short)1, dhtc );
+                } else {
+                    log.info( "local to itself. " );
+                    //proxyDht = DHTFactory.getDHT( ++applicationID, ++applicationVersion, dhtc );
+                    proxyDht = DHTFactory.getDHT( (short)2, (short)2, dhtc );
+                }
+
                 try {
                     ma = proxyDht
                         .joinOverlay( localAddress.getHostAddress() 
@@ -1019,7 +1061,7 @@ public class Dht implements ContextListener {
         return defaultValue;
     }
 
-    private void writeRouterPropertyFile ( String dhtPort ) throws ServerFault {
+    private ID writeRouterPropertyFile ( String dhtPort ) throws ServerFault {
 
         Log log = LogFactory.getLog( Dht.class );
         dhtProperties = new Properties();
@@ -1076,5 +1118,7 @@ public class Dht implements ContextListener {
                       "cannot delete(SecurityException)" );
 
         }
+
+        return proxyId;
     }
 }

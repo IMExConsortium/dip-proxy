@@ -28,6 +28,7 @@ class RemoteNativeService { // extends Observable {
     private Router router;
     private WSContext wsContext;
     private RemoteServerContext rsc;
+    private List<Router> observerList = new ArrayList<Router>();
 
     public RemoteNativeService( WSContext context, String provider ) 
         throws ServerFault {
@@ -80,10 +81,10 @@ class RemoteNativeService { // extends Observable {
     }
 
     public NativeRecord getNativeFromRemote ( String provider, 
-                                                 String service, 
-                                                 String ns, 
-                                                 String ac 
-                                                 ) throws ServerFault {
+                                              String service, 
+                                              String ns, 
+                                              String ac 
+                                              ) throws ServerFault {
 
         int retry = rsc.getMaxRetry();
         NativeRecord remoteRecord = null;
@@ -103,8 +104,12 @@ class RemoteNativeService { // extends Observable {
             log.info( "getNativeFromRemote: retry left=" + retry );
             log.info( "getNativeFromRemote: before selectNextRemoteServer. " );    
 
+            
             if( rsc.isRemoteProxyOn() && retry > 0 ) {
-                
+               
+                if( !observerList.contains( router ) ) {
+                    this.addObserver( router );
+                } 
                 nativeServer = router.getNextProxyServer( provider, service,
                                                           ns, ac );
                 log.info( "getNativeFromRemote: nativeServer came from proxy. " );
@@ -115,7 +120,7 @@ class RemoteNativeService { // extends Observable {
                 log.info( "getNativeFromRemote: nativeServer came from native. " );
                 
             }
-                
+
             try {                
                 remoteRecord = nativeServer.getNative( 
                      provider, service, ns, ac, rsc.getTimeout() );
@@ -192,8 +197,6 @@ class RemoteNativeService { // extends Observable {
         }
         return true;
     }
-    
-    private List<Router> observerList = new ArrayList<Router>();
     
     public void addObserver( Router router ){
         observerList.add( router );

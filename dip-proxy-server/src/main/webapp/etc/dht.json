@@ -61,7 +61,7 @@
          "legend":"Boot Servers",
          "label": "Boot Server List",
          "type":"string-list", 
-         "value": ["10.1.200.201","10.1.200.202", "10.1.200.203", "10.1.200.208"],
+         "value": ["10.1.200.201","10.1.200.208", "10.1.200.209"],
          "opp": "xxx",
         "opcode": "xxx"      
       }
