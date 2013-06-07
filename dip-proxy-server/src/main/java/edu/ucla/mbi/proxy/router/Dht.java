@@ -219,7 +219,25 @@ public class Dht implements ContextListener {
     //--------------------------------------------------------------------------
    
     public void initialize() throws ServerFault {
+        Log log = LogFactory.getLog( Dht.class );
+        log.info( "dht initializing... " );
+        /*
+        log.info( "dht start to sleep 5 mins before initializing. " );
+        try {
+            Thread.sleep(300000 ); // sleep 5 mins
+        } catch( InterruptedException ie ) {
+            log.warn( "thread sleep fault: " + ie );
+        }*/
+
         reinitialize( false );
+        /*
+        log.info( "dht start to sleep 5 mins after initializing. " );
+        try {
+            Thread.sleep(300000 ); // sleep 5 mins
+        } catch( InterruptedException ie ) {
+            log.warn( "thread sleep fault: " + ie );
+        }*/
+        
     }
 
     public void reinitialize( boolean force ) 
@@ -227,7 +245,7 @@ public class Dht implements ContextListener {
 
         Log log = LogFactory.getLog( Dht.class );
 
-        log.info( " dht initializing... " );
+        log.info( " dht reinitializing... " );
 
         readDhtContext();
 
@@ -350,21 +368,45 @@ public class Dht implements ContextListener {
             if( proxyDht == null ){
                 proxyDht = DHTFactory.getDHT( dhtc, proxyId );
             }*/
+            
             if( force ) {
-                 
+                /*     
                 log.info( "before dht leaving... " );
                 proxyDht.getRoutingService().leave();
                 log.info( "after dht leaving and proxyDht=" + proxyDht );
-                
-                /* 
+        
+                log.info( "dht sleep 5 mins after leaving. " );
+                try {
+                    Thread.sleep(300000 ); // sleep 5 mins
+                } catch( InterruptedException ie ) {
+                    log.warn( "thread sleep fault: " + ie );
+                }
+                */
+                /*         
                 log.info( "before dht stop... " );
                 //proxyDht.clearRoutingTable();
                 proxyDht.stop();
                 log.info( "after dht stop and proxyDht=" + proxyDht );
+                log.info( "dht sleep 10 mins after stop. " );
+                try {
+                    Thread.sleep(600000 ); // sleep 5 mins
+                } catch( InterruptedException ie ) {
+                    log.warn( "thread sleep fault: " + ie );
+                }
                 */
             }
+            
+            /* 
+            log.info( "dht start to create a new instance. ");
+            proxyDht = DHTFactory.getDHT( dhtc, proxyId );
 
-            //proxyDht = DHTFactory.getDHT( dhtc, proxyId );
+            log.info( "dht sleep 5 mins after create a new instance. " );
+            try {
+                Thread.sleep(300000 ); // sleep 10 mins
+            } catch( InterruptedException ie ) {
+                log.warn( "thread sleep fault: " + ie );
+            }
+            */
             //proxyDht = DHTFactory.getDHT( ++applicationID, ++applicationVersion, dhtc );
 
             /*
@@ -398,9 +440,25 @@ public class Dht implements ContextListener {
             }
             
             if ( overlayMode.equalsIgnoreCase( "networked" ) ){
+                /* 
+                log.info( "dht sleep 5 mins before create networked proxyDht instance. " );
+                try {
+                    Thread.sleep(300000 ); // sleep 5 mins
+                } catch( InterruptedException ie ) {
+                    log.warn( "thread sleep fault: " + ie );
+                }
+                */
                 
-                proxyDht = DHTFactory.getDHT( (short)1, (short)1, dhtc );  
-
+                proxyDht = DHTFactory.getDHT( (short)1, (short)1, dhtc, proxyId );
+                /*
+                log.info( "dht sleep 5 mins after create networked proxyDht instance. " );
+                try {
+                    Thread.sleep(300000 ); // sleep 5 mins
+                } catch( InterruptedException ie ) {
+                    log.warn( "thread sleep fault: " + ie );
+                }*/
+                
+                
                 log.info( "  local host=" +
                            localAddress.getHostAddress() );
                 
@@ -436,13 +494,21 @@ public class Dht implements ContextListener {
             if( bootServerList.contains( localAddress.getHostAddress() )
                 && ma == null ) {
                
-                
+                                
                 if( overlayMode.equalsIgnoreCase( "networked" ) ) { 
-                    proxyDht = DHTFactory.getDHT( (short)1, (short)1, dhtc );
+                    proxyDht = DHTFactory.getDHT( (short)1, (short)1, dhtc, proxyId );
                 } else {
                     log.info( "local to itself. " );
-                    //proxyDht = DHTFactory.getDHT( ++applicationID, ++applicationVersion, dhtc );
-                    proxyDht = DHTFactory.getDHT( (short)2, (short)2, dhtc );
+                    
+                    proxyDht = DHTFactory.getDHT( (short)2, (short)2, dhtc, proxyId );
+                  
+                    /*                  
+                    log.info( "dht sleep 5 mins after create local proxyDht instance. " );
+                    try {
+                        Thread.sleep(300000 ); // sleep 5 mins
+                    } catch( InterruptedException ie ) {
+                        log.warn( "thread sleep fault: " + ie );
+                    }*/
                 }
 
                 try {
