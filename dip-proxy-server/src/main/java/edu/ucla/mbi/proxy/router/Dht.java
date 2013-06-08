@@ -32,7 +32,6 @@ import edu.ucla.mbi.util.context.*;
 
 
 public class Dht implements ContextListener {
-//public class Dht {
     private final static int MAX_DRL_SIZE = 2;
 
     private final String propertiesFN = "/tmp/dhtrouter.properties";
@@ -54,8 +53,8 @@ public class Dht implements ContextListener {
 
     private DHT proxyDht = null;
 
-    private short applicationID = 2;
-    private short applicationVersion = 2;
+    private short networked_app_id = 1;
+    private short local_app_id = 2;
 
     public Dht() { }
 
@@ -120,7 +119,6 @@ public class Dht implements ContextListener {
             }
         }                    
     }
-
     
     public void contextUpdate ( JsonContext context ) {
 
@@ -173,12 +171,24 @@ public class Dht implements ContextListener {
 
         dhtPort = setString( (Map<String, Object>)jsonOptionDefMap
                                 .get("dht-port"),  
-                              dhtPort );
+                             dhtPort );
 
         bootServerList = setStringList( (Map<String, Object>)jsonOptionDefMap
                                             .get("boot-servers"), 
                                         bootServerList );
 
+        log.info( "before get networked-app-id." );
+        networked_app_id = setShort ( (Map<String, Object>)jsonOptionDefMap
+                                          .get("networked-application-id"),
+                                      networked_app_id );
+ 
+        log.info( "networked_app_id= " + networked_app_id );
+
+        local_app_id = setShort ( (Map<String, Object>)jsonOptionDefMap
+                                      .get("local-application-id"),
+                                  local_app_id );
+
+        log.info( "local_app_id= " + local_app_id );
     }
 
     public String getRoutingAlgorithm(){
@@ -221,23 +231,8 @@ public class Dht implements ContextListener {
     public void initialize() throws ServerFault {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "dht initializing... " );
-        /*
-        log.info( "dht start to sleep 5 mins before initializing. " );
-        try {
-            Thread.sleep(300000 ); // sleep 5 mins
-        } catch( InterruptedException ie ) {
-            log.warn( "thread sleep fault: " + ie );
-        }*/
 
         reinitialize( false );
-        /*
-        log.info( "dht start to sleep 5 mins after initializing. " );
-        try {
-            Thread.sleep(300000 ); // sleep 5 mins
-        } catch( InterruptedException ie ) {
-            log.warn( "thread sleep fault: " + ie );
-        }*/
-        
     }
 
     public void reinitialize( boolean force ) 
@@ -268,44 +263,6 @@ public class Dht implements ContextListener {
         }     
 
         log.info( "workingDir= " + workingDirectory );
-
-        /*
-        String proxyTime  = null;
-        String proxyIdStr = null;
-        BigInteger proxyIdSHA1 = null;
-        ID proxyId = null;
-        dhtProperties = new Properties();
-        */
-
-        /*
-        if( !force ) {
-            try{
-                InputStream fis = new FileInputStream(propertiesFN); 
-            
-                dhtProperties.load( fis );
-            
-                dhtPort = dhtProperties.getProperty( "dht-port" );
-            
-                proxyHost = dhtProperties.getProperty("proxy-host");
-                proxyIdStr = dhtProperties.getProperty("proxy-str-id");
-                proxyIdSHA1 =  
-                    new BigInteger( dhtProperties.getProperty( "proxy-sha1-id" ), 
-                                    16 );
-                proxyId = ID.getID( proxyIdSHA1, 20 );
-                log.info( " old: proxyIdStr=" + proxyIdStr );
-                log.info( " old:    proxyId=" + proxyIdSHA1.toString(16) );
-            
-            } catch (FileNotFoundException e ){
-            
-                writeRouterPropertyFile ( dhtPort );
-        
-            } catch (Exception uhe) {
-                log.info( " unknown exception...");
-            }
-
-        } else {
-            writeRouterPropertyFile ( dhtPort );
-        }*/
 
         ID proxyId = writeRouterPropertyFile ( dhtPort );
 
@@ -362,70 +319,6 @@ public class Dht implements ContextListener {
             
             dhtc.setDoReputOnReplicas( true );
 
-            // if startup 
-
-            /*
-            if( proxyDht == null ){
-                proxyDht = DHTFactory.getDHT( dhtc, proxyId );
-            }*/
-            
-            if( force ) {
-                /*     
-                log.info( "before dht leaving... " );
-                proxyDht.getRoutingService().leave();
-                log.info( "after dht leaving and proxyDht=" + proxyDht );
-        
-                log.info( "dht sleep 5 mins after leaving. " );
-                try {
-                    Thread.sleep(300000 ); // sleep 5 mins
-                } catch( InterruptedException ie ) {
-                    log.warn( "thread sleep fault: " + ie );
-                }
-                */
-                /*         
-                log.info( "before dht stop... " );
-                //proxyDht.clearRoutingTable();
-                proxyDht.stop();
-                log.info( "after dht stop and proxyDht=" + proxyDht );
-                log.info( "dht sleep 10 mins after stop. " );
-                try {
-                    Thread.sleep(600000 ); // sleep 5 mins
-                } catch( InterruptedException ie ) {
-                    log.warn( "thread sleep fault: " + ie );
-                }
-                */
-            }
-            
-            /* 
-            log.info( "dht start to create a new instance. ");
-            proxyDht = DHTFactory.getDHT( dhtc, proxyId );
-
-            log.info( "dht sleep 5 mins after create a new instance. " );
-            try {
-                Thread.sleep(300000 ); // sleep 10 mins
-            } catch( InterruptedException ie ) {
-                log.warn( "thread sleep fault: " + ie );
-            }
-            */
-            //proxyDht = DHTFactory.getDHT( ++applicationID, ++applicationVersion, dhtc );
-
-            /*
-            if( force ){
-                log.info( "dht before suspend. " );
-                proxyDht.suspend();
-                log.info( "dht before clear routing table. " );
-                proxyDht.clearRoutingTable();
-                log.info( "dht before resume. " );
-                proxyDht.resume();
-                log.info( "dht after resume. proxyDht=" + proxyDht );
-            } */
-
-            /*
-            DHTConfiguration dhtcR = proxyDht.getConfiguration();
-            dhtcR.setWorkingDirectory( "newDht" );
-            log.info( "reset working directory. " );
-            */
-            
             // join overlay
             //-------------
 
@@ -440,24 +333,9 @@ public class Dht implements ContextListener {
             }
             
             if ( overlayMode.equalsIgnoreCase( "networked" ) ){
-                /* 
-                log.info( "dht sleep 5 mins before create networked proxyDht instance. " );
-                try {
-                    Thread.sleep(300000 ); // sleep 5 mins
-                } catch( InterruptedException ie ) {
-                    log.warn( "thread sleep fault: " + ie );
-                }
-                */
-                
-                proxyDht = DHTFactory.getDHT( (short)1, (short)1, dhtc, proxyId );
-                /*
-                log.info( "dht sleep 5 mins after create networked proxyDht instance. " );
-                try {
-                    Thread.sleep(300000 ); // sleep 5 mins
-                } catch( InterruptedException ie ) {
-                    log.warn( "thread sleep fault: " + ie );
-                }*/
-                
+
+                proxyDht = DHTFactory.getDHT( networked_app_id, 
+                    networked_app_id, dhtc, proxyId );
                 
                 log.info( "  local host=" +
                            localAddress.getHostAddress() );
@@ -496,19 +374,13 @@ public class Dht implements ContextListener {
                
                                 
                 if( overlayMode.equalsIgnoreCase( "networked" ) ) { 
-                    proxyDht = DHTFactory.getDHT( (short)1, (short)1, dhtc, proxyId );
+                    proxyDht = DHTFactory.getDHT( networked_app_id, 
+                        networked_app_id, dhtc, proxyId );
                 } else {
                     log.info( "local to itself. " );
                     
-                    proxyDht = DHTFactory.getDHT( (short)2, (short)2, dhtc, proxyId );
-                  
-                    /*                  
-                    log.info( "dht sleep 5 mins after create local proxyDht instance. " );
-                    try {
-                        Thread.sleep(300000 ); // sleep 5 mins
-                    } catch( InterruptedException ie ) {
-                        log.warn( "thread sleep fault: " + ie );
-                    }*/
+                    proxyDht = DHTFactory.getDHT( local_app_id, 
+                        local_app_id, dhtc, proxyId );
                 }
 
                 try {
@@ -530,229 +402,6 @@ public class Dht implements ContextListener {
         }
     }  
 
-    /* 
-    public void initialize() throws ServerFault {
-        Log log = LogFactory.getLog( Dht.class );
-
-        log.info( " dht initializing... " );
-
-        readDhtContext();
-
-        log.info( " boot servers=" + bootServerList);
-        log.info( " overlayMode=" + overlayMode );
-        log.info( " maxDrlSize=" + maxDrlSize );
-        log.info( " routingAlg =" + routingAlg );
-        log.info( " directoryType=" + directoryType );
-        log.info( " workingDirectory=" + workingDirectory );
-        log.info( " defaultTTL=" + defaultTTL );
-        log.info( " dhtPort=" + dhtPort );
-
-        String proxyHome = System.getProperty( "dip.proxy.home");
-        log.info( " proxyHome=" + proxyHome );
-
-        if( !workingDirectory.startsWith( File.separator )  
-            && proxyHome != null && !proxyHome.isEmpty() ) {
-
-            workingDirectory = proxyHome + File.separator + workingDirectory;
-        }     
-
-        log.info( "workingDir= " + workingDirectory );
-
-        String proxyTime  = null;
-        String proxyIdStr = null;
-        BigInteger proxyIdSHA1 = null;
-
-        ID proxyId = null;
-
-        dhtProperties = new Properties();
-
-        try{
-            InputStream fis = new FileInputStream(propertiesFN); 
-            
-            dhtProperties.load( fis );
-            
-            dhtPort = dhtProperties.getProperty( "dht-port" );
-            
-            proxyHost = dhtProperties.getProperty("proxy-host");
-            proxyIdStr = dhtProperties.getProperty("proxy-str-id");
-            proxyIdSHA1 =  
-                new BigInteger( dhtProperties.getProperty( "proxy-sha1-id" ), 
-                                16 );
-            proxyId =
-                ID.getID( proxyIdSHA1, 20 );
-            log.info( " old: proxyIdStr=" + proxyIdStr );
-            log.info( " old:    proxyId=" + proxyIdSHA1.toString(16) );
-            
-        } catch (FileNotFoundException e ){
-
-            try {
-                InetAddress localHost = InetAddress.getLocalHost();
-                //proxyHost = localHost.getHostName();
-                proxyHost = localHost.getHostAddress();
-                
-            } catch (UnknownHostException ue) {
-                log.info( " unknown host...");
-                proxyHost = "dip-proxy" ;
-            }
-            
-            Calendar now = Calendar.getInstance();
-            proxyTime = Long.toString( now.getTimeInMillis() );
-            
-            proxyIdStr = proxyHost + ":" + dhtPort + ":" + proxyTime;
-            proxyId = ID.getSHA1BasedID( proxyIdStr.getBytes() );
-            proxyIdSHA1 = proxyId.toBigInteger();
-            
-            log.info( " new: proxyIdStr=" + proxyIdStr );
-            log.info( " new:    proxyId=" + proxyIdSHA1.toString(16) );
-       
-            dhtProperties.setProperty( "dht-port", dhtPort );     
-            dhtProperties.setProperty( "proxy-host", proxyHost );            
-            dhtProperties.setProperty( "proxy-str-id", proxyIdStr );
-            dhtProperties.setProperty( "proxy-sha1-id", 
-                                       proxyIdSHA1.toString(16) );
-            try {
-                OutputStream fos =
-                    new FileOutputStream( propertiesFN );
-                
-                dhtProperties.store( fos, 
-                                     "Autogenerated during initial startup."+
-                                     " Remove to reinitialize." ); 
-                
-                fos.close();
-            } catch ( FileNotFoundException fnf ){
-                log.info( "  dhtrouter.properties: " +
-                          "cannot create(FileNotFoundException)");
-            } catch ( IOException ioe){
-                log.info( "  dhtrouter.properties: " +
-                          "cannot create(IOException)");
-            }
-        } catch (Exception uhe) {
-            log.info( " unknown exception...");
-        }
-
-        try {
-        
-            DHTConfiguration dhtc = DHTFactory.getDefaultConfiguration();
-
-            // set hash value type
-            //--------------------
-
-            dhtc.setValueClass( DhtRouterList.class );
-
-            // set port
-            //---------
-
-            log.info( "  DHTConfiguration: port=" + Integer.parseInt( dhtPort ) );
-
-            dhtc.setSelfPort( Integer.parseInt( dhtPort ) );
-            dhtc.setContactPort( Integer.parseInt( dhtPort ) );
-            
-            // turn-off UPnP
-            //--------------
-
-            dhtc.setDoUPnPNATTraversal( false );
-            
-            // use UDP (default)
-            //------------------
-
-            dhtc.setMessagingTransport( "UDP" );
-
-            // set routing algorithm
-            //----------------------
-
-            log.info( "  DHTConfiguration: RoutingAlgorithm=" +  routingAlg );
-            
-            if( routingAlg != null && !routingAlg.isEmpty() ){
-                dhtc.setRoutingAlgorithm( routingAlg );
-            }
-            // set directory type/location
-            //----------------------------
-            if( directoryType != null && !directoryType.isEmpty() ) {
-                dhtc.setDirectoryType( directoryType );
-            }
-
-            if( workingDirectory != null && !workingDirectory.isEmpty() ) {
-                dhtc.setWorkingDirectory( workingDirectory );
-            }
-
-            if( defaultTTL != 0 ){
-                dhtc.setDefaultTTL ( defaultTTL );
-            }
-
-            // propagate old records to incoming nodes ? 
-            //-------------------------------------------
-            
-            //dhtc.setDoReputOnReplicas( true );
-
-            proxyDht = DHTFactory.getDHT( dhtc, proxyId );
-           
-            // join overlay
-            //-------------
-
-            log.info( " joining overlay" );
-
-            MessagingAddress ma = null;
-            InetAddress localAddress = null;
-            try {
-                localAddress = InetAddress.getLocalHost();
-            } catch( UnknownHostException e ){
-                log.info( " should not happen " );                
-            }
-            
-            if ( overlayMode.equalsIgnoreCase( "networked" ) ){
-                
-                for( Iterator<String> i = bootServerList.iterator(); 
-                     i.hasNext(); ) {
-                
-                    String bootHost = i.next();
-                
-                    log.info( "  local host=" +
-                              localAddress.getHostAddress() );
-                    
-                    if ( ! bootHost.equals( localAddress.getHostAddress() )) { 
-                        
-                        log.info( "  trying (non-self) boothost=" + 
-                                  bootHost + ":" + dhtPort );
-                    
-                        try {
-                            ma = proxyDht
-                                .joinOverlay( bootHost 
-                                              + ":" + dhtPort,  
-                                              Integer.parseInt( dhtPort ) );
-                            log.info( "overlay joined (MessagingAddress=" + 
-                                      ma + ")" );
-                            break;
-                        } catch ( ow.routing.RoutingException re ) {
-                            log.info( "   routing exception: " + re.toString() );
-                        }                 
-                    } else {
-                        log.info( "  skipping (non-local) boothost=" + 
-                                  bootHost + ":" + dhtPort );
-                    }
-                }
-            }
-            
-            if( bootServerList.contains( localAddress.getHostAddress() )
-                && ma == null ) {
-                try {
-                    ma = proxyDht
-                        .joinOverlay( localAddress.getHostAddress() 
-                                      + ":" + dhtPort,  
-                                      Integer.parseInt( dhtPort ) );
-
-                    log.info( "overlay started (MessagingAddress=" + 
-                              ma + ")" );
-                    
-                } catch ( ow.routing.RoutingException re ) {
-                    log.info( "   routing exception: " + re.toString() );
-                }
-            }                 
-            
-        } catch( Exception e ){
-            e.printStackTrace();
-        }
-    }
-    */ 
     //--------------------------------------------------------------------------
     
     public void cleanup() {
@@ -779,22 +428,6 @@ public class Dht implements ContextListener {
         return ID.getSHA1BasedID( recordStrId.getBytes() );
     }
    
-    /* 
-    public Set<ValueInfo<DhtRouterList>> getDhtRecord( ID rid ){
-        
-        Log log = LogFactory.getLog( Dht.class );
-        Set<ValueInfo<DhtRouterList>> val = null;
-        try {
-            val = proxyDht.get(rid);
-        } catch( RoutingException re ) {
-            log.info( "  routing exception: " + re.toString() );
-            return null;
-        }
-        
-        return val;
-    } */
-
-    
     public DhtRouterList getDhtRouterList( ID rid ) {
 
         Log log = LogFactory.getLog( Dht.class );
@@ -807,23 +440,8 @@ public class Dht implements ContextListener {
             return null;
         }
         
-        //log.info( " got value info set ..." );
-
         if( vis == null || vis.size() == 0 ) return null;
 
-        /*
-            if( vis.size() != 1 ) {
-                log.info( "Fault: DHT return empty set or " +
-                          "more DhtRouterList. " );
-                return null;
-            }
-
-            ValueInfo<DhtRouterList> vi = vis.iterator().next();
-            DhtRouterList drl = vi.getValue();
-            log.info( " DhtRouterList=" + drl );
-            return drl;
-        */
-            
         DhtRouterList newDrl = new DhtRouterList( rid );
 
         for( Iterator<ValueInfo<DhtRouterList>> i = vis.iterator();
@@ -874,8 +492,6 @@ public class Dht implements ContextListener {
         
         Log log = LogFactory.getLog(Dht.class);
 
-        //log.info( "updateItem entering with newItem=" + newItem );
-
         DhtRouterList drl = getDhtRouterList( rid );
         
         boolean newFlag = true;
@@ -892,8 +508,6 @@ public class Dht implements ContextListener {
             
                 DhtRouterItem proxyItem = drl.getItem(i);                   
 
-                //log.info( "   item=" + proxyItem.toString() );
-                
                 if ( proxyItem.getAddress().equals(newItem.getAddress()) ){
                     newFlag = false;
                     proxyItem.setCreateTime( newItem.getCreateTime() );
@@ -911,7 +525,6 @@ public class Dht implements ContextListener {
             }
 
             if( newFlag ) {
-                //log.info( "updateItem: newFlag=true: add newItem=" + newItem );
                 DhtRouterItem dpi = newItem;
                 drl.addItem( dpi );
                     
@@ -927,13 +540,9 @@ public class Dht implements ContextListener {
 
             proxyDht.put( rid, drl );
 
-            //log.info( "updateItem: after put: dht rc=" + proxyDht.get(rid) );
-
         } catch ( Exception e ) {
             log.info( "dht exception:" + e.toString() );
         }
-
-        //log.info( "update(UPDATE): done" );
     }
 
     public void deleteItem( ID rid, DhtRouterItem newItem ) {
@@ -948,7 +557,6 @@ public class Dht implements ContextListener {
             for( int i = 0; i < drl.size(); i++ ) {
                     
                 DhtRouterItem proxyItem = drl.getItem( i );                   
-                //log.info( "   item=" + proxyItem.toString() );
                     
                 if( proxyItem.getAddress().equals(newItem.getAddress()) ){
                     drl.removeItem( i );
@@ -972,8 +580,6 @@ public class Dht implements ContextListener {
                 log.info( "dht exception:" + e.toString() );
             }
         } 
-
-        //log.info( "update(DELETE): done" );
     }
     
     public String getLastAddress( ID rid ){
@@ -1046,45 +652,9 @@ public class Dht implements ContextListener {
         return drl;
     }
 
-    /*     
-    
-    public List<DhtRouterList> getDhtRouterList( ID rid ){
-        
-        Log log = LogFactory.getLog( Dht.class );
-        
-        Set<ValueInfo<DhtRouterList>> dhtRec= null;
-        List<DhtRouterList> dhtList = new ArrayList<DhtRouterList>();
-        
-        try {
-            dhtRec = proxyDht.get(rid);  
-        }catch( RoutingException re ) {
-            log.info( "  routing exception "+ re.toString() );
-        } catch( Exception ex ) {
-            log.info( "  routing exception "+ ex.toString() );
-        }
-        
-        if( dhtRec != null && dhtRec.size() > 0 ){
-
-            for( Iterator<ValueInfo<DhtRouterList>> i = dhtRec.iterator(); 
-                 i.hasNext(); ){
-
-                ValueInfo<DhtRouterList> vi = i.next();
-                
-                log.info( "  list=" + vi.getValue() );
-                
-                DhtRouterList dpl = vi.getValue();
-                dhtList.add( dpl );
-            }
-        }
-        
-        return dhtList;
-    } 
-    */ 
-
-
     private String setString( Map defs, String defaultValue) {
 
-        if( defs.get("value") != null 
+        if( defs != null && defs.get("value") != null 
             && ((String)defs.get("type")).equalsIgnoreCase("string" ) ) {
 
             return (String) defs.get("value");
@@ -1094,36 +664,42 @@ public class Dht implements ContextListener {
     
     private int setInt(Map<String,Object> defs, int defaultValue ) {
 
-        if( defs.get("value") != null
+        if( defs != null && defs.get("value") != null
             && ((String)defs.get("type")).equalsIgnoreCase("string" ) ){
             
             return Integer.parseInt( (String) defs.get("value") );
         }
-
         return defaultValue;
+    }
 
+    private short setShort(Map<String,Object> defs, short defaultValue ) {
+
+        if( defs != null && defs.get("value") != null
+            && ((String)defs.get("type")).equalsIgnoreCase("string" ) ){
+
+            return Short.parseShort( (String) defs.get("value") );
+        }
+        return defaultValue;
     }
 
     private long setLong(Map<String,Object> defs, long defaultValue){
 
-        if( defs.get("value") != null
+        if( defs != null && defs.get("value") != null
             && ((String)defs.get("type")).equalsIgnoreCase("string" ) ){
 
             return Long.parseLong( (String) defs.get("value") );
         }
-
         return defaultValue;
     }
 
     private List<String> setStringList( Map<String,Object> defs, 
                                         List<String> defaultValue ){
 
-        if( defs.get("value") != null
+        if( defs != null && defs.get("value") != null
             && ((String)defs.get("type")).equalsIgnoreCase("string-list" ) ) {
 
             return (List<String>)defs.get("value");
         }
-
         return defaultValue;
     }
 
@@ -1182,9 +758,7 @@ public class Dht implements ContextListener {
         } catch ( SecurityException se ) {
             log.info( "  dhtrouter.properties: " +
                       "cannot delete(SecurityException)" );
-
         }
-
         return proxyId;
     }
 }
