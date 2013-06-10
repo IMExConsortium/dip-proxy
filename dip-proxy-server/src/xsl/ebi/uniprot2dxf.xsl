@@ -36,6 +36,7 @@
 
       <xsl:if test="$edu.ucla.mbi.services.detail != 'stub'">
         <xsl:element name="ns1:xrefList">
+
             <xsl:element name="ns1:xref">
 	            <xsl:attribute name="type">produced-by</xsl:attribute>
 	            <xsl:attribute name="typeAc">dxf:0007</xsl:attribute>
@@ -67,6 +68,19 @@
 	                </xsl:element>
                 </xsl:if>
             </xsl:element>	  
+
+            <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
+                <xsl:for-each select="ebi:entry/ebi:dbReference">
+                    <xsl:element name="ns1:xref">
+                        <xsl:attribute name="type">annotated-with</xsl:attribute>
+                        <xsl:attribute name="typeAc">dxf:0054</xsl:attribute>
+                        <xsl:attribute name="typeNs">dxf</xsl:attribute>
+
+                        <xsl:attribute name="ac"><xsl:value-of select="@id"/></xsl:attribute>
+                        <xsl:attribute name="ns"><xsl:value-of select="@type"/></xsl:attribute>
+                    </xsl:element>
+                </xsl:for-each>
+            </xsl:if>
 
         </xsl:element>
 
