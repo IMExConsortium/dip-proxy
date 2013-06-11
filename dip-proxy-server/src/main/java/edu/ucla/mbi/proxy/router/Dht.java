@@ -63,16 +63,32 @@ public class Dht implements ContextListener {
     public void setDhtContext( JsonContext context ){
         this.dhtContext = context;
     }
-   
-    private void readDhtContext() throws ServerFault {
-        
+  
+    public String getDhtContextString () {
+        Log log = LogFactory.getLog( Dht.class );
+        log.info( "getDhtContextString... " );
+
+        if( dhtContext == null ) return null;
+
+        if( dhtContext.getJsonConfigString() == null ) {
+            try {
+                dhtContext = readDhtContext();
+            } catch ( ServerFault fault ) {
+                log.info( "readDhtContext got fault. " );
+                return null;
+            }
+        }
+        return dhtContext.getJsonConfigString();    
+    } 
+
+    private JsonContext readDhtContext() throws ServerFault {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "readDhtContext... " );
 
         FileResource fr = (FileResource) dhtContext
                                 .getConfig().get("json-source");
 
-        if ( fr == null ) return;
+        if ( fr == null ) return null;
 
         try {
             dhtContext.readJsonConfigDef( fr.getInputStream() );
@@ -80,6 +96,30 @@ public class Dht implements ContextListener {
             log.warn( "initialize exception: " + e.toString() );
             throw ServerFaultFactory.newInstance ( Fault.JSON_CONFIGURATION );
         }
+
+        return dhtContext;
+    }
+
+    private void extractDhtContext() throws ServerFault {
+        
+        Log log = LogFactory.getLog( Dht.class );
+        log.info( "extractDhtContext... " );
+        
+        /*
+        FileResource fr = (FileResource) dhtContext
+                                .getConfig().get("json-source");
+
+        if ( fr == null ) return;
+        
+        try {
+            dhtContext.readJsonConfigDef( fr.getInputStream() );
+        } catch ( Exception e ){i
+            log.warn( "initialize exception: " + e.toString() );
+            throw ServerFaultFactory.newInstance ( Fault.JSON_CONFIGURATION );
+        }
+        */
+
+        dhtContext = readDhtContext();
 
         Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
 
@@ -242,7 +282,8 @@ public class Dht implements ContextListener {
 
         log.info( " dht reinitializing... " );
 
-        readDhtContext();
+        //readDhtContext();
+        extractDhtContext();
 
         log.info( " boot servers=" + bootServerList);
         log.info( " overlayMode=" + overlayMode );
@@ -761,4 +802,5 @@ public class Dht implements ContextListener {
         }
         return proxyId;
     }
+
 }
