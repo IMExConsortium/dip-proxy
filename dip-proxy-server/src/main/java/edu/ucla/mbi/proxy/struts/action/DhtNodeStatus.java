@@ -55,12 +55,23 @@ public class DhtNodeStatus extends PortalSupport {
         this.update = update;
     }
 
+    private String config;
+    public void setConfig ( String config ) {
+        this.config = config;
+    }
+
+    public String getConfig () {
+        this.config = dht.getDhtContextString();
+        return config;
+    }
+
     //---------------------------------------------------------------------
 
     public String execute() throws Exception {
 
         log.info("DhtNodeStatus execute");
 
+        log.info( "return configString=" + getConfig() );
         //super.findMenuPage();
 
         DHTConfiguration dhtConf = dht.getDHT().getConfiguration();  
