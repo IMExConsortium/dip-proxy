@@ -18,7 +18,6 @@ import org.apache.commons.logging.LogFactory;
 import java.util.Map;
 import java.util.HashMap;
 
-
 import ow.id.*;
 import ow.dht.*;
 import ow.messaging.*;
@@ -45,16 +44,45 @@ public class DhtNodeStatus extends PortalSupport {
     public Map<String,String> getNodeStatus() {
         return nodeStatus;
     }
+    
+    //---------------------------------------------------------------------
+    // operations: NOTE add operationAware interface ? 
+    //-----------
 
+    private Map<String,String> opm;
+
+    public void setOp( Map<String,String> op ) {
+        this.opm = op;
+    }
+
+    public Map<String,String> getOp(){
+        return opm;
+    }
 
     //---------------------------------------------------------------------
 
+    private Map<String,String> opp;  // params
+
+    public void setOpp( Map<String,String> opp ) {
+        this.opp = opp;
+    }
+
+    public Map<String,String> getOpp(){
+        return opp;
+    }
+
+    //---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+
+    
     private String update = "false";
 
+    /*
     public void setUpdate( String update ) {
         this.update = update;
     }
-
+    */
+    
     private String config;
     public void setConfig ( String config ) {
         this.config = config;
@@ -77,6 +105,39 @@ public class DhtNodeStatus extends PortalSupport {
         DHTConfiguration dhtConf = dht.getDHT().getConfiguration();  
         RoutingService dhtRoutingService = dht.getDHT().getRoutingService();  
         IDAddressPair idap = dhtRoutingService.getSelfIDAddressPair();
+
+        log.info( "op=" + getOp() );
+        log.info( "opp=" + getOpp() );
+        
+        if(getOp()!=null){
+            
+            if( getOp().get("view") != null ){            
+                return "json";
+            }
+
+            if( getOp().get("update") != null ){
+                return "update";
+            }
+            
+            if( getOp().get("updateDht") != null ){
+                log.info( "opp=" + getOpp() );
+
+                // use new key:value pairs in getOpp() 
+                // to update dht.json configuration
+                
+                
+                //dht.setDhtOption( String name, String value );
+
+                
+                // dht.storeDhtContext()
+
+                
+                dht.reinitialize( true );
+
+                return "update";
+            }
+        }
+
        
         nodeStatus = new HashMap<String,String>(); 
 

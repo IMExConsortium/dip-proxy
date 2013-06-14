@@ -115,7 +115,16 @@
      <interceptor-ref name="timer"/>
      <interceptor-ref name="menu"/>
 
-     <result name="success" type="tiles">nodestatus</result>
+     <result name="success" type="tiles">node-status</result>
+     <result name="json" type="json">
+       <param name="ignoreHierarchy">false</param>
+        <param name="includeProperties">
+            op.*,config.*
+        </param>
+     </result>
+
+     <result name="update" type="tiles">node-update</result>
+
    </action>
    <!-- rest server config new -->
    <action name="rest-server-config" class="restServerConfigAction" >

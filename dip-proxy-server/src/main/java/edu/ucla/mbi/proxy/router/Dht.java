@@ -100,6 +100,23 @@ public class Dht implements ContextListener {
         return dhtContext;
     }
 
+    public void setDhtOption( String name, String value ){
+
+        Log log = LogFactory.getLog( Dht.class );
+        log.info( "setting option... " );
+              
+        // 
+  
+    }
+
+    public void storeDhtContext(){
+
+        Log log = LogFactory.getLog( Dht.class );
+        log.info( "stotingContext... " );
+
+
+    }
+    
     private void extractDhtContext() throws ServerFault {
         
         Log log = LogFactory.getLog( Dht.class );

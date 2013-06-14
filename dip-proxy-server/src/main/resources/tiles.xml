@@ -46,6 +46,8 @@
 
  <definition name="node" template="/tiles/node.jsp"/>
 
+ <definition name="node-update-body" template="/tiles/dht-node-update.jsp"/>
+
  <definition name="native" template="/tiles/native.jsp"/>
 
  <definition name="cache" template="/tiles/cache.jsp"/>
@@ -54,9 +56,14 @@
 
  <definition name="json-config" template="/tiles/jsonConfig.jsp"/>
 
- <definition name="nodestatus" extends="proxy">
+ <definition name="node-status" extends="proxy">
    <put-attribute name="body" value="node" />
  </definition>
+
+ <definition name="node-update" extends="proxy">
+   <put-attribute name="body" value="node-update-body" />
+ </definition>
+
 
  <definition name="nativestatus" extends="proxy">
    <put-attribute name="body" value="native" />

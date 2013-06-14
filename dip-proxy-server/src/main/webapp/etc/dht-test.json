@@ -10,49 +10,49 @@
               "label": "overlay-mode",
               "type": "string",
               "value": "${dht.mode}",
-              "opp":"overlay_mode", 
+              "opp":"xxx", 
               "opcode": "xxx"
              },
              "max-drl-size": {
               "label": "max-drl-size",
               "type": "string",
               "value": "2",
-              "opp":"max_drl_size", 
+              "opp":"xxx", 
               "opcode": "xxx"
              },
              "routing-algorithm":{
               "label":"routing-algorithm",
               "type":"string",
               "value":"${dht.routing}",
-              "opp":"routing_algorithm",
+              "opp":"xxx",
               "opcode":"xxx"
              },
              "directory-type":{
               "label":"directory-type",
               "type":"string",
               "value":"BerkeleyDB",
-              "opp":"directory_type",
+              "opp":"xxx",
               "opcode":"xxx"
              },
              "working-directory":{
               "label":"working-directory",
               "type":"string",
               "value":"dht",
-              "opp":"working_directory",
+              "opp":"xxx",
               "opcode":"xxx"
              },
              "default-ttl":{
               "label":"default-ttl",
               "type":"string",
               "value":"3",
-              "opp":"default_ttl",
+              "opp":"xxx",
               "opcode":"xxx"
              },
              "dht-port":{
               "label":"dht-port",
               "type":"string",
               "value":"55666",
-              "opp":"dht_port",
+              "opp":"xxx",
               "opcode":"xxx"
              }
          }
@@ -62,10 +62,9 @@
          "label": "Boot Server List",
          "type":"string-list", 
          "value": ["10.1.200.201","10.1.200.208", "10.1.200.209"],
-         "opp": "string_list",
+         "opp": "xxx",
         "opcode": "xxx"      
       }
   },
-  "opp": "foo",
-  "opcode": "foo"
+  "opcode": "update"
 }
