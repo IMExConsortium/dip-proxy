@@ -12,7 +12,7 @@
     <proxy.bld>$Rev$</proxy.bld>
 
     <dbid></dbid>
-    <!--<dht.mode>networked</dht.mode>-->    
+    <!--<dht.mode>networked</dht.mode> -->     
     <dht.mode>local</dht.mode> 
     <dht.routing>Chord</dht.routing>  
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
@@ -303,6 +303,7 @@
               <filtering>true</filtering>
               <includes>
                 <include>dht.json</include>
+                <include>dht-test.json</include>
               </includes>
             </resource>
 
@@ -349,7 +350,7 @@
               <name>log4j.configuration</name>
               <value>file:${basedir}/../etc/jetty/jetty-log4j.properties</value>
             </systemProperty>
-            
+            <!--            
             <systemProperty>
               <name>com.sun.management.jmxremote</name>
               <value>true</value>
@@ -369,12 +370,13 @@
               <name>com.sun.management.jmxremote.port</name>
               <value>33333</value>
             </systemProperty>
-            <!--
+            
             <systemProperty>
               <name>com.sun.management.jmxremote.local.only</name>
               <value>false</value>
             </systemProperty>
-            
+            -->
+            <!-- 
             <systemProperty>
               <name>java.rmi.server.hostname</name>
               <value>10.1.200.201</value>
