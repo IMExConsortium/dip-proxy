@@ -131,10 +131,10 @@ public class DhtNodeStatus extends PortalSupport {
                     String oppVal = (String)getOpp().get( oppKey );
                     log.info( "oppkey=" + oppKey + ", and oppVal=" + oppVal );                 
                
-                    dht.setDhtOption( oppKey, oppVal );
+                    dht.getDhtContext().setDhtOption( oppKey, oppVal );
                 }
 
-                dht.storeDhtContext( getServletContext() );
+                dht.getDhtContext().storeDhtContext( getServletContext() );
                 
                 dht.reinitialize( true );
 

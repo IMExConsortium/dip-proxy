@@ -24,6 +24,8 @@ import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.context.*;
 
 public class DhtContext {
+
+    Log log = LogFactory.getLog( DhtContext.class );
    
     private Map<String, Object> jsonOptionDefMap = new HashMap();
  
@@ -38,9 +40,12 @@ public class DhtContext {
     public JsonContext  getJsonContext( ){ // REMOVE ME !!!!!!
         return dhtContext;
     }
-  
+ 
+    public Map<String, Object> getJsonOptionDefMap() {
+        return jsonOptionDefMap;
+    } 
+
     public String getDhtContextString () {
-        Log log = LogFactory.getLog( Dht.class );
         log.info( "getDhtContextString... " );
 
         if( dhtContext == null ) return null;
@@ -57,7 +62,6 @@ public class DhtContext {
     } 
 
     private JsonContext readDhtContext() throws ServerFault {
-        Log log = LogFactory.getLog( Dht.class );
         log.info( "readDhtContext:readDhtContext... " );
 
         FileResource fr = (FileResource) dhtContext
@@ -78,7 +82,6 @@ public class DhtContext {
     public void setDhtOption( String oppName, String optionDefValue )
         throws ServerFault {
 
-        Log log = LogFactory.getLog( Dht.class );
         log.info( "setDhtOption: setting option... " );
         
         Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
@@ -97,7 +100,6 @@ public class DhtContext {
     public void storeDhtContext( ServletContext servletContext )
         throws ServerFault {
 
-        Log log = LogFactory.getLog( Dht.class );
         log.info( "storeDhtContext: stotingContext... " );
 
         
@@ -124,9 +126,8 @@ public class DhtContext {
 
     }
     
-    private void extractDhtContext() throws ServerFault {
+    public void extractDhtContext() throws ServerFault {
         
-        Log log = LogFactory.getLog( Dht.class );
         log.info( "extractDhtContext... " );
         
         dhtContext = readDhtContext();
@@ -142,7 +143,7 @@ public class DhtContext {
                 .newInstance( Fault.JSON_CONFIGURATION );
         }
         
-        log.info( "before setDhtProperty... " );
+        //log.info( "before setDhtProperty... " );
         //setDhtProperty();
     }
     
@@ -183,7 +184,6 @@ public class DhtContext {
     
     public void contextUpdate ( JsonContext context ) {
 
-        Log log = LogFactory.getLog( Dht.class );
         log.info( "contextUpdate called. " );
         /*       
         try {
