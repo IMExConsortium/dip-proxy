@@ -14,9 +14,8 @@
       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
  <!-- DISTRIBUTED HASH (DHT) -->
-
  
- <bean id="dhtContext" class="edu.ucla.mbi.util.context.JsonContext">
+ <bean id="dhtJsonContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
                 <entry key="json-config" value="/etc/dht-test.json"/>
@@ -31,6 +30,9 @@
         </property>
  </bean>
 
+ <bean id="dhtContext" class="edu.ucla.mbi.util.context.DhtContext"> 
+    <property name="jsonContext" ref="dhtJsonContext" />
+ </bean>
 
  <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
        destroy-method="cleanup">

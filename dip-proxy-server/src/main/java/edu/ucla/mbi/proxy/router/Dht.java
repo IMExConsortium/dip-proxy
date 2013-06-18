@@ -61,14 +61,18 @@ public class Dht implements ContextListener {
 
     private JsonContext dhtContext;
 
-    public void setDhtContext( JsonContext context ){
-        this.dhtContext = context;
+    private DhtContext context;
+
+    public void setDhtContext( DhtContext context ){
+
+        this.context = context;
+        dhtContext = context.getJsonContext();
     }
   
     public String getDhtContextString () {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "getDhtContextString... " );
-
+        /*
         if( dhtContext == null ) return null;
 
         if( dhtContext.getJsonConfigString() == null ) {
@@ -80,6 +84,8 @@ public class Dht implements ContextListener {
             }
         }
         return dhtContext.getJsonConfigString();    
+        */
+        return "getDhtContextString called";
     } 
 
     private JsonContext readDhtContext() throws ServerFault {
@@ -155,7 +161,10 @@ public class Dht implements ContextListener {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "extractDhtContext... " );
         
-        dhtContext = readDhtContext();
+        //context.readDhtContex();   // NEW
+
+       
+        dhtContext = readDhtContex();
 
         Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
 
