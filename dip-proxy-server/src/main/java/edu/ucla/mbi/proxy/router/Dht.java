@@ -241,9 +241,11 @@ public class Dht implements ContextListener {
             throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
-        overlayMode = setString( (Map<String, Object>)jsonOptionDefMap
-                                    .get("overlay-mode"), 
-                                 overlayMode );
+        overlayMode = context.getString( "overlay-mode", overlayMode );
+
+        //overlayMode = setString( (Map<String, Object>)jsonOptionDefMap
+        //                            .get("overlay-mode"), 
+        //                         overlayMode );
 
         if( !overlayMode.equals( "networked" ) ) {
             overlayMode = "local";
@@ -345,7 +347,9 @@ public class Dht implements ContextListener {
         //readDhtContext();
         //extractDhtContext();
         context.extractDhtContext();
+
         jsonOptionDefMap = context.getJsonOptionDefMap();
+
         setDhtProperty();
 
         log.info( " boot servers=" + bootServerList);

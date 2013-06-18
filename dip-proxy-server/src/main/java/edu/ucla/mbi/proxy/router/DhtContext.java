@@ -195,6 +195,20 @@ public class DhtContext {
     }
   
     //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    
+    public String getString( String name, String defVal ){
+        
+        if( jsonOptionDefMap != null && jsonOptionDefMap.get("value") != null
+            && ((String)jsonOptionDefMap.get("type"))
+            .equalsIgnoreCase("string" ) ) {
+            return (String) jsonOptionDefMap.get("value");
+        }
+        return defVal;
+    }
+    
+    //--------------------------------------------------------------------------
   
     private String setString( Map defs, String defaultValue) {
 
