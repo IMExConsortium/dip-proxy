@@ -10,7 +10,7 @@
               "label": "overlay-mode",
               "type": "string",
               "value": "${dht.mode}",
-              "opp":"xxx", 
+              "opp":"overlay_mode", 
               "opcode": "xxx"
              },
              "max-drl-size": {
