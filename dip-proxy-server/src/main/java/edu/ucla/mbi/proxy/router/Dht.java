@@ -23,6 +23,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.math.BigInteger;
+import javax.servlet.ServletContext;
 
 import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.proxy.*;
@@ -83,7 +84,7 @@ public class Dht implements ContextListener {
 
     private JsonContext readDhtContext() throws ServerFault {
         Log log = LogFactory.getLog( Dht.class );
-        log.info( "readDhtContext... " );
+        log.info( "readDhtContext:readDhtContext... " );
 
         FileResource fr = (FileResource) dhtContext
                                 .getConfig().get("json-source");
@@ -100,20 +101,54 @@ public class Dht implements ContextListener {
         return dhtContext;
     }
 
-    public void setDhtOption( String name, String value ){
+    public void setDhtOption( String oppName, String optionDefValue )
+        throws ServerFault {
 
         Log log = LogFactory.getLog( Dht.class );
-        log.info( "setting option... " );
-              
-        // 
-  
+        log.info( "setDhtOption: setting option... " );
+        
+        Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
+
+        if ( dhtJsonMap.get( "option-def" ) != null ) {
+            retrieveOptionDef ( dhtJsonMap, oppName, optionDefValue );
+        } else {
+            throw ServerFaultFactory
+                .newInstance( Fault.JSON_CONFIGURATION );
+        }
+
+        log.info( "setDhtOption: after setDhtOption, dhtContext=" + dhtContext );
+      
     }
 
-    public void storeDhtContext(){
+    public void storeDhtContext( ServletContext servletContext )
+        throws ServerFault {
 
         Log log = LogFactory.getLog( Dht.class );
-        log.info( "stotingContext... " );
+        log.info( "storeDhtContext: stotingContext... " );
 
+        
+        String jsonConfigFile = (String) dhtContext.getConfig()
+            .get( "json-config" );
+
+        log.info( "storeDhtContext: jsonConfigFile=" + jsonConfigFile );
+
+        String srcPath = servletContext.getRealPath( jsonConfigFile );
+        log.info( " srcPath=" + srcPath );
+       
+        //FileResource fr = (FileResource) dhtContext
+        //                        .getConfig().get("json-source");
+        File sf = new File( srcPath );
+        
+        try {
+            PrintWriter spw = new PrintWriter( sf );
+            dhtContext.writeJsonConfigDef( spw );
+            spw.close();
+        } catch ( Exception ex ) {
+            throw ServerFaultFactory
+                .newInstance( Fault.JSON_CONFIGURATION );
+        }
+
+        log.info( "storeDhtContext: after writing to json file. " );
 
     }
     
@@ -122,20 +157,6 @@ public class Dht implements ContextListener {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "extractDhtContext... " );
         
-        /*
-        FileResource fr = (FileResource) dhtContext
-                                .getConfig().get("json-source");
-
-        if ( fr == null ) return;
-        
-        try {
-            dhtContext.readJsonConfigDef( fr.getInputStream() );
-        } catch ( Exception e ){i
-            log.warn( "initialize exception: " + e.toString() );
-            throw ServerFaultFactory.newInstance ( Fault.JSON_CONFIGURATION );
-        }
-        */
-
         dhtContext = readDhtContext();
 
         Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
@@ -143,7 +164,7 @@ public class Dht implements ContextListener {
         log.info( "before retrieveOptionDef... " );
 
         if ( dhtJsonMap.get( "option-def" ) != null ) {        
-            retrieveOptionDef ( dhtJsonMap );
+            retrieveOptionDef ( dhtJsonMap, null, null );
         } else {
             throw ServerFaultFactory
                 .newInstance( Fault.JSON_CONFIGURATION );
@@ -153,7 +174,9 @@ public class Dht implements ContextListener {
         setDhtProperty();
     }
     
-    private void retrieveOptionDef( Map<String, Object> jsonMap ) {
+    private void retrieveOptionDef( Map<String, Object> jsonMap, 
+                                    String oppName, 
+                                    String optionDefValue ) {
   
         Map<String,Object> optionDef = 
             (Map<String,Object>) jsonMap.get( "option-def" );
@@ -166,13 +189,22 @@ public class Dht implements ContextListener {
             
             Map<String, Object> def = 
                 (Map<String, Object>)optionDef.get( key );
-            
-            if( def.get( "value" ) != null ) {
-                jsonOptionDefMap.put( key, def );  
+
+            if( def.get( "value" ) != null ) {            
+                if( oppName != null && def.get( "opp") != null ) {
+                    //*** setDhtOption
+                    if( def.get( "opp" ).equals( oppName ) ) {
+                        def.put( "value", optionDefValue );
+                        return;
+                    }
+                } else {            
+                    //*** extractDhtContext
+                    jsonOptionDefMap.put( key, def );  
+                }
             }
-        
+
             if( def.get( "option-def" ) != null ){
-                retrieveOptionDef( def );
+                retrieveOptionDef( def, oppName, optionDefValue );
             }
         }                    
     }
@@ -189,7 +221,7 @@ public class Dht implements ContextListener {
         }
     }
 
-    private void setDhtProperty ( ) 
+    private void setDhtProperty () 
         throws ServerFault {
 
         Log log = LogFactory.getLog( Dht.class );

@@ -119,22 +119,29 @@ public class DhtNodeStatus extends PortalSupport {
                 return "update";
             }
             
-            if( getOp().get("updateDht") != null ){
+            if( getOp().get("updateDht") != null 
+                && getOpp() != null ) {
+
                 log.info( "opp=" + getOpp() );
 
                 // use new key:value pairs in getOpp() 
                 // to update dht.json configuration
                 
-                
-                //dht.setDhtOption( String name, String value );
+                for ( String oppKey:getOpp().keySet() ) {
+                    String oppVal = (String)getOpp().get( oppKey );
+                    log.info( "oppkey=" + oppKey + ", and oppVal=" + oppVal );                 
+               
+                    log.info( "before setDhtOption. " ); 
+                    dht.setDhtOption( oppKey, oppVal );
+                    log.info( "after setDhtOption. " );
+                }
 
-                
-                // dht.storeDhtContext()
-
+                dht.storeDhtContext( getServletContext() );
                 
                 dht.reinitialize( true );
 
-                return "update";
+                //return "update";
+                return "json";
             }
         }
 

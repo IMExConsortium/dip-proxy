@@ -118,9 +118,9 @@
      <result name="success" type="tiles">node-status</result>
      <result name="json" type="json">
        <param name="ignoreHierarchy">false</param>
-        <param name="includeProperties">
-            op.*,config.*
-        </param>
+       <param name="includeProperties">
+         op.*,config.*
+       </param>
      </result>
 
      <result name="update" type="tiles">node-update</result>
