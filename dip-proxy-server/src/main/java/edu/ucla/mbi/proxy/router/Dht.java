@@ -135,8 +135,6 @@ public class Dht implements ContextListener {
         String srcPath = servletContext.getRealPath( jsonConfigFile );
         log.info( " srcPath=" + srcPath );
        
-        //FileResource fr = (FileResource) dhtContext
-        //                        .getConfig().get("json-source");
         File sf = new File( srcPath );
         
         try {
