@@ -251,6 +251,34 @@ public class Dht implements ContextListener {
             overlayMode = "local";
         }
 
+        maxDrlSize = context.getInt ( "max-drl-size", maxDrlSize );
+        routingAlg = context.getString( "routing-algorithm", routingAlg );
+
+        directoryType = context.getString( "directory-type", directoryType );
+
+        workingDirectory = 
+            context.getString( "working-directory", workingDirectory );
+
+        defaultTTL = 
+            context.getLong( "default-ttl", defaultTTL ) * 60 * 60 * 1000;
+
+        dhtPort = context.getString( "dht-port", dhtPort );
+
+        bootServerList = 
+            context.getStringList( "boot-servers", bootServerList );
+
+        log.info( "before get networked-app-id." );
+        networked_app_id = 
+            context.getShort ( "networked-application-id", networked_app_id );
+ 
+        log.info( "networked_app_id= " + networked_app_id );
+
+        local_app_id = 
+            context.getShort ( "local-application-id", local_app_id );
+        
+        log.info( "local_app_id= " + local_app_id );
+        
+        /*
         maxDrlSize = setInt( (Map<String, Object>)jsonOptionDefMap
                                 .get("max-drl-size"), 
                              maxDrlSize );
@@ -289,8 +317,9 @@ public class Dht implements ContextListener {
         local_app_id = setShort ( (Map<String, Object>)jsonOptionDefMap
                                       .get("local-application-id"),
                                   local_app_id );
-
+        
         log.info( "local_app_id= " + local_app_id );
+        */
     }
 
     public String getRoutingAlgorithm(){

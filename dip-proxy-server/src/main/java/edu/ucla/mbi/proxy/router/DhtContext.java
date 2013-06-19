@@ -199,15 +199,91 @@ public class DhtContext {
     //--------------------------------------------------------------------------
     
     public String getString( String name, String defVal ){
-        
-        if( jsonOptionDefMap != null && jsonOptionDefMap.get("value") != null
-            && ((String)jsonOptionDefMap.get("type"))
-            .equalsIgnoreCase("string" ) ) {
-            return (String) jsonOptionDefMap.get("value");
+       
+        if( jsonOptionDefMap != null
+            && jsonOptionDefMap.containsKey ( name ) ) {
+
+            Map<String, Object> def = 
+                (Map<String, Object>)jsonOptionDefMap.get( name );
+ 
+            if( def != null && def.get("value") != null
+                && ((String)def.get("type")).equalsIgnoreCase("string" ) ) {
+
+                return (String) def.get("value");
+            }
         }
         return defVal;
     }
-    
+   
+    public int getInt( String name, int defVal ) {
+
+        if( jsonOptionDefMap != null 
+            && jsonOptionDefMap.containsKey ( name ) ) { 
+
+            Map<String, Object> def = 
+                (Map<String, Object>)jsonOptionDefMap.get( name );
+            
+            if( def != null && def.get("value") != null
+                && ((String)def.get("type")).equalsIgnoreCase("string" ) ) {
+
+                return Integer.parseInt( (String) def.get("value") );
+            }
+        }
+        return defVal;
+    }
+
+    public short getShort( String name, short defVal ) {
+
+        if( jsonOptionDefMap != null
+            && jsonOptionDefMap.containsKey ( name ) ) {
+
+            Map<String, Object> def =
+                (Map<String, Object>)jsonOptionDefMap.get( name );
+
+            if( def != null && def.get("value") != null
+                && ((String)def.get("type")).equalsIgnoreCase("string" ) ) {
+
+                return Short.parseShort( (String) def.get("value") );
+            }
+        }
+        return defVal;
+    }
+
+    public long getLong( String name, long defVal ) {
+
+        if( jsonOptionDefMap != null
+            && jsonOptionDefMap.containsKey ( name ) ) {
+
+            Map<String, Object> def =
+                (Map<String, Object>)jsonOptionDefMap.get( name );
+
+            if( def != null && def.get("value") != null
+                && ((String)def.get("type")).equalsIgnoreCase("string" ) ) {
+
+                return Long.parseLong( (String) def.get("value") );
+            }
+        }
+        return defVal;
+    }
+
+    public List<String> getStringList ( String name, List<String> defVal ) {
+
+        if( jsonOptionDefMap != null
+            && jsonOptionDefMap.containsKey ( name ) ) {
+
+            Map<String, Object> def =
+                (Map<String, Object>)jsonOptionDefMap.get( name );
+
+            if( def != null && def.get("value") != null
+                && ((String)def.get("type")).equalsIgnoreCase("string-list" ) ) {
+
+                return (List<String>) def.get("value") ;
+            }
+        }
+        return defVal;
+    }
+
+     
     //--------------------------------------------------------------------------
   
     private String setString( Map defs, String defaultValue) {
