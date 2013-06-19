@@ -18,7 +18,6 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.math.BigInteger;
-import javax.servlet.ServletContext;
 
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.context.*;
@@ -31,14 +30,14 @@ public class DhtContext {
  
     public DhtContext() { }
 
-    private JsonContext dhtContext;
+    private JsonContext jsonContext;
 
     public void setJsonContext( JsonContext context ){
-        this.dhtContext = context;
+        this.jsonContext = context;
     }
   
     public JsonContext  getJsonContext( ){ // REMOVE ME !!!!!!
-        return dhtContext;
+        return jsonContext;
     }
  
     public Map<String, Object> getJsonOptionDefMap() {
@@ -48,35 +47,37 @@ public class DhtContext {
     public String getDhtContextString () {
         log.info( "getDhtContextString... " );
 
-        if( dhtContext == null ) return null;
+        if( jsonContext == null ) return null;
 
-        if( dhtContext.getJsonConfigString() == null ) {
+        if( jsonContext.getJsonConfigString() == null ) {
             try {
-                dhtContext = readDhtContext();
+                jsonContext = readDhtContext();
             } catch ( ServerFault fault ) {
                 log.info( "readDhtContext got fault. " );
                 return null;
             }
         }
-        return dhtContext.getJsonConfigString();    
+        return jsonContext.getJsonConfigString();    
     } 
 
     private JsonContext readDhtContext() throws ServerFault {
         log.info( "readDhtContext:readDhtContext... " );
 
-        FileResource fr = (FileResource) dhtContext
+        FileResource fr = (FileResource) jsonContext
                                 .getConfig().get("json-source");
 
+        log.info( "readDhtContext: fr=" + fr );
         if ( fr == null ) return null;
 
+        log.info( "readDhtContext: before read... " );
         try {
-            dhtContext.readJsonConfigDef( fr.getInputStream() );
+            jsonContext.readJsonConfigDef( fr.getInputStream() );
         } catch ( Exception e ){
             log.warn( "initialize exception: " + e.toString() );
             throw ServerFaultFactory.newInstance ( Fault.JSON_CONFIGURATION );
         }
 
-        return dhtContext;
+        return jsonContext;
     }
 
     public void setDhtOption( String oppName, String optionDefValue )
@@ -84,26 +85,27 @@ public class DhtContext {
 
         log.info( "setDhtOption: setting option... " );
         
-        Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
+        Map<String, Object> dhtJsonMap = jsonContext.getJsonConfig();
 
         if ( dhtJsonMap.get( "option-def" ) != null ) {
-            retrieveOptionDef ( dhtJsonMap, oppName, optionDefValue );
+            recursiveOptionDef ( dhtJsonMap, oppName, optionDefValue );
         } else {
             throw ServerFaultFactory
                 .newInstance( Fault.JSON_CONFIGURATION );
         }
 
-        log.info( "setDhtOption: after setDhtOption, dhtContext=" + dhtContext );
+        log.info( "setDhtOption: after setDhtOption, jsonContext=" + jsonContext );
       
     }
 
+    /*
     public void storeDhtContext( ServletContext servletContext )
         throws ServerFault {
 
         log.info( "storeDhtContext: stotingContext... " );
 
         
-        String jsonConfigFile = (String) dhtContext.getConfig()
+        String jsonConfigFile = (String) jsonContext.getConfig()
             .get( "json-config" );
 
         log.info( "storeDhtContext: jsonConfigFile=" + jsonConfigFile );
@@ -115,7 +117,7 @@ public class DhtContext {
         
         try {
             PrintWriter spw = new PrintWriter( sf );
-            dhtContext.writeJsonConfigDef( spw );
+            jsonContext.writeJsonConfigDef( spw );
             spw.close();
         } catch ( Exception ex ) {
             throw ServerFaultFactory
@@ -124,33 +126,68 @@ public class DhtContext {
 
         log.info( "storeDhtContext: after writing to json file. " );
 
-    }
+    }*/
     
     public void extractDhtContext() throws ServerFault {
         
         log.info( "extractDhtContext... " );
         
-        dhtContext = readDhtContext();
+        jsonContext = readDhtContext();
 
-        Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
-
-        log.info( "before retrieveOptionDef... " );
+        Map<String, Object> dhtJsonMap = jsonContext.getJsonConfig();
 
         if ( dhtJsonMap.get( "option-def" ) != null ) {        
-            retrieveOptionDef ( dhtJsonMap, null, null );
+            recursiveOptionDef ( dhtJsonMap, null, null );
         } else {
             throw ServerFaultFactory
                 .newInstance( Fault.JSON_CONFIGURATION );
         }
         
-        //log.info( "before setDhtProperty... " );
-        //setDhtProperty();
+        log.info( "after exractDhtContext. " );
     }
+     
     
-    private void retrieveOptionDef( Map<String, Object> jsonMap, 
-                                    String oppName, 
+    private void recursiveOptionDef( Map<String, Object> jsonMap,
+                                    String oppName,
                                     String optionDefValue ) {
-  
+
+        Map<String,Object> optionDef =
+            (Map<String,Object>) jsonMap.get( "option-def" );
+
+        Set<String> newDefs = optionDef.keySet();
+
+        for( Iterator<String> is = newDefs.iterator(); is.hasNext(); ){
+
+            String key = is.next();
+
+            Map<String, Object> def =
+                (Map<String, Object>)optionDef.get( key );
+
+            if( def.get( "value" ) != null ) {
+                if( oppName != null && def.get( "opp") != null ) {
+                    //*** setDhtOption
+                    if( def.get( "opp" ).equals( oppName ) ) {
+                        def.put( "value", optionDefValue );
+                        return;
+                    }
+                } else {
+                    //*** extractDhtContext
+                    jsonOptionDefMap.put( key, def );
+                }
+            }
+
+            if( def.get( "option-def" ) != null ){
+                recursiveOptionDef( def, oppName, optionDefValue );
+            }
+        }
+    }
+
+    private void recursiveSetOptionDef( Map<String, Object> jsonMap, 
+                                        String oppName, 
+                                        String optionDefValue ) {
+ 
+        log.info( "start recursiveSetOptionDef... " );
+ 
         Map<String,Object> optionDef = 
             (Map<String,Object>) jsonMap.get( "option-def" );
                 
@@ -159,25 +196,47 @@ public class DhtContext {
         for( Iterator<String> is = newDefs.iterator(); is.hasNext(); ){
             
             String key = is.next();
+
+            Map<String, Object> def = 
+                (Map<String, Object>)optionDef.get( key );
+
+            if( def.get( "value" ) != null && oppName != null 
+                && def.get( "opp") != null 
+                && def.get( "opp" ).equals( oppName ) ) {
+                        
+                def.put( "value", optionDefValue );
+                return;
+            }
+
+            if( def.get( "option-def" ) != null ){
+                recursiveSetOptionDef( def, oppName, optionDefValue );
+            }
+        }                    
+    }
+ 
+    private void recursiveRetrieveOptionDef( Map<String, Object> jsonMap ) { 
+ 
+        log.info( "start retrieveOptionDef... " );
+ 
+        Map<String,Object> optionDef = 
+            (Map<String,Object>) jsonMap.get( "option-def" );
+                
+        Set<String> newDefs = optionDef.keySet();
+        
+        for( Iterator<String> is = newDefs.iterator(); is.hasNext(); ){
             
+            String key = is.next();
+
             Map<String, Object> def = 
                 (Map<String, Object>)optionDef.get( key );
 
             if( def.get( "value" ) != null ) {            
-                if( oppName != null && def.get( "opp") != null ) {
-                    //*** setDhtOption
-                    if( def.get( "opp" ).equals( oppName ) ) {
-                        def.put( "value", optionDefValue );
-                        return;
-                    }
-                } else {            
-                    //*** extractDhtContext
-                    jsonOptionDefMap.put( key, def );  
-                }
+                //*** extractDhtContext
+                jsonOptionDefMap.put( key, def );  
             }
 
             if( def.get( "option-def" ) != null ){
-                retrieveOptionDef( def, oppName, optionDefValue );
+                recursiveRetrieveOptionDef( def );
             }
         }                    
     }

@@ -23,7 +23,6 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.math.BigInteger;
-import javax.servlet.ServletContext;
 
 import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.proxy.*;
@@ -63,22 +62,21 @@ public class Dht implements ContextListener {
 
     private DhtContext context;
 
-    public void setDhtContext( DhtContext context ){
-
+    public void setContext ( DhtContext context ) {
         this.context = context;
-        //dhtContext = context.getJsonContext();
+        //this.dhtContext = context.getJsonContext();
     }
- 
-    public DhtContext getDhtContext() {
+
+    public DhtContext getContext() {
         return context;
     }
- 
+
     public String getDhtContextString () {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "getDhtContextString... " );
-        /*
+        
         if( dhtContext == null ) return null;
-
+        /*
         if( dhtContext.getJsonConfigString() == null ) {
             try {
                 dhtContext = readDhtContext();
@@ -86,10 +84,13 @@ public class Dht implements ContextListener {
                 log.info( "readDhtContext got fault. " );
                 return null;
             }
+        
+            return dhtContext.getJsonConfigString();    
         }
-        return dhtContext.getJsonConfigString();    
-        */
         return "getDhtContextString called";
+        */
+
+        return context.getDhtContextString();    
     } 
 
     private JsonContext readDhtContext() throws ServerFault {
@@ -129,7 +130,7 @@ public class Dht implements ContextListener {
         log.info( "setDhtOption: after setDhtOption, dhtContext=" + dhtContext );
       
     }
-
+    /*
     public void storeDhtContext( ServletContext servletContext )
         throws ServerFault {
 
@@ -158,7 +159,7 @@ public class Dht implements ContextListener {
 
         log.info( "storeDhtContext: after writing to json file. " );
 
-    }
+    }*/
     
     private void extractDhtContext() throws ServerFault {
         
@@ -232,20 +233,11 @@ public class Dht implements ContextListener {
         }
     }
 
-    private void setDhtProperty () 
-        throws ServerFault {
+    private void setDhtProperty () throws ServerFault {
 
         Log log = LogFactory.getLog( Dht.class );
 
-        if( jsonOptionDefMap.size() == 0 ) {
-            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
-        }
-
         overlayMode = context.getString( "overlay-mode", overlayMode );
-
-        //overlayMode = setString( (Map<String, Object>)jsonOptionDefMap
-        //                            .get("overlay-mode"), 
-        //                         overlayMode );
 
         if( !overlayMode.equals( "networked" ) ) {
             overlayMode = "local";
@@ -279,6 +271,13 @@ public class Dht implements ContextListener {
         log.info( "local_app_id= " + local_app_id );
         
         /*
+        if( jsonOptionDefMap.size() == 0 ) {
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+
+        overlayMode = setString( (Map<String, Object>)jsonOptionDefMap
+                                    .get("overlay-mode"), 
+                                 overlayMode );
+
         maxDrlSize = setInt( (Map<String, Object>)jsonOptionDefMap
                                 .get("max-drl-size"), 
                              maxDrlSize );
@@ -377,10 +376,13 @@ public class Dht implements ContextListener {
         //extractDhtContext();
         context.extractDhtContext();
 
-        jsonOptionDefMap = context.getJsonOptionDefMap();
+        //jsonOptionDefMap = context.getJsonOptionDefMap();
+        log.info( "reinitialize: before setDhtProperty. " );
 
+        
         setDhtProperty();
 
+        log.info( "reinitialize: after setDhtProperty. " );
         log.info( " boot servers=" + bootServerList);
         log.info( " overlayMode=" + overlayMode );
         log.info( " maxDrlSize=" + maxDrlSize );

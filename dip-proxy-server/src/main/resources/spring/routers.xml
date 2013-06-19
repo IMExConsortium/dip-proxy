@@ -37,7 +37,7 @@
  <bean id="dht" class="edu.ucla.mbi.proxy.router.Dht" 
        destroy-method="cleanup">
 
-  <property name="dhtContext" ref="dhtContext" /> 
+  <property name="context" ref="dhtContext" /> 
 
   <!--
   <property name="overlayMode" value="${dht.mode}" />

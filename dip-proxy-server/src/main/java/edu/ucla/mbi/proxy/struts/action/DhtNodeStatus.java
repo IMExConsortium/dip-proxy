@@ -17,6 +17,8 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.*;
+import java.net.*;
 
 import ow.id.*;
 import ow.dht.*;
@@ -89,7 +91,7 @@ public class DhtNodeStatus extends PortalSupport {
     }
 
     public String getConfig () {
-        this.config = dht.getDhtContextString();
+        this.config = dht.getContext().getDhtContextString();
         return config;
     }
 
@@ -131,10 +133,11 @@ public class DhtNodeStatus extends PortalSupport {
                     String oppVal = (String)getOpp().get( oppKey );
                     log.info( "oppkey=" + oppKey + ", and oppVal=" + oppVal );                 
                
-                    dht.getDhtContext().setDhtOption( oppKey, oppVal );
+                    dht.getContext().setDhtOption( oppKey, oppVal );
                 }
 
-                dht.getDhtContext().storeDhtContext( getServletContext() );
+                saveDhtContextToJsonFile();
+                //dht.getContext().storeDhtContext( getServletContext() );
                 
                 dht.reinitialize( true );
 
@@ -201,6 +204,30 @@ public class DhtNodeStatus extends PortalSupport {
         return SUCCESS;
     }
 
+    private void saveDhtContextToJsonFile() throws Exception {
+        log.info( "storeDhtContext: stotingContext... " );
+
+        String jsonConfigFile = (String) dht.getContext().getJsonContext()
+            .getConfig().get( "json-config" );
+
+        log.info( "saveDhtContextToJsonFile: jsonConfigFile=" + jsonConfigFile );
+
+        String srcPath = getServletContext().getRealPath( jsonConfigFile );
+        log.info( " srcPath=" + srcPath );
+
+        File sf = new File( srcPath );
+
+        try {
+            PrintWriter spw = new PrintWriter( sf );
+            dht.getContext().getJsonContext().writeJsonConfigDef( spw );
+            spw.close();
+        } catch ( Exception ex ) {
+            throw ex;
+        }
+
+        log.info( "saveDhtContextToJsonFile: after writing to json file. " );
+
+    }
     /**
      * Provide default value for Message property.
      */
