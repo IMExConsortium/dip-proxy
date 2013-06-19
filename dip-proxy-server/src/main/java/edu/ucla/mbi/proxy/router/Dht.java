@@ -13,7 +13,7 @@ package edu.ucla.mbi.proxy.router;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+ 
 import ow.id.*;
 import ow.dht.*;
 import ow.messaging.*;
@@ -160,7 +160,8 @@ public class Dht implements ContextListener {
         log.info( "storeDhtContext: after writing to json file. " );
 
     }*/
-    
+
+    /*
     private void extractDhtContext() throws ServerFault {
         
         Log log = LogFactory.getLog( Dht.class );
@@ -185,7 +186,8 @@ public class Dht implements ContextListener {
         log.info( "before setDhtProperty... " );
         setDhtProperty();
     }
-    
+    */
+
     private void retrieveOptionDef( Map<String, Object> jsonMap, 
                                     String oppName, 
                                     String optionDefValue ) {
@@ -233,7 +235,7 @@ public class Dht implements ContextListener {
         }
     }
 
-    private void setDhtProperty () throws ServerFault {
+    private void setDhtProperties( DxtContext context ) throws ServerFault {
 
         Log log = LogFactory.getLog( Dht.class );
 
@@ -269,56 +271,6 @@ public class Dht implements ContextListener {
             context.getShort ( "local-application-id", local_app_id );
         
         log.info( "local_app_id= " + local_app_id );
-        
-        /*
-        if( jsonOptionDefMap.size() == 0 ) {
-            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
-
-        overlayMode = setString( (Map<String, Object>)jsonOptionDefMap
-                                    .get("overlay-mode"), 
-                                 overlayMode );
-
-        maxDrlSize = setInt( (Map<String, Object>)jsonOptionDefMap
-                                .get("max-drl-size"), 
-                             maxDrlSize );
-
-        routingAlg = setString( (Map<String, Object>)jsonOptionDefMap
-                                    .get("routing-algorithm"), 
-                                 routingAlg );
-
-        directoryType = setString( (Map<String, Object>)jsonOptionDefMap
-                                        .get("directory-type"), 
-                                   directoryType );
-
-        workingDirectory = setString( (Map<String, Object>)jsonOptionDefMap
-                                           .get("working-directory"), 
-                                      workingDirectory );
-
-        defaultTTL = setLong( (Map<String, Object>)jsonOptionDefMap
-                                    .get("default-ttl"), 
-                              defaultTTL ) * 60 * 60 * 1000;
-
-        dhtPort = setString( (Map<String, Object>)jsonOptionDefMap
-                                .get("dht-port"),  
-                             dhtPort );
-
-        bootServerList = setStringList( (Map<String, Object>)jsonOptionDefMap
-                                            .get("boot-servers"), 
-                                        bootServerList );
-
-        log.info( "before get networked-app-id." );
-        networked_app_id = setShort ( (Map<String, Object>)jsonOptionDefMap
-                                          .get("networked-application-id"),
-                                      networked_app_id );
- 
-        log.info( "networked_app_id= " + networked_app_id );
-
-        local_app_id = setShort ( (Map<String, Object>)jsonOptionDefMap
-                                      .get("local-application-id"),
-                                  local_app_id );
-        
-        log.info( "local_app_id= " + local_app_id );
-        */
     }
 
     public String getRoutingAlgorithm(){
@@ -374,13 +326,13 @@ public class Dht implements ContextListener {
 
         //readDhtContext();
         //extractDhtContext();
-        context.extractDhtContext();
+
+        context.initialize();
 
         //jsonOptionDefMap = context.getJsonOptionDefMap();
         log.info( "reinitialize: before setDhtProperty. " );
-
         
-        setDhtProperty();
+        setDhtProperties( context );
 
         log.info( "reinitialize: after setDhtProperty. " );
         log.info( " boot servers=" + bootServerList);

@@ -120,7 +120,7 @@ public class DhtNodeStatus extends PortalSupport {
             if( getOp().get("update") != null ){
                 return "update";
             }
-            
+
             if( getOp().get("updateDht") != null 
                 && getOpp() != null ) {
 
@@ -220,6 +220,9 @@ public class DhtNodeStatus extends PortalSupport {
         try {
             PrintWriter spw = new PrintWriter( sf );
             dht.getContext().getJsonContext().writeJsonConfigDef( spw );
+            
+            //dht.saveContext( srcPath );
+
             spw.close();
         } catch ( Exception ex ) {
             throw ex;

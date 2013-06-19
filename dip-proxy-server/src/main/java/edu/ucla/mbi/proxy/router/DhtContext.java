@@ -128,7 +128,7 @@ public class DhtContext {
 
     }*/
     
-    public void extractDhtContext() throws ServerFault {
+    public void initialize() throws ServerFault {
         
         log.info( "extractDhtContext... " );
         
@@ -257,11 +257,13 @@ public class DhtContext {
 
     //--------------------------------------------------------------------------
     
-    public String getString( String name, String defVal ){
+    public String getString( String name, String defVal ) throws ServerFault{
        
-        if( jsonOptionDefMap != null
-            && jsonOptionDefMap.containsKey ( name ) ) {
+        if( jsonOptionDefMap == null)
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
 
+        if( jsonOptionDefMap.containsKey ( name ) ) {
+            
             Map<String, Object> def = 
                 (Map<String, Object>)jsonOptionDefMap.get( name );
  
@@ -274,10 +276,12 @@ public class DhtContext {
         return defVal;
     }
    
-    public int getInt( String name, int defVal ) {
+    public int getInt( String name, int defVal ) throws ServerFault{
 
-        if( jsonOptionDefMap != null 
-            && jsonOptionDefMap.containsKey ( name ) ) { 
+        if( jsonOptionDefMap == null)
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+
+        if( jsonOptionDefMap.containsKey ( name ) ) { 
 
             Map<String, Object> def = 
                 (Map<String, Object>)jsonOptionDefMap.get( name );
@@ -291,11 +295,13 @@ public class DhtContext {
         return defVal;
     }
 
-    public short getShort( String name, short defVal ) {
+    public short getShort( String name, short defVal ) throws ServerFault{
 
-        if( jsonOptionDefMap != null
-            && jsonOptionDefMap.containsKey ( name ) ) {
-
+        if( jsonOptionDefMap == null)
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+        
+        if( jsonOptionDefMap.containsKey ( name ) ) {
+            
             Map<String, Object> def =
                 (Map<String, Object>)jsonOptionDefMap.get( name );
 
@@ -308,14 +314,16 @@ public class DhtContext {
         return defVal;
     }
 
-    public long getLong( String name, long defVal ) {
+    public long getLong( String name, long defVal ) throws ServerFault{
 
-        if( jsonOptionDefMap != null
-            && jsonOptionDefMap.containsKey ( name ) ) {
+        if( jsonOptionDefMap == null )
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            
+        if( jsonOptionDefMap.containsKey ( name ) ) {
 
             Map<String, Object> def =
                 (Map<String, Object>)jsonOptionDefMap.get( name );
-
+            
             if( def != null && def.get("value") != null
                 && ((String)def.get("type")).equalsIgnoreCase("string" ) ) {
 
@@ -325,10 +333,13 @@ public class DhtContext {
         return defVal;
     }
 
-    public List<String> getStringList ( String name, List<String> defVal ) {
+    public List<String> getStringList ( String name, List<String> defVal ) 
+        throws ServerFault{
 
-        if( jsonOptionDefMap != null
-            && jsonOptionDefMap.containsKey ( name ) ) {
+        if( jsonOptionDefMap == null )
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+
+        if( jsonOptionDefMap.containsKey ( name ) ) {
 
             Map<String, Object> def =
                 (Map<String, Object>)jsonOptionDefMap.get( name );
