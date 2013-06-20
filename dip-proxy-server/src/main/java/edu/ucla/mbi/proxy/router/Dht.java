@@ -28,10 +28,7 @@ import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.fault.*;
-//import edu.ucla.mbi.util.context.*;
 
-
-//public class Dht implements ContextListener {
 public class Dht {
     private final static int MAX_DRL_SIZE = 2;
 
@@ -57,11 +54,9 @@ public class Dht {
     private short networked_app_id = 1;
     private short local_app_id = 2;
 
-    public Dht() { }
-
-    //private JsonContext dhtContext;
-
     private DhtContext context;
+
+    public Dht() { }
 
     public void setContext ( DhtContext context ) {
         this.context = context;
@@ -70,147 +65,6 @@ public class Dht {
     public DhtContext getContext() {
         return context;
     }
-
-    /*
-    private JsonContext readDhtContext() throws ServerFault {
-        Log log = LogFactory.getLog( Dht.class );
-        log.info( "readDhtContext:readDhtContext... " );
-
-        FileResource fr = (FileResource) dhtContext
-                                .getConfig().get("json-source");
-
-        if ( fr == null ) return null;
-
-        try {
-            dhtContext.readJsonConfigDef( fr.getInputStream() );
-        } catch ( Exception e ){
-            log.warn( "initialize exception: " + e.toString() );
-            throw ServerFaultFactory.newInstance ( Fault.JSON_CONFIGURATION );
-        }
-
-        return dhtContext;
-    }
-    
-    public void setDhtOption( String oppName, String optionDefValue )
-        throws ServerFault {
-
-        Log log = LogFactory.getLog( Dht.class );
-        log.info( "setDhtOption: setting option... " );
-        
-        Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
-
-        if ( dhtJsonMap.get( "option-def" ) != null ) {
-            retrieveOptionDef ( dhtJsonMap, oppName, optionDefValue );
-        } else {
-            throw ServerFaultFactory
-                .newInstance( Fault.JSON_CONFIGURATION );
-        }
-
-        log.info( "setDhtOption: after setDhtOption, dhtContext=" + dhtContext );
-      
-    }
-    
-    public void storeDhtContext( ServletContext servletContext )
-        throws ServerFault {
-
-        Log log = LogFactory.getLog( Dht.class );
-        log.info( "storeDhtContext: stotingContext... " );
-
-        
-        String jsonConfigFile = (String) dhtContext.getConfig()
-            .get( "json-config" );
-
-        log.info( "storeDhtContext: jsonConfigFile=" + jsonConfigFile );
-
-        String srcPath = servletContext.getRealPath( jsonConfigFile );
-        log.info( " srcPath=" + srcPath );
-       
-        File sf = new File( srcPath );
-        
-        try {
-            PrintWriter spw = new PrintWriter( sf );
-            dhtContext.writeJsonConfigDef( spw );
-            spw.close();
-        } catch ( Exception ex ) {
-            throw ServerFaultFactory
-                .newInstance( Fault.JSON_CONFIGURATION );
-        }
-
-        log.info( "storeDhtContext: after writing to json file. " );
-
-    }
-
-    private void extractDhtContext() throws ServerFault {
-        
-        Log log = LogFactory.getLog( Dht.class );
-        log.info( "extractDhtContext... " );
-        
-        //context.readDhtContex();   // NEW
-
-       
-        dhtContext = readDhtContext();
-
-        Map<String, Object> dhtJsonMap = dhtContext.getJsonConfig();
-
-        log.info( "before retrieveOptionDef... " );
-
-        if ( dhtJsonMap.get( "option-def" ) != null ) {        
-            retrieveOptionDef ( dhtJsonMap, null, null );
-        } else {
-            throw ServerFaultFactory
-                .newInstance( Fault.JSON_CONFIGURATION );
-        }
-        
-        log.info( "before setDhtProperty... " );
-        setDhtProperty();
-    }
-
-    private void retrieveOptionDef( Map<String, Object> jsonMap, 
-                                    String oppName, 
-                                    String optionDefValue ) {
-  
-        Map<String,Object> optionDef = 
-            (Map<String,Object>) jsonMap.get( "option-def" );
-                
-        Set<String> newDefs = optionDef.keySet();
-        
-        for( Iterator<String> is = newDefs.iterator(); is.hasNext(); ){
-            
-            String key = is.next();
-            
-            Map<String, Object> def = 
-                (Map<String, Object>)optionDef.get( key );
-
-            if( def.get( "value" ) != null ) {            
-                if( oppName != null && def.get( "opp") != null ) {
-                    //*** setDhtOption
-                    if( def.get( "opp" ).equals( oppName ) ) {
-                        def.put( "value", optionDefValue );
-                        return;
-                    }
-                } else {            
-                    //*** extractDhtContext
-                    jsonOptionDefMap.put( key, def );  
-                }
-            }
-
-            if( def.get( "option-def" ) != null ){
-                retrieveOptionDef( def, oppName, optionDefValue );
-            }
-        }                    
-    }
-      
-    public void contextUpdate ( JsonContext context ) {
-
-        Log log = LogFactory.getLog( Dht.class );
-        log.info( "contextUpdate called. " );
-        
-        try {
-            reinitialize( true );
-        } catch ( ServerFault fault ) {
-            log.warn( "fault code=" + fault.getMessage() );
-        }
-    } */
 
     public String getRoutingAlgorithm(){
         return this.routingAlg;
@@ -254,7 +108,6 @@ public class Dht {
         log.info( "dht initializing... " );
 
         reinitialize( false );
-        //context.getJsonContext().addContextUpdateListener( this );
     }
 
     public void reinitialize( boolean force ) 
@@ -431,7 +284,8 @@ public class Dht {
     }  
 
     //--------------------------------------------------------------------------
-    
+    //------- the part related to DhtContext -----------------------------------    
+
     public String getContextString () {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "getDhtContextString... " );
@@ -486,43 +340,22 @@ public class Dht {
     }
 
     public String getContextFilePath() {
-        
-        if( context != null && context.getJsonContext() != null ) {
-
-            String path = (String)context.getJsonContext()
-                                .getConfig().get( "json-config" );
-
-            if( path != null ) {
-                return  path;
-            }
-        } 
-        return null;
+        if( context == null ) return null;
+        return context.getJsonFilePath();
     }
 
     public void saveContext ( String realPath ) throws Exception {
-
-        File sf = new File( realPath );
-
-        try {
-            PrintWriter spw = new PrintWriter( sf );
-            context.getJsonContext().writeJsonConfigDef( spw );
-            spw.close();
-        } catch ( Exception ex ) {
-            throw ex;
-        }        
+        context.writeToJsonFile( realPath );
     }
-
 
     //--------------------------------------------------------------------------
     
     public void cleanup() {
-        
         Log log = LogFactory.getLog( Dht.class );
         log.info( "Dht.cleanup(proxyDht=" + proxyDht +")" );
         
         if( proxyDht != null ){
             proxyDht.stop();
-            
         }
     }
     
@@ -648,7 +481,6 @@ public class Dht {
         try {
 
             proxyDht.setHashedSecretForPut( new ByteArray( rid.getValue() ) );
-
             proxyDht.put( rid, drl );
 
         } catch ( Exception e ) {

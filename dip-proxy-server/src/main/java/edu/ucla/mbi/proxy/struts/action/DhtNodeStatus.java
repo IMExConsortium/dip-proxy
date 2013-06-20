@@ -26,8 +26,6 @@ import ow.messaging.*;
 import ow.routing.*;
 
 import edu.ucla.mbi.proxy.router.Dht;
-
-//import edu.ucla.mbi.util.context.JsonContext;
 import edu.ucla.mbi.util.struts.action.PortalSupport;
 import org.json.*;
 
@@ -74,12 +72,6 @@ public class DhtNodeStatus extends PortalSupport {
     }
 
     //---------------------------------------------------------------------
-    //---------------------------------------------------------------------
-    
-    private String update = "false";
-    public void setUpdate( String update ) {
-        this.update = update;
-    }
     
     private String config;
     public void setConfig ( String config ) {
@@ -96,7 +88,6 @@ public class DhtNodeStatus extends PortalSupport {
     public String execute() throws Exception {
 
         log.info("DhtNodeStatus execute");
-        log.info( "execute: update = " + update );
         log.info( "return configString=" + getConfig() );
         //super.findMenuPage();
 
@@ -132,10 +123,8 @@ public class DhtNodeStatus extends PortalSupport {
                     dht.setContextOptionValue ( oppKey, oppVal );
                 }
 
-                log.info( "execute: before saveJsonFile. " );
                 saveDhtContextToJsonFile();
                 
-                log.info( "execute: after saveJsonFile. " ); 
                 dht.reinitialize( true );
                 //return "update";
                 return "json";
@@ -190,12 +179,6 @@ public class DhtNodeStatus extends PortalSupport {
         
 
         setMessage(getText(MESSAGE));
-
-
-        if( update.equalsIgnoreCase("true")){
-            log.info( "update is true, dht reinitialize... " );
-            dht.reinitialize( true );
-        }
 
         return SUCCESS;
     }
