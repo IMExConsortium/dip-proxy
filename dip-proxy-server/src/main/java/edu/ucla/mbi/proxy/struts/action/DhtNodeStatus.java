@@ -25,9 +25,9 @@ import ow.dht.*;
 import ow.messaging.*;
 import ow.routing.*;
 
-import edu.ucla.mbi.proxy.router.*;
+import edu.ucla.mbi.proxy.router.Dht;
 
-import edu.ucla.mbi.util.context.JsonContext;
+//import edu.ucla.mbi.util.context.JsonContext;
 import edu.ucla.mbi.util.struts.action.PortalSupport;
 import org.json.*;
 
@@ -75,15 +75,11 @@ public class DhtNodeStatus extends PortalSupport {
 
     //---------------------------------------------------------------------
     //---------------------------------------------------------------------
-
     
     private String update = "false";
-
-    /*
     public void setUpdate( String update ) {
         this.update = update;
     }
-    */
     
     private String config;
     public void setConfig ( String config ) {
@@ -91,7 +87,7 @@ public class DhtNodeStatus extends PortalSupport {
     }
 
     public String getConfig () {
-        this.config = dht.getContext().getDhtContextString();
+        this.config = dht.getContextString();
         return config;
     }
 
@@ -100,7 +96,7 @@ public class DhtNodeStatus extends PortalSupport {
     public String execute() throws Exception {
 
         log.info("DhtNodeStatus execute");
-
+        log.info( "execute: update = " + update );
         log.info( "return configString=" + getConfig() );
         //super.findMenuPage();
 
@@ -133,20 +129,19 @@ public class DhtNodeStatus extends PortalSupport {
                     String oppVal = (String)getOpp().get( oppKey );
                     log.info( "oppkey=" + oppKey + ", and oppVal=" + oppVal );                 
                
-                    dht.getContext().setDhtOption( oppKey, oppVal );
+                    dht.setContextOptionValue ( oppKey, oppVal );
                 }
 
+                log.info( "execute: before saveJsonFile. " );
                 saveDhtContextToJsonFile();
-                //dht.getContext().storeDhtContext( getServletContext() );
                 
+                log.info( "execute: after saveJsonFile. " ); 
                 dht.reinitialize( true );
-
                 //return "update";
                 return "json";
             }
         }
 
-       
         nodeStatus = new HashMap<String,String>(); 
 
         log.info( "dht=" + dht.getDHT() );
@@ -198,6 +193,7 @@ public class DhtNodeStatus extends PortalSupport {
 
 
         if( update.equalsIgnoreCase("true")){
+            log.info( "update is true, dht reinitialize... " );
             dht.reinitialize( true );
         }
 
@@ -205,32 +201,14 @@ public class DhtNodeStatus extends PortalSupport {
     }
 
     private void saveDhtContextToJsonFile() throws Exception {
-        log.info( "storeDhtContext: stotingContext... " );
+        
+        String jsonConfigFile = dht.getContextFilePath();
 
-        String jsonConfigFile = (String) dht.getContext().getJsonContext()
-            .getConfig().get( "json-config" );
-
-        log.info( "saveDhtContextToJsonFile: jsonConfigFile=" + jsonConfigFile );
-
-        String srcPath = getServletContext().getRealPath( jsonConfigFile );
-        log.info( " srcPath=" + srcPath );
-
-        File sf = new File( srcPath );
-
-        try {
-            PrintWriter spw = new PrintWriter( sf );
-            dht.getContext().getJsonContext().writeJsonConfigDef( spw );
-            
-            //dht.saveContext( srcPath );
-
-            spw.close();
-        } catch ( Exception ex ) {
-            throw ex;
-        }
+        dht.saveContext( getServletContext().getRealPath( jsonConfigFile ) );
 
         log.info( "saveDhtContextToJsonFile: after writing to json file. " );
-
     }
+
     /**
      * Provide default value for Message property.
      */

@@ -35,14 +35,10 @@ public class DhtContext {
     public void setJsonContext( JsonContext context ){
         this.jsonContext = context;
     }
-  
+     
     public JsonContext  getJsonContext( ){ // REMOVE ME !!!!!!
         return jsonContext;
     }
- 
-    public Map<String, Object> getJsonOptionDefMap() {
-        return jsonOptionDefMap;
-    } 
 
     public String getDhtContextString () {
         log.info( "getDhtContextString... " );
@@ -134,6 +130,7 @@ public class DhtContext {
         
         jsonContext = readDhtContext();
 
+        log.info( "initialize: after readDhtContext. " );
         Map<String, Object> dhtJsonMap = jsonContext.getJsonConfig();
 
         if ( dhtJsonMap.get( "option-def" ) != null ) {        
@@ -167,11 +164,13 @@ public class DhtContext {
                 if( oppName != null && def.get( "opp") != null ) {
                     //*** setDhtOption
                     if( def.get( "opp" ).equals( oppName ) ) {
+                        log.info( "dhtContext: before put new optionValue. ");
                         def.put( "value", optionDefValue );
                         return;
                     }
                 } else {
                     //*** extractDhtContext
+                    log.info( "dhtContext: before put optionDef. " );
                     jsonOptionDefMap.put( key, def );
                 }
             }
@@ -181,7 +180,7 @@ public class DhtContext {
             }
         }
     }
-
+    /*
     private void recursiveSetOptionDef( Map<String, Object> jsonMap, 
                                         String oppName, 
                                         String optionDefValue ) {
@@ -244,14 +243,14 @@ public class DhtContext {
     public void contextUpdate ( JsonContext context ) {
 
         log.info( "contextUpdate called. " );
-        /*       
-        try {
-            reinitialize( true );
-        } catch ( ServerFault fault ) {
-            log.warn( "fault code=" + fault.getMessage() );
-        }
-        */
-    }
+               
+        //try {
+        //    reinitialize( true );
+        //} catch ( ServerFault fault ) {
+        //    log.warn( "fault code=" + fault.getMessage() );
+        //}
+        
+    }*/
   
     //--------------------------------------------------------------------------
 

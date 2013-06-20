@@ -28,10 +28,11 @@ import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.fault.*;
-import edu.ucla.mbi.util.context.*;
+//import edu.ucla.mbi.util.context.*;
 
 
-public class Dht implements ContextListener {
+//public class Dht implements ContextListener {
+public class Dht {
     private final static int MAX_DRL_SIZE = 2;
 
     private final String propertiesFN = "/tmp/dhtrouter.properties";
@@ -58,41 +59,19 @@ public class Dht implements ContextListener {
 
     public Dht() { }
 
-    private JsonContext dhtContext;
+    //private JsonContext dhtContext;
 
     private DhtContext context;
 
     public void setContext ( DhtContext context ) {
         this.context = context;
-        //this.dhtContext = context.getJsonContext();
     }
 
     public DhtContext getContext() {
         return context;
     }
 
-    public String getDhtContextString () {
-        Log log = LogFactory.getLog( Dht.class );
-        log.info( "getDhtContextString... " );
-        
-        if( dhtContext == null ) return null;
-        /*
-        if( dhtContext.getJsonConfigString() == null ) {
-            try {
-                dhtContext = readDhtContext();
-            } catch ( ServerFault fault ) {
-                log.info( "readDhtContext got fault. " );
-                return null;
-            }
-        
-            return dhtContext.getJsonConfigString();    
-        }
-        return "getDhtContextString called";
-        */
-
-        return context.getDhtContextString();    
-    } 
-
+    /*
     private JsonContext readDhtContext() throws ServerFault {
         Log log = LogFactory.getLog( Dht.class );
         log.info( "readDhtContext:readDhtContext... " );
@@ -111,7 +90,7 @@ public class Dht implements ContextListener {
 
         return dhtContext;
     }
-
+    
     public void setDhtOption( String oppName, String optionDefValue )
         throws ServerFault {
 
@@ -130,7 +109,7 @@ public class Dht implements ContextListener {
         log.info( "setDhtOption: after setDhtOption, dhtContext=" + dhtContext );
       
     }
-    /*
+    
     public void storeDhtContext( ServletContext servletContext )
         throws ServerFault {
 
@@ -159,9 +138,8 @@ public class Dht implements ContextListener {
 
         log.info( "storeDhtContext: after writing to json file. " );
 
-    }*/
+    }
 
-    /*
     private void extractDhtContext() throws ServerFault {
         
         Log log = LogFactory.getLog( Dht.class );
@@ -186,7 +164,6 @@ public class Dht implements ContextListener {
         log.info( "before setDhtProperty... " );
         setDhtProperty();
     }
-    */
 
     private void retrieveOptionDef( Map<String, Object> jsonMap, 
                                     String oppName, 
@@ -222,7 +199,7 @@ public class Dht implements ContextListener {
             }
         }                    
     }
-    
+      
     public void contextUpdate ( JsonContext context ) {
 
         Log log = LogFactory.getLog( Dht.class );
@@ -233,45 +210,7 @@ public class Dht implements ContextListener {
         } catch ( ServerFault fault ) {
             log.warn( "fault code=" + fault.getMessage() );
         }
-    }
-
-    private void setDhtProperties( DxtContext context ) throws ServerFault {
-
-        Log log = LogFactory.getLog( Dht.class );
-
-        overlayMode = context.getString( "overlay-mode", overlayMode );
-
-        if( !overlayMode.equals( "networked" ) ) {
-            overlayMode = "local";
-        }
-
-        maxDrlSize = context.getInt ( "max-drl-size", maxDrlSize );
-        routingAlg = context.getString( "routing-algorithm", routingAlg );
-
-        directoryType = context.getString( "directory-type", directoryType );
-
-        workingDirectory = 
-            context.getString( "working-directory", workingDirectory );
-
-        defaultTTL = 
-            context.getLong( "default-ttl", defaultTTL ) * 60 * 60 * 1000;
-
-        dhtPort = context.getString( "dht-port", dhtPort );
-
-        bootServerList = 
-            context.getStringList( "boot-servers", bootServerList );
-
-        log.info( "before get networked-app-id." );
-        networked_app_id = 
-            context.getShort ( "networked-application-id", networked_app_id );
- 
-        log.info( "networked_app_id= " + networked_app_id );
-
-        local_app_id = 
-            context.getShort ( "local-application-id", local_app_id );
-        
-        log.info( "local_app_id= " + local_app_id );
-    }
+    } */
 
     public String getRoutingAlgorithm(){
         return this.routingAlg;
@@ -315,6 +254,7 @@ public class Dht implements ContextListener {
         log.info( "dht initializing... " );
 
         reinitialize( false );
+        //context.getJsonContext().addContextUpdateListener( this );
     }
 
     public void reinitialize( boolean force ) 
@@ -322,16 +262,13 @@ public class Dht implements ContextListener {
 
         Log log = LogFactory.getLog( Dht.class );
 
-        log.info( " dht reinitializing... " );
-
-        //readDhtContext();
-        //extractDhtContext();
+        log.info( "dht: reinitializing... " );
+        log.info( "dht: before making context initialize... ");
 
         context.initialize();
 
-        //jsonOptionDefMap = context.getJsonOptionDefMap();
-        log.info( "reinitialize: before setDhtProperty. " );
-        
+        log.info( "dht: after context initialize... " );
+
         setDhtProperties( context );
 
         log.info( "reinitialize: after setDhtProperty. " );
@@ -492,6 +429,89 @@ public class Dht implements ContextListener {
             e.printStackTrace();
         }
     }  
+
+    //--------------------------------------------------------------------------
+    
+    public String getContextString () {
+        Log log = LogFactory.getLog( Dht.class );
+        log.info( "getDhtContextString... " );
+
+        if( context == null ) return null;
+
+        return context.getDhtContextString();
+    }
+
+    private void setDhtProperties( DhtContext context ) throws ServerFault {
+
+        Log log = LogFactory.getLog( Dht.class );
+
+        overlayMode = context.getString( "overlay-mode", overlayMode );
+
+        if( !overlayMode.equals( "networked" ) ) {
+            overlayMode = "local";
+        }
+
+        maxDrlSize = context.getInt ( "max-drl-size", maxDrlSize );
+        routingAlg = context.getString( "routing-algorithm", routingAlg );
+
+        directoryType = context.getString( "directory-type", directoryType );
+
+        workingDirectory = 
+            context.getString( "working-directory", workingDirectory );
+
+        defaultTTL = 
+            context.getLong( "default-ttl", defaultTTL ) * 60 * 60 * 1000;
+
+        dhtPort = context.getString( "dht-port", dhtPort );
+
+        bootServerList = 
+            context.getStringList( "boot-servers", bootServerList );
+
+        log.info( "before get networked-app-id." );
+        networked_app_id = 
+            context.getShort ( "networked-application-id", networked_app_id );
+ 
+        log.info( "networked_app_id= " + networked_app_id );
+
+        local_app_id = 
+            context.getShort ( "local-application-id", local_app_id );
+        
+        log.info( "local_app_id= " + local_app_id );
+    }
+
+    public void setContextOptionValue ( String name, String value ) 
+        throws ServerFault {
+
+        context.setDhtOption( name, value );    
+    }
+
+    public String getContextFilePath() {
+        
+        if( context != null && context.getJsonContext() != null ) {
+
+            String path = (String)context.getJsonContext()
+                                .getConfig().get( "json-config" );
+
+            if( path != null ) {
+                return  path;
+            }
+        } 
+        return null;
+    }
+
+    public void saveContext ( String realPath ) throws Exception {
+
+        File sf = new File( realPath );
+
+        try {
+            PrintWriter spw = new PrintWriter( sf );
+            context.getJsonContext().writeJsonConfigDef( spw );
+            spw.close();
+        } catch ( Exception ex ) {
+            throw ex;
+        }        
+    }
+
 
     //--------------------------------------------------------------------------
     
