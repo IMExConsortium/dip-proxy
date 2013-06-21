@@ -145,7 +145,43 @@ public class Dht {
 
         log.info( "workingDir= " + workingDirectory );
 
-        ID proxyId = writeRouterPropertyFile ( dhtPort );
+        
+        String proxyTime  = null;
+        String proxyIdStr = null;
+        BigInteger proxyIdSHA1 = null;
+        ID proxyId = null;
+        dhtProperties = new Properties();
+        
+        if( !force ) {
+            try{
+                InputStream fis = new FileInputStream(propertiesFN);
+           
+                dhtProperties.load( fis );
+           
+                dhtPort = dhtProperties.getProperty( "dht-port" );
+           
+                proxyHost = dhtProperties.getProperty("proxy-host");
+                proxyIdStr = dhtProperties.getProperty("proxy-str-id");
+                proxyIdSHA1 = 
+                    new BigInteger( dhtProperties.getProperty( "proxy-sha1-id" ),
+                                    16 );
+                proxyId = ID.getID( proxyIdSHA1, 20 );
+                log.info( " old: proxyIdStr=" + proxyIdStr );
+                log.info( " old:    proxyId=" + proxyIdSHA1.toString(16) );
+            
+             } catch (FileNotFoundException e ){
+            
+                 proxyId = writeRouterPropertyFile ( dhtPort );
+        
+             } catch (Exception uhe) {
+                log.info( " unknown exception...");
+            }
+
+        } else {
+            proxyId = writeRouterPropertyFile ( dhtPort );
+        } 
+        
+        //ID proxyId = writeRouterPropertyFile ( dhtPort );
 
         try {
             DHTConfiguration dhtc = DHTFactory.getDefaultConfiguration();
@@ -593,57 +629,6 @@ public class Dht {
         drl.add( getDhtRouterList( rid ) );
         
         return drl;
-    }
-
-    private String setString( Map defs, String defaultValue) {
-
-        if( defs != null && defs.get("value") != null 
-            && ((String)defs.get("type")).equalsIgnoreCase("string" ) ) {
-
-            return (String) defs.get("value");
-        } 
-        return defaultValue;
-    }
-    
-    private int setInt(Map<String,Object> defs, int defaultValue ) {
-
-        if( defs != null && defs.get("value") != null
-            && ((String)defs.get("type")).equalsIgnoreCase("string" ) ){
-            
-            return Integer.parseInt( (String) defs.get("value") );
-        }
-        return defaultValue;
-    }
-
-    private short setShort(Map<String,Object> defs, short defaultValue ) {
-
-        if( defs != null && defs.get("value") != null
-            && ((String)defs.get("type")).equalsIgnoreCase("string" ) ){
-
-            return Short.parseShort( (String) defs.get("value") );
-        }
-        return defaultValue;
-    }
-
-    private long setLong(Map<String,Object> defs, long defaultValue){
-
-        if( defs != null && defs.get("value") != null
-            && ((String)defs.get("type")).equalsIgnoreCase("string" ) ){
-
-            return Long.parseLong( (String) defs.get("value") );
-        }
-        return defaultValue;
-    }
-
-    private List<String> setStringList( Map<String,Object> defs, 
-                                        List<String> defaultValue ){
-
-        if( defs != null && defs.get("value") != null
-            && ((String)defs.get("type")).equalsIgnoreCase("string-list" ) ) {
-
-            return (List<String>)defs.get("value");
-        }
-        return defaultValue;
     }
 
     private ID writeRouterPropertyFile ( String dhtPort ) throws ServerFault {

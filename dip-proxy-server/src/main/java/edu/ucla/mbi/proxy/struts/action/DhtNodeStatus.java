@@ -73,6 +73,11 @@ public class DhtNodeStatus extends PortalSupport {
 
     //---------------------------------------------------------------------
     
+    private String update = "false"; 
+    public void setUpdate( String update ) { 
+        this.update = update; 
+    }
+ 
     private String config;
     public void setConfig ( String config ) {
         this.config = config;
@@ -180,6 +185,10 @@ public class DhtNodeStatus extends PortalSupport {
 
         setMessage(getText(MESSAGE));
 
+        if( update.equalsIgnoreCase("true")){ 
+            log.info( "update is true, dht reinitialize... " ); 
+            dht.reinitialize( true ); 
+        } 
         return SUCCESS;
     }
 
