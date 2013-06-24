@@ -1,16 +1,16 @@
 {
   "legend":"Dht Router Configuration", 
-  "options":["node-config","boot-servers"], 
+  "options":["node-config"], 
   "option-def":{
       "node-config": {
-         "legend":"Local Node Configuration",     
-         "options":[ "overlay-mode" ],
+         "legend":"Overlay Node Configuration",     
+         "options":[ "overlay-network-flag" ],
          "option-def":{
-             "overlay-mode": {
-              "label": "overlay-mode",
-              "type": "string",
-              "value": "${dht.mode}",
-              "opp":"overlay_mode", 
+             "overlay-network-flag": {
+              "label": "Networked overlay",
+              "type": "boolean",
+              "value": "${dht.overlay.network.flag}",   
+              "opp":"overlay_network_flag", 
               "opcode": "xxx"
              },
              "max-drl-size": {

@@ -1,7 +1,7 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="t" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<center>
+
 
 <form id="dht-config-form" name="dht-config-form" onsubmit="return false;" action="" method="post">
     <div>
@@ -18,7 +18,7 @@
     </div>
 </form>
 
-</center>
+
 
 
 <script type="text/javascript">

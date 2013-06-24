@@ -1965,3 +1965,39 @@ a.graph {
 .att-body {
   padding: 0px 1.5em 0px 1.5em;
 }
+
+
+
+
+.cfg-block-list{
+  display: block;
+  margin: 0 0 0 2em;
+}
+.cfg-block-legend{
+  display: block;
+  margin: 0 0 1em 0;
+  width: 80em;
+}
+
+.cfg-key-val{
+  display: block;
+  margin: 0.15em 0 0.15em 0;
+
+}
+
+.cfg-key{
+  display: inline-block;
+  width: 30em;
+
+}
+.cfg-key-strong{
+  display: inline-block;
+  width: 30em;
+  font-weight:bold;
+
+}
+.cfg-val{
+  display: inline-block;
+}
+
+

@@ -38,7 +38,10 @@ public class Dht {
  
     private Properties dhtProperties = null;
     
-    private String overlayMode = "networked";
+    private String overlayMode = "networked";   
+    private boolean overlayNetworkFlag = false;
+
+
     private String dhtPort = "55666";
     private String routingAlg = "Chord";
     private String directoryType = "BerkeleyDB";
@@ -92,6 +95,15 @@ public class Dht {
     public long getDefaultTTL () {
         return this.defaultTTL;
     }
+    
+    public boolean getOverlayNetworkFlag() {
+        return this.overlayNetworkFlag;
+    }
+
+    public boolean isOverlayNetworkFlag() {
+        return this.overlayNetworkFlag;
+    }
+
 
     public String getOverlayMode() {
         return this.overlayMode;
@@ -125,8 +137,9 @@ public class Dht {
         setDhtProperties( context );
 
         log.info( "reinitialize: after setDhtProperty. " );
-        log.info( " boot servers=" + bootServerList);
+        log.info( " boot servers=" + bootServeList);
         log.info( " overlayMode=" + overlayMode );
+        log.info( " overlayNetworked=" + overlayNetworked );
         log.info( " maxDrlSize=" + maxDrlSize );
         log.info( " routingAlg =" + routingAlg );
         log.info( " directoryType=" + directoryType );
@@ -152,7 +165,10 @@ public class Dht {
         ID proxyId = null;
         dhtProperties = new Properties();
         
-        if( !force ) {
+        if( force ) {
+            proxyId = writeRouterPropertyFile ( dhtPort );
+        } else {
+
             try{
                 InputStream fis = new FileInputStream(propertiesFN);
            
@@ -162,9 +178,11 @@ public class Dht {
            
                 proxyHost = dhtProperties.getProperty("proxy-host");
                 proxyIdStr = dhtProperties.getProperty("proxy-str-id");
+
                 proxyIdSHA1 = 
                     new BigInteger( dhtProperties.getProperty( "proxy-sha1-id" ),
                                     16 );
+
                 proxyId = ID.getID( proxyIdSHA1, 20 );
                 log.info( " old: proxyIdStr=" + proxyIdStr );
                 log.info( " old:    proxyId=" + proxyIdSHA1.toString(16) );
@@ -176,9 +194,6 @@ public class Dht {
              } catch (Exception uhe) {
                 log.info( " unknown exception...");
             }
-
-        } else {
-            proxyId = writeRouterPropertyFile ( dhtPort );
         } 
         
         //ID proxyId = writeRouterPropertyFile ( dhtPort );
@@ -337,15 +352,18 @@ public class Dht {
 
         overlayMode = context.getString( "overlay-mode", overlayMode );
 
+
         if( !overlayMode.equals( "networked" ) ) {
             overlayMode = "local";
         }
+
+        overlayNetworkFlag = context.getBoolean( "overlay-networ-flag", overlayNetworkFlag );
 
         maxDrlSize = context.getInt ( "max-drl-size", maxDrlSize );
         routingAlg = context.getString( "routing-algorithm", routingAlg );
 
         directoryType = context.getString( "directory-type", directoryType );
-
+        
         workingDirectory = 
             context.getString( "working-directory", workingDirectory );
 

@@ -11,9 +11,9 @@
   <s:if test="big">
    <t:insertTemplate template="/tiles/header.jsp" flush="true"/>
   </s:if>
-
+</center>
   <t:insertAttribute name="body"/>
-
+<center>
   <s:if test="big">
     <t:insertTemplate template="/tiles/footer.jsp" flush="true">
      <t:putAttribute name="edit" value="/tiles/pageedit-yui.jsp" />
