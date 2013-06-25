@@ -166,11 +166,11 @@
        <entry key="nativeServer">  
         <ref bean="prlReferenceServer"/>
        </entry>      
-
+       <!--
        <entry key="ncbiProxyAddress">
-         <!--<value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> -->
+         <value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> 
          <value> http://10.1.200.201:8080/dip-proxy-server/proxy-service</value>
-       </entry>
+       </entry> -->
 
        <entry key="proxyProto"> 
         <ref bean="referenceProxy"/>

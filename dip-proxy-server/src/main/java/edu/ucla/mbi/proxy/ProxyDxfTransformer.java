@@ -126,8 +126,8 @@ public class ProxyDxfTransformer {
         Log log = LogFactory.getLog( ProxyDxfTransformer.class );
         
         // -----------------------------------------------------------------
-        RemoteServerContext rsc = wsContext.getServerContext( "MBI" );
-        
+        //RemoteServerContext rsc = wsContext.getServerContext( "MBI" );
+        /*
         String ncbiProxyAddress = ( String ) rsc.getNcbiProxyAddress();  //XX
 
         if( ncbiProxyAddress != null &&  ncbiProxyAddress.length() > 0 ) {
@@ -150,6 +150,7 @@ public class ProxyDxfTransformer {
 
         ((BindingProvider) port).getRequestContext()
             .put( JAXWSProperties.CONNECT_TIMEOUT, rsc.getTimeout() );
+        */
         // -----------------------------------------------------------------
     
         List<NodeType> node = dxfResult.getNode();
@@ -173,6 +174,7 @@ public class ProxyDxfTransformer {
                               "(loop): NS=refseq" + " AC=" + node_ac ); 
 
                     // ----------------------------------------------------
+                    /*
                     Holder<DatasetType> resDataset =
                         new Holder<DatasetType>();
                     Holder<String> resNative = new Holder<String>();
@@ -183,22 +185,19 @@ public class ProxyDxfTransformer {
                                     resDataset, resNative );
                     
                     DatasetType dataset = resDataset.value;
+                    */
                     // --------------------------------------------------------
                     
                     //*** new thinking ?????????? 
-                    /*
+                    
                     //--------------------------------------------------------
-                    Router router =
-                        WSContext.getServerContext( "NCBI" ).createRouter() ;
-                    CachingService cachingSrv =
-                        new CachingService( "NCBI", router,
-                                            WSContext.getServerContext( "NCBI" ) );
+                    CachingService cachingSrv = 
+                        new CachingService( wsContext, "NCBI" );
 
-                    DatasetType dataset = cachingSrv.getDxf( 
+                    DatasetType dataset = cachingSrv.getDatasetType(
                         "NCBI", "refseq", "refseq", node_ac, "base" );
-                   
                     // ------------------------------------------------------ 
-                    */
+                   
 
                     NodeType nodeNew = 
                         (NodeType) dataset.getNode().get( 0 );
@@ -207,8 +206,8 @@ public class ProxyDxfTransformer {
 
                     parttype.setNode( nodeNew );
 
-                } catch ( ProxyFault fault ) {
-                    throw fault;
+                //} catch ( ProxyFault fault ) {
+                //    throw fault;
                 } catch ( Exception e ) {
                     log.info( "ProlinksServer: NCBI getRefseq: " +
                               e.toString() );
