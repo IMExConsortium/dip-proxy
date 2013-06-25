@@ -254,4 +254,30 @@ public class DhtContext {
         }
         return defVal;
     }
+
+    public boolean getBoolean( String name, boolean flag ) 
+        throws ServerFault{
+        
+        if( jsonOptionDefMap == null )
+            throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+
+        if( jsonOptionDefMap.containsKey ( name ) ) {
+
+            Map<String, Object> def =
+                (Map<String, Object>)jsonOptionDefMap.get( name );
+
+            if( def != null && def.get("value") != null
+                && ((String)def.get("type")).equalsIgnoreCase("boolean" ) ) {
+
+                String value = (String) def.get("value");
+
+                if( value.equals( "true" ) ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return flag;
+    }
 }

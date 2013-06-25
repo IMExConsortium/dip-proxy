@@ -131,8 +131,8 @@ public class DhtNodeStatus extends PortalSupport {
                 saveDhtContextToJsonFile();
                 
                 dht.reinitialize( true );
-                //return "update";
-                return "json";
+                return "update";
+                //return "json";
             }
         }
 

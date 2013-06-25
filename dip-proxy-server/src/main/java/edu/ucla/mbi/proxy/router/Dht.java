@@ -137,9 +137,9 @@ public class Dht {
         setDhtProperties( context );
 
         log.info( "reinitialize: after setDhtProperty. " );
-        log.info( " boot servers=" + bootServeList);
+        log.info( " boot servers=" + bootServerList);
         log.info( " overlayMode=" + overlayMode );
-        log.info( " overlayNetworked=" + overlayNetworked );
+        log.info( " overlayNetworkFlag=" + overlayNetworkFlag );
         log.info( " maxDrlSize=" + maxDrlSize );
         log.info( " routingAlg =" + routingAlg );
         log.info( " directoryType=" + directoryType );
@@ -357,7 +357,14 @@ public class Dht {
             overlayMode = "local";
         }
 
-        overlayNetworkFlag = context.getBoolean( "overlay-networ-flag", overlayNetworkFlag );
+        overlayNetworkFlag = context.getBoolean( "overlay-network-flag", 
+                                                 overlayNetworkFlag );
+
+        if( overlayNetworkFlag ) {
+            overlayMode = "networked";
+        } else {
+            overlayMode = "local";
+        }
 
         maxDrlSize = context.getInt ( "max-drl-size", maxDrlSize );
         routingAlg = context.getString( "routing-algorithm", routingAlg );
