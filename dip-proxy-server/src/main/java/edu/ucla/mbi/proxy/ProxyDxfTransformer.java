@@ -33,10 +33,10 @@ public class ProxyDxfTransformer {
         wsContext = context;
     }
     
-    public DatasetType transform( String strNative,
-                                  String ns, String ac, String detail,
-                                  String provider, String service 
-                                  ) throws ServerFault {
+    private DatasetType transform( String strNative,
+                                   String ns, String ac, String detail,
+                                   String provider, String service 
+                                   ) throws ServerFault {
 
 	    Log log = LogFactory.getLog( ProxyDxfTransformer.class );
 	    
@@ -98,12 +98,11 @@ public class ProxyDxfTransformer {
         } else {
             return trResult;
         }
-        
     }
 
     //--------------------------------------------------------------------------
 
-    public DatasetType buildProlinksDxf( DatasetType dxfResult ) 
+    private DatasetType buildProlinksDxf( DatasetType dxfResult ) 
         throws ServerFault {
         
         Log log = LogFactory.getLog( ProxyDxfTransformer.class );
