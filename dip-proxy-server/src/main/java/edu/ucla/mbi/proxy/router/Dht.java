@@ -196,8 +196,6 @@ public class Dht {
             }
         } 
         
-        //ID proxyId = writeRouterPropertyFile ( dhtPort );
-
         try {
             DHTConfiguration dhtc = DHTFactory.getDefaultConfiguration();
 
@@ -277,62 +275,96 @@ public class Dht {
                 
                     String bootHost = i.next();
                 
-                    if ( ! bootHost.equals( localAddress.getHostAddress() )) { 
-                        
+                    if ( !bootHost.equals( localAddress.getHostAddress() ) ) { 
+
                         log.info( "  trying (non-self) boothost=" + 
                                   bootHost + ":" + dhtPort );
-                    
-                        try {
-                            ma = proxyDht
-                                .joinOverlay( bootHost 
-                                              + ":" + dhtPort,  
-                                              Integer.parseInt( dhtPort ) );
-                            log.info( "overlay joined (MessagingAddress=" + 
-                                      ma + ")" );
+    
+                        ma = this.joinOverlay( 
+                            bootHost + ":" + dhtPort,  dhtPort  );
+                        
+                        if( ma != null ) {
                             break;
-                        } catch ( ow.routing.RoutingException re ) {
-                            log.info( "   routing exception: " + re.toString() );
-                        }                 
-
-                    } else {
-                        log.info( "  skipping (non-local) boothost=" + 
-                                  bootHost + ":" + dhtPort );
+                        }
                     }
                 }
+
+                if( ma == null && bootServerList.contains( 
+                    localAddress.getHostAddress() ) ) {
+    
+                    proxyDht = DHTFactory.getDHT( networked_app_id,
+                        networked_app_id, dhtc, proxyId );
+
+                    ma = this.joinOverlay( localAddress.getHostAddress()
+                                           + ":" + dhtPort, dhtPort );
+                    /*
+                    try {
+                        ma = proxyDht
+                                .joinOverlay( localAddress.getHostAddress()
+                                              + ":" + dhtPort,
+                                              Integer.parseInt( dhtPort ) );
+
+                        log.info( "overlay started (MessagingAddress=" +
+                                  ma + ")" );
+
+                    } catch ( ow.routing.RoutingException re ) {
+                        log.info( "   routing exception: " + re.toString() );
+                    }*/
+                }
+
+                if( ma == null ) {
+                    //*** convert overlayMode to local
+                    setContextOptionValue ( "overlay_network_flag", "false" );
+
+                    //??? how to get realPath to save file ???
+                    //saveContext( getServletContext().getRealPath( getContextFilePath() ) );
+
+                    reinitialize( true );
+                }                
             }
             
-            if( bootServerList.contains( localAddress.getHostAddress() )
-                && ma == null ) {
-               
+            if( ma == null ) {
                                 
-                if( overlayMode.equalsIgnoreCase( "networked" ) ) { 
-                    proxyDht = DHTFactory.getDHT( networked_app_id, 
-                        networked_app_id, dhtc, proxyId );
-                } else {
-                    log.info( "local to itself. " );
-                    
-                    proxyDht = DHTFactory.getDHT( local_app_id, 
-                        local_app_id, dhtc, proxyId );
-                }
+                log.info( "local to itself. " );
 
-                try {
-                    ma = proxyDht
-                        .joinOverlay( localAddress.getHostAddress() 
-                                      + ":" + dhtPort,  
-                                      Integer.parseInt( dhtPort ) );
-
-                    log.info( "overlay started (MessagingAddress=" + 
-                              ma + ")" );
-                    
-                } catch ( ow.routing.RoutingException re ) {
-                    log.info( "   routing exception: " + re.toString() );
-                }
+                proxyDht = DHTFactory.getDHT( local_app_id, 
+                    local_app_id, dhtc, proxyId );
+                
+                ma = this.joinOverlay( localAddress.getHostAddress()
+                                       + ":" + dhtPort, dhtPort ) ;
             }                 
             
         } catch( Exception e ){
             e.printStackTrace();
+            //throw ServerFaultFactory.newInstance( Fault.OVERLAY );
         }
     }  
+
+    private MessagingAddress joinOverlay ( String hostAndPort, 
+        String defaultPort ) throws ServerFault{
+
+        Log log = LogFactory.getLog( Dht.class );
+
+        try {
+            MessagingAddress ma = proxyDht.joinOverlay( 
+                hostAndPort, Integer.parseInt( defaultPort ) ); 
+            log.info( "overlay started (MessagingAddress=" + ma + ")" );
+
+            return ma;
+
+        } catch ( UnknownHostException ex ) {
+            log.info( " unknownHostException: " + ex.toString() );
+
+            //??? need add a new fault Fault.OVERLAY ???
+            //throw ServerFaultFactory.newInstance( Fault.OVERLAY );
+                    
+        } catch ( ow.routing.RoutingException re ) {
+            log.info( " routing exception: " + re.toString() );
+            //throw ServerFaultFactory.newInstance( Fault.OVERLAY );
+        }
+
+        return null;
+    }
 
     //--------------------------------------------------------------------------
     //------- the part related to DhtContext -----------------------------------    
