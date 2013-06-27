@@ -196,16 +196,9 @@ public class CachingService {
             throw serverFault;
 
         } else {
-
             log.info( "getNative: return a null. " );
             return null;
-
         }
-
-        //} catch( ProxyFault fault){
-        //    throw ServerFaultFactory
-        //        .newInstance( fault.getFaultInfo().getFaultCode() );            
-        //}
     }
 
     //--------------------------------------------------------------------------
@@ -218,9 +211,7 @@ public class CachingService {
 
             return unmarshall( dxfRecord.getDxf() );
         }
- 
         return null;
-
     }
     
     //--------------------------------------------------------------------------
@@ -251,8 +242,6 @@ public class CachingService {
                              "_" + ac + "_" + detail;
 
         Date currentTime = Calendar.getInstance().getTime();
-
-        
 
         //*** retrieve from memcached
         if( rns.getRsc().isRamCacheOn() ){
