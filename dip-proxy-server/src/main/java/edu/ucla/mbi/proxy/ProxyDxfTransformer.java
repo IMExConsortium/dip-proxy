@@ -123,30 +123,28 @@ public class ProxyDxfTransformer {
                 String node_ac = nodeOld.getAc();
                 long node_id = nodeOld.getId();
 
-                try {
+                if( nodeOld.getNs().equals( "refseq" ) ) {
+                    try {
                     
-                    log.info( "ProlinksServer: port.getRefseq call " +
-                              "(loop): NS=refseq" + " AC=" + node_ac ); 
+                        log.info( "ProlinksServer: port.getRefseq call " +
+                                  "(loop): NS=refseq" + " AC=" + node_ac ); 
 
-                    CachingService cachingSrv = 
-                        new CachingService( wsContext, "NCBI" );
+                        CachingService cachingSrv = 
+                            new CachingService( wsContext, "NCBI" );
 
-                    DatasetType dataset = cachingSrv.getDatasetType(
-                        "NCBI", "refseq", "refseq", node_ac, "base" );
+                        DatasetType dataset = cachingSrv.getDatasetType(
+                            "NCBI", "refseq", "refseq", node_ac, "base" );
 
-                    NodeType nodeNew = 
-                        (NodeType) dataset.getNode().get( 0 );
+                        NodeType nodeNew = 
+                            (NodeType) dataset.getNode().get( 0 );
 
-                    nodeNew.setId( node_id );
+                        nodeNew.setId( node_id );
 
-                    parttype.setNode( nodeNew );
+                        parttype.setNode( nodeNew );
 
-                } catch ( ServerFault fault ) {
-                    throw fault;
-                } catch ( Exception e ) {
-                    log.info( "ProlinksServer: NCBI getRefseq: " +
-                              e.toString() );
-                    throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
+                    } catch ( ServerFault fault ) {
+                        throw fault;
+                    }
                 }
             }
         }
