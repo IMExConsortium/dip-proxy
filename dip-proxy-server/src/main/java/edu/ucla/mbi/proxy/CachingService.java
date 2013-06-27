@@ -399,9 +399,8 @@ public class CachingService {
                                   provider, service );
                 
 
-        } catch( ProxyFault fault){
-            throw ServerFaultFactory
-                .newInstance( fault.getFaultInfo().getFaultCode() );            
+        } catch( ServerFault fault){
+            throw fault;
         }
         
         if ( isDxfDatasetValid( dxfResult ) ){
@@ -429,9 +428,7 @@ public class CachingService {
     private boolean isDxfValid( String dxfString ) throws ServerFault { 
 
         DatasetType dxfResult = unmarshall( dxfString );
-        
         return isDxfDatasetValid( dxfResult );
-        
     }
 
     //--------------------------------------------------------------------------
@@ -441,9 +438,9 @@ public class CachingService {
         if( dxfDataset != null 
             && !dxfDataset.getNode().isEmpty()
             && !dxfDataset.getNode().get(0).getAc().equals("") ) {
+
             return true; 
         } 
-        
         return false;
     }
     

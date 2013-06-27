@@ -15,27 +15,15 @@ import org.apache.commons.logging.LogFactory;
  
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
 
 import javax.xml.bind.util.JAXBResult;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBContext;
-
 import javax.xml.transform.stream.StreamSource;
 
 import edu.ucla.mbi.dxf14.*;
-
 import edu.ucla.mbi.proxy.context.*;
 import edu.ucla.mbi.fault.*;
-
-import javax.xml.ws.BindingProvider;
-import com.sun.xml.ws.developer.JAXWSProperties;
-import javax.xml.ws.Holder;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import edu.ucla.mbi.cache.NativeRecord;
-import edu.ucla.mbi.proxy.ncbi.*;
-import edu.ucla.mbi.proxy.router.Router;
 
 public class ProxyDxfTransformer {
 
@@ -48,7 +36,7 @@ public class ProxyDxfTransformer {
     public DatasetType transform( String strNative,
                                   String ns, String ac, String detail,
                                   String provider, String service 
-                                  ) throws ProxyFault {
+                                  ) throws ServerFault {
 
 	    Log log = LogFactory.getLog( ProxyDxfTransformer.class );
 	    
@@ -71,7 +59,6 @@ public class ProxyDxfTransformer {
                 pTrans.setTransformer( provider, service );
                 pTrans.setParameters( detail, ns, ac );
                 pTrans.transform( ssNative, result );
-                
             }
     
             DatasetType dxfResult  = 
@@ -81,27 +68,23 @@ public class ProxyDxfTransformer {
             if ( dxfResult.getNode().isEmpty() 
                  || dxfResult.getNode().get(0).getAc().equals("") ) {
                     
-                throw FaultFactory.newInstance( Fault.TRANSFORM );  
+                throw ServerFaultFactory.newInstance( Fault.TRANSFORM );  
 	        }	    
               
             return dxfResult;
                 
-	    } catch ( ProxyFault fault ) { 
+	    } catch ( ServerFault fault ) { 
 	        log.info( "Transformer fault: empty dxfResult ");
 	        throw fault;
         } catch ( Exception e ) {
-	        throw FaultFactory.newInstance( Fault.TRANSFORM );  
+	        throw ServerFaultFactory.newInstance( Fault.TRANSFORM );  
 	    }   
     }
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
                                  String detail, String provider, 
-                                 String service ) throws ProxyFault 
-    {
+                                 String service ) throws ServerFault {
 	
-    	// NOTE: overload if dxf building more complex than
-        //       a simple xslt transformation
-        
         DatasetType trResult = this.transform( strNative, ns, ac, detail, 
                                                provider, service );
 
@@ -121,38 +104,10 @@ public class ProxyDxfTransformer {
     //--------------------------------------------------------------------------
 
     public DatasetType buildProlinksDxf( DatasetType dxfResult ) 
-        throws ProxyFault {
+        throws ServerFault {
         
         Log log = LogFactory.getLog( ProxyDxfTransformer.class );
         
-        // -----------------------------------------------------------------
-        //RemoteServerContext rsc = wsContext.getServerContext( "MBI" );
-        /*
-        String ncbiProxyAddress = ( String ) rsc.getNcbiProxyAddress();  //XX
-
-        if( ncbiProxyAddress != null &&  ncbiProxyAddress.length() > 0 ) {
-            ncbiProxyAddress = ncbiProxyAddress.replaceAll( "\\s", "" );
-        } else {
-            log.warn( "buildDxf: ncbiProxyAddress is not initialized. " );
-            throw FaultFactory.newInstance( Fault.REMOTE_FAULT );
-        }
-
-        //*** take detail info of refseq node from NCBI service    
-        ProxyService proxySrv = new ProxyService();
-        ProxyPort port = proxySrv.getProxyPort();
-
-        // set server location 
-        // ---------------------
-
-        ((BindingProvider) port).getRequestContext()
-            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                  ncbiProxyAddress );
-
-        ((BindingProvider) port).getRequestContext()
-            .put( JAXWSProperties.CONNECT_TIMEOUT, rsc.getTimeout() );
-        */
-        // -----------------------------------------------------------------
-    
         List<NodeType> node = dxfResult.getNode();
             
         for ( Iterator iterator = node.iterator(); iterator.hasNext(); ) {
@@ -173,31 +128,11 @@ public class ProxyDxfTransformer {
                     log.info( "ProlinksServer: port.getRefseq call " +
                               "(loop): NS=refseq" + " AC=" + node_ac ); 
 
-                    // ----------------------------------------------------
-                    /*
-                    Holder<DatasetType> resDataset =
-                        new Holder<DatasetType>();
-                    Holder<String> resNative = new Holder<String>();
-                    Holder<XMLGregorianCalendar> timestamp = null;
-
-                    port.getRecord( "NCBI", "refseq", "refseq", node_ac, 
-                                    "", "base", "", "", 0, timestamp, 
-                                    resDataset, resNative );
-                    
-                    DatasetType dataset = resDataset.value;
-                    */
-                    // --------------------------------------------------------
-                    
-                    //*** new thinking ?????????? 
-                    
-                    //--------------------------------------------------------
                     CachingService cachingSrv = 
                         new CachingService( wsContext, "NCBI" );
 
                     DatasetType dataset = cachingSrv.getDatasetType(
                         "NCBI", "refseq", "refseq", node_ac, "base" );
-                    // ------------------------------------------------------ 
-                   
 
                     NodeType nodeNew = 
                         (NodeType) dataset.getNode().get( 0 );
@@ -206,12 +141,12 @@ public class ProxyDxfTransformer {
 
                     parttype.setNode( nodeNew );
 
-                //} catch ( ProxyFault fault ) {
-                //    throw fault;
+                } catch ( ServerFault fault ) {
+                    throw fault;
                 } catch ( Exception e ) {
                     log.info( "ProlinksServer: NCBI getRefseq: " +
                               e.toString() );
-                    throw FaultFactory.newInstance( Fault.UNKNOWN );
+                    throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
                 }
             }
         }

@@ -114,10 +114,6 @@
         <entry key="nativeRestServer">
             <ref bean="nativeRestServer"/>              
         </entry>
-        <entry key="ncbiProxyAddress">
-            <!--<value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> -->
-            <value> http://10.1.200.201:8080/dip-proxy-server/proxy-service</value>
-        </entry>
     </map> 
   </property>
  </bean>
