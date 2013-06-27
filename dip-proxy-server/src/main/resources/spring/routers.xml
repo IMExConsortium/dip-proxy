@@ -18,12 +18,10 @@
  <bean id="dhtJsonContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">
             <map>
-                <entry key="json-config" value="/etc/dht-test.json"/>
-                <!-- <entry key="json-config" value="/etc/dht.json"/> -->
+                <entry key="json-config" value="/etc/dht.json"/> 
                 <entry key="json-source">
                     <bean class="edu.ucla.mbi.util.context.SpringFileResource">
-                        <property name="file" value="/etc/dht-test.json"/>
-                        <!--<property name="file" value="/etc/dht.json"/> -->
+                        <property name="file" value="/etc/dht.json"/> 
                     </bean>
                 </entry>
             </map>

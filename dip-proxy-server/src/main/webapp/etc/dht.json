@@ -1,72 +1,58 @@
 {
   "legend":"Dht Router Configuration", 
-  "options":["node-config","boot-servers"], 
+  "options":["node-config"], 
   "option-def":{
       "node-config": {
-         "legend":"Local Node Configuration",     
-         "options":[ "overlay-mode", "networked-application-id", "local-application-id", "max-drl-size", "routing-algorithm", "directory-type", "working-directory", "default-ttl", "dht-port" ],
+         "legend":"Overlay Node Configuration",     
+         "options":[ "overlay-network-flag" ],
          "option-def":{
-             "overlay-mode": {
-              "label": "overlay-mode",
-              "type": "string",
-              "value": "${dht.mode}",
-              "opp":"overlay_mode", 
-              "opcode": "xxx"
-             },
-             "networked-application-id": {
-              "label": "networked-application-id",
-              "type": "string",
-              "value": "1",
-              "opp":"networked_application_id",
-              "opcode": "xxx"
-             },
-             "local-application-id": {
-              "label": "local-application-id",
-              "type": "string",
-              "value": "2",
-              "opp":"local_application_id",
+             "overlay-network-flag": {
+              "label": "Networked overlay",
+              "type": "boolean",
+              "value": "${dht.overlay.network.flag}",   
+              "opp":"overlay_network_flag", 
               "opcode": "xxx"
              },
              "max-drl-size": {
               "label": "max-drl-size",
               "type": "string",
               "value": "2",
-              "opp":"max_drl_size", 
+              "opp":"xxx", 
               "opcode": "xxx"
              },
              "routing-algorithm":{
               "label":"routing-algorithm",
               "type":"string",
               "value":"${dht.routing}",
-              "opp":"routing_algorithm",
+              "opp":"xxx",
               "opcode":"xxx"
              },
              "directory-type":{
               "label":"directory-type",
               "type":"string",
               "value":"BerkeleyDB",
-              "opp":"directory_type",
+              "opp":"xxx",
               "opcode":"xxx"
              },
              "working-directory":{
               "label":"working-directory",
               "type":"string",
               "value":"dht",
-              "opp":"working_directory",
+              "opp":"xxx",
               "opcode":"xxx"
              },
              "default-ttl":{
               "label":"default-ttl",
               "type":"string",
               "value":"3",
-              "opp":"default_ttl",
+              "opp":"xxx",
               "opcode":"xxx"
              },
              "dht-port":{
               "label":"dht-port",
               "type":"string",
               "value":"55666",
-              "opp":"dht_port",
+              "opp":"xxx",
               "opcode":"xxx"
              }
          }
@@ -75,11 +61,10 @@
          "legend":"Boot Servers",
          "label": "Boot Server List",
          "type":"string-list", 
-         "value": ["10.1.200.201","10.1.200.208", "10.1.200.209"],
-         "opp": "string_list",
+         "value": ["10.1.200.201","10.1.200.202", "10.1.200.203", "10.1.200.208", "10.1.200.209"],
+         "opp": "xxx",
         "opcode": "xxx"      
       }
   },
-  "opp": "foo",
-  "opcode": "foo"
+  "opcode": "update"
 }
