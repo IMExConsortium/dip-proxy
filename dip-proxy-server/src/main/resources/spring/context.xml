@@ -181,7 +181,7 @@
        </entry>
 
        <entry key="ramCache" value="off"/>
-       <entry key="dbCache" value="off"/>
+       <entry key="dbCache" value="on"/>
        <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
@@ -214,7 +214,7 @@
        </entry>
 
        <entry key="ramCache" value="off"/>
-       <entry key="dbCache" value="off"/>
+       <entry key="dbCache" value="on"/>
        <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
@@ -248,7 +248,7 @@
        </entry>
 
        <entry key="ramCache" value="off"/>
-       <entry key="dbCache" value="off"/>
+       <entry key="dbCache" value="on"/>
        <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
