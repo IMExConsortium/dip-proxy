@@ -335,7 +335,7 @@ public class Dht {
             
         } catch( Exception e ){
             e.printStackTrace();
-            //throw ServerFaultFactory.newInstance( Fault.OVERLAY );
+            throw ServerFaultFactory.newInstance( Fault.OVERLAY );
         }
     }  
 
@@ -353,16 +353,11 @@ public class Dht {
 
         } catch ( UnknownHostException ex ) {
             log.info( " unknownHostException: " + ex.toString() );
-
-            //??? need add a new fault Fault.OVERLAY ???
-            //throw ServerFaultFactory.newInstance( Fault.OVERLAY );
-                    
+            throw ServerFaultFactory.newInstance( Fault.OVERLAY );
         } catch ( ow.routing.RoutingException re ) {
             log.info( " routing exception: " + re.toString() );
-            //throw ServerFaultFactory.newInstance( Fault.OVERLAY );
+            throw ServerFaultFactory.newInstance( Fault.OVERLAY );
         }
-
-        return null;
     }
 
     //--------------------------------------------------------------------------

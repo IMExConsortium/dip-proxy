@@ -140,8 +140,7 @@ public class ProxyDxfTransformer {
                 String node_ac = nodeOld.getAc();
                 long node_id = nodeOld.getId();
 
-                //if( nodeOld.getNs().equals( "refseq" ) ) { // the ns="prl" in prolinks
-                if( node_ac.startsWith( "NP_" ) ) {
+                if( nodeOld.getNs().equals( "refseq" ) ) {
                     try {
                     
                         log.info( "ProlinksServer: port.getRefseq call " +

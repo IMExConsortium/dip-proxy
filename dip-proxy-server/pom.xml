@@ -111,7 +111,7 @@
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-util-ws</artifactId>
-      <version>0.03</version>
+      <version>0.04</version>
     </dependency>
 
     <dependency>
