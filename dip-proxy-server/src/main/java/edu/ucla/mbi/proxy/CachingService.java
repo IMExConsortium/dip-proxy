@@ -361,10 +361,8 @@ public class CachingService {
         }
         
     }
-
     
     //--------------------------------------------------------------------------
-
     private DxfRecord buildDxfRecord( NativeRecord nativeRecord,
                                       String detail ) 
         throws ServerFault{
@@ -380,6 +378,8 @@ public class CachingService {
         String ac = nativeRecord.getAc();
         String nativeXml = nativeRecord.getNativeXml();
         
+        
+        /*
         ProxyDxfTransformer pdt = new ProxyDxfTransformer( rns.getWsContext() );
 
         try{
@@ -390,8 +390,17 @@ public class CachingService {
 
         } catch( ServerFault fault){
             throw fault;
+        } */
+       
+        //------ new change ---------------------------------------------------- 
+        ProxyTransformer pTrans = rns.getRsc().getTransformer();
+        synchronized ( pTrans ) {
+            pTrans.setTransformer( provider, service );
+            pTrans.setParameters( detail, ns, ac );
+            dxfResult = pTrans.transform( nativeXml, detail );
         }
-        
+        //----------------------------------------------------------------------
+
         if ( isDxfDatasetValid( dxfResult ) ){
             
             String dxfString = null;

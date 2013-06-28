@@ -40,8 +40,7 @@ public class RemoteServerContext {
     private RemoteProxyServer proxyServer = null;
     private Router router = null;
     private Set serviceSet = new HashSet();
-
-    private String ncbiProxyAddress = "";
+    private ProxyTransformer transformer = null;
 
     //*** constructor
     public RemoteServerContext(){};
@@ -96,10 +95,6 @@ public class RemoteServerContext {
         return provider;
     }
 
-    public String getNcbiProxyAddress() {
-        return ncbiProxyAddress;
-    }
-
     public NativeServer getNativeServer() {
         return nativeServer;
     }
@@ -110,6 +105,10 @@ public class RemoteServerContext {
     
     public Router getRouter() {
         return router;
+    }
+
+    public ProxyTransformer getTransformer() {
+        return transformer;
     }
 
     // --------------------------------------
@@ -164,8 +163,9 @@ public class RemoteServerContext {
         log.info( "  servers:" );
         
         nativeServer = (NativeServer) context.get( "nativeServer" );
-        ncbiProxyAddress = (String) context.get( "ncbiProxyAddress" );       
- 
+        
+        transformer = (ProxyTransformer) context.get( "transformer" );
+
         serviceSet = (Set) context.get( "serviceSet" );
         
         proxyServer = (RemoteProxyServer) context.get( "proxyProto" );

@@ -314,10 +314,9 @@ public class Dht {
 
                 if( ma == null ) {
                     //*** convert overlayMode to local
-                    setContextOptionValue ( "overlay_network_flag", "false" );
+                    this.setContextOptionValue ( "overlay_network_flag", "false" );
 
-                    //??? how to get realPath to save file ???
-                    //saveContext( getServletContext().getRealPath( getContextFilePath() ) );
+                    this.saveContext(  proxyHome + this.getContextFilePath() ) ;
 
                     reinitialize( true );
                 }                

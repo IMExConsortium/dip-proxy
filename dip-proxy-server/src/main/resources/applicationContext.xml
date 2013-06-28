@@ -66,11 +66,14 @@
 
  <!--==========================================================  TRANSFORMER -->
 
+ <import resource="spring/transformer.xml"/>
+
+ <!--
  <bean id="proxyTransformer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.ProxyTransformer">
   <property name="transformerContext" ref="transformerContext"/>
   <property name="contextTop" value="transformer"/>
- </bean>
+ </bean> -->
 
  <!-- ========================================================= PROXY SERVER -->
 

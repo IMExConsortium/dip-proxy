@@ -15,17 +15,20 @@ import org.apache.commons.logging.LogFactory;
  
 import edu.ucla.mbi.util.context.*;
 import edu.ucla.mbi.fault.*;
+import edu.ucla.mbi.dxf14.*;
 
 import java.util.*;
-
 import java.io.*;
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
 
+import org.w3c.dom.*;
+
+import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.bind.util.JAXBResult;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBContext;
 
 public class ProxyTransformer implements ContextListener {
 
@@ -61,7 +64,7 @@ public class ProxyTransformer implements ContextListener {
         return transfMap;
     }
 
-    public void initialize () throws ProxyFault {
+    public void initialize () throws ServerFault {
 
         Log log = LogFactory.getLog( ProxyTransformer.class );
         log.info( "initializing ... " );
@@ -75,7 +78,7 @@ public class ProxyTransformer implements ContextListener {
             transformerContext.readJsonConfigDef( fr.getInputStream() );
         } catch ( Exception e ){
             log.info( "initialize exception: " + e.toString() );
-            throw FaultFactory.newInstance ( Fault.JSON_CONFIGURATION ); 
+            throw ServerFaultFactory.newInstance ( Fault.JSON_CONFIGURATION ); 
         }
 
         Map<String, Object> jtf = transformerContext.getJsonConfig();
@@ -98,7 +101,7 @@ public class ProxyTransformer implements ContextListener {
     }
 
     public void setTransformer( String provider, String service ) 
-        throws ProxyFault {
+        throws ServerFault {
 
         Log log = LogFactory.getLog( ProxyTransformer.class );
         
@@ -139,15 +142,15 @@ public class ProxyTransformer implements ContextListener {
                 tf.setErrorListener( logErrorListener );
             } else {
                 log.info( "setTransformer: tfType == null or tfType != 'xslt' " );
-                throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+                throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
             }
-        } catch ( ProxyFault fault ) {
+        } catch ( ServerFault fault ) {
             log.info( "setTransformer: transformer.json doesn't have " + 
                       "transformer type xslt. " );
             throw fault;
         } catch( Exception e ) {
             log.info( "setTransformer: exception is " + e.toString() );
-            throw  FaultFactory.newInstance( Fault.UNKNOWN ); 
+            throw  ServerFaultFactory.newInstance( Fault.UNKNOWN ); 
         }     
     }   
     
@@ -160,7 +163,8 @@ public class ProxyTransformer implements ContextListener {
 	    tf.setParameter("edu.ucla.mbi.services.ns", ns);
 	    tf.setParameter("edu.ucla.mbi.services.ac", ac);
     }  
- 
+
+    /* 
     public void transform( StreamSource xmlStreamSource, 
                            JAXBResult jaxbResult) throws ProxyFault {
 	    
@@ -172,5 +176,44 @@ public class ProxyTransformer implements ContextListener {
 	        log.info("Transformation error=" + e.toString());
             throw FaultFactory.newInstance ( Fault.TRANSFORM ); // transformer error
 	    }
+    }*/
+
+    public DatasetType transform( String strNative, String detail ) 
+        throws ServerFault {
+        
+        Log log = LogFactory.getLog( ProxyTransformer.class );
+
+        try{
+            //*** native data in string representationa as input
+
+            ByteArrayInputStream bisNative =
+            new ByteArrayInputStream( strNative.getBytes( "UTF-8" ) );
+            StreamSource ssNative = new StreamSource( bisNative );
+
+            //*** dxf as JAXBResult result of the transformation
+            JAXBContext dxfJc = DxfJAXBContext.getDxfContext();
+            JAXBResult result = new JAXBResult( dxfJc );
+
+            tf.transform( ssNative, result );
+
+            DatasetType dxfResult  =
+                (DatasetType) ( (JAXBElement) result.getResult() ).getValue();
+
+            //*** test if dxfResult is empty
+            if ( dxfResult.getNode().isEmpty()
+                 || dxfResult.getNode().get(0).getAc().equals("") ) {
+
+                throw ServerFaultFactory.newInstance( Fault.TRANSFORM );
+            }
+
+            return dxfResult;
+
+        } catch ( ServerFault fault ) {
+            log.info( "Transformer fault: empty dxfResult ");
+            throw fault;
+        }catch(Exception e){
+            log.info("Transformation error=" + e.toString());
+            throw ServerFaultFactory.newInstance ( Fault.TRANSFORM ); // transformer error
+        }
     }
 }

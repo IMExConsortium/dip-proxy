@@ -78,7 +78,7 @@
   <property name="dipProxyDAO" ref="dipProxyDAO" />   
 
   <property name="dht" ref="dht" />
-  <property name="transformer" ref="proxyTransformer" />
+  <!--<property name="transformer" ref="proxyTransformer" /> -->
   <property name="mcClient" ref="mcClient" />
 
   <property name="services">
@@ -97,6 +97,9 @@
         <ref bean="referenceProxy"/>
        </entry>      
     
+       <entry key="transformer">
+         <ref bean="proxyTransformer" /> 
+       </entry>
 
        <entry key="router">
         <ref bean="ebiDhtRouter"/> 
@@ -134,6 +137,10 @@
         <ref bean="referenceProxy"/>
        </entry>      
 
+       <entry key="transformer">
+         <ref bean="proxyTransformer" />
+       </entry>
+
        <entry key="router">
         <ref bean="ncbiDhtRouter"/> 
        </entry>
@@ -166,16 +173,15 @@
        <entry key="nativeServer">  
         <ref bean="prlReferenceServer"/>
        </entry>      
-       <!--
-       <entry key="ncbiProxyAddress">
-         <value>http://dip.doe-mbi.ucla.edu/dip-proxy/ncbi-service</value> 
-         <value> http://10.1.200.201:8080/dip-proxy-server/proxy-service</value>
-       </entry> -->
 
        <entry key="proxyProto"> 
         <ref bean="referenceProxy"/>
        </entry>      
-       
+
+       <entry key="transformer">
+         <ref bean="prolinksTransformer" />
+       </entry>
+        
        <entry key="router">
         <ref bean="mbiDhtRouter"/> 
        </entry>
@@ -209,6 +215,10 @@
         <ref bean="referenceProxy"/>
        </entry>
        
+       <entry key="transformer">
+         <ref bean="proxyTransformer" />
+       </entry>
+
        <entry key="router">
         <ref bean="dipDhtRouter"/> 
        </entry>
@@ -241,6 +251,10 @@
 
        <entry key="proxyProto">
         <ref bean="referenceProxy"/>
+       </entry>
+
+       <entry key="transformer">
+         <ref bean="proxyTransformer" />
        </entry>
 
        <entry key="router">

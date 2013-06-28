@@ -26,13 +26,20 @@ import edu.ucla.mbi.proxy.context.*;
 import edu.ucla.mbi.fault.*;
 
 public class ProxyDxfTransformer {
-
+    
     private WSContext wsContext;
     
     public ProxyDxfTransformer( WSContext context ){
         wsContext = context;
     }
+
+    private RemoteServerContext rsc;
     
+    public ProxyDxfTransformer( RemoteServerContext rsc ){
+        this.rsc = rsc;
+    }
+
+    /*  
     private DatasetType transform( String strNative,
                                    String ns, String ac, String detail,
                                    String provider, String service 
@@ -79,12 +86,23 @@ public class ProxyDxfTransformer {
         } catch ( Exception e ) {
 	        throw ServerFaultFactory.newInstance( Fault.TRANSFORM );  
 	    }   
-    }
+    } */
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
                                  String detail, String provider, 
                                  String service ) throws ServerFault {
-	
+
+        //*** transform into DXF
+        //ProxyTransformer pTrans = wsContext.getTransformer();
+        ProxyTransformer pTrans = wsContext.getTransformer();
+
+        synchronized ( pTrans ) {
+            pTrans.setTransformer( provider, service );
+            pTrans.setParameters( detail, ns, ac );
+            return pTrans.transform( strNative, detail );
+        }
+
+        /*	
         DatasetType trResult = this.transform( strNative, ns, ac, detail, 
                                                provider, service );
 
@@ -97,7 +115,7 @@ public class ProxyDxfTransformer {
 
         } else {
             return trResult;
-        }
+        }*/
     }
 
     //--------------------------------------------------------------------------
@@ -122,7 +140,8 @@ public class ProxyDxfTransformer {
                 String node_ac = nodeOld.getAc();
                 long node_id = nodeOld.getId();
 
-                if( nodeOld.getNs().equals( "refseq" ) ) {
+                //if( nodeOld.getNs().equals( "refseq" ) ) { // the ns="prl" in prolinks
+                if( node_ac.startsWith( "NP_" ) ) {
                     try {
                     
                         log.info( "ProlinksServer: port.getRefseq call " +
