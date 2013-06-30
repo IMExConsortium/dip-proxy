@@ -27,8 +27,16 @@ import edu.ucla.mbi.fault.*;
 
 public class ProxyDxfTransformer {
     
-    private WSContext wsContext;
-    
+    private WSContext wsContext = null;
+    private String provider = null;
+
+    public ProxyDxfTransformer( WSContext context, String provider ){
+
+        wsContext = context;
+        this.provider = provider;
+    }    
+
+    /* LS
     public ProxyDxfTransformer( WSContext context ){
         wsContext = context;
     }
@@ -38,6 +46,8 @@ public class ProxyDxfTransformer {
     public ProxyDxfTransformer( RemoteServerContext rsc ){
         this.rsc = rsc;
     }
+
+    */
 
     /*  
     private DatasetType transform( String strNative,
@@ -89,11 +99,12 @@ public class ProxyDxfTransformer {
     } */
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
-                                 String detail, String provider, 
+                                 String detail, // String provider, 
                                  String service ) throws ServerFault {
 
         //*** transform into DXF
         //ProxyTransformer pTrans = wsContext.getTransformer();
+
         ProxyTransformer pTrans = wsContext.getTransformer();
 
         synchronized ( pTrans ) {
@@ -119,6 +130,10 @@ public class ProxyDxfTransformer {
     }
 
     //--------------------------------------------------------------------------
+
+
+
+    /* LS
 
     private DatasetType buildProlinksDxf( DatasetType dxfResult ) 
         throws ServerFault {
@@ -168,4 +183,6 @@ public class ProxyDxfTransformer {
         
         return dxfResult;
     }
+
+    */
 }

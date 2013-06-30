@@ -87,6 +87,12 @@ public class WSContext{
         return mcClient;
     }
 
+    
+    public  ProxyDxfTransformer getDxfTransformer ( String provider) {
+        return new ProxyDxfTransformer( this, provider );
+    }
+
+
     //---------------------------------------------------------------------
 
     public RemoteServerContext getServerContext( String provider ) {

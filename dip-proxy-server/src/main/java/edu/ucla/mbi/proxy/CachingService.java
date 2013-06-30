@@ -35,8 +35,12 @@ public class CachingService {
     private McClient mcClient = null;
     private RemoteNativeService rns = null;
 
+    private WSContext wsContext = null;
+
     public CachingService( WSContext wsContext, String provider ) 
         throws ServerFault {
+        
+        this.wsContext = wsContext;
         
         rns = new RemoteNativeService ( wsContext, provider );
         
@@ -53,11 +57,8 @@ public class CachingService {
                                    String service, 
                                    String ns,
                                    String ac 
-                                   ) throws ServerFault {
-
-
+                                   ) throws ServerFault {        
         
-
         String id = provider + "_" + service + "_" + ns + "_" + ac;
 
         log.info( "getNative(provider=" + provider + ")" );
@@ -289,6 +290,8 @@ public class CachingService {
         }
 
         //*** retrieve from native, here dxfRecord==null|expired              
+        //----------------------------------------------------------------------
+
         if( dxfRecord == null ) { 
             
             NativeRecord nativeRecord = null;
@@ -363,6 +366,8 @@ public class CachingService {
     }
     
     //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
     private DxfRecord buildDxfRecord( NativeRecord nativeRecord,
                                       String detail ) 
         throws ServerFault{
@@ -378,27 +383,43 @@ public class CachingService {
         String ac = nativeRecord.getAc();
         String nativeXml = nativeRecord.getNativeXml();
         
-        
-        /*
-        ProxyDxfTransformer pdt = new ProxyDxfTransformer( rns.getWsContext() );
+                
+        //ProxyDxfTransformer pdt = new ProxyDxfTransformer( rns.getWsContext() );
 
+        // ProxyDxfTransformer pdt = new ProxyDxfTransformer( wsContext, provider );
+
+        /*
         try{
 
-        dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail,
-                                  provider, service );
-                
-
+            dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail,
+                                      //provider, 
+                                      service );
+            
+            
         } catch( ServerFault fault){
             throw fault;
-        } */
-       
+        } 
+        */
+        
+        try{
+        
+            dxfResult = wsContext.getDxfTransformer( provider )
+                .buildDxf( nativeXml, ns, ac, detail, service );
+            
+            
+        } catch( ServerFault fault){
+            throw fault;
+        }
+               
         //------ new change ---------------------------------------------------- 
+        /*
         ProxyTransformer pTrans = rns.getRsc().getTransformer();
         synchronized ( pTrans ) {
             pTrans.setTransformer( provider, service );
             pTrans.setParameters( detail, ns, ac );
             dxfResult = pTrans.transform( nativeXml, detail );
         }
+        */
         //----------------------------------------------------------------------
 
         if ( isDxfDatasetValid( dxfResult ) ){
