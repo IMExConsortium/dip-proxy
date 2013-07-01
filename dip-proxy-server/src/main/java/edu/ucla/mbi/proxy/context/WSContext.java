@@ -49,9 +49,9 @@ public class WSContext{
         this.dht = dht;
     }
  
-    public void setTransformer ( ProxyTransformer tf ) {
-        this.transformer = tf;
-    }
+    //public void setTransformer ( ProxyTransformer tf ) {
+    //    this.transformer = tf;
+    //}
 
     public void setServices( Map<String,Map> services ) {
         this.services = services;
@@ -67,9 +67,9 @@ public class WSContext{
         return dipProxyDAO;
     }
 
-    public  ProxyTransformer getTransformer () {
-        return transformer;
-    }
+    //public  ProxyTransformer getTransformer () {
+    //    return transformer;
+    //}
 
     public static Dht getDht() {
         return dht;

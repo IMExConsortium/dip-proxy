@@ -21,10 +21,10 @@ public class ProxyDxfTransformer {
     
     private WSContext wsContext = null;
     private String provider = null;
-    
+
     public ProxyDxfTransformer( WSContext context, String provider ){
         
-        wsContext = context;
+        this.wsContext = context;
         this.provider = provider;
     }    
     
@@ -34,7 +34,8 @@ public class ProxyDxfTransformer {
 
         // Transform native record string into DXF
         
-        ProxyTransformer pTrans = wsContext.getTransformer();
+        ProxyTransformer pTrans = wsContext
+            .getServerContext( provider ).getTransformer();
 
         synchronized ( pTrans ) {
             pTrans.setTransformer( provider, service );
