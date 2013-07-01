@@ -35,6 +35,12 @@ import edu.ucla.mbi.proxy.context.*;
 public class EbiCachingImpl extends ConfigurableServer 
     implements EbiProxyPort {
 
+    private CachingService cachingSrv;
+
+    public void setCachingService ( CachingService service ) {
+        this.cachingSrv = service;
+    }
+
     /*
      * Fetch uniprot from ebi dbfetch
      */
@@ -80,7 +86,6 @@ public class EbiCachingImpl extends ConfigurableServer
         }
 
         try {
-            // CachingService cachingSrv = new CachingService( wsContext ); 
             
             if ( format == null || format.equals( "" )
                  || format.equalsIgnoreCase( "dxf" )
@@ -161,8 +166,6 @@ public class EbiCachingImpl extends ConfigurableServer
         }
 
         try {
-
-            CachingService cachingSrv = new CachingService( wsContext ); 
 
             if ( format == null || format.equals( "" )
                  || format.equalsIgnoreCase( "dxf" )

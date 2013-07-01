@@ -3,8 +3,8 @@
        xmlns:jaxws="http://cxf.apache.org/jaxws"
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
 
-    xmlns:ws="http://jax-ws.dev.java.net/spring/core"
-    xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
+       xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+       xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
 
        xsi:schemaLocation="
          http://www.springframework.org/schema/beans
@@ -26,11 +26,13 @@
 
  <bean id="ncbi-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ncbi.NcbiCachingImpl" >
+   <property name="cachingService" ref="caching-service"/>
    <property name="wsContext" ref="wsContext"/>
  </bean>
 
  <bean id="ebi-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.ebi.EbiCachingImpl" >
+   <property name="cachingService" ref="caching-service"/>
    <property name="wsContext" ref="wsContext"/>
  </bean>
 
@@ -41,11 +43,13 @@
 
  <bean id="dip-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.dip.DipCachingImpl" >
+   <property name="cachingService" ref="caching-service"/>
    <property name="wsContext" ref="wsContext"/>
  </bean>
 
  <bean id="prolinks-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksCachingImpl" >
+   <property name="cachingService" ref="caching-service"/>
    <property name="wsContext" ref="wsContext"/>
  </bean>
 

@@ -35,7 +35,13 @@ import edu.ucla.mbi.proxy.context.*;
 
 public class NcbiCachingImpl extends ConfigurableServer 
     implements NcbiProxyPort {
-    
+
+    private CachingService cachingSrv;
+
+    public void setCachingService ( CachingService service ) {
+        this.cachingSrv = service;
+    }    
+
     /* 
      * Fetch journal from nlm
      */
@@ -81,8 +87,6 @@ public class NcbiCachingImpl extends ConfigurableServer
        
         try {
 
-            CachingService cachingSrv = new CachingService( wsContext );
-            
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
                  || format.equalsIgnoreCase( "both" ) ) {
@@ -174,7 +178,6 @@ public class NcbiCachingImpl extends ConfigurableServer
 	    } 
         
         try {
-            CachingService cachingSrv = new CachingService( wsContext ); 
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -263,7 +266,6 @@ public class NcbiCachingImpl extends ConfigurableServer
 	    }   
 	
 	    try {
-            CachingService cachingSrv = new CachingService( wsContext );
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -350,8 +352,6 @@ public class NcbiCachingImpl extends ConfigurableServer
         }
        
 	    try {
-
-            CachingService cachingSrv = new CachingService( wsContext ); 
 
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -443,8 +443,6 @@ public class NcbiCachingImpl extends ConfigurableServer
 	
 	    try {
 
-            CachingService cachingSrv = new CachingService( wsContext ); 
-            
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
                  || format.equalsIgnoreCase( "both" ) ) {

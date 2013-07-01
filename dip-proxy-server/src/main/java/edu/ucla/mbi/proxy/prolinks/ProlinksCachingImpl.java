@@ -36,6 +36,12 @@ import javax.xml.ws.Holder;
 public class ProlinksCachingImpl extends ConfigurableServer 
     implements ProlinksProxyPort {
 
+    private CachingService cachingSrv;
+
+    public void setCachingService ( CachingService service ) {
+        this.cachingSrv = service;
+    }
+
     public void getProlinks( String ns, String ac, String match, 
                              String detail, String format, 
                              String client, Integer depth,
@@ -72,8 +78,6 @@ public class ProlinksCachingImpl extends ConfigurableServer
 
         try {
 
-            CachingService cachingSrv =  new CachingService( wsContext );
-            
             if ( format == null || format.equals( "" )
                  || format.equalsIgnoreCase( "dxf" )
                  || format.equalsIgnoreCase( "both" ) ) {

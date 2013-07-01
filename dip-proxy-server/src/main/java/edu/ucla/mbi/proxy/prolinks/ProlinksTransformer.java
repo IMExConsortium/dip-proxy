@@ -6,7 +6,7 @@ package edu.ucla.mbi.proxy.prolinks;
  * Version: $Rev$
  *==============================================================================
  *
- * prolinksTransformer:
+ * ProlinksTransformer:
  *
  *=========================================================================== */
 
@@ -20,9 +20,14 @@ import edu.ucla.mbi.proxy.context.*;
 
 import java.util.*;
 
-public class prolinksTransformer extends ProxyTransformer {
+public class ProlinksTransformer extends ProxyTransformer {
 
     private WSContext wsContext;
+    private CachingService cachingSrv;
+
+    public void setCachingService ( CachingService service ) {
+        this.cachingSrv = service;
+    }
 
     public void setWsContext( WSContext context ) {
         this.wsContext = context;
@@ -66,9 +71,6 @@ public class prolinksTransformer extends ProxyTransformer {
 
                         log.info( "ProlinksServer: port.getRefseq call " +
                                   "(loop): NS=refseq" + " AC=" + node_ac );
-
-                        CachingService cachingSrv = 
-                            new CachingService( wsContext );
 
                         DatasetType dataset = cachingSrv.getDatasetType(
                             "NCBI", "refseq", "refseq", node_ac, "base" );

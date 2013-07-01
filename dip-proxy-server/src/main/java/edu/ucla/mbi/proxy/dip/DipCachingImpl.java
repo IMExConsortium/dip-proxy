@@ -33,6 +33,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class DipCachingImpl extends ConfigurableServer 
     implements DipProxyPort {
 
+    private CachingService cachingSrv;
+
+    public void setCachingService ( CachingService service ) {
+        this.cachingSrv = service;
+    }
+
     /*
      * Fetch record from Dip
      */
@@ -73,8 +79,6 @@ public class DipCachingImpl extends ConfigurableServer
 
         try {
 
-            CachingService cachingSrv = new CachingService( wsContext ); 
-            
             if ( format == null || format.equals( "" )
                  || format.equalsIgnoreCase( "dxf" )
                  || format.equalsIgnoreCase( "both" ) ) {

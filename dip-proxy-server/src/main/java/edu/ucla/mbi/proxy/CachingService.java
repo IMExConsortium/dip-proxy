@@ -36,12 +36,8 @@ public class CachingService {
         
     public CachingService() { }
 
-    public setWsContext(  WSContext context ){
+    public void setWsContext(  WSContext context ){
         this.wsContext = context;
-    }
-
-    public CachingService( WSContext wsContext ) throws ServerFault {
-        this.wsContext = wsContext;
     }
 
     //--------------------------------------------------------------------------
