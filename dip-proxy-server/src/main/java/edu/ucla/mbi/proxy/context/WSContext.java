@@ -80,15 +80,15 @@ public class WSContext{
         return new ProxyDxfTransformer( this, provider );
     }
 
-    public boolean isRamCacheOnForProvider ( String provider ) {
+    public boolean isRamCacheOn( String provider ) {
         return this.getServerContext( provider).isRamCacheOn();
     }
 
-    public boolean isDbCacheOnForProvider ( String provider ) {
+    public boolean isDbCacheOn( String provider ) {
         return this.getServerContext( provider).isDbCacheOn();
     }
 
-    public int getTtlForProvider ( String provider ) {
+    public int getTtl( String provider ) {
         return this.getServerContext( provider ).getTtl();
     }
 

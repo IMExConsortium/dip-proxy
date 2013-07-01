@@ -33,13 +33,16 @@ public class CachingService {
     private Log log = LogFactory.getLog( CachingService.class );
 
     private WSContext wsContext = null;
+        
+    public CachingService() { }
 
-    //public CachingService( WSContext wsContext, String provider ) 
+    public setWsContext(  WSContext context ){
+        this.wsContext = context;
+    }
+
     public CachingService( WSContext wsContext ) throws ServerFault {
         this.wsContext = wsContext;
     }
-    
-    public CachingService() { }
 
     //--------------------------------------------------------------------------
 
@@ -53,9 +56,9 @@ public class CachingService {
 
         log.info( "getNative(provider=" + provider + ")" );
         log.info( " ramCacheOn=" 
-                  + wsContext.isRamCacheOnForProvider( provider ) );
+                  + wsContext.isRamCacheOn( provider ) );
         log.info( " dbCacheon=" 
-                  + wsContext.isDbCacheOnForProvider( provider ) );
+                  + wsContext.isDbCacheOn( provider ) );
         
         NativeRecord nativeRecord = null;
         NativeRecord expiredRecord = null;
@@ -70,11 +73,11 @@ public class CachingService {
 
         // try to retrieve from memcached
         
-        if( wsContext.isRamCacheOnForProvider( provider ) ) {
+        if( wsContext.isRamCacheOn( provider ) ) {
             NativeRecord memcachedRec = null;
             try {
                 memcachedRec = 
-                    (NativeRecord)wsContext.getMcClient().fetch( memcachedId );
+                    (NativeRecord) wsContext.getMcClient().fetch( memcachedId );
             } catch ( Exception ex ) {
                 log.warn ( "FAULT: CACHE_FAULT: " + ex.toString() );
                 serverFault = ServerFaultFactory.newInstance(Fault.CACHE_FAULT); 
@@ -90,7 +93,7 @@ public class CachingService {
         // try retrieve from local database
 
         if ( nativeRecord == null 
-             && wsContext.isDbCacheOnForProvider( provider ) ) {
+             && wsContext.isDbCacheOn( provider ) ) {
 
             NativeRecord cacheRecord = null;
 
@@ -134,6 +137,8 @@ public class CachingService {
         log.info( "getNative: before getNativeFromRemote. " );
         
         if( nativeRecord == null ){
+
+
             RemoteNativeService rns = 
                 new RemoteNativeService ( wsContext, provider );
 
@@ -168,14 +173,14 @@ public class CachingService {
 
         if( nativeRecord != null ){
             //*** dbCache update                           
-            if( wsContext.isDbCacheOnForProvider( provider ) ) {               
+            if( wsContext.isDbCacheOn( provider ) ) {               
                 log.info( "db create nativeR. " );
                 wsContext.getDipProxyDAO()
                     .createNativeRecord( nativeRecord );
             }
 
             //*** memcached store
-            if( wsContext.isRamCacheOnForProvider( provider ) ) {
+            if( wsContext.isRamCacheOn( provider ) ) {
                 memcachedStore ( memcachedId, nativeRecord );
             }
 
@@ -183,7 +188,7 @@ public class CachingService {
 
         }  else if( expiredRecord != null ){
 
-            if( wsContext.isDbCacheOnForProvider( provider ) ){
+            if( wsContext.isDbCacheOn( provider ) ){
                 log.info( "db create expiredR. " );
                 wsContext.getDipProxyDAO()
                     .createNativeRecord( expiredRecord );
@@ -246,7 +251,7 @@ public class CachingService {
 
         // try retrieve from memcached
         
-        if( wsContext.isRamCacheOnForProvider( provider ) ){
+        if( wsContext.isRamCacheOn( provider ) ){
             DxfRecord memcachedRec = null;
             try {
                 memcachedRec = 
@@ -265,7 +270,7 @@ public class CachingService {
         // try to retrieve from local database 
         
         if( dxfRecord == null 
-            && wsContext.isDbCacheOnForProvider( provider ) ){
+            && wsContext.isDbCacheOn( provider ) ){
             
             DxfRecord cacheDxfRecord = null;
 
@@ -339,12 +344,12 @@ public class CachingService {
         
         if( dxfRecord != null ) {
 
-            if( wsContext.isDbCacheOnForProvider( provider ) ) {
+            if( wsContext.isDbCacheOn( provider ) ) {
                 wsContext.getDipProxyDAO()
                     .createDxfRecord ( dxfRecord );
             }
             
-            if( wsContext.isRamCacheOnForProvider( provider ) ) {
+            if( wsContext.isRamCacheOn( provider ) ) {
                 memcachedStore ( memcachedId, dxfRecord );
             }
 
@@ -352,7 +357,7 @@ public class CachingService {
 
         } else if( expiredDxf != null ){
             
-            if( wsContext.isDbCacheOnForProvider( provider ) ){
+            if( wsContext.isDbCacheOn( provider ) ){
                 wsContext.getDipProxyDAO()
                     .createDxfRecord ( expiredDxf );
             }
@@ -409,7 +414,7 @@ public class CachingService {
             
             dxfRecord.setDxf( dxfString );
             dxfRecord.resetExpireTime ( nativeRecord.getQueryTime(),
-                                        wsContext.getTtlForProvider( provider ) );                
+                                        wsContext.getTtl( provider ) );                
 
         }
  

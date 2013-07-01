@@ -77,8 +77,13 @@
 
  <!-- ========================================================= PROXY SERVER -->
 
+  <bean id="caching-service" class="edu.ucla.mbi.proxy.CachingService">
+    <property name="wsContext" ref="wsContext"/>
+  </bean>
+
   <bean id="proxy-server-bean" init-method="initialize"
     class="edu.ucla.mbi.proxy.ProxyServer">
+    <property name="cachingService" ref="caching-service"/>
     <property name="wsContext" ref="wsContext"/>
   </bean>
 

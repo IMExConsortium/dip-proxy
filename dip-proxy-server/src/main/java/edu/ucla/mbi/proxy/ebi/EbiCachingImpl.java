@@ -80,7 +80,7 @@ public class EbiCachingImpl extends ConfigurableServer
         }
 
         try {
-            CachingService cachingSrv = new CachingService( wsContext ); 
+            // CachingService cachingSrv = new CachingService( wsContext ); 
             
             if ( format == null || format.equals( "" )
                  || format.equalsIgnoreCase( "dxf" )
