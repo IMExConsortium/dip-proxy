@@ -32,21 +32,25 @@ public class CachingService {
 
     private Log log = LogFactory.getLog( CachingService.class );
 
+    private WSContext wsContext = null;
     private McClient mcClient = null;
     private RemoteNativeService rns = null;
 
-    private WSContext wsContext = null;
 
     public CachingService( WSContext wsContext, String provider ) 
         throws ServerFault {
         
         this.wsContext = wsContext;
-        
+        mcClient = wsContext.getMcClient();
+
         rns = new RemoteNativeService ( wsContext, provider );
-        
+
+        /*
         if( mcClient == null ) {
+            
             mcClient = rns.getWsContext().getMcClient();
         }
+        */
     }
     
     public CachingService() { }
@@ -76,7 +80,8 @@ public class CachingService {
         String memcachedId = "NATIVE_" + provider + "_" + service +
                              "_" + ns + "_" + ac;
 
-        //*** retrieve from memcached
+        // try to retrieve from memcached
+        
         if( rns.getRsc().isRamCacheOn() ) {
             NativeRecord memcachedRec = null;
             try {
@@ -93,7 +98,8 @@ public class CachingService {
             }
         }
 
-        //*** retrieve from local database
+        // try retrieve from local database
+
         if ( nativeRecord == null && rns.getRsc().isDbCacheOn() ) {
 
             NativeRecord cacheRecord = null;
@@ -226,7 +232,7 @@ public class CachingService {
     }
     
     //--------------------------------------------------------------------------
-
+    
     public DxfRecord getDxfRecord( String provider,
                                    String service,
                                    String ns,
@@ -244,7 +250,8 @@ public class CachingService {
 
         Date currentTime = Calendar.getInstance().getTime();
 
-        //*** retrieve from memcached
+        // try retrieve from memcached
+        
         if( rns.getRsc().isRamCacheOn() ){
             DxfRecord memcachedRec = null;
             try {
@@ -260,7 +267,8 @@ public class CachingService {
             }
         }
 
-        //*** retrieve from local database 
+        // try to retrieve from local database 
+        
         if( dxfRecord == null && rns.getRsc().isDbCacheOn() ){
             
             DxfRecord cacheDxfRecord = null;
@@ -289,9 +297,9 @@ public class CachingService {
             }
         }
 
-        //*** retrieve from native, here dxfRecord==null|expired              
-        //----------------------------------------------------------------------
-
+        // try retrieve from native; if here dxfRecord==null|expired              
+        //----------------------------------------------------------
+        
         if( dxfRecord == null ) { 
             
             NativeRecord nativeRecord = null;
@@ -303,7 +311,7 @@ public class CachingService {
                 log.warn( "getDxf: getNative fault. " ); 
                 serverFault = fault;
             } 
-
+            
             if( nativeRecord != null ){
                 try{ 
                     DxfRecord dxfr =  buildDxfRecord( nativeRecord, detail );
@@ -383,52 +391,23 @@ public class CachingService {
         String ac = nativeRecord.getAc();
         String nativeXml = nativeRecord.getNativeXml();
         
-                
-        //ProxyDxfTransformer pdt = new ProxyDxfTransformer( rns.getWsContext() );
-
-        // ProxyDxfTransformer pdt = new ProxyDxfTransformer( wsContext, provider );
-
-        /*
         try{
-
-            dxfResult = pdt.buildDxf( nativeXml, ns,ac, detail,
-                                      //provider, 
-                                      service );
             
-            
-        } catch( ServerFault fault){
-            throw fault;
-        } 
-        */
-        
-        try{
-        
             dxfResult = wsContext.getDxfTransformer( provider )
                 .buildDxf( nativeXml, ns, ac, detail, service );
             
-            
         } catch( ServerFault fault){
             throw fault;
         }
-               
-        //------ new change ---------------------------------------------------- 
-        /*
-        ProxyTransformer pTrans = rns.getRsc().getTransformer();
-        synchronized ( pTrans ) {
-            pTrans.setTransformer( provider, service );
-            pTrans.setParameters( detail, ns, ac );
-            dxfResult = pTrans.transform( nativeXml, detail );
-        }
-        */
-        //----------------------------------------------------------------------
-
+        
         if ( isDxfDatasetValid( dxfResult ) ){
             
             String dxfString = null;
             
-            //*** mashall DatasetType object into a string representation
+            //  mashall DatasetType object into a string representation
+            
             dxfString = marshall( dxfResult );
-               
+            
             dxfRecord = new DxfRecord( provider, service, ns,
                                        ac, detail );                
             
