@@ -81,8 +81,7 @@ public class NcbiCachingImpl extends ConfigurableServer
        
         try {
 
-            CachingService cachingSrv = 
-                new CachingService( wsContext, provider );
+            CachingService cachingSrv = new CachingService( wsContext );
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -175,8 +174,7 @@ public class NcbiCachingImpl extends ConfigurableServer
 	    } 
         
         try {
-            CachingService cachingSrv = 
-                new CachingService( wsContext, provider );
+            CachingService cachingSrv = new CachingService( wsContext ); 
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -265,8 +263,7 @@ public class NcbiCachingImpl extends ConfigurableServer
 	    }   
 	
 	    try {
-            CachingService cachingSrv = 
-                new CachingService( wsContext, provider );
+            CachingService cachingSrv = new CachingService( wsContext );
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -354,8 +351,7 @@ public class NcbiCachingImpl extends ConfigurableServer
        
 	    try {
 
-            CachingService cachingSrv = 
-                new CachingService( wsContext, provider );
+            CachingService cachingSrv = new CachingService( wsContext ); 
 
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 
@@ -447,8 +443,7 @@ public class NcbiCachingImpl extends ConfigurableServer
 	
 	    try {
 
-            CachingService cachingSrv = 
-                new CachingService( wsContext, provider );
+            CachingService cachingSrv = new CachingService( wsContext ); 
             
             if ( format == null || format.equals( "" ) 
                  || format.equalsIgnoreCase( "dxf" ) 

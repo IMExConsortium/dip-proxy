@@ -13,14 +13,12 @@ package edu.ucla.mbi.proxy.prolinks;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-//import edu.ucla.mbi.util.context.*;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.proxy.context.*;
 
 import java.util.*;
-//import java.io.*;
 
 public class prolinksTransformer extends ProxyTransformer {
 
@@ -69,8 +67,8 @@ public class prolinksTransformer extends ProxyTransformer {
                         log.info( "ProlinksServer: port.getRefseq call " +
                                   "(loop): NS=refseq" + " AC=" + node_ac );
 
-                        CachingService cachingSrv =
-                            new CachingService( wsContext, "NCBI" );
+                        CachingService cachingSrv = 
+                            new CachingService( wsContext );
 
                         DatasetType dataset = cachingSrv.getDatasetType(
                             "NCBI", "refseq", "refseq", node_ac, "base" );

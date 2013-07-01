@@ -35,12 +35,10 @@ public class WSContext{
         = new HashMap<String, RemoteServerContext>();
 
     private static Dht dht;
-    private ProxyTransformer transformer;
     private McClient mcClient;
     private DipProxyDAO dipProxyDAO;
 
     //*** setter
-
     public void setDipProxyDAO( DipProxyDAO dao ){
         this.dipProxyDAO = dao;
     }
@@ -49,10 +47,6 @@ public class WSContext{
         this.dht = dht;
     }
  
-    //public void setTransformer ( ProxyTransformer tf ) {
-    //    this.transformer = tf;
-    //}
-
     public void setServices( Map<String,Map> services ) {
         this.services = services;
     }
@@ -62,14 +56,9 @@ public class WSContext{
     }
 
     //*** getter
-
     public DipProxyDAO getDipProxyDAO(){
         return dipProxyDAO;
     }
-
-    //public  ProxyTransformer getTransformer () {
-    //    return transformer;
-    //}
 
     public static Dht getDht() {
         return dht;
@@ -87,11 +76,21 @@ public class WSContext{
         return mcClient;
     }
 
-    
-    public  ProxyDxfTransformer getDxfTransformer ( String provider) {
+    public ProxyDxfTransformer getDxfTransformer ( String provider) {
         return new ProxyDxfTransformer( this, provider );
     }
 
+    public boolean isRamCacheOnForProvider ( String provider ) {
+        return this.getServerContext( provider).isRamCacheOn();
+    }
+
+    public boolean isDbCacheOnForProvider ( String provider ) {
+        return this.getServerContext( provider).isDbCacheOn();
+    }
+
+    public int getTtlForProvider ( String provider ) {
+        return this.getServerContext( provider ).getTtl();
+    }
 
     //---------------------------------------------------------------------
 

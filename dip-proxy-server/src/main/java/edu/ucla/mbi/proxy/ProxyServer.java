@@ -51,11 +51,8 @@ public class ProxyServer extends ConfigurableServer {
         ns = this.validateNs ( provider, service, ns, ac, detail, format );
 
         log.info( "after validateNs: ns=" + ns );
-        // get record from the server
-        
                    
-        CachingService cachingSrv =
-            new CachingService( wsContext, provider  );
+        CachingService cachingSrv = new CachingService( wsContext );
             
         if ( format.equalsIgnoreCase( "dxf" )
              || format.equalsIgnoreCase( "both" ) ) {
