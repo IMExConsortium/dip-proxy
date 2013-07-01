@@ -164,20 +164,6 @@ public class ProxyTransformer implements ContextListener {
 	    tf.setParameter("edu.ucla.mbi.services.ac", ac);
     }  
 
-    /* 
-    public void transform( StreamSource xmlStreamSource, 
-                           JAXBResult jaxbResult) throws ProxyFault {
-	    
-	    Log log = LogFactory.getLog( ProxyTransformer.class );
-
-	    try{
-	        tf.transform(xmlStreamSource, jaxbResult );
-	    }catch(Exception e){
-	        log.info("Transformation error=" + e.toString());
-            throw FaultFactory.newInstance ( Fault.TRANSFORM ); // transformer error
-	    }
-    }*/
-
     public DatasetType transform( String strNative, String detail ) 
         throws ServerFault {
         

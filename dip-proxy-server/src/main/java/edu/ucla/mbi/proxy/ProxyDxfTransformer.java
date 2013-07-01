@@ -29,8 +29,7 @@ public class ProxyDxfTransformer {
     }    
     
     public DatasetType buildDxf( String strNative, String ns, String ac,
-                                 String detail, // String provider, 
-                                 String service ) throws ServerFault {
+        String detail, String service ) throws ServerFault {
 
         // Transform native record string into DXF
         
