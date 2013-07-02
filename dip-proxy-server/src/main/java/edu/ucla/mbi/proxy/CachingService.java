@@ -135,8 +135,11 @@ public class CachingService {
         if( nativeRecord == null ){
 
 
+            //RemoteNativeService rns = 
+            //    new RemoteNativeService ( wsContext, provider );
+
             RemoteNativeService rns = 
-                new RemoteNativeService ( wsContext, provider );
+                new RemoteNativeService ( wsContext.getServerContext(provider) );
 
             remoteRecord = rns.getNativeFromRemote ( provider, service, ns, ac );
         }

@@ -26,33 +26,36 @@ class RemoteNativeService { // extends Observable {
     private Log log = LogFactory.getLog( RemoteNativeService.class );
 
     private Router router;
-    private WSContext wsContext;
+    //private WSContext wsContext;
     private RemoteServerContext rsc;
     private List<Router> observerList = new ArrayList<Router>();
 
-    public RemoteNativeService( WSContext context, String provider ) 
+    //public RemoteNativeService( WSContext context, String provider ) 
+    public RemoteNativeService( RemoteServerContext rsc )
         throws ServerFault {
 
-        this.wsContext = context;
-        this.rsc = wsContext.getServerContext( provider );
+        //this.wsContext = context;
+        //this.rsc = wsContext.getServerContext( provider );
+        //this.rsc = context.getServerContext( provider );
+        this.rsc = rsc;
         this.router = rsc.getRouter();
 
         if( rsc == null || router == null ) {
-            log.warn( "rsc or router is null for the provider(" + provider +
-                      "). " );
+            log.warn( "rsc or router is null. " );
             throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
     }
     
     public RemoteNativeService() { }
    
+    /*
     public WSContext getWsContext() {
         return wsContext;
     } 
 
     public RemoteServerContext getRsc() {
         return rsc;
-    }
+    }*/
 
     //--------------------------------------------------------------------------
         
