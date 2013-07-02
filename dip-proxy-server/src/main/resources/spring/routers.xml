@@ -37,48 +37,6 @@
 
   <property name="context" ref="dhtContext" /> 
 
-  <!--
-  <property name="overlayMode" value="${dht.mode}" />
- 
-  <property name="maxDrlSize">
-    <value>2</value>
-  </property>
-
-  <property name="routingAlgorithm">
-    <value>${dht.routing}</value>
-  </property>
-
-  <property name="directoryType">
-    <value>BerkeleyDB</value>
-  </property>
-
-  <property name="workingDirectory">
-   <value>dht</value>
-  </property>
-
-  <property name="defaultTTL">
-    <value>3</value>   --> <!-- 3 hours --> <!--
-  </property>
- 
-  <property name="dhtPort">
-    <value>55666</value>    
-  </property>
-  
-  <property name="bootServers">
-    <list>
-     <value>10.1.200.201</value>
-     <value>10.1.200.202</value>
-     <value>10.1.200.203</value>
-     <value>10.1.200.204</value>
-     <value>10.1.200.205</value>
-     <value>10.1.200.206</value>
-     <value>10.1.200.207</value>
-     <value>10.1.200.208</value>
-     <value>10.1.200.209</value>
-     <value>10.1.200.210</value>
-    </list>
-  </property>
-  -->
  </bean>
 
  <!-- ROUTERS -->
