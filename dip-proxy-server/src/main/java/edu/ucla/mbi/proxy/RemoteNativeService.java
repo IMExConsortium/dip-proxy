@@ -25,34 +25,49 @@ class RemoteNativeService { // extends Observable {
 
     private Log log = LogFactory.getLog( RemoteNativeService.class );
 
-    private Router router;
-    //private WSContext wsContext;
-    private RemoteServerContext rsc;
+    private WSContext wsContext;
+
+    //private Router router;
+    //private RemoteServerContext rsc;
+
     private List<Router> observerList = new ArrayList<Router>();
 
     //public RemoteNativeService( WSContext context, String provider ) 
+
+    /*
     public RemoteNativeService( RemoteServerContext rsc )
         throws ServerFault {
 
         //this.wsContext = context;
         //this.rsc = wsContext.getServerContext( provider );
         //this.rsc = context.getServerContext( provider );
-        this.rsc = rsc;
+        //this.rsc = rsc;
+        
         this.router = rsc.getRouter();
-
+       
         if( rsc == null || router == null ) {
             log.warn( "rsc or router is null. " );
             throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
     }
-    
+    */
+
+    public RemoteNativeService( WSContext context ){
+        this.wsContext = context;
+    }
+
     public RemoteNativeService() { }
+    
+    private RemoteServerContext getRsc( String provider ){
+        return wsContext.getServerContext(  provider );
+    }
    
-    /*
+    
     public WSContext getWsContext() {
         return wsContext;
     } 
-
+    
+    /*
     public RemoteServerContext getRsc() {
         return rsc;
     }*/
@@ -64,22 +79,22 @@ class RemoteNativeService { // extends Observable {
                                                   String namespace,
                                                   String accession ) {
 
-        if ( rsc.isRemoteProxyOn() ) {
-
+        if ( getRsc(provider).isRemoteProxyOn() ) {
+            
             log.info( " selecting next proxy..." );
 
             // register as interested
             // ----------------------
 
             log.info( " adding observer..." );
-            this.addObserver( router );
+            this.addObserver( getRsc(provider).getRouter() );
 
             log.info( "before router getNextProxyServer. " );
-            return router.getNextProxyServer( provider, service, 
+            return getRsc(provider).getRouter().getNextProxyServer( provider, service, 
                                               namespace, accession );
         }
 
-        return rsc.getNativeServer();
+        return getRsc(provider).getNativeServer();
 
     }
 
@@ -89,7 +104,7 @@ class RemoteNativeService { // extends Observable {
                                               String ac 
                                               ) throws ServerFault {
 
-        int retry = rsc.getMaxRetry();
+        int retry = getRsc(provider).getMaxRetry();
         NativeRecord remoteRecord = null;
         ServerFault retryFault = null;
         
@@ -108,25 +123,25 @@ class RemoteNativeService { // extends Observable {
             log.info( "getNativeFromRemote: before selectNextRemoteServer. " );    
 
             
-            if( rsc.isRemoteProxyOn() && retry > 0 ) {
+            if( getRsc(provider).isRemoteProxyOn() && retry > 0 ) {
                
-                if( !observerList.contains( router ) ) {
-                    this.addObserver( router );
+                if( !observerList.contains( getRsc(provider).getRouter() ) ) {
+                    this.addObserver( getRsc(provider).getRouter() );
                 } 
-                nativeServer = router.getNextProxyServer( provider, service,
+                nativeServer = getRsc(provider).getRouter().getNextProxyServer( provider, service,
                                                           ns, ac );
                 log.info( "getNativeFromRemote: nativeServer came from proxy. " );
             } else {
                     
                 //*** last retry or no proxy 
-                nativeServer = rsc.getNativeServer();
+                nativeServer = getRsc(provider).getNativeServer();
                 log.info( "getNativeFromRemote: nativeServer came from native. " );
                 
             }
 
             try {                
                 remoteRecord = nativeServer.getNative( 
-                     provider, service, ns, ac, rsc.getTimeout() );
+                     provider, service, ns, ac, getRsc(provider).getTimeout() );
 
             } catch( ServerFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
@@ -154,7 +169,7 @@ class RemoteNativeService { // extends Observable {
 
                 NativeRecord faultyRecord = new NativeRecord( provider, service, 
                                                               ns, ac);
-                faultyRecord.resetExpireTime( rsc.getTtl() );  
+                faultyRecord.resetExpireTime( getRsc(provider).getTtl() );  
      
                 DhtRouterMessage message =
                     new DhtRouterMessage( DhtRouterMessage.DELETE,
@@ -175,9 +190,9 @@ class RemoteNativeService { // extends Observable {
 
         log.info( "valid record="+ remoteRecord);
         
-        remoteRecord.resetExpireTime( rsc.getTtl() );
+        remoteRecord.resetExpireTime( getRsc(provider).getTtl() );
           
-        if( rsc.isDbCacheOn() ) {
+        if( getRsc(provider).isDbCacheOn() ) {
 
             DhtRouterMessage message =
                 new DhtRouterMessage( DhtRouterMessage.UPDATE,

@@ -138,8 +138,10 @@ public class CachingService {
             //RemoteNativeService rns = 
             //    new RemoteNativeService ( wsContext, provider );
 
-            RemoteNativeService rns = 
-                new RemoteNativeService ( wsContext.getServerContext(provider) );
+            //RemoteNativeService rns = 
+            //    new RemoteNativeService ( wsContext.getServerContext( provider ) );
+
+            RemoteNativeService rns = new RemoteNativeService ( wsContext );
 
             remoteRecord = rns.getNativeFromRemote ( provider, service, ns, ac );
         }
