@@ -70,8 +70,13 @@
 
  <!-- ========================================================= PROXY SERVER -->
 
+  <bean id="remote-native-service" class="edu.ucla.mbi.proxy.RemoteNativeService">
+    <property name="wsContext" ref="wsContext"/>
+  </bean>
+
   <bean id="caching-service" class="edu.ucla.mbi.proxy.CachingService">
     <property name="wsContext" ref="wsContext"/>
+    <property name="rns" ref="remote-native-service"/>
   </bean>
 
   <bean id="proxy-server-bean" init-method="initialize"

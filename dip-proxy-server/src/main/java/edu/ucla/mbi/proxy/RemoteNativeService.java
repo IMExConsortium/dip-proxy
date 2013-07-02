@@ -29,19 +29,15 @@ class RemoteNativeService {
 
     private List<Router> observerList = new ArrayList<Router>();
 
-    public RemoteNativeService( WSContext context ){
+    public RemoteNativeService() { }
+    
+    public void setWsContext( WSContext context ) {
         this.wsContext = context;
     }
 
-    public RemoteNativeService() { }
-    
     private RemoteServerContext getRsc( String provider ){
         return wsContext.getServerContext(  provider );
     }
-   
-    public WSContext getWsContext() {
-        return wsContext;
-    } 
     
     //--------------------------------------------------------------------------
         

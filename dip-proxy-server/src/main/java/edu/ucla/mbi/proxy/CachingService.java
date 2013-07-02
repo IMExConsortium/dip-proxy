@@ -33,11 +33,16 @@ public class CachingService {
     private Log log = LogFactory.getLog( CachingService.class );
 
     private WSContext wsContext = null;
-        
+    private RemoteNativeService rns = null;
+    
     public CachingService() { }
 
     public void setWsContext(  WSContext context ){
         this.wsContext = context;
+    }
+
+    public void setRns( RemoteNativeService service ) {
+        this.rns = service;
     }
 
     //--------------------------------------------------------------------------
@@ -133,8 +138,6 @@ public class CachingService {
         log.info( "getNative: before getNativeFromRemote. " );
         
         if( nativeRecord == null ){
-
-            RemoteNativeService rns = new RemoteNativeService ( wsContext );
 
             remoteRecord = rns.getNativeFromRemote ( provider, service, ns, ac );
         }
