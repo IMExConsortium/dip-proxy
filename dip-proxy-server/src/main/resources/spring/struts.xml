@@ -13,7 +13,36 @@
       http://www.springframework.org/schema/aop 
       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
- <!-- struts2 actions -->
+    <!-- page setup -->
+
+    <bean id="pageContext" class="edu.ucla.mbi.util.context.JsonContext">
+        <property name="config">
+            <map>
+                <entry key="json-config" value="/etc/pages.json"/>
+
+                <entry key="json-source">
+                    <bean class="edu.ucla.mbi.util.context.SpringFileResource">
+                        <property name="file" value="etc/pages.json"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="menuContext" class="edu.ucla.mbi.util.context.JsonContext">
+        <property name="config">
+            <map>
+                <entry key="json-config" value="/etc/menu.json"/>
+                <entry key="json-source">
+                    <bean class="edu.ucla.mbi.util.context.SpringFileResource">
+                        <property name="file" value="etc/menu.json"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+ <!-- actions -->
 
  <bean id="cacheStatusAction" scope="prototype"
        class="edu.ucla.mbi.proxy.struts.action.CacheStatus">
@@ -26,6 +55,7 @@
   <property name="mst" value="1:1:2"/> 
 
  </bean>
+
 
  <bean id="nativeSparkline" class="edu.ucla.mbi.util.Sparkline">
   <property name="width" value="240"/>
@@ -75,6 +105,7 @@
  </bean>
 
  <!-- rest server config new -->
+
  <bean id="restServerConfigAction" scope="prototype"
        class="edu.ucla.mbi.proxy.struts.action.JsonContextConfigAction">
 
@@ -87,6 +118,7 @@
  </bean>
 
  <!-- transformer config new -->
+
  <bean id="transformerConfigAction" scope="prototype"
        class="edu.ucla.mbi.proxy.struts.action.JsonContextConfigAction">
 

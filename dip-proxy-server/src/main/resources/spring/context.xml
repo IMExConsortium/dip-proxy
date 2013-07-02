@@ -13,35 +13,6 @@
       http://www.springframework.org/schema/aop 
       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <!-- STATIC PAGES SETUP -->
-
-    <bean id="pageContext" class="edu.ucla.mbi.util.context.JsonContext">
-        <property name="config">
-            <map>
-                <entry key="json-config" value="/etc/pages.json"/>
-
-                <entry key="json-source">
-                    <bean class="edu.ucla.mbi.util.context.SpringFileResource">
-                        <property name="file" value="etc/pages.json"/>
-                    </bean>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
-    <bean id="menuContext" class="edu.ucla.mbi.util.context.JsonContext">
-        <property name="config">
-            <map>
-                <entry key="json-config" value="/etc/menu.json"/>
-                <entry key="json-source">
-                    <bean class="edu.ucla.mbi.util.context.SpringFileResource">
-                        <property name="file" value="etc/menu.json"/>
-                    </bean>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
 <!-- ================================================= UNIVERSAL REST SERVER -->
 
     <bean id="restServerContext" class="edu.ucla.mbi.util.context.JsonContext">
@@ -56,6 +27,8 @@
             </map>
         </property>
     </bean>
+
+<!-- =========================================================== TRANSFORMER -->
 
     <bean id="transformerContext" class="edu.ucla.mbi.util.context.JsonContext">
         <property name="config">

@@ -22,24 +22,5 @@
         http://www.springframework.org/schema/aop 
         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-<!-- =============================================== NativeServer tracker -->
-
- <bean id="nativeTracker" init-method="initialize"
-          class="edu.ucla.mbi.proxy.advice.NativeTracker">
-
-    <property name="wsContext" ref="wsContext" />
-    <!--<property name="minInterval" value="15" /> -->
-    <property name="minInterval" value="600" /> <!-- unit second -->
-   
- </bean>
-
- <aop:config proxy-target-class="true">
-  <aop:aspect ref="nativeTracker">
-   <aop:pointcut id="nativePointcut"  expression=
-       "execution(edu.ucla.mbi.cache.NativeRecord edu.ucla.mbi.proxy.NativeServer.getNative(..))" />
-
-   <aop:around method="invoke" pointcut-ref="nativePointcut"/>
-  </aop:aspect>
- </aop:config>
 
 </beans>

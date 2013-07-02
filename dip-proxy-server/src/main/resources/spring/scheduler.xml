@@ -6,7 +6,7 @@
  ! Version: $Rev:: 53                                                      $
  !==========================================================================
  !
- ! tdip-proxy: agent scheduler configuration
+ ! dip-proxy: scheduled operations/tracker
  !
  !====================================================================== -->
 
@@ -17,8 +17,10 @@
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans 
         http://www.springframework.org/schema/beans/spring-beans.xsd
+
         http://www.springframework.org/schema/tx 
         http://www.springframework.org/schema/tx/spring-tx.xsd
+
         http://www.springframework.org/schema/aop 
         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
@@ -51,5 +53,25 @@
   <property name="order" value="query-first"/>  
 
  </bean>
+
+<!-- =============================================== NativeServer tracker -->
+
+ <bean id="nativeTracker" init-method="initialize"
+          class="edu.ucla.mbi.proxy.advice.NativeTracker">
+
+    <property name="wsContext" ref="wsContext" />
+    <!--<property name="minInterval" value="15" /> -->
+    <property name="minInterval" value="600" /> <!-- unit second -->
+   
+ </bean>
+
+ <aop:config proxy-target-class="true">
+  <aop:aspect ref="nativeTracker">
+   <aop:pointcut id="nativePointcut"  expression=
+       "execution(edu.ucla.mbi.cache.NativeRecord edu.ucla.mbi.proxy.NativeServer.getNative(..))" />
+
+   <aop:around method="invoke" pointcut-ref="nativePointcut"/>
+  </aop:aspect>
+ </aop:config>
 
 </beans>
