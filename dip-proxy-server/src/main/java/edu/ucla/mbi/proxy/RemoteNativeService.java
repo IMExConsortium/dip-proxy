@@ -21,36 +21,13 @@ import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.proxy.context.*;
 import edu.ucla.mbi.fault.*;
 
-class RemoteNativeService { // extends Observable {
+class RemoteNativeService { 
 
     private Log log = LogFactory.getLog( RemoteNativeService.class );
 
     private WSContext wsContext;
 
-    //private Router router;
-    //private RemoteServerContext rsc;
-
     private List<Router> observerList = new ArrayList<Router>();
-
-    //public RemoteNativeService( WSContext context, String provider ) 
-
-    /*
-    public RemoteNativeService( RemoteServerContext rsc )
-        throws ServerFault {
-
-        //this.wsContext = context;
-        //this.rsc = wsContext.getServerContext( provider );
-        //this.rsc = context.getServerContext( provider );
-        //this.rsc = rsc;
-        
-        this.router = rsc.getRouter();
-       
-        if( rsc == null || router == null ) {
-            log.warn( "rsc or router is null. " );
-            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
-    }
-    */
 
     public RemoteNativeService( WSContext context ){
         this.wsContext = context;
@@ -62,16 +39,10 @@ class RemoteNativeService { // extends Observable {
         return wsContext.getServerContext(  provider );
     }
    
-    
     public WSContext getWsContext() {
         return wsContext;
     } 
     
-    /*
-    public RemoteServerContext getRsc() {
-        return rsc;
-    }*/
-
     //--------------------------------------------------------------------------
         
     private  NativeServer selectNextRemoteServer( String provider,
