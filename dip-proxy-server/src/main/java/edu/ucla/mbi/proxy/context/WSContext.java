@@ -81,24 +81,24 @@ public class WSContext{
     }
 
     public boolean isRamCacheOn( String provider ) {
-        return this.getServerContext( provider).isRamCacheOn();
+        return this.getServerContext( provider ).isRamCacheOn();
     }
 
     public boolean isDbCacheOn( String provider ) {
-        return this.getServerContext( provider).isDbCacheOn();
+        return this.getServerContext( provider ).isDbCacheOn();
     }
 
     public boolean isRemoteProxyOn( String provider ) {
-        return this.getServerContext( provider).isRemoteProxyOn();
+        return this.getServerContext( provider ).isRemoteProxyOn();
     }
 
     public int getTtl( String provider ) {
         return this.getServerContext( provider ).getTtl();
     }
 
-    public Router getRouter( String provider ) {
-        return this.getServerContext( provider ).getRouter();
-    }
+    //public Router getRouter( String provider ) {
+    //    return this.getServerContext( provider ).getRouter();
+    //}
 
     public NativeServer getNativeServer( String provider ) {
         return this.getServerContext( provider ).getNativeServer();
@@ -391,4 +391,13 @@ public class WSContext{
     public static String info() {
 	    return "WSContext: info";
     }
+
+    pubic void update( String provider, Object rns, Object arg ) {
+        
+        this.getRouter( provider ).update( rns, arg );
+        
+        //r.update( this, arg );
+        //ctx.update( this, provider, arg );
+    }
+
 }

@@ -27,7 +27,7 @@ class RemoteNativeService {
 
     private WSContext wsContext;
 
-    private List<Router> observerList = new ArrayList<Router>();
+    private List observerList = new ArrayList();
 
     public RemoteNativeService() { }
     
@@ -50,11 +50,18 @@ class RemoteNativeService {
             // ----------------------
 
             log.info( " adding observer..." );
-            this.addObserver( wsContext.getRouter( provider ) );
+            
+            //this.addObserver( wsContext.getRouter( provider ) );
+
+            this.addObserver( wsContext  );
 
             log.info( "before router getNextProxyServer. " );
-            return wsContext.getRouter( provider ).getNextProxyServer( 
-                provider, service, namespace, accession );
+
+            //return wsContext.getRouter( provider ).getNextProxyServer( 
+            //    provider, service, namespace, accession );
+
+            return wsContext.getNextProxyServer( provider, service, 
+                                                 namespace, accession );
         }
 
         return wsContext.getNativeServer( provider );
@@ -87,12 +94,18 @@ class RemoteNativeService {
             
             if( wsContext.isRemoteProxyOn( provider ) && retry > 0 ) {
                
-                if( !observerList.contains( wsContext.getRouter( provider ) ) ) {
-                    this.addObserver( wsContext.getRouter( provider ) );
+                //if( !observerList.contains( wsContext.getRouter( provider ) ) ) {
+                //    this.addObserver( wsContext.getRouter( provider ) );
+                //} 
+
+                if( !observerList.contains( wsContext ) ) {
+                    this.addObserver( wsContext );
                 } 
 
-                nativeServer = wsContext.getRouter( provider )
-                    .getNextProxyServer( provider, service, ns, ac );
+                //nativeServer = wsContext.getRouter( provider )            //XXXXXXXXXX
+                //    .getNextProxyServer( provider, service, ns, ac );
+
+                nativeServer = wsContext.getNextProxyServer( provider, service, ns, ac );
 
                 log.info( "getNativeFromRemote: nativeServer came from proxy. " );
             } else {
@@ -102,7 +115,7 @@ class RemoteNativeService {
                 log.info( "getNativeFromRemote: nativeServer came from native. " );
             }
 
-            try {                
+            try {                                                         //XXXXXXXX
                 remoteRecord = nativeServer.getNative( provider, service,
                     ns, ac, wsContext.getTimeout( provider ) );
 
@@ -138,7 +151,7 @@ class RemoteNativeService {
                     new DhtRouterMessage( DhtRouterMessage.DELETE,
                                           faultyRecord, nativeServer );
                 
-                this.notifyObservers( message );
+                this.notifyObservers( provider, message );
                 log.info( "getNativeFromRemote: delete a invalid record " +
                           "or fault address. " );
             }
@@ -163,7 +176,7 @@ class RemoteNativeService {
 
             log.info( "DhtRouterMessage: " + message );
         
-            this.notifyObservers( message );
+            this.notifyObservers( provider, message );
         }
 
         return remoteRecord;
@@ -179,18 +192,19 @@ class RemoteNativeService {
         return true;
     }
     
-    public void addObserver( Router router ){
-        observerList.add( router );
+    public void addObserver( Object obj ){
+        observerList.add( obj );
     }
 
-    public void notifyObservers( Object arg){
+    public void notifyObservers( String provider, Object arg){
 
-        for(Iterator<Router> io = observerList.iterator(); io.hasNext(); ){
+        for( Iterator io = observerList.iterator(); io.hasNext(); ){
             
-            Router r = io.next();
-
-            log.info("updating router="+ r);
-            r.update( this, arg );
+            WSContext ctx = (WSContext) io.next();
+            
+            log.info("updating context="+ ctx + " provider=" + provider );
+            //r.update( this, arg );
+            ctx.update( this, provider, arg );
         }
     }
 }
