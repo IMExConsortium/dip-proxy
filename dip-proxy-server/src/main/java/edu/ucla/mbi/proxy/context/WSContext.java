@@ -120,6 +120,13 @@ public class WSContext{
         return this.getServerContext( provider ).getMaxRetry();
     }
 
+    public NativeServer getNextProxyServer( String provider, String service,
+        String ns, String ac ) {
+
+        return this.getServerContext( provider ).getRouter()
+                    .getNextProxyServer( provider, service, ns, ac );
+    }
+
     //---------------------------------------------------------------------
 
     private RemoteServerContext getServerContext( String provider ) {
@@ -392,9 +399,9 @@ public class WSContext{
 	    return "WSContext: info";
     }
 
-    pubic void update( String provider, Object rns, Object arg ) {
+    public void routerUpdate( Object rns, String provider, Object arg ) {
         
-        this.getRouter( provider ).update( rns, arg );
+        this.getServerContext( provider ).getRouter().update( rns, arg );
         
         //r.update( this, arg );
         //ctx.update( this, provider, arg );

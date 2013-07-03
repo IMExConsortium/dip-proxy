@@ -51,14 +51,9 @@ class RemoteNativeService {
 
             log.info( " adding observer..." );
             
-            //this.addObserver( wsContext.getRouter( provider ) );
-
             this.addObserver( wsContext  );
 
             log.info( "before router getNextProxyServer. " );
-
-            //return wsContext.getRouter( provider ).getNextProxyServer( 
-            //    provider, service, namespace, accession );
 
             return wsContext.getNextProxyServer( provider, service, 
                                                  namespace, accession );
@@ -94,16 +89,9 @@ class RemoteNativeService {
             
             if( wsContext.isRemoteProxyOn( provider ) && retry > 0 ) {
                
-                //if( !observerList.contains( wsContext.getRouter( provider ) ) ) {
-                //    this.addObserver( wsContext.getRouter( provider ) );
-                //} 
-
                 if( !observerList.contains( wsContext ) ) {
                     this.addObserver( wsContext );
                 } 
-
-                //nativeServer = wsContext.getRouter( provider )            //XXXXXXXXXX
-                //    .getNextProxyServer( provider, service, ns, ac );
 
                 nativeServer = wsContext.getNextProxyServer( provider, service, ns, ac );
 
@@ -203,8 +191,7 @@ class RemoteNativeService {
             WSContext ctx = (WSContext) io.next();
             
             log.info("updating context="+ ctx + " provider=" + provider );
-            //r.update( this, arg );
-            ctx.update( this, provider, arg );
+            ctx.routerUpdate( this, provider, arg );
         }
     }
 }

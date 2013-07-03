@@ -27,20 +27,20 @@ public class NativeAgent implements Agent {
     private WSContext wsContext = null;
     private String order = "expiration-first";
     
-    private Map<String, Router> observerMap = new HashMap<String, Router>();
+    private List observerList = new ArrayList();
 
-    public void addObserver( String provider, Router router ) {
-        observerMap.put( provider, router );
+    public void addObserver( WSContext wsContext ) {
+        observerList.add( wsContext );
     }
 
     public void notifyObserver ( String provider, Object arg ) {
-        Router router = observerMap.get( provider );
         Log log = LogFactory.getLog( NativeAgent.class );
-        log.info( "updating router=" + router );
-        
-        router.update( this, arg );
+        for( Iterator io = observerList.iterator(); io.hasNext(); ){
+            WSContext ctx = (WSContext) io.next();
+            log.info("updating context="+ ctx + " provider=" + provider );
+            ctx.routerUpdate( this, provider, arg );
+        }
     }
-
     
     public void setWsContext( WSContext context ) {
 
@@ -57,15 +57,8 @@ public class NativeAgent implements Agent {
     public void initialize() {
         Log log = LogFactory.getLog( NativeAgent.class );
         log.info( "initializing... " );
-
-        Set<String> providers = wsContext.getServices().keySet();
-
-        for ( Iterator<String> ii = providers.iterator(); ii.hasNext(); ) {
-
-            String prv = ii.next();
-
-            log.info( "provider=" + prv );
-            observerMap.put( prv, wsContext.getRouter( prv ) );
+        if( !observerList.contains( wsContext ) ) {
+            this.addObserver( wsContext );
         }
     }
 
