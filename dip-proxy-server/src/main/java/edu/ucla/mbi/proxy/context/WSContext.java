@@ -67,7 +67,12 @@ public class WSContext{
     public Map<String,Map> getServices() {
 	    return services;
     }
-     
+
+    public Set<String> getProviderSet(){
+        return services.keySet();
+    }
+
+  
     public Map getProvider( String provider ) {
         return (Map) services.get( provider );
     }

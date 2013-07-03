@@ -78,7 +78,8 @@ public class CacheStatus extends PortalSupport {
         nativeCounts = new TreeMap<String, Long>();
         dxfCounts = new TreeMap<String, Long>();        
 
-        Set<String> providers = wsContext.getServices().keySet();
+        //Set<String> providers = wsContext.getServices().keySet();
+        Set<String> providers = wsContext.getProviderSet();
 
         log.info( "getOp()=" + getOp() );
 

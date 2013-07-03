@@ -96,21 +96,24 @@
        <entry key="wsContext">
             <ref bean="wsContext"/>
        </entry>
+<!--
        <entry key="ncbiReFetchThread">
             <ref bean="ncbiReFetchThread"/>
        </entry>
+-->
     </map>
   </property>
  </bean>
- 
+
+<!-- 
  <bean id="ncbiReFetchThread"  scope="prototype"
        class="edu.ucla.mbi.proxy.ncbi.NcbiReFetchThread">
 
   <property name="wsContext" ref="wsContext"/>
   <property name="nativeRestServer" ref="nativeRestServer"/>
-  <property name="threadRunMinutes" value="10"/> <!-- mins -->
+  <property name="threadRunMinutes" value="10"/>
  </bean>
-
+-->
  <!-- Prolinks proxy services -->
  
  <bean id="prlReferenceServer" init-method="initialize"

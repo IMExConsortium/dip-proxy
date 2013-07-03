@@ -34,6 +34,7 @@ public class NativeAgent implements Agent {
     }
 
     public void notifyObserver ( String provider, Object arg ) {
+
         Log log = LogFactory.getLog( NativeAgent.class );
         for( Iterator io = observerList.iterator(); io.hasNext(); ){
             WSContext ctx = (WSContext) io.next();
@@ -75,20 +76,22 @@ public class NativeAgent implements Agent {
             // go over providers
             // ------------------
 
-            Set<String> providers = wsContext.getServices().keySet();
+            //Set<String> providers = wsContext.getServices().keySet();
+
+            Set<String> providers = wsContext.getProviderSet();
 
             for ( Iterator<String> ii = providers.iterator(); ii.hasNext(); ) {
 
-                String prv = ii.next();
+                String curProv = ii.next();
                 List<String[]> oldList = null;
 
                 try {
                     if( order.equals( "query-first" ) ) {
                         log.info( "call queryFirst. " );
-                        oldList = ndo.getQueryFirst( prv );
+                        oldList = ndo.getQueryFirst( curProv );
                     } else {
                         log.info( "call expireFirst. " );
-                        oldList = ndo.getExpireFirst( prv );
+                        oldList = ndo.getExpireFirst( curProv );
                     }
 
                     for ( Iterator<String[]> jj = oldList.iterator(); jj
@@ -100,16 +103,16 @@ public class NativeAgent implements Agent {
                         String ns = old[1];
                         String ac = old[2];
 
-                        log.info( "updating: " + prv + ":" + service + ":" + ns
+                        log.info( "updating: " + curProv + ":" + service + ":" + ns
                                 + ":" + ac );
 
                         try {
-                        
+                            
                             NativeRecord natRec = 
-                                wsContext.getNativeServer( prv ).getNative( 
-                                    prv, service, ns, ac, 
-                                    wsContext.getTimeout( prv ) );
-
+                                wsContext.getNativeServer( curProv )
+                                .getNative( curProv, service, ns, ac,
+                                            wsContext.getTimeout( curProv ) );
+                            
                             //*** check record validation
                             if( natRec.getNativeXml() == null
                                 || natRec.getNativeXml().isEmpty() ) {
@@ -118,24 +121,24 @@ public class NativeAgent implements Agent {
                             }
 
                             NativeRecord oldRecord =
-                                    ndo.find( prv, service, ns, ac );
+                                    ndo.find( curProv, service, ns, ac );
 
                             log.info( "Native rec: " + oldRecord );
 
                             if ( oldRecord == null ) {
                                 oldRecord =
-                                        new NativeRecord( prv, service, ns, ac );
+                                        new NativeRecord( curProv, service, ns, ac );
                             }
 
                             oldRecord.setNativeXml( natRec.getNativeXml() );
                             oldRecord.resetExpireTime( Calendar.getInstance()
-                                .getTime(), wsContext.getTtl( prv ) );
+                                .getTime(), wsContext.getTtl( curProv ) );
 
                             // store native record locally
                             ndo.create( oldRecord );
 
                             // notify dht to update
-                            if( wsContext.isDbCacheOn( prv ) ) {
+                            if( wsContext.isDbCacheOn( curProv ) ) {
 
                                 DhtRouterMessage message =
                                     new DhtRouterMessage( DhtRouterMessage.UPDATE,
@@ -143,15 +146,15 @@ public class NativeAgent implements Agent {
 
                                 log.info( "DhtRouterMessage: " + message );
 
-                                this.notifyObserver( prv, message );
+                                this.notifyObserver( curProv, message );
                             }
 
                         } catch ( ServerFault fault ) {
-                            log.info( "remote service (" + prv + ") " + fault );
+                            log.info( "remote service (" + curProv + ") " + fault );
                         }
                     }
                 } catch ( Exception e ) {
-                    log.info( "exception(" + prv + ") " + e );
+                    log.info( "exception(" + curProv + ") " + e );
                 }
             }
         }

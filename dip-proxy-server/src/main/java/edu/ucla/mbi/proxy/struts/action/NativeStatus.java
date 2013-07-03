@@ -57,8 +57,9 @@ public class NativeStatus extends PortalSupport {
             // go over providers
             //------------------
 
-            Set<String> providers = wsContext.getServices().keySet();
-
+            //Set<String> providers = wsContext.getServices().keySet();
+            Set<String> providers = wsContext.getProviderSet();
+            
             for (Iterator<String> ii = providers.iterator();
                 ii.hasNext(); ) {
 

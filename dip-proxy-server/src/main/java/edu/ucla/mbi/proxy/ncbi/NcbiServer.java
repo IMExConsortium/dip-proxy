@@ -38,7 +38,8 @@ public class NcbiServer implements NativeServer {
      
     private NativeRestServer nativeRestServer = null;
     private Map<String,Object> context = null;
-    private NcbiReFetchThread thread = null;
+
+<!--    private NcbiReFetchThread thread = null; -->
 
     public void setContext( Map<String,Object> context ) {
         this.context = context;
