@@ -96,10 +96,6 @@ public class WSContext{
         return this.getServerContext( provider ).getTtl();
     }
 
-    //public Router getRouter( String provider ) {
-    //    return this.getServerContext( provider ).getRouter();
-    //}
-
     public NativeServer getNativeServer( String provider ) {
         return this.getServerContext( provider ).getNativeServer();
     }
@@ -400,11 +396,7 @@ public class WSContext{
     }
 
     public void routerUpdate( Object rns, String provider, Object arg ) {
-        
         this.getServerContext( provider ).getRouter().update( rns, arg );
-        
-        //r.update( this, arg );
-        //ctx.update( this, provider, arg );
     }
 
 }
