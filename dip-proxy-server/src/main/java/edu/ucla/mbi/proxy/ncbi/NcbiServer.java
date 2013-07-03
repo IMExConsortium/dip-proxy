@@ -38,8 +38,7 @@ public class NcbiServer implements NativeServer {
      
     private NativeRestServer nativeRestServer = null;
     private Map<String,Object> context = null;
-
-    
+    private NcbiReFetchThread thread = null;
 
     public void setContext( Map<String,Object> context ) {
         this.context = context;
@@ -53,8 +52,9 @@ public class NcbiServer implements NativeServer {
         }
 
         nativeRestServer = (NativeRestServer) context.get( "nativeRestServer" );
+        thread = (NcbiReFetchThread) context.get( "ncbiReFetchThread" ); 
 
-        if( nativeRestServer == null ) {
+        if( nativeRestServer == null || thread == null ) {
             log.warn( "NcbiServer: initializing failed " +
                       "because nativeRestServer is null. " );
             throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
@@ -68,14 +68,15 @@ public class NcbiServer implements NativeServer {
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
 
         boolean isRetry = false;
+
         String retryOn = (String)context.get( "isRetry" );
-        if( retryOn != null ) {
-            if( retryOn.equals( "true" )
-                || retryOn.equalsIgnoreCase( "on" )
-                || retryOn.equalsIgnoreCase( "yes" ) ) {
+
+        if( retryOn != null  
+            && ( retryOn.equals( "true" ) 
+                 || retryOn.equalsIgnoreCase( "on" ) 
+                 || retryOn.equalsIgnoreCase( "yes" ) ) ) {
                 
-                isRetry = true;
-            }
+            isRetry = true;
         } 
 
         if ( !service.equals( "nlm" ) ) {
@@ -119,14 +120,9 @@ public class NcbiServer implements NativeServer {
 
                     if( isRetry ) {
                         try {    
-
-                            NcbiReFetchThread thread = 
-                                new NcbiReFetchThread(
-                                                      ns, ac, "", 
-                                                      nativeRestServer,
-                                                      context );
-
+                            thread.setParam ( ns, ac, "" );
                             thread.start();
+
                             log.warn( "getNative: nlm esearch return " +
                                       "an empty set." );
                             log.info( "getNative: nlm esearch thread starting." );
@@ -165,13 +161,9 @@ public class NcbiServer implements NativeServer {
                     
                     if( isRetry ) {
                         try { 
-
-                            NcbiReFetchThread thread = new NcbiReFetchThread( 
-                                                            ns, ac, "",
-                                                            nativeRestServer,
-                                                            context );
-
+                            thread.setParam( ns, ac, "" );
                             thread.start();
+
                             log.info( "getNative: nlm: ncbi fetch thread starting... " );
 
                         } catch ( RuntimeException e ) {
@@ -220,12 +212,7 @@ public class NcbiServer implements NativeServer {
                 if( testNode == null ) {
                     if( isRetry ) {
                         try { 
-
-                            NcbiReFetchThread thread = new NcbiReFetchThread( 
-                                                            ns, ac, ncbi_nlmid,
-                                                            nativeRestServer,
-                                                            context );
-
+                            thread.setParam( ns, ac, ncbi_nlmid );
                             thread.start();
                             log.info( "getNative: nlm: ncbi fetch thread starting..." );                     
 
@@ -287,13 +274,7 @@ public class NcbiServer implements NativeServer {
 
                             if( isRetry ) {
                                 try {    
-
-                                    NcbiReFetchThread thread 
-                                        = new NcbiReFetchThread ( 
-                                                        ns, ac, ncbi_nlmid,
-                                                        nativeRestServer,
-                                                        context );
-
+                                    thread.setParam( ns, ac, ncbi_nlmid );
                                     thread.start();
 
                                     log.info( "getNative: ncbi fetch thread starting." );

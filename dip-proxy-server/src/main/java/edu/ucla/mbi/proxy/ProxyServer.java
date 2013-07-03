@@ -129,8 +129,7 @@ public class ProxyServer extends ConfigurableServer {
             throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
 
-        if( !wsContext.getServerContext( provider )
-                        .getServiceSet().contains( service ) ) {
+        if( !wsContext.getServiceSet( provider ).contains( service ) ) {
 
             log.info( "This service(" + service + ") doesn't exist " +
                       "in the server. " );

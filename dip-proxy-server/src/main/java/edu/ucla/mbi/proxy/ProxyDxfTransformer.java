@@ -33,8 +33,7 @@ public class ProxyDxfTransformer {
 
         // Transform native record string into DXF
         
-        ProxyTransformer pTrans = wsContext
-            .getServerContext( provider ).getTransformer();
+        ProxyTransformer pTrans = wsContext.getTransformer( provider );
 
         synchronized ( pTrans ) {
             pTrans.setTransformer( provider, service );

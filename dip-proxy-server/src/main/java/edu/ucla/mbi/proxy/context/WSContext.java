@@ -88,13 +88,41 @@ public class WSContext{
         return this.getServerContext( provider).isDbCacheOn();
     }
 
+    public boolean isRemoteProxyOn( String provider ) {
+        return this.getServerContext( provider).isRemoteProxyOn();
+    }
+
     public int getTtl( String provider ) {
         return this.getServerContext( provider ).getTtl();
     }
 
+    public Router getRouter( String provider ) {
+        return this.getServerContext( provider ).getRouter();
+    }
+
+    public NativeServer getNativeServer( String provider ) {
+        return this.getServerContext( provider ).getNativeServer();
+    }
+
+    public int getTimeout( String provider ) {
+        return this.getServerContext( provider ).getTimeout();
+    }
+ 
+    public ProxyTransformer getTransformer( String provider ) {
+        return this.getServerContext( provider ).getTransformer();
+    }
+
+    public Set<String> getServiceSet ( String provider ) {
+        return this.getServerContext( provider.toUpperCase() ).getServiceSet();
+    }
+
+    public int getMaxRetry( String provider ) {
+        return this.getServerContext( provider ).getMaxRetry();
+    }
+
     //---------------------------------------------------------------------
 
-    public RemoteServerContext getServerContext( String provider ) {
+    private RemoteServerContext getServerContext( String provider ) {
  
 	    Log log = LogFactory.getLog( WSContext.class );
 	    log.info( "ProxyWS: WSContext.getServerContext(" + provider + ")" );

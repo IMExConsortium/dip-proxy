@@ -40,29 +40,33 @@ public class NcbiReFetchThread extends Thread {
     private Log log = LogFactory.getLog( NcbiReFetchThread.class );
     private String ns, ac;
     private String nlmid = "";
-    private Map<String, Object> context;
-
-    private int ttl;
-    private int timeOut;
-    private long waitMillis;  
 
     private String provider = "NCBI";
     private String service = "nlm";
-    private NativeRestServer nativeRestServer = null;
 
-    public NcbiReFetchThread( String ns, String ac, String nlmid, 
-                              NativeRestServer nativeRestServer,
-                              Map<String, Object> context ) {
+    private NativeRestServer nativeRestServer = null;
+    private WSContext wsContext = null;
+    private long waitMillis;
+
+    public void setNativeRestServer( NativeRestServer server ) {
+        this.nativeRestServer = server;
+    }
+
+    public void setWsContext( WSContext context ) {
+        this.wsContext = context;
+    }
+
+    public void setThreadRunMinutes ( int mins ) {
+        this.waitMillis = mins * 60 * 1000;
+    }
+
+    public void setParam( String ns, String ac, String nlmid ) {
         this.ns = ns;
         this.ac = ac;
         this.nlmid = nlmid;
-        this.nativeRestServer = nativeRestServer;
-        this.context = context;
-        this.ttl = Integer.parseInt( (String)context.get( "ttl" ) );
-        this.timeOut = Integer.parseInt( (String)context.get("timeout" ) );
-        this.waitMillis = Integer.parseInt( 
-            (String)context.get("threadRunMinutes") ) * 60 * 1000;
     }
+
+    public NcbiReFetchThread() { }
 
     public void run() {
         log.info( "NcbiFetchThread running... " ); 
@@ -75,13 +79,11 @@ public class NcbiReFetchThread extends Thread {
         long startTime = System.currentTimeMillis();
         NativeRecord record = null;
 
-        DipProxyDAO dpd =
-            (DipProxyDAO) context.get("dipProxyDAO");
-       
-        NativeRecordDAO nativeRecordDAO = dpd.getNativeRecordDAO();
- 
-        if( ! nativeRecordDAO.isDbCacheOn( "NCBI" ) ) return;
-            
+        NativeRecordDAO nativeRecordDAO = 
+            wsContext.getDipProxyDAO().getNativeRecordDAO();
+
+        if( ! wsContext.isDbCacheOn( "NCBI" ) ) return;     
+        if( ns == null || ac == null ) return;
 
         if( nlmid.equals( "" ) ) {
             log.info( "NcbiReFetchThread: nlmid is empty. " );
@@ -171,8 +173,8 @@ public class NcbiReFetchThread extends Thread {
 
                             try {
                                 record = nativeRestServer.getNative(
-                                                        provider, "nlmefetch",
-                                                        ns, nlmid, timeOut );
+                                    provider, "nlmefetch", ns,
+                                    nlmid, wsContext.getTimeout( "NCBI" ) );
 
                             } catch ( ServerFault fault ) {
                                 throw fault;
@@ -216,7 +218,7 @@ public class NcbiReFetchThread extends Thread {
                             record.setCreateTime( cacheRecord.getCreateTime() );
                         }
 
-                        record.resetExpireTime( ttl );
+                        record.resetExpireTime( wsContext.getTtl( "NCBI" ) );
 
                         nativeRecordDAO.create( record );
                         

@@ -91,19 +91,25 @@
          <ref bean="nativeRestServer"/>
        </entry>
 
-       <!-- param used by NcbiReFetchThread class -->
-       <entry key="isRetry" value="true"/><!-- dbCache is on -->
-       <entry key="timeout" value="600"/>
-       <entry key="ttl" value="30"/>
-       <entry key="threadRunMinutes" value="10"/> <!-- mins -->
-       <entry key="dipProxyDAO">
-         <ref bean="dipProxyDAO"/>
+       <entry key="isRetry" value="true"/><!-- dbCache has to be on -->
+
+       <entry key="wsContext">
+            <ref bean="wsContext"/>
+       </entry>
+       <entry key="ncbiReFetchThread">
+            <ref bean="ncbiReFetchThread"/>
        </entry>
     </map>
   </property>
-
  </bean>
+ 
+ <bean id="ncbiReFetchThread"  scope="prototype"
+       class="edu.ucla.mbi.proxy.ncbi.NcbiReFetchThread">
 
+  <property name="wsContext" ref="wsContext"/>
+  <property name="nativeRestServer" ref="nativeRestServer"/>
+  <property name="threadRunMinutes" value="10"/> <!-- mins -->
+ </bean>
 
  <!-- Prolinks proxy services -->
  

@@ -38,12 +38,10 @@ public class NativeRecordDAO extends AbstractDAO {
     public void setWsContext( WSContext context){
         wsContext = context;
     }
-    
+    /* 
     public boolean isDbCacheOn( String provider ){
-        
-        return wsContext.getServerContext( provider )
-            .isDbCacheOn();
-    }
+        return wsContext.isDbCacheOn( provider );
+    }*/
     
     public void create( NativeRecord nativer )
         throws DAOException {
@@ -374,8 +372,7 @@ public class NativeRecordDAO extends AbstractDAO {
             
             // get services
             //-------------
-            Set<String> services = wsContext.getServerContext(
-                provider.toUpperCase() ).getServiceSet();
+            Set<String> services = wsContext.getServiceSet( provider );
 
             // get oldest entries
             //-------------------
@@ -433,13 +430,10 @@ public class NativeRecordDAO extends AbstractDAO {
 
             // get services
             //-------------
-            Set<String> services = wsContext.getServerContext( 
-                provider.toUpperCase() ).getServiceSet();
+            Set<String> services = wsContext.getServiceSet( provider );
 
- 
             // get oldest entries
             //-------------------
-            
             for ( Iterator<String> ii = services.iterator(); 
                   ii.hasNext(); ) {
                 
@@ -493,8 +487,7 @@ public class NativeRecordDAO extends AbstractDAO {
 
             // get services
             //-------------
-            Set<String> services = wsContext.getServerContext( 
-                provider.toUpperCase() ).getServiceSet();
+            Set<String> services = wsContext.getServiceSet( provider );
 
  
             // get oldest entries

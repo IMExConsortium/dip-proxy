@@ -1,15 +1,15 @@
 package edu.ucla.mbi.proxy;
 
-/*===========================================================================
- * $HeadURL::                                                               $
- * $Id::                                                                    $
- * Version: $Rev::                                                          $
- *===========================================================================
+/*==============================================================================
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
+ *==============================================================================
  *
  * RemoteNativeServices:
  *  returns a remote proxy or remote native record;
  *
- *======================================================================== */
+ *=========================================================================== */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,10 +35,6 @@ class RemoteNativeService {
         this.wsContext = context;
     }
 
-    private RemoteServerContext getRsc( String provider ){
-        return wsContext.getServerContext(  provider );
-    }
-    
     //--------------------------------------------------------------------------
         
     private  NativeServer selectNextRemoteServer( String provider,
@@ -46,7 +42,7 @@ class RemoteNativeService {
                                                   String namespace,
                                                   String accession ) {
 
-        if ( getRsc(provider).isRemoteProxyOn() ) {
+        if ( wsContext.isRemoteProxyOn( provider ) ) {
             
             log.info( " selecting next proxy..." );
 
@@ -54,15 +50,14 @@ class RemoteNativeService {
             // ----------------------
 
             log.info( " adding observer..." );
-            this.addObserver( getRsc(provider).getRouter() );
+            this.addObserver( wsContext.getRouter( provider ) );
 
             log.info( "before router getNextProxyServer. " );
-            return getRsc(provider).getRouter().getNextProxyServer( provider, service, 
-                                              namespace, accession );
+            return wsContext.getRouter( provider ).getNextProxyServer( 
+                provider, service, namespace, accession );
         }
 
-        return getRsc(provider).getNativeServer();
-
+        return wsContext.getNativeServer( provider );
     }
 
     public NativeRecord getNativeFromRemote ( String provider, 
@@ -71,7 +66,7 @@ class RemoteNativeService {
                                               String ac 
                                               ) throws ServerFault {
 
-        int retry = getRsc(provider).getMaxRetry();
+        int retry = wsContext.getMaxRetry( provider );
         NativeRecord remoteRecord = null;
         ServerFault retryFault = null;
         
@@ -90,25 +85,26 @@ class RemoteNativeService {
             log.info( "getNativeFromRemote: before selectNextRemoteServer. " );    
 
             
-            if( getRsc(provider).isRemoteProxyOn() && retry > 0 ) {
+            if( wsContext.isRemoteProxyOn( provider ) && retry > 0 ) {
                
-                if( !observerList.contains( getRsc(provider).getRouter() ) ) {
-                    this.addObserver( getRsc(provider).getRouter() );
+                if( !observerList.contains( wsContext.getRouter( provider ) ) ) {
+                    this.addObserver( wsContext.getRouter( provider ) );
                 } 
-                nativeServer = getRsc(provider).getRouter().getNextProxyServer( provider, service,
-                                                          ns, ac );
+
+                nativeServer = wsContext.getRouter( provider )
+                    .getNextProxyServer( provider, service, ns, ac );
+
                 log.info( "getNativeFromRemote: nativeServer came from proxy. " );
             } else {
                     
                 //*** last retry or no proxy 
-                nativeServer = getRsc(provider).getNativeServer();
+                nativeServer = wsContext.getNativeServer( provider );
                 log.info( "getNativeFromRemote: nativeServer came from native. " );
-                
             }
 
             try {                
-                remoteRecord = nativeServer.getNative( 
-                     provider, service, ns, ac, getRsc(provider).getTimeout() );
+                remoteRecord = nativeServer.getNative( provider, service,
+                    ns, ac, wsContext.getTimeout( provider ) );
 
             } catch( ServerFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
@@ -136,7 +132,7 @@ class RemoteNativeService {
 
                 NativeRecord faultyRecord = new NativeRecord( provider, service, 
                                                               ns, ac);
-                faultyRecord.resetExpireTime( getRsc(provider).getTtl() );  
+                faultyRecord.resetExpireTime( wsContext.getTtl( provider ) );  
      
                 DhtRouterMessage message =
                     new DhtRouterMessage( DhtRouterMessage.DELETE,
@@ -157,9 +153,9 @@ class RemoteNativeService {
 
         log.info( "valid record="+ remoteRecord);
         
-        remoteRecord.resetExpireTime( getRsc(provider).getTtl() );
+        remoteRecord.resetExpireTime( wsContext.getTtl( provider ) );
           
-        if( getRsc(provider).isDbCacheOn() ) {
+        if( wsContext.isDbCacheOn( provider ) ) {
 
             DhtRouterMessage message =
                 new DhtRouterMessage( DhtRouterMessage.UPDATE,

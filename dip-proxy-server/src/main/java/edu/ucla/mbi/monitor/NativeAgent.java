@@ -1,15 +1,15 @@
 package edu.ucla.mbi.monitor;
 
-/* #=========================================================================
- # $Id::                                                                    $
- # Version: $Rev::                                                          $
- #===========================================================================
- #
- # NativeAgent: 
- #    monitors/updates native records
- #   
- #
- #======================================================================== */
+/* #============================================================================
+   # $Id::                                                                     $
+   # Version: $Rev::                                                           $
+   #============================================================================
+   #
+   # NativeAgent: 
+   #    monitors/updates native records
+   #   
+   #
+   #========================================================================= */
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,7 +57,6 @@ public class NativeAgent implements Agent {
     public void initialize() {
         Log log = LogFactory.getLog( NativeAgent.class );
         log.info( "initializing... " );
-        //Set<String> providers = WSContext.getServices().keySet();
 
         Set<String> providers = wsContext.getServices().keySet();
 
@@ -65,10 +64,8 @@ public class NativeAgent implements Agent {
 
             String prv = ii.next();
 
-            RemoteServerContext rsc = wsContext.getServerContext( prv );
-
             log.info( "provider=" + prv );
-            observerMap.put( prv, rsc.getRouter() );
+            observerMap.put( prv, wsContext.getRouter( prv ) );
         }
     }
 
@@ -86,15 +83,12 @@ public class NativeAgent implements Agent {
             // ------------------
 
             Set<String> providers = wsContext.getServices().keySet();
-            //Set<String> providers = WSContext.getServices().keySet();
 
             for ( Iterator<String> ii = providers.iterator(); ii.hasNext(); ) {
 
                 String prv = ii.next();
-
-                RemoteServerContext rsc = wsContext.getServerContext( prv );
-
                 List<String[]> oldList = null;
+
                 try {
                     if( order.equals( "query-first" ) ) {
                         log.info( "call queryFirst. " );
@@ -117,10 +111,11 @@ public class NativeAgent implements Agent {
                                 + ":" + ac );
 
                         try {
+                        
                             NativeRecord natRec = 
-                                rsc.getNativeServer()
-                                        .getNative( prv, service, ns,
-                                                    ac, rsc.getTimeout() );
+                                wsContext.getNativeServer( prv ).getNative( 
+                                    prv, service, ns, ac, 
+                                    wsContext.getTimeout( prv ) );
 
                             //*** check record validation
                             if( natRec.getNativeXml() == null
@@ -141,13 +136,13 @@ public class NativeAgent implements Agent {
 
                             oldRecord.setNativeXml( natRec.getNativeXml() );
                             oldRecord.resetExpireTime( Calendar.getInstance()
-                                    .getTime(), rsc.getTtl() );
+                                .getTime(), wsContext.getTtl( prv ) );
 
                             // store native record locally
                             ndo.create( oldRecord );
 
                             // notify dht to update
-                            if( rsc.isDbCacheOn() ) {
+                            if( wsContext.isDbCacheOn( prv ) ) {
 
                                 DhtRouterMessage message =
                                     new DhtRouterMessage( DhtRouterMessage.UPDATE,

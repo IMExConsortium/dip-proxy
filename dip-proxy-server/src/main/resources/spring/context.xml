@@ -51,7 +51,6 @@
   <property name="dipProxyDAO" ref="dipProxyDAO" />   
 
   <property name="dht" ref="dht" />
-  <!--<property name="transformer" ref="proxyTransformer" /> -->
   <property name="mcClient" ref="mcClient" />
 
   <property name="services">
