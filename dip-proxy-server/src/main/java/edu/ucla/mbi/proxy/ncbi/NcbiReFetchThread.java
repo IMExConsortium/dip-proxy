@@ -40,7 +40,6 @@ public class NcbiReFetchThread extends Thread {
     private Log log = LogFactory.getLog( NcbiReFetchThread.class );
     private String ns, ac;
     private String nlmid = "";
-    //private Map<String, Object> context;
 
     private int ttl;
     private int timeOut;
@@ -52,31 +51,8 @@ public class NcbiReFetchThread extends Thread {
 
     private WSContext wsContext = null;
 
-    /*
-    public void setNativeRestServer( NativeRestServer server ) {
-        this.nativeRestServer = server;
-    }
-
-    public void setWsContext( WSContext context ) {
-        this.wsContext = context;
-    }
-
-    public void setThreadRunMinutes ( int mins ) {
-        this.waitMillis = mins * 60 * 1000;
-    }
-
-    public void setParam( String ns, String ac, String nlmid ) {
-        this.ns = ns;
-        this.ac = ac;
-        this.nlmid = nlmid;
-    }
-
-    public NcbiReFetchThread() { }
-    */
-    
     public NcbiReFetchThread( String ns, String ac, String nlmid,
                               NativeRestServer nativeRestServer,
-                              //Map<String, Object> context ) {                           
                               int threadRunMinutes, WSContext wsContext ) {
         this.ns = ns;
         this.ac = ac;
@@ -84,14 +60,7 @@ public class NcbiReFetchThread extends Thread {
         this.nativeRestServer = nativeRestServer;
         this.waitMillis = threadRunMinutes * 60 * 1000;
         
-        //this.context = context;
         this.wsContext = wsContext;
-        /* 
-        this.ttl = Integer.parseInt( (String)context.get( "ttl" ) );
-        this.timeOut = Integer.parseInt( (String)context.get("timeout" ) );
-        this.waitMillis = Integer.parseInt( 
-            (String)context.get("threadRunMinutes") ) * 60 * 1000;
-        */
         this.ttl = wsContext.getTtl( provider ); 
         this.timeOut = wsContext.getTimeout( provider );
     }

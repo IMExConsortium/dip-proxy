@@ -38,10 +38,6 @@ public class NativeRecordDAO extends AbstractDAO {
     public void setWsContext( WSContext context){
         wsContext = context;
     }
-    /* 
-    public boolean isDbCacheOn( String provider ){
-        return wsContext.isDbCacheOn( provider );
-    }*/
     
     public void create( NativeRecord nativer )
         throws DAOException {

@@ -75,9 +75,6 @@ public class NativeAgent implements Agent {
 
             // go over providers
             // ------------------
-
-            //Set<String> providers = wsContext.getServices().keySet();
-
             Set<String> providers = wsContext.getProviderSet();
 
             for ( Iterator<String> ii = providers.iterator(); ii.hasNext(); ) {
