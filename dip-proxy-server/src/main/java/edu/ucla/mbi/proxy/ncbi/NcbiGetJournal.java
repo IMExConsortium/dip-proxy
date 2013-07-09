@@ -51,8 +51,9 @@ public class NcbiGetJournal {
     // esearch ncbi internal id of the nlmid
     //--------------------------------------------------------------------------
 
-    public String esearch ( String ns, String ac, int threadRunMinutes, 
-        boolean isRetry ) throws RuntimeException {
+    public String esearch ( String ns, String ac, int timeout, 
+                            int threadRunMinutes, 
+                            boolean isRetry ) throws RuntimeException {
    
         Log log = LogFactory.getLog( NcbiGetJournal.class );
  
@@ -66,6 +67,8 @@ public class NcbiGetJournal {
             wsContext.getDipProxyDAO().getNativeRecordDAO();
 
         try {
+
+            /*
             String url_esearch_string =
                 nativeRestServer.getRealUrl( provider, "nlmesearch", ac );
 
@@ -76,6 +79,12 @@ public class NcbiGetJournal {
                 new InputSource( url_esearch.openStream() );
 
             Document docEsearch = builder.parse( xml_esearch );
+            */
+            
+            Document docEsearch = nativeRestServer
+                .getNativeDom( provider, service, ns, ac, timeout );
+
+
             Element rootElementEsearch = docEsearch.getDocumentElement();
 
             if( rootElementEsearch == null 
@@ -123,7 +132,7 @@ public class NcbiGetJournal {
     //--------------------------------------------------------------------------                
     // efetch real nlmid 
     //--------------------------------------------------------------------------
-    public NativeRecord efetch ( String ns, String ac, String nlmid, 
+    public NativeRecord efetch ( String ns, String nlmid, int timeout, 
         int threadRunMinutes, boolean isRetry ) throws RuntimeException {
 
         Log log = LogFactory.getLog( NcbiGetJournal.class );
@@ -183,7 +192,7 @@ public class NcbiGetJournal {
                 NativeRecord record = null;
 
                 try {
-                    record = nativeRestServer.getNative(
+                    record = nativeRestServer.getNativeRecord(
                         provider, "nlmefetch", ns,
                         nlmid, wsContext.getTimeout( "NCBI" ) );
                 } catch ( ServerFault fault ) {

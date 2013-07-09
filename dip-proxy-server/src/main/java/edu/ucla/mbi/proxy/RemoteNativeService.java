@@ -103,7 +103,7 @@ class RemoteNativeService {
                 log.info( "getNativeFromRemote: nativeServer came from native. " );
             }
 
-            try {                                                         //XXXXXXXX
+            try {                                                       
                 remoteRecord = nativeServer.getNative( provider, service,
                     ns, ac, wsContext.getTimeout( provider ) );
 

@@ -167,7 +167,8 @@ public class EbiServer implements NativeServer {
         log.info( "NS=" + ns + " AC=" + ac + " SRV=" + service );
 
         if ( !service.equals( "picr" ) ) {
-            return nativeRestServer.getNative( provider, service, ns, ac, timeout );
+            return nativeRestServer.getNativeRecord( provider, service, 
+                                                     ns, ac, timeout );
         } else {
 
             NativeRecord record = null;

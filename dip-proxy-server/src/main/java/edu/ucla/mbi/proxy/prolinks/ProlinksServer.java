@@ -50,6 +50,7 @@ public class ProlinksServer implements NativeServer{
                                    String ns, String ac, int timeout  
                                    ) throws ServerFault {
         
-        return nativeRestServer.getNative( provider, service, ns, ac, timeout );
+        return nativeRestServer.getNativeRecord( provider, service, 
+                                                 ns, ac, timeout );
     }
 }

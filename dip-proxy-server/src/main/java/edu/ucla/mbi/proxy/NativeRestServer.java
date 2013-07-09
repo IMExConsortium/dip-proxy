@@ -25,7 +25,7 @@ import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.context.*;
 
 
-public class NativeRestServer implements NativeServer, ContextListener {
+public class NativeRestServer implements ContextListener {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
     private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
@@ -123,7 +123,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
         restServerMap = (Map) jrs.get( contextTop );
     }
 
-    public String getRealUrl ( String provider, String service, String ac ) 
+    private String getRealUrl( String provider, String service, String ac ) 
         throws ServerFault {
 
         if( restServerMap.get(provider) == null ) {
@@ -162,10 +162,13 @@ public class NativeRestServer implements NativeServer, ContextListener {
         return restUrl.replaceAll( restAcTag, ac );
     }
 
-    public NativeRecord getNative( String provider, String service, 
-                                   String ns, String ac, int timeout 
-                                   ) throws ServerFault {
-        String retVal = null;
+    public NativeRecord getNativeRecord( String provider, String service, 
+                                         String ns, String ac, int timeout                           
+         ) throws ServerFault {
+
+        String retVal = getNativeString( provider,service, ns, ac, timeout ); 
+
+        /*
         log.info( "getNative: PROVIDER=" + provider + " and SERVICE=" + 
                   service + " and NS=" + ns + " AC=" + ac );
         
@@ -179,7 +182,8 @@ public class NativeRestServer implements NativeServer, ContextListener {
         } catch( ServerFault fault ) {
             throw fault;
         }
-
+        */
+        
         if( retVal.endsWith( "</cause></error></ResultSet>" ) ) {
             //*** this error for intermine server
             log.warn( "getNative: return error=" + retVal );
@@ -227,6 +231,48 @@ public class NativeRestServer implements NativeServer, ContextListener {
         return record;
 
     }
+
+    public String getNativeString( String provider, String service,
+                                         String ns, String ac, int timeout
+                                         ) throws ServerFault {
+        String retVal = null;
+        
+        String real_restUrl = getRealUrl( provider, service, ac );
+        
+        log.info( "getNative: real_restUrl=" + real_restUrl );
+        
+        try {
+            retVal = query( real_restUrl, timeout );
+
+        } catch( ServerFault fault ) {
+            throw fault;
+        }
+        
+        return retVal;
+    }
+    
+
+    public String getNativeDom( String provider, String service,
+                                String ns, String ac, int timeout
+                                ) throws ServerFault {
+        
+        
+        String url_esearch_string =
+            this.getRealUrl( provider, "nlmesearch", ac );
+        
+        DocumentBuilder builder = fct.newDocumentBuilder();
+        
+        URL url_esearch = new URL( url_esearch_string );
+        InputSource xml_esearch =
+            new InputSource( url_esearch.openStream() );
+        
+        Document docEsearch = builder.parse( xml_esearch );
+        
+        return docEsearch;
+
+        
+    }
+
 
     private String query( String url, int timeout ) throws ServerFault {
         String retVal = "";

@@ -62,8 +62,8 @@ public class NcbiServer implements NativeServer {
 
         //----------------------------------------------------------------------
         if ( !service.equals( "nlm" ) ) {
-            return nativeRestServer.getNative( provider, service, 
-                                               ns, ac, timeout );
+            return nativeRestServer.getNativeRecord( provider, service, 
+                                                     ns, ac, timeout );
         } else { 
             boolean isRetry = false;
             String retryOn = (String)context.get( "isRetry" );
@@ -81,7 +81,7 @@ public class NcbiServer implements NativeServer {
         
             try {
                 ncbi_nlmid = ((NcbiGetJournal)context.get("ncbiGetJournal"))
-                    .esearch( ns, ac, threadRunMinutes, isRetry );
+                    .esearch( ns, ac, timeout, threadRunMinutes, isRetry );
 
             } catch ( RuntimeException e ) { 
                 if( e.getMessage().equals( "NO_RECORD" ) ) {
@@ -99,7 +99,7 @@ public class NcbiServer implements NativeServer {
 
             try {
                 record = ((NcbiGetJournal)context.get("ncbiGetJournal"))
-                    .efetch( ns, ac, ncbi_nlmid, threadRunMinutes, isRetry );
+                    .efetch( ns, ac, timeout, threadRunMinutes, isRetry );
             } catch ( RuntimeException e ) {
                 if( e.getMessage().equals( "NO_RECORD" ) ) {
                     throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
