@@ -18,22 +18,8 @@ import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.proxy.NativeRestServer;
 import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.fault.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.InputSource;
-import java.io.StringBufferInputStream;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-
-import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
 import java.util.*;
-import java.net.URL;
 
 public class NcbiReFetchThread extends Thread {
 
@@ -97,9 +83,10 @@ public class NcbiReFetchThread extends Thread {
             log.info( "NcbiReFetchThread: nlmid is empty. " );
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
 
-                //------------------------------------------------------------------
+                //--------------------------------------------------------------
                 // esearch ncbi internal id of the nlmid
-                nlmid = ncbiGetJournal.esearch( ns, ac, threadRunMinutes, false );
+                nlmid = ncbiGetJournal.esearch( ns, ac, 
+                                                threadRunMinutes, false );
 
                 if( !nlmid.equals("") ){
                     break;
@@ -147,7 +134,7 @@ public class NcbiReFetchThread extends Thread {
             }
         }
                 
-        //--------------------------------------------------------------                
+        //----------------------------------------------------------------------                
         // efetch real nlmid 
         //------------------
 
@@ -157,7 +144,8 @@ public class NcbiReFetchThread extends Thread {
             boolean emptySet = true;
 
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
-                record = ncbiGetJournal.efetch( ns, nlmid, false );
+                record = ncbiGetJournal.efetch( ns, ac, nlmid, 
+                                                threadRunMinutes, false );
                 if( record != null ) {
                     break;
                 }

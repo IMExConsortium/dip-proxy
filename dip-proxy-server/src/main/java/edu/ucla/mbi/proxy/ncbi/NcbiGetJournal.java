@@ -44,15 +44,15 @@ public class NcbiGetJournal {
     
     public void initialize() {
         Log log = LogFactory.getLog( NcbiGetJournal.class );
-        log.info( "initailize called ..." );
+        log.info( "NcbiGetJournal initailize() called ..." );
     }
 
     //--------------------------------------------------------------------------
     // esearch ncbi internal id of the nlmid
     //--------------------------------------------------------------------------
 
-    public String esearch ( String ns, String ac, int threadRunMinutes, boolean isRetry ) 
-        throws RuntimeException {
+    public String esearch ( String ns, String ac, int threadRunMinutes, 
+        boolean isRetry ) throws RuntimeException {
    
         Log log = LogFactory.getLog( NcbiGetJournal.class );
  
@@ -81,7 +81,7 @@ public class NcbiGetJournal {
             if( rootElementEsearch == null 
                 || rootElementEsearch.getChildNodes().getLength() ==  0 ) {
 
-                log.info( "getNative: nlm esearch get empty return." );
+                log.info( "nlm esearch get empty return." );
 
                 if( isRetry ) {
                 
@@ -91,8 +91,8 @@ public class NcbiGetJournal {
 
                     thread.start();
 
-                    log.warn( "getNative: nlm esearch return an empty set." );
-                    log.info( "getNative: nlm esearch thread starting." );
+                    log.warn( "nlm esearch return an empty set." );
+                    log.info( "nlm esearch thread starting." );
                 }
                 throw new RuntimeException( "REMOTE_FAULT" );
             }    
@@ -102,7 +102,7 @@ public class NcbiGetJournal {
                 "PhraseNotFound/text()", rootElementEsearch );
 
             if( !ncbi_error.equals("")){
-                log.warn("getNative: nlm esearch: No items found");
+                log.warn("nlm esearch: No items found");
                 throw new RuntimeException( "NO_RECORD" );
             }
 
@@ -111,9 +111,11 @@ public class NcbiGetJournal {
                 
             return nlmid;
 
+        } catch ( RuntimeException re ) {
+            throw re;
         } catch ( Exception e ) {
-            log.warn( "getNative: nlm exception: " + e.toString() + ". ");
-            log.warn( "NcbiReFetchThread TERMINATE. " );
+            log.warn( "nlm exception: " + e.toString() + ". ");
+            log.warn( "NcbiGetJournal TERMINATE. " );
             throw new RuntimeException("REMOTE_FAULT");
         } 
     }
@@ -121,13 +123,24 @@ public class NcbiGetJournal {
     //--------------------------------------------------------------------------                
     // efetch real nlmid 
     //--------------------------------------------------------------------------
-    public NativeRecord efetch ( String ns, String nlmid, boolean isRetry ) 
-        throws RuntimeException {
+    public NativeRecord efetch ( String ns, String ac, String nlmid, 
+        int threadRunMinutes, boolean isRetry ) throws RuntimeException {
 
         Log log = LogFactory.getLog( NcbiGetJournal.class );
 
         if( nlmid.equals( "" ) ) {
-           ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+            if( isRetry ) {
+                NcbiReFetchThread thread =
+                    new NcbiReFetchThread( ns, ac, "",
+                                           threadRunMinutes, this );
+
+                thread.start();
+
+                log.warn( "nlm esearch return an empty set." );
+                log.info( "nlm esearch thread starting." );
+            }
+
+            ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
             
         log.info( "nlmid is " + nlmid );
@@ -155,6 +168,17 @@ public class NcbiGetJournal {
                 rootElementEfetch, XPathConstants.NODE );
 
             if( testNode == null ) {
+                if( isRetry ) {
+                    NcbiReFetchThread thread =
+                        new NcbiReFetchThread( ns, ac, nlmid,
+                                               threadRunMinutes, this );
+
+                    thread.start();
+
+                    log.warn( "getNative: nlm efetch return an empty set." );
+                    log.info( "getNative: nlm efetch thread starting." );
+                }
+
                 throw new RuntimeException("REMOTE_FAULT");
             }
                 
@@ -163,8 +187,7 @@ public class NcbiGetJournal {
                 "/ResourceInfo/TypeOfResource/text()", rootElementEfetch );
                         
             if( !typeOfResource.equals("Serial") ) {
-                log.warn( "NcbiServer: nlm: " +
-                          "TypeOfResource is not Serial.");
+                log.warn( "nlm: TypeOfResource is not Serial.");
                 throw new RuntimeException("NO_RECORD");
             } else {
 
@@ -189,15 +212,28 @@ public class NcbiGetJournal {
                     "</NLMCatalogRecordSet>" ) ) {
 
                     emptySet = false;
-                    return null;
+
+                    if( isRetry ) {
+
+                        NcbiReFetchThread thread =
+                            new NcbiReFetchThread( ns, ac, nlmid,
+                                                   threadRunMinutes, this );
+
+                        thread.start();
+
+                        log.warn( "nlm efetch return an empty set." );
+                        log.info( "nlm efetch thread starting." );
+                    }   
+                    throw new RuntimeException("REMOTE_FAULT");
                 }
                     
                 return record;
             }
+        } catch ( RuntimeException re ) {
+            throw re;
         } catch ( Exception e ) {
-            log.warn( "NcbiReFetchThread: getNative: nlm: " +
-                      "thread Exception:\n" + e.toString() + ". ");
-            log.info( "NcbiReFetchThread: TERMINATE. " );
+            log.warn( "nlm exception: " + e.toString() + ". ");
+            log.info( "NcbiGetJournal TERMINATE. " );
 
             throw new RuntimeException("REMOTE_FAULT");
         } 

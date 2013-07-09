@@ -103,8 +103,9 @@
   </property>
  </bean>
 
- <bean id="ncbiGetJournal" ini-method="initialize" 
-    class="edu.ucla.mbi.proxy.ncbi.NcbiGetJournal">
+ <bean id="ncbiGetJournal" init-method="initialize" 
+       class="edu.ucla.mbi.proxy.ncbi.NcbiGetJournal">
+
     <property name="wsContext" ref="wsContext"/>
     <property name="nativeRestServer" ref="nativeRestServer"/>
  </bean>

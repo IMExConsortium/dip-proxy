@@ -17,20 +17,8 @@ import org.apache.commons.logging.LogFactory;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.proxy.context.*;
 import edu.ucla.mbi.cache.NativeRecord;
-
 import edu.ucla.mbi.fault.*;
 
-import org.w3c.dom.*;
-import org.xml.sax.InputSource;
-import java.io.StringBufferInputStream;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import java.net.URL;
 import java.util.Map;
 
 public class NcbiServer implements NativeServer {
@@ -111,7 +99,7 @@ public class NcbiServer implements NativeServer {
 
             try {
                 record = ((NcbiGetJournal)context.get("ncbiGetJournal"))
-                    .efetch( ns, ncbi_nlmid, isRetry );
+                    .efetch( ns, ac, ncbi_nlmid, threadRunMinutes, isRetry );
             } catch ( RuntimeException e ) {
                 if( e.getMessage().equals( "NO_RECORD" ) ) {
                     throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
