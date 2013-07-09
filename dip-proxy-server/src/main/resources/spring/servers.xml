@@ -96,10 +96,18 @@
        <entry key="wsContext">
             <ref bean="wsContext"/>
        </entry>
+       <entry key="ncbiGetJournal">
+            <ref bean="ncbiGetJournal"/>
+        </entry>
     </map>
   </property>
  </bean>
 
+ <bean id="ncbiGetJournal" ini-method="initialize" 
+    class="edu.ucla.mbi.proxy.ncbi.NcbiGetJournal">
+    <property name="wsContext" ref="wsContext"/>
+    <property name="nativeRestServer" ref="nativeRestServer"/>
+ </bean>
  <!-- Prolinks proxy services --> 
  <bean id="prlReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksServer">

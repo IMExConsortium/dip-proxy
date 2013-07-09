@@ -80,7 +80,8 @@ public class NativeAgent implements Agent {
             for ( Iterator<String> ii = providers.iterator(); ii.hasNext(); ) {
 
                 String curProv = ii.next();
-                List<String[]> oldList = null;
+                //List<String[]> oldList = null;
+                List<NativeRecord> oldList = null;
 
                 try {
                     if( order.equals( "query-first" ) ) {
@@ -91,15 +92,21 @@ public class NativeAgent implements Agent {
                         oldList = ndo.getExpireFirst( curProv );
                     }
 
-                    for ( Iterator<String[]> jj = oldList.iterator(); jj
+                    //for ( Iterator<String[]> jj = oldList.iterator(); jj
+                    for ( Iterator<NativeRecord> jj = oldList.iterator(); jj
                             .hasNext(); ) {
 
+                        NativeRecord nr = jj.next();
+                        /*
                         String[] old = jj.next();
 
                         String service = old[0];
                         String ns = old[1];
                         String ac = old[2];
-
+                        */
+                        String service = nr.getService();
+                        String ns = nr.getNs();
+                        String ac = nr.getAc();   
                         log.info( "updating: " + curProv + ":" + service + ":" + ns
                                 + ":" + ac );
 
@@ -117,9 +124,10 @@ public class NativeAgent implements Agent {
                                 continue;
                             }
 
-                            NativeRecord oldRecord =
-                                    ndo.find( curProv, service, ns, ac );
-
+                            //NativeRecord oldRecord =
+                            //        ndo.find( curProv, service, ns, ac );
+                            NativeRecord oldRecord = nr;
+    
                             log.info( "Native rec: " + oldRecord );
 
                             if ( oldRecord == null ) {

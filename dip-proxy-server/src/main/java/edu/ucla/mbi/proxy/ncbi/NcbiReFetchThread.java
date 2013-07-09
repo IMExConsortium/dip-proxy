@@ -43,41 +43,52 @@ public class NcbiReFetchThread extends Thread {
 
     private int ttl;
     private int timeOut;
+    private int threadRunMinutes;
     private long waitMillis; 
 
     private String provider = "NCBI";
     private String service = "nlm";
-    private NativeRestServer nativeRestServer = null;
-
     private WSContext wsContext = null;
+    private NcbiGetJournal ncbiGetJournal = null;
+    
+    //private NativeRestServer nativeRestServer = null;
 
+    /*
     public NcbiReFetchThread( String ns, String ac, String nlmid,
                               NativeRestServer nativeRestServer,
                               int threadRunMinutes, WSContext wsContext ) {
+    */
+    public NcbiReFetchThread( String ns, String ac, String nlmid,
+                              int threadRunMinutes, 
+                              NcbiGetJournal ncbiGetJournal ) {
         this.ns = ns;
         this.ac = ac;
         this.nlmid = nlmid;
-        this.nativeRestServer = nativeRestServer;
+        this.threadRunMinutes = threadRunMinutes;
         this.waitMillis = threadRunMinutes * 60 * 1000;
-        
+        this.ncbiGetJournal = ncbiGetJournal;
         this.wsContext = wsContext;
-        this.ttl = wsContext.getTtl( provider ); 
-        this.timeOut = wsContext.getTimeout( provider );
+
+        //this.nativeRestServer = nativeRestServer;
+        //this.ttl = wsContext.getTtl( provider ); 
+        //this.timeOut = wsContext.getTimeout( provider );
     }
 
     public void run() {
         log.info( "NcbiFetchThread running... " ); 
         String retVal = null;
-
+        /*
         // XPath to retrieve the content
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xPath = xpf.newXPath();
         DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();
-        long startTime = System.currentTimeMillis();
+        */
         NativeRecord record = null;
-
         NativeRecordDAO nativeRecordDAO = 
             wsContext.getDipProxyDAO().getNativeRecordDAO();
+        
+
+        long startTime = System.currentTimeMillis();
 
         if( ! wsContext.isDbCacheOn( "NCBI" ) ) return;     
         if( ns == null || ac == null ) return;
@@ -88,7 +99,13 @@ public class NcbiReFetchThread extends Thread {
 
                 //------------------------------------------------------------------
                 // esearch ncbi internal id of the nlmid
-                //--------------------------------------
+                nlmid = ncbiGetJournal.esearch( ns, ac, threadRunMinutes, false );
+
+                if( !nlmid.equals("") ){
+                    break;
+                }
+
+                /*
                 try {
                     String url_esearch_string =
                         nativeRestServer.getRealUrl( provider, "nlmesearch", ac );
@@ -126,7 +143,7 @@ public class NcbiReFetchThread extends Thread {
                               "getService Exception:\n" + e.toString() + ". ");
                     log.warn( "NcbiReFetchThread TERMINATE. " );
                     throw new RuntimeException("REMOTE_FAULT");          
-                }
+                }*/
             }
         }
                 
@@ -140,7 +157,12 @@ public class NcbiReFetchThread extends Thread {
             boolean emptySet = true;
 
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
-
+                record = ncbiGetJournal.efetch( ns, nlmid, false );
+                if( record != null ) {
+                    break;
+                }
+            }
+                /*
                 try { 
                     String url_efetch_string =
                         nativeRestServer.getRealUrl( provider, "nlmefetch", nlmid );
@@ -197,14 +219,14 @@ public class NcbiReFetchThread extends Thread {
                    
                     throw new RuntimeException("REMOTE_FAULT");                  
                 }
-            }
+            }*/
 
-            if( !emptySet && retVal != null ) {
-                
-                record.setNativeXml( retVal );
+            //if( !emptySet && retVal != null ) {
+            if( record != null ) {
+    
+                //record.setNativeXml( retVal );
 
                 synchronized( nativeRecordDAO ) {
-
                     try {
                        
                         NativeRecord cacheRecord = nativeRecordDAO

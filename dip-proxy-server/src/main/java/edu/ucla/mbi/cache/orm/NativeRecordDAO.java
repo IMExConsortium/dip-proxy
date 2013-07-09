@@ -356,13 +356,15 @@ public class NativeRecordDAO extends AbstractDAO {
 
     //--------------------------------------------------------------------------
     
-    public List<String[]> 
+    //public List<String[]> 
+    public List<NativeRecord>
         getExpireLast( String provider ) throws DAOException {
-        
+
         Session session = hibernateOrmUtil.getCurrentSession();
         Transaction tx = session.beginTransaction();
 
-        List<String[]> result = new ArrayList<String[]>();
+        //List<String[]> result = new ArrayList<String[]>();
+        List<NativeRecord> result = new ArrayList<NativeRecord>();
 
         try {
             
@@ -378,8 +380,8 @@ public class NativeRecordDAO extends AbstractDAO {
                 
                 String service = ii.next();
                 Query query = session
-                    .createQuery( "select nr.ns, nr.ac, nr.expireTime " +
-                                  " from NativeRecord nr " +
+                //    .createQuery( "select nr.ns, nr.ac, nr.expireTime " +
+                    .createQuery( " from NativeRecord nr " +
                                   " where nr.expireTime = " +
                                   " (select max(nr.expireTime) " +
                                   "   from NativeRecord nr " +
@@ -391,15 +393,20 @@ public class NativeRecordDAO extends AbstractDAO {
                 query.setParameter( "srv", service.toLowerCase() );
                 List items = query.list();
             
-                for ( Iterator<Object[]> jj = items.iterator(); 
+                //for ( Iterator<Object[]> jj = items.iterator(); 
+                for ( Iterator jj = items.iterator();
                       jj.hasNext(); ) {
                     
+                    NativeRecord nr = (NativeRecord)jj.next();
+                    /*
                     Object[] j = jj.next();
                     String[] entry = new String[3];
                     entry[0] = service;
                     entry[1] = (String) j[0];
                     entry[2] = (String) j[1];
                     result.add( entry );
+                    */
+                    result.add( nr );
                 }
             }
             tx.commit();
@@ -414,13 +421,15 @@ public class NativeRecordDAO extends AbstractDAO {
 
     //---------------------------------------------------------------------------
     
-    public List<String[]> 
+    //public List<String[]> 
+    public List<NativeRecord>
         getQueryFirst( String provider ) throws DAOException {
         
         Session session = hibernateOrmUtil.getCurrentSession();
         Transaction tx = session.beginTransaction();
 
-        List<String[]> result = new ArrayList<String[]>();
+        //List<String[]> result = new ArrayList<String[]>();
+        List<NativeRecord> result = new ArrayList<NativeRecord>();
         
         try {
 
@@ -435,8 +444,8 @@ public class NativeRecordDAO extends AbstractDAO {
                 
                 String service = ii.next();
                 Query query = session
-                    .createQuery( "select nr.ns, nr.ac, nr.queryTime " +
-                                  " from NativeRecord nr " +
+                    //.createQuery( "select nr.ns, nr.ac, nr.queryTime " +
+                    .createQuery( " from NativeRecord nr " +
                                   " where nr.queryTime = " +
                                   " (select min(nr.queryTime) " +
                                   "   from NativeRecord nr " +
@@ -448,15 +457,19 @@ public class NativeRecordDAO extends AbstractDAO {
                 query.setParameter( "srv", service.toLowerCase() );
                 List items = query.list();
                 
-                for ( Iterator<Object[]> jj = items.iterator(); 
+                //for ( Iterator<Object[]> jj = items.iterator(); 
+                for ( Iterator jj = items.iterator();
                       jj.hasNext(); ) {
                 
+                    NativeRecord nr = (NativeRecord) jj.next();
+                    /*
                     Object[] j = jj.next();
                     String[] entry = new String[3];
                     entry[0] = service;
                     entry[1] = (String) j[0];
                     entry[2] = (String) j[1];
-                    result.add( entry );
+                    result.add( entry );*/
+                    result.add( nr );
                 }
             }
             tx.commit();
@@ -471,13 +484,15 @@ public class NativeRecordDAO extends AbstractDAO {
     
     //---------------------------------------------------------------------------
     
-    public List<String[]> 
+    //public List<String[]> 
+    public List<NativeRecord>
         getExpireFirst( String provider ) throws DAOException {
         
         Session session = hibernateOrmUtil.getCurrentSession();
         Transaction tx = session.beginTransaction();
 
-        List<String[]> result = new ArrayList<String[]>();
+        //List<String[]> result = new ArrayList<String[]>();
+        List<NativeRecord> result = new ArrayList<NativeRecord>();
         
         try {
 
@@ -494,8 +509,8 @@ public class NativeRecordDAO extends AbstractDAO {
                 
                 String service = ii.next();
                 Query query = session
-                    .createQuery( "select nr.ns, nr.ac, nr.expireTime " +
-                                  " from NativeRecord nr " +
+                //    .createQuery( "select nr.ns, nr.ac, nr.expireTime " +
+                    .createQuery( " from NativeRecord nr " +
                                   " where nr.expireTime = " +
                                   " (select min(nr.expireTime) " +
                                   "   from NativeRecord nr " +
@@ -507,15 +522,20 @@ public class NativeRecordDAO extends AbstractDAO {
                 query.setParameter( "srv", service.toLowerCase() );
                 List items = query.list();
                 
-                for ( Iterator<Object[]> jj = items.iterator(); 
+                //for ( Iterator<Object[]> jj = items.iterator(); 
+                for ( Iterator jj = items.iterator();
                       jj.hasNext(); ) {
                 
+                    NativeRecord nr = (NativeRecord) jj.next();
+                    /*
                     Object[] j = jj.next();
                     String[] entry = new String[3];
                     entry[0] = service;
                     entry[1] = (String) j[0];
                     entry[2] = (String) j[1];
                     result.add( entry );
+                    */
+                    result.add( nr );
                 }
             }
             tx.commit();

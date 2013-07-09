@@ -72,28 +72,64 @@ public class NcbiServer implements NativeServer {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
 
-        boolean isRetry = false;
-
-        String retryOn = (String)context.get( "isRetry" );
-
-        if( retryOn != null  
-            && ( retryOn.equals( "true" ) 
-                 || retryOn.equalsIgnoreCase( "on" ) 
-                 || retryOn.equalsIgnoreCase( "yes" ) ) ) {
-                
-            isRetry = true;
-        } 
-
+        //----------------------------------------------------------------------
         if ( !service.equals( "nlm" ) ) {
-            return nativeRestServer.getNative( provider, service, ns, ac, timeout );
-        } else {
+            return nativeRestServer.getNative( provider, service, 
+                                               ns, ac, timeout );
+        } else { 
+            boolean isRetry = false;
+            String retryOn = (String)context.get( "isRetry" );
+
+            if( retryOn != null
+                && ( retryOn.equals( "true" )
+                     || retryOn.equalsIgnoreCase( "on" )
+                     || retryOn.equalsIgnoreCase( "yes" ) ) ) {
+
+                isRetry = true;
+            }
+
             NativeRecord record = null;
-            String retVal = null;
+            String ncbi_nlmid = "";
+        
+            try {
+                ncbi_nlmid = ((NcbiGetJournal)context.get("ncbiGetJournal"))
+                    .esearch( ns, ac, threadRunMinutes, isRetry );
+
+            } catch ( RuntimeException e ) { 
+                if( e.getMessage().equals( "NO_RECORD" ) ) {
+                    throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
+                } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+                } else {
+                    throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
+                }
+            }
+
+            if( ncbi_nlmid.equals( "" ) ) {
+                throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
+            }
+
+            try {
+                record = ((NcbiGetJournal)context.get("ncbiGetJournal"))
+                    .efetch( ns, ncbi_nlmid, isRetry );
+            } catch ( RuntimeException e ) {
+                if( e.getMessage().equals( "NO_RECORD" ) ) {
+                    throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
+                } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+                } else {
+                    throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
+                }
+            }
             
+            return record;
+        }
+    }       
+        /*     
             XPathFactory xpf = XPathFactory.newInstance();
             XPath xPath = xpf.newXPath();
             DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();
-
+       
 
             //------------------------------------------------------------------
             // esearch ncbi internal id of the nlmid
@@ -116,7 +152,7 @@ public class NcbiServer implements NativeServer {
 
                 Document docEsearch = builder.parse( xml_esearch );
                 Element rootElementEsearch = docEsearch.getDocumentElement();
-             
+              
                 // get retry from context 
 
                 if( rootElementEsearch.getChildNodes().getLength() ==  0 ) {
@@ -249,18 +285,18 @@ public class NcbiServer implements NativeServer {
                 } else {
                     log.info( "getNative: nlm: testNode != null " +
                               " and ncbi_nlmid=" + ncbi_nlmid + " . " );
-                    /*
-                    //this is old criteria to decide if it's a journal
-                    String publicationType = xPath.evaluate( 
-                               "/NLMCatalogRecordSet/NLMCatalogRecord/" +
-                               "PublicationTypeList/" +
-                               "PublicationType[text()='Periodicals']/text()",
-                               rootElementEfetch );
 
-                    if ( publicationType.equals( "" ) ) {
-                        log.warn( "NcbiServer: nlm: " +
-                                  "PublicationType is not Periodicals\n");
-                    */
+                    //***this is old criteria to decide if it's a journal
+                    //String publicationType = xPath.evaluate( 
+                    //           "/NLMCatalogRecordSet/NLMCatalogRecord/" +
+                    //           "PublicationTypeList/" +
+                    //           "PublicationType[text()='Periodicals']/text()",
+                    //           rootElementEfetch );
+
+                    //if ( publicationType.equals( "" ) ) {
+                    //    log.warn( "NcbiServer: nlm: " +
+                    //              "PublicationType is not Periodicals\n");
+                    
                     String typeOfResource = xPath.evaluate(
                                 "/NLMCatalogRecordSet/NLMCatalogRecord" +
                                 "/ResourceInfo/TypeOfResource/text()",
@@ -323,6 +359,6 @@ public class NcbiServer implements NativeServer {
                 throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
             }
             return record;
-        } 
-    }
+        }
+    } */
 }
