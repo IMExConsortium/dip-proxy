@@ -37,13 +37,6 @@ public class NcbiReFetchThread extends Thread {
     private WSContext wsContext = null;
     private NcbiGetJournal ncbiGetJournal = null;
     
-    //private NativeRestServer nativeRestServer = null;
-
-    /*
-    public NcbiReFetchThread( String ns, String ac, String nlmid,
-                              NativeRestServer nativeRestServer,
-                              int threadRunMinutes, WSContext wsContext ) {
-    */
     public NcbiReFetchThread( String ns, String ac, String nlmid,
                               int threadRunMinutes, 
                               NcbiGetJournal ncbiGetJournal ) {
@@ -54,21 +47,11 @@ public class NcbiReFetchThread extends Thread {
         this.waitMillis = threadRunMinutes * 60 * 1000;
         this.ncbiGetJournal = ncbiGetJournal;
         this.wsContext = wsContext;
-
-        //this.nativeRestServer = nativeRestServer;
-        //this.ttl = wsContext.getTtl( provider ); 
-        //this.timeOut = wsContext.getTimeout( provider );
     }
 
     public void run() {
         log.info( "NcbiFetchThread running... " ); 
         String retVal = null;
-        /*
-        // XPath to retrieve the content
-        XPathFactory xpf = XPathFactory.newInstance();
-        XPath xPath = xpf.newXPath();
-        DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();
-        */
         NativeRecord record = null;
         NativeRecordDAO nativeRecordDAO = 
             wsContext.getDipProxyDAO().getNativeRecordDAO();
@@ -91,46 +74,6 @@ public class NcbiReFetchThread extends Thread {
                 if( !nlmid.equals("") ){
                     break;
                 }
-
-                /*
-                try {
-                    String url_esearch_string =
-                        nativeRestServer.getRealUrl( provider, "nlmesearch", ac );
-        
-                    DocumentBuilder builder = fct.newDocumentBuilder();
-
-                    URL url_esearch = new URL( url_esearch_string );
-                    InputSource xml_esearch = new InputSource(
-                                                url_esearch.openStream() );
-
-                    Document docEsearch = builder.parse( xml_esearch );
-                    Element rootElementEsearch = docEsearch.getDocumentElement();
-                    
-                    if( rootElementEsearch.getChildNodes().getLength() >  0 ) {
-                        String ncbi_error = (String) xPath.evaluate(
-                                                "/eSearchResult/ErrorList/" +
-                                                "PhraseNotFound/text()", 
-                                                rootElementEsearch );
-
-                        if( !ncbi_error.equals("")){
-                            log.warn("getNative: nlm esearch: No items found");
-                            throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
-                        }
-                
-                        nlmid = (String) xPath.evaluate( 
-                                            "/eSearchResult/IdList/Id/text()", 
-                                            rootElementEsearch);
-
-                        if( !nlmid.equals("") ){
-                            break;
-                        }
-                    }    
-                } catch ( Exception e ) {
-                    log.warn( "getNative: nlm: " +
-                              "getService Exception:\n" + e.toString() + ". ");
-                    log.warn( "NcbiReFetchThread TERMINATE. " );
-                    throw new RuntimeException("REMOTE_FAULT");          
-                }*/
             }
         }
                 
@@ -150,70 +93,9 @@ public class NcbiReFetchThread extends Thread {
                     break;
                 }
             }
-                /*
-                try { 
-                    String url_efetch_string =
-                        nativeRestServer.getRealUrl( provider, "nlmefetch", nlmid );
 
-                    URL url_efetch = new URL( url_efetch_string );
-                    InputSource xml_efetch = new InputSource(
-                                                url_efetch.openStream() );
-
-                    DocumentBuilder builder = fct.newDocumentBuilder();
-                    Document docEfetch = builder.parse( xml_efetch );
-                    Element rootElementEfetch = docEfetch.getDocumentElement();
-
-                    Node testNode = (Node) xPath.evaluate(
-                                        "/NLMCatalogRecordSet/NLMCatalogRecord",
-                                        rootElementEfetch, XPathConstants.NODE );
- 
-                    if( testNode != null ) {
-                        String typeOfResource = xPath.evaluate(
-                                "/NLMCatalogRecordSet/NLMCatalogRecord" +
-                                "/ResourceInfo/TypeOfResource/text()",
-                                rootElementEfetch );
-                        if( !typeOfResource.equals("Serial") ) {
-                            log.warn( "NcbiServer: nlm: " +
-                                  "TypeOfResource is not Serial.");
-                            throw new RuntimeException("NO_RECORD");
-                        } else {
-
-                            try {
-                                record = nativeRestServer.getNative(
-                                    provider, "nlmefetch", ns,
-                                    nlmid, wsContext.getTimeout( "NCBI" ) );
-
-                            } catch ( ServerFault fault ) {
-                                throw fault;
-                            }
-
-                            retVal = record.getNativeXml();
-
-                            if( !retVal.trim().equals(
-                                "<?xml version=\"1.0\"?><NLMCatalogRecordSet>" + 
-                                "</NLMCatalogRecordSet>" ) ) {
-
-                                emptySet = false;
-                                break;
-                            }
-                        }
-                    }
-                } catch ( RuntimeException e ) {
-                    throw e;            
-                } catch ( Exception e ) {
-                    log.warn( "NcbiReFetchThread: getNative: nlm: " +
-                              "thread Exception:\n" + e.toString() + ". ");
-                    log.info( "NcbiReFetchThread: TERMINATE. " );
-                   
-                    throw new RuntimeException("REMOTE_FAULT");                  
-                }
-            }*/
-
-            //if( !emptySet && retVal != null ) {
             if( record != null ) {
     
-                //record.setNativeXml( retVal );
-
                 synchronized( nativeRecordDAO ) {
                     try {
                        

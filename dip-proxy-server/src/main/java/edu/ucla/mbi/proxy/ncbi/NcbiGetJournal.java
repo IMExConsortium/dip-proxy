@@ -129,17 +129,6 @@ public class NcbiGetJournal {
         Log log = LogFactory.getLog( NcbiGetJournal.class );
 
         if( nlmid.equals( "" ) ) {
-            if( isRetry ) {
-                NcbiReFetchThread thread =
-                    new NcbiReFetchThread( ns, ac, "",
-                                           threadRunMinutes, this );
-
-                thread.start();
-
-                log.warn( "nlm esearch return an empty set." );
-                log.info( "nlm esearch thread starting." );
-            }
-
             ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
             
