@@ -28,7 +28,7 @@ public class NcbiReFetchThread extends Thread {
     private String nlmid = "";
 
     private int ttl;
-    private int timeOut;
+    private int timeout;
     private int threadRunMinutes;
     private long waitMillis; 
 
@@ -38,11 +38,12 @@ public class NcbiReFetchThread extends Thread {
     private NcbiGetJournal ncbiGetJournal = null;
     
     public NcbiReFetchThread( String ns, String ac, String nlmid,
-                              int threadRunMinutes, 
+                              int timeout, int threadRunMinutes, 
                               NcbiGetJournal ncbiGetJournal ) {
         this.ns = ns;
         this.ac = ac;
         this.nlmid = nlmid;
+        this.timeout = timeout;
         this.threadRunMinutes = threadRunMinutes;
         this.waitMillis = threadRunMinutes * 60 * 1000;
         this.ncbiGetJournal = ncbiGetJournal;
@@ -68,7 +69,7 @@ public class NcbiReFetchThread extends Thread {
 
                 //--------------------------------------------------------------
                 // esearch ncbi internal id of the nlmid
-                nlmid = ncbiGetJournal.esearch( ns, ac, 
+                nlmid = ncbiGetJournal.esearch( ns, ac, timeout,
                                                 threadRunMinutes, false );
 
                 if( !nlmid.equals("") ){
@@ -87,7 +88,7 @@ public class NcbiReFetchThread extends Thread {
             boolean emptySet = true;
 
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
-                record = ncbiGetJournal.efetch( ns, ac, nlmid, 
+                record = ncbiGetJournal.efetch( ns, nlmid, timeout,
                                                 threadRunMinutes, false );
                 if( record != null ) {
                     break;

@@ -16,11 +16,9 @@ import org.apache.commons.logging.LogFactory;
 import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.proxy.NativeRestServer;
 import edu.ucla.mbi.cache.NativeRecord;
-import edu.ucla.mbi.cache.orm.NativeRecordDAO;
 import edu.ucla.mbi.fault.*;
 
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
 
 import javax.xml.xpath.*;
 import javax.xml.parsers.*;
@@ -31,12 +29,7 @@ public class NcbiGetJournal {
     private String provider = "NCBI";
     private String service = "nlm";
 
-    private WSContext wsContext;
     private NativeRestServer nativeRestServer;
-
-    public void setWsContext ( WSContext context ) {
-        this.wsContext = context;
-    }
 
     public void setNativeRestServer( NativeRestServer server ) {
         this.nativeRestServer = server;
@@ -52,38 +45,14 @@ public class NcbiGetJournal {
     //--------------------------------------------------------------------------
 
     public String esearch ( String ns, String ac, int timeout, 
-                            int threadRunMinutes, 
-                            boolean isRetry ) throws RuntimeException {
+                            int threadRunMinutes, boolean isRetry  
+                            ) throws RuntimeException {
    
         Log log = LogFactory.getLog( NcbiGetJournal.class );
- 
-        // XPath to retrieve the content
-        XPathFactory xpf = XPathFactory.newInstance();
-        XPath xPath = xpf.newXPath();
-        DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();
-        
-        NativeRecord record = null;
-        NativeRecordDAO nativeRecordDAO =
-            wsContext.getDipProxyDAO().getNativeRecordDAO();
-
+         
         try {
-
-            /*
-            String url_esearch_string =
-                nativeRestServer.getRealUrl( provider, "nlmesearch", ac );
-
-            DocumentBuilder builder = fct.newDocumentBuilder();
-
-            URL url_esearch = new URL( url_esearch_string );
-            InputSource xml_esearch = 
-                new InputSource( url_esearch.openStream() );
-
-            Document docEsearch = builder.parse( xml_esearch );
-            */
-            
             Document docEsearch = nativeRestServer
                 .getNativeDom( provider, service, ns, ac, timeout );
-
 
             Element rootElementEsearch = docEsearch.getDocumentElement();
 
@@ -95,7 +64,7 @@ public class NcbiGetJournal {
                 if( isRetry ) {
                 
                     NcbiReFetchThread thread =
-                        new NcbiReFetchThread( ns, ac, "", 
+                        new NcbiReFetchThread( ns, ac, "", timeout, 
                                                threadRunMinutes, this );
 
                     thread.start();
@@ -106,6 +75,9 @@ public class NcbiGetJournal {
                 throw new RuntimeException( "REMOTE_FAULT" );
             }    
                 
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xPath = xpf.newXPath();
+
             String ncbi_error = (String) xPath.evaluate(
                 "/eSearchResult/ErrorList/" +
                 "PhraseNotFound/text()", rootElementEsearch );
@@ -145,21 +117,14 @@ public class NcbiGetJournal {
             
         boolean emptySet = true;
 
-        XPathFactory xpf = XPathFactory.newInstance();
-        XPath xPath = xpf.newXPath();
-
-        DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();
-
         try {
-            String url_efetch_string =
-                nativeRestServer.getRealUrl( provider, "nlmefetch", nlmid );
+            Document docEfetch = nativeRestServer
+                .getNativeDom( provider, service, ns, nlmid, timeout );
 
-            URL url_efetch = new URL( url_efetch_string );
-            InputSource xml_efetch = new InputSource( url_efetch.openStream() );
-
-            DocumentBuilder builder = fct.newDocumentBuilder();
-            Document docEfetch = builder.parse( xml_efetch );
             Element rootElementEfetch = docEfetch.getDocumentElement();
+
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xPath = xpf.newXPath();
 
             Node testNode = (Node) xPath.evaluate(
                 "/NLMCatalogRecordSet/NLMCatalogRecord",
@@ -168,7 +133,7 @@ public class NcbiGetJournal {
             if( testNode == null ) {
                 if( isRetry ) {
                     NcbiReFetchThread thread =
-                        new NcbiReFetchThread( ns, ac, nlmid,
+                        new NcbiReFetchThread( ns, nlmid, nlmid, timeout,
                                                threadRunMinutes, this );
 
                     thread.start();
@@ -193,8 +158,7 @@ public class NcbiGetJournal {
 
                 try {
                     record = nativeRestServer.getNativeRecord(
-                        provider, "nlmefetch", ns,
-                        nlmid, wsContext.getTimeout( "NCBI" ) );
+                        provider, "nlmefetch", ns, nlmid, timeout );
                 } catch ( ServerFault fault ) {
                     throw new RuntimeException("REMOTE_FAULT");
                 }
@@ -214,7 +178,7 @@ public class NcbiGetJournal {
                     if( isRetry ) {
 
                         NcbiReFetchThread thread =
-                            new NcbiReFetchThread( ns, ac, nlmid,
+                            new NcbiReFetchThread( ns, nlmid, nlmid, timeout,
                                                    threadRunMinutes, this );
 
                         thread.start();
@@ -227,6 +191,7 @@ public class NcbiGetJournal {
                     
                 return record;
             }
+
         } catch ( RuntimeException re ) {
             throw re;
         } catch ( Exception e ) {

@@ -55,8 +55,7 @@ public class NcbiServer implements NativeServer {
     }
 
     public NativeRecord getNative( String provider, String service, String ns,
-                                   String ac, int timeout 
-                                   ) throws ServerFault {
+                                   String ac, int timeout ) throws ServerFault {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
 

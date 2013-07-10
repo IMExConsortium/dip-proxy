@@ -24,6 +24,12 @@ import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.context.*;
 
+import org.w3c.dom.*;
+import org.xml.sax.InputSource;
+
+import javax.xml.xpath.*;
+import javax.xml.parsers.*;
+import java.net.URL;
 
 public class NativeRestServer implements ContextListener {
 
@@ -163,8 +169,7 @@ public class NativeRestServer implements ContextListener {
     }
 
     public NativeRecord getNativeRecord( String provider, String service, 
-                                         String ns, String ac, int timeout                           
-         ) throws ServerFault {
+        String ns, String ac, int timeout ) throws ServerFault {
 
         String retVal = getNativeString( provider,service, ns, ac, timeout ); 
 
@@ -233,8 +238,8 @@ public class NativeRestServer implements ContextListener {
     }
 
     public String getNativeString( String provider, String service,
-                                         String ns, String ac, int timeout
-                                         ) throws ServerFault {
+                                   String ns, String ac, int timeout
+                                   ) throws ServerFault {
         String retVal = null;
         
         String real_restUrl = getRealUrl( provider, service, ac );
@@ -252,24 +257,30 @@ public class NativeRestServer implements ContextListener {
     }
     
 
-    public String getNativeDom( String provider, String service,
-                                String ns, String ac, int timeout
-                                ) throws ServerFault {
+    public Document getNativeDom( String provider, String service,
+                                  String ns, String ac, int timeout
+                                  ) throws ServerFault {
         
         
         String url_esearch_string =
             this.getRealUrl( provider, "nlmesearch", ac );
-        
-        DocumentBuilder builder = fct.newDocumentBuilder();
-        
-        URL url_esearch = new URL( url_esearch_string );
-        InputSource xml_esearch =
-            new InputSource( url_esearch.openStream() );
-        
-        Document docEsearch = builder.parse( xml_esearch );
-        
-        return docEsearch;
 
+        DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();        
+
+        try {
+            DocumentBuilder builder = fct.newDocumentBuilder();
+        
+            URL url_esearch = new URL( url_esearch_string );
+            
+            InputSource xml_esearch =
+                new InputSource( url_esearch.openStream() );
+        
+            Document docEsearch = builder.parse( xml_esearch );
+        
+            return docEsearch;
+        } catch ( Exception ex ) {
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );            
+        } 
         
     }
 
