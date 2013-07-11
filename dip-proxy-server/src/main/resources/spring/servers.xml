@@ -110,7 +110,6 @@
          <ref bean="nativeRestServer"/>
        </entry>
 
-       <!--<entry key="isRetry" value="true"/> --><!-- dbCache has to be on -->
        <entry key="threadRunMinutes" value="10"/> <!-- mins -->
        <entry key="wsContext">
             <ref bean="wsContext"/>
