@@ -114,7 +114,7 @@ public class NativeAgent implements Agent {
                             
                             NativeRecord natRec = 
                                 wsContext.getNativeServer( curProv )
-                                .getNative( curProv, service, ns, ac,
+                                .getNativeRecord( curProv, service, ns, ac,
                                             wsContext.getTimeout( curProv ) );
                             
                             //*** check record validation

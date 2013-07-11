@@ -31,7 +31,7 @@ import javax.xml.xpath.*;
 import javax.xml.parsers.*;
 import java.net.URL;
 
-public class NativeRestServer implements ContextListener {
+public class NativeRestServer implements NativeServer, ContextListener {
 
     private Log log = LogFactory.getLog( NativeRestServer.class );
     private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
@@ -62,6 +62,14 @@ public class NativeRestServer implements ContextListener {
         this.contextTop = top;
     }
     */
+    
+    //RestServer restServer = null;
+    //
+    //public void setRestServer( RestServer server) {
+    //    restServer = server;
+    //}
+
+   
     //*** getter
     public JsonContext getRestServerContext() {
         return restServerContext;

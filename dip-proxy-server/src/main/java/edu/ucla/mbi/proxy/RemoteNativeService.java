@@ -104,8 +104,9 @@ class RemoteNativeService {
             }
 
             try {                                                       
-                remoteRecord = nativeServer.getNative( provider, service,
-                    ns, ac, wsContext.getTimeout( provider ) );
+                remoteRecord = nativeServer
+                    .getNativeRecord( provider, service,
+                                      ns, ac, wsContext.getTimeout( provider ) );
 
             } catch( ServerFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 

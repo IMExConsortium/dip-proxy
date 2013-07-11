@@ -27,7 +27,10 @@ public class NcbiServer implements NativeServer {
      
     private Map<String,Object> context = null;
 
-    private NativeRestServer nativeRestServer = null;
+    //private NativeRestServer nativeRestServer = null;
+
+    private NativeServer nativeRestServer = null;
+
     private int threadRunMinutes = 10 ;
     private WSContext wsContext = null;
 
@@ -42,7 +45,10 @@ public class NcbiServer implements NativeServer {
             throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
-        nativeRestServer = (NativeRestServer) context.get( "nativeRestServer" );
+        //nativeRestServer = (NativeRestServer) context.get( "nativeRestServer" );
+
+        nativeRestServer = (NativeServer) context.get( "nativeRestServer" );
+
         threadRunMinutes = 
             Integer.parseInt( (String)context.get( "threadRunMinutes" ) );        
         wsContext = (WSContext) context.get( "wsContext" );
@@ -54,7 +60,7 @@ public class NcbiServer implements NativeServer {
         }
     }
 
-    public NativeRecord getNative( String provider, String service, String ns,
+    public NativeRecord getNativeRecord( String provider, String service, String ns,
                                    String ac, int timeout ) throws ServerFault {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );

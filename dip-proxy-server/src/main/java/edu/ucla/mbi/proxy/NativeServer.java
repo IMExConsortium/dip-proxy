@@ -25,8 +25,8 @@ import edu.ucla.mbi.fault.*;
 
 public interface NativeServer {
 
-    public NativeRecord getNative( String provider, String service, 
-                                   String ns, String ac, int timeout 
-                                   ) throws ServerFault; 
+    public NativeRecord getNativeRecord( String provider, String service, 
+                                         String ns, String ac, int timeout 
+                                         ) throws ServerFault; 
 
 }

@@ -57,7 +57,7 @@ public class EbiServer implements NativeServer {
 
     static final JAXBContext acrContext = initAcrContext();
 
-    private NativeRestServer nativeRestServer = null;
+    private NativeServer nativeRestServer = null;
     private Map<String, Object> context = null; 
      
     //--------------------------------------------------------------------------
@@ -101,7 +101,7 @@ public class EbiServer implements NativeServer {
             throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
  
-        nativeRestServer = ( NativeRestServer)context.get( "nativeRestServer" );
+        nativeRestServer = (NativeServer) context.get( "nativeRestServer" );
 
         if( nativeRestServer == null ) {
             log.warn( "EbiServer: initializing failed " +
@@ -159,9 +159,9 @@ public class EbiServer implements NativeServer {
 
     //-------------------------------------------------------------------------
     
-    public NativeRecord getNative( String provider, String service, 
-                                   String ns, String ac, int timeout  
-                                   ) throws ServerFault { 
+    public NativeRecord getNativeRecord( String provider, String service, 
+                                         String ns, String ac, int timeout  
+                                         ) throws ServerFault { 
     
         Log log = LogFactory.getLog( EbiServer.class );
         log.info( "NS=" + ns + " AC=" + ac + " SRV=" + service );

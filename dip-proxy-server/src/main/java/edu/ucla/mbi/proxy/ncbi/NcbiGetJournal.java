@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.ucla.mbi.proxy.context.WSContext;
-import edu.ucla.mbi.proxy.NativeRestServer;
+import edu.ucla.mbi.proxy.RestServer;
 import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.fault.*;
 
@@ -29,10 +29,10 @@ public class NcbiGetJournal {
     private String provider = "NCBI";
     private String service = "nlm";
 
-    private NativeRestServer nativeRestServer;
+    private RestServer restServer;
 
-    public void setNativeRestServer( NativeRestServer server ) {
-        this.nativeRestServer = server;
+    public void setRestServer( RestServer server ) {
+        this.restServer = server;
     }
     
     public void initialize() {
@@ -45,13 +45,13 @@ public class NcbiGetJournal {
     //--------------------------------------------------------------------------
 
     public String esearch ( String ns, String ac, int timeout, 
-                            int threadRunMinutes, boolean isRetry  
+                            int threadRunMinutes, boolean isRetry 
                             ) throws RuntimeException {
    
         Log log = LogFactory.getLog( NcbiGetJournal.class );
          
         try {
-            Document docEsearch = nativeRestServer
+            Document docEsearch = restServer
                 .getNativeDom( provider, service, ns, ac, timeout );
 
             Element rootElementEsearch = docEsearch.getDocumentElement();
@@ -65,7 +65,7 @@ public class NcbiGetJournal {
                 
                     NcbiReFetchThread thread =
                         new NcbiReFetchThread( ns, ac, "", timeout, 
-                                               threadRunMinutes, this );
+                                               threadRunMinutes, this  wscontext);
 
                     thread.start();
 
@@ -118,7 +118,7 @@ public class NcbiGetJournal {
         boolean emptySet = true;
 
         try {
-            Document docEfetch = nativeRestServer
+            Document docEfetch = restServer
                 .getNativeDom( provider, service, ns, nlmid, timeout );
 
             Element rootElementEfetch = docEfetch.getDocumentElement();
@@ -134,7 +134,7 @@ public class NcbiGetJournal {
                 if( isRetry ) {
                     NcbiReFetchThread thread =
                         new NcbiReFetchThread( ns, nlmid, nlmid, timeout,
-                                               threadRunMinutes, this );
+                                               threadRunMinutes, this wscontext);
 
                     thread.start();
 
@@ -157,7 +157,7 @@ public class NcbiGetJournal {
                 NativeRecord record = null;
 
                 try {
-                    record = nativeRestServer.getNativeRecord(
+                    record = restServer.getNativeRecord(       
                         provider, "nlmefetch", ns, nlmid, timeout );
                 } catch ( ServerFault fault ) {
                     throw new RuntimeException("REMOTE_FAULT");
