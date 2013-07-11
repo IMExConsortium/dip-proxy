@@ -39,7 +39,8 @@ public class NcbiReFetchThread extends Thread {
     
     public NcbiReFetchThread( String ns, String ac, String nlmid,
                               int timeout, int threadRunMinutes, 
-                              NcbiGetJournal ncbiGetJournal ) {
+                              NcbiGetJournal ncbiGetJournal,
+                              WSContext context ) {
         this.ns = ns;
         this.ac = ac;
         this.nlmid = nlmid;
@@ -47,7 +48,7 @@ public class NcbiReFetchThread extends Thread {
         this.threadRunMinutes = threadRunMinutes;
         this.waitMillis = threadRunMinutes * 60 * 1000;
         this.ncbiGetJournal = ncbiGetJournal;
-        this.wsContext = wsContext;
+        this.wsContext = context;
     }
 
     public void run() {
@@ -63,12 +64,13 @@ public class NcbiReFetchThread extends Thread {
         if( ! wsContext.isDbCacheOn( "NCBI" ) ) return;     
         if( ns == null || ac == null ) return;
 
+        //----------------------------------------------------------------------
+        // esearch ncbi internal id of the nlmid
+        //----------------------------------------------------------------------
         if( nlmid.equals( "" ) ) {
             log.info( "NcbiReFetchThread: nlmid is empty. " );
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
 
-                //--------------------------------------------------------------
-                // esearch ncbi internal id of the nlmid
                 nlmid = ncbiGetJournal.esearch( ns, ac, timeout,
                                                 threadRunMinutes, false );
 
@@ -80,16 +82,16 @@ public class NcbiReFetchThread extends Thread {
                 
         //----------------------------------------------------------------------                
         // efetch real nlmid 
-        //------------------
+        //----------------------------------------------------------------------
 
         if( !nlmid.equals( "" ) ) {
-            log.info( "NcbiReFetchThread: after esearch: nlmid is " + nlmid );
+            log.info( "after esearch: nlmid is " + nlmid );
             startTime = System.currentTimeMillis();            
-            boolean emptySet = true;
 
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
                 record = ncbiGetJournal.efetch( ns, nlmid, timeout,
                                                 threadRunMinutes, false );
+                log.info( "after efetch: record=" + record );
                 if( record != null ) {
                     break;
                 }
@@ -103,6 +105,7 @@ public class NcbiReFetchThread extends Thread {
                         NativeRecord cacheRecord = nativeRecordDAO
                             .find( provider, service, ns, ac );
                         
+                        log.info( "cachedRecord=" + cacheRecord );
                         if( cacheRecord != null ) {
                             record.setId( cacheRecord.getId() );
                             record.setCreateTime( cacheRecord.getCreateTime() );

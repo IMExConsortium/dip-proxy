@@ -127,7 +127,6 @@ public class NativeRestServer implements NativeServer, ContextListener {
         
     }
 
-    
     public void contextUpdate ( JsonContext context ) {
    
         log.info( "contextUpdate called. " );
@@ -179,23 +178,11 @@ public class NativeRestServer implements NativeServer, ContextListener {
     public NativeRecord getNativeRecord( String provider, String service, 
         String ns, String ac, int timeout ) throws ServerFault {
 
-        String retVal = getNativeString( provider,service, ns, ac, timeout ); 
+        String retVal = this.getNativeString( provider,service, ns, ac, timeout ); 
 
-        /*
+        
         log.info( "getNative: PROVIDER=" + provider + " and SERVICE=" + 
                   service + " and NS=" + ns + " AC=" + ac );
-        
-        String real_restUrl = getRealUrl( provider, service, ac );
-
-        log.info( "getNative: real_restUrl=" + real_restUrl );
-
-        try {
-            retVal = query( real_restUrl, timeout );
-            
-        } catch( ServerFault fault ) {
-            throw fault;
-        }
-        */
         
         if( retVal.endsWith( "</cause></error></ResultSet>" ) ) {
             //*** this error for intermine server
@@ -244,8 +231,8 @@ public class NativeRestServer implements NativeServer, ContextListener {
         return record;
 
     }
-
-    public String getNativeString( String provider, String service,
+    
+    private String getNativeString( String provider, String service,
                                    String ns, String ac, int timeout
                                    ) throws ServerFault {
         String retVal = null;
@@ -264,7 +251,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
         return retVal;
     }
     
-
+    /*
     public Document getNativeDom( String provider, String service,
                                   String ns, String ac, int timeout
                                   ) throws ServerFault {
@@ -291,7 +278,7 @@ public class NativeRestServer implements NativeServer, ContextListener {
         } 
         
     }
-
+    */
 
     private String query( String url, int timeout ) throws ServerFault {
         String retVal = "";

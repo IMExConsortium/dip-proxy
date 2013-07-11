@@ -30,11 +30,16 @@ public class NcbiGetJournal {
     private String service = "nlm";
 
     private RestServer restServer;
+    private WSContext wsContext;
 
     public void setRestServer( RestServer server ) {
         this.restServer = server;
     }
-    
+
+    public void setWsContext( WSContext context ) {
+        this.wsContext = context;
+    }    
+
     public void initialize() {
         Log log = LogFactory.getLog( NcbiGetJournal.class );
         log.info( "NcbiGetJournal initailize() called ..." );
@@ -52,28 +57,15 @@ public class NcbiGetJournal {
          
         try {
             Document docEsearch = restServer
-                .getNativeDom( provider, service, ns, ac, timeout );
+                .getNativeDom( provider, "nlmesearch", ac );
 
             Element rootElementEsearch = docEsearch.getDocumentElement();
-
+            
             if( rootElementEsearch == null 
                 || rootElementEsearch.getChildNodes().getLength() ==  0 ) {
 
-                log.info( "nlm esearch get empty return." );
-
-                if( isRetry ) {
-                
-                    NcbiReFetchThread thread =
-                        new NcbiReFetchThread( ns, ac, "", timeout, 
-                                               threadRunMinutes, this  wscontext);
-
-                    thread.start();
-
-                    log.warn( "nlm esearch return an empty set." );
-                    log.info( "nlm esearch thread starting." );
-                }
-                throw new RuntimeException( "REMOTE_FAULT" );
-            }    
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+            } 
                 
             XPathFactory xpf = XPathFactory.newInstance();
             XPath xPath = xpf.newXPath();
@@ -89,14 +81,26 @@ public class NcbiGetJournal {
 
             String nlmid = (String) xPath.evaluate(
                 "/eSearchResult/IdList/Id/text()", rootElementEsearch);
-                
+            
+            log.info( "esearch nlmid=" + nlmid );    
+            if( nlmid == null || nlmid.equals("") ) {
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+            }
             return nlmid;
 
         } catch ( RuntimeException re ) {
             throw re;
         } catch ( Exception e ) {
-            log.warn( "nlm exception: " + e.toString() + ". ");
+            log.warn( "nlm esearch exception: " + e.toString() + ". ");
             log.warn( "NcbiGetJournal TERMINATE. " );
+            if( isRetry ) {
+                NcbiReFetchThread thread =
+                        new NcbiReFetchThread( ns, ac, "", timeout,
+                                               threadRunMinutes, this,
+                                               wsContext);
+
+                thread.start();
+            }
             throw new RuntimeException("REMOTE_FAULT");
         } 
     }
@@ -113,38 +117,33 @@ public class NcbiGetJournal {
             ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
             
-        log.info( "nlmid is " + nlmid );
+        log.info( "efetch: nlmid is " + nlmid );
             
-        boolean emptySet = true;
-
         try {
             Document docEfetch = restServer
-                .getNativeDom( provider, service, ns, nlmid, timeout );
+                .getNativeDom( provider, "nlmefetch", nlmid );
 
             Element rootElementEfetch = docEfetch.getDocumentElement();
 
+            if( rootElementEfetch == null 
+                || rootElementEfetch.getChildNodes().getLength() ==  0 ) {
+
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+            } 
+
             XPathFactory xpf = XPathFactory.newInstance();
             XPath xPath = xpf.newXPath();
+
+            log.info( "before evaluate testNode. " );
 
             Node testNode = (Node) xPath.evaluate(
                 "/NLMCatalogRecordSet/NLMCatalogRecord",
                 rootElementEfetch, XPathConstants.NODE );
 
             if( testNode == null ) {
-                if( isRetry ) {
-                    NcbiReFetchThread thread =
-                        new NcbiReFetchThread( ns, nlmid, nlmid, timeout,
-                                               threadRunMinutes, this wscontext);
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+            } 
 
-                    thread.start();
-
-                    log.warn( "getNative: nlm efetch return an empty set." );
-                    log.info( "getNative: nlm efetch thread starting." );
-                }
-
-                throw new RuntimeException("REMOTE_FAULT");
-            }
-                
             String typeOfResource = xPath.evaluate(
                 "/NLMCatalogRecordSet/NLMCatalogRecord" +
                 "/ResourceInfo/TypeOfResource/text()", rootElementEfetch );
@@ -153,40 +152,28 @@ public class NcbiGetJournal {
                 log.warn( "nlm: TypeOfResource is not Serial.");
                 throw new RuntimeException("NO_RECORD");
             } else {
-
                 NativeRecord record = null;
 
                 try {
                     record = restServer.getNativeRecord(       
                         provider, "nlmefetch", ns, nlmid, timeout );
                 } catch ( ServerFault fault ) {
-                    throw new RuntimeException("REMOTE_FAULT");
+                    throw fault;
                 }
 
                 if( record == null ) {
-                    return null;
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                 }
 
                 String retVal = record.getNativeXml();
 
-                if( !retVal.trim().equals(
-                    "<?xml version=\"1.0\"?><NLMCatalogRecordSet>" +
-                    "</NLMCatalogRecordSet>" ) ) {
+                if( retVal == null || retVal.equals("") 
+                    || retVal.trim().equals(
+                        "<?xml version=\"1.0\"?><NLMCatalogRecordSet>" +
+                        "</NLMCatalogRecordSet>" ) ) {
 
-                    emptySet = false;
-
-                    if( isRetry ) {
-
-                        NcbiReFetchThread thread =
-                            new NcbiReFetchThread( ns, nlmid, nlmid, timeout,
-                                                   threadRunMinutes, this );
-
-                        thread.start();
-
-                        log.warn( "nlm efetch return an empty set." );
-                        log.info( "nlm efetch thread starting." );
-                    }   
-                    throw new RuntimeException("REMOTE_FAULT");
+                    log.info( "retVal is emptySet with= " + retVal );
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                 }
                     
                 return record;
@@ -197,6 +184,16 @@ public class NcbiGetJournal {
         } catch ( Exception e ) {
             log.warn( "nlm exception: " + e.toString() + ". ");
             log.info( "NcbiGetJournal TERMINATE. " );
+
+            if( isRetry ) {
+
+                NcbiReFetchThread thread =
+                    new NcbiReFetchThread( ns, nlmid, nlmid, timeout,
+                                           threadRunMinutes, this, wsContext );
+
+                thread.start();
+                log.info( "nlm efetch thread starting." );
+            }
 
             throw new RuntimeException("REMOTE_FAULT");
         } 

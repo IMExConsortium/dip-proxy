@@ -110,7 +110,7 @@
          <ref bean="nativeRestServer"/>
        </entry>
 
-       <entry key="isRetry" value="true"/><!-- dbCache has to be on -->
+       <!--<entry key="isRetry" value="true"/> --><!-- dbCache has to be on -->
        <entry key="threadRunMinutes" value="10"/> <!-- mins -->
        <entry key="wsContext">
             <ref bean="wsContext"/>
@@ -126,7 +126,6 @@
        class="edu.ucla.mbi.proxy.ncbi.NcbiGetJournal">
 
     <property name="wsContext" ref="wsContext"/>
-
     <property name="restServer" ref="restServer"/>
 
  </bean>

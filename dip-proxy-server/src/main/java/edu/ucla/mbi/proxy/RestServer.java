@@ -2,7 +2,7 @@ package edu.ucla.mbi.proxy;
 
 /*==============================================================================
  * $HeadURL:: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/main$
- * $Id:: NativeRestServer.java 3316 2013-07-10 17:26:06Z wyu                   $
+ * $Id:: RestServer.java 3316 2013-07-10 17:26:06Z wyu                   $
  * Version: $Rev:: 3316                                                        $
  *==============================================================================
  *
@@ -33,13 +33,14 @@ import java.net.URL;
 
 public class RestServer implements ContextListener {
 
-    private Log log = LogFactory.getLog( NativeRestServer.class );
+    private Log log = LogFactory.getLog( RestServer.class );
+    
     private  Map<String,Object> restServerMap = new HashMap<String, Object>();   
     private JsonContext restServerContext;
     private String contextTop;
 
     private Map<String, Object> context = null;
-
+    
     //--------------------------------------------------------------------------
 
     public void setContext( Map<String,Object> context ) {
@@ -48,7 +49,6 @@ public class RestServer implements ContextListener {
 
     //--------------------------------------------------------------------------
 
-    /* 
     public Map<String,Object> getRestServerMap() {
         return restServerMap;
     }
@@ -61,7 +61,7 @@ public class RestServer implements ContextListener {
     public void setContextTop( String top ) {
         this.contextTop = top;
     }
-    */
+    
     //*** getter
     public JsonContext getRestServerContext() {
         return restServerContext;
@@ -72,19 +72,18 @@ public class RestServer implements ContextListener {
     }
 
 
-    NativeServer nativeRestServer = null;
+    private NativeServer nativeRestServer = null;
 
     public void setNativeRestServer( NativeServer server) {
         nativeRestServer = server;
     }
 
-    
     public void initialize() throws ServerFault {
 
-        log.info( "initialize starting... " );
-
+        log.info( "RestServer initialize starting... " );
+        
         if(  context == null ) {
-            log.warn( "NativeRestServer: initializing failed " +
+            log.warn( "RestServer: initializing failed " +
                       "because context is null. " );
             throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
@@ -92,14 +91,14 @@ public class RestServer implements ContextListener {
         restServerContext = (JsonContext)context.get( "restServerContext" );
 
         if( restServerContext == null ) {
-            log.warn( "NativeRestServer: initializing failed " +
+            log.warn( "RestServer: initializing failed " +
                       "because restServerContext is null. " );
             throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
         contextTop = (String) context.get( "contextTop" );
         if( contextTop == null ) {
-            log.warn( "NativeRestServer: initializing failed " +
+            log.warn( "RestServer: initializing failed " +
                       "because contextTop is null. " );
             throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
@@ -126,7 +125,6 @@ public class RestServer implements ContextListener {
         log.info( "initialize ... after get rest server map. " );
         
     }
-
     
     public void contextUpdate ( JsonContext context ) {
    
@@ -175,7 +173,7 @@ public class RestServer implements ContextListener {
        
         return restUrl.replaceAll( restAcTag, ac );
     }
-
+    
 
     public NativeRecord getNativeRecord( String provider, String service,
                                          String ns, String ac, int timeout ) 
@@ -260,6 +258,7 @@ public class RestServer implements ContextListener {
     public String getNativeString( String provider, String service,
                                    String ns, String ac, int timeout
                                    ) throws ServerFault {
+        
         String retVal = null;
         
         String real_restUrl = getRealUrl( provider, service, ac );
@@ -278,33 +277,36 @@ public class RestServer implements ContextListener {
     
 
     public Document getNativeDom( String provider, String service,
-                                  String ns, String ac, int timeout
-                                  ) throws ServerFault {
+                                  String ac ) throws ServerFault {
         
+             
+        String url_string =
+            this.getRealUrl( provider, service, ac );
         
-        String url_esearch_string =
-            this.getRealUrl( provider, "nlmesearch", ac );
+        log.info( "Dom: url_string=" + url_string );
 
         DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();        
 
         try {
             DocumentBuilder builder = fct.newDocumentBuilder();
         
-            URL url_esearch = new URL( url_esearch_string );
+            URL url_search = new URL( url_string );
             
-            InputSource xml_esearch =
-                new InputSource( url_esearch.openStream() );
+            InputSource xml_search =
+                new InputSource( url_search.openStream() );
         
-            Document docEsearch = builder.parse( xml_esearch );
-        
-            return docEsearch;
+            Document docSearch = builder.parse( xml_search );
+
+            log.info( "Dom: docSearch=" + docSearch );
+
+            log.info( "Dom: rootElementSearch=" + docSearch.getDocumentElement() );         
+            return docSearch;
         } catch ( Exception ex ) {
             throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );            
         } 
         
     }
-
-
+    
     private String query( String url, int timeout ) throws ServerFault {
         String retVal = "";
 
@@ -376,5 +378,5 @@ public class RestServer implements ContextListener {
             return retVal;
         }
     }
-
+    
 }

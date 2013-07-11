@@ -70,23 +70,15 @@ public class NcbiServer implements NativeServer {
             return nativeRestServer.getNativeRecord( provider, service, 
                                                      ns, ac, timeout );
         } else { 
-            boolean isRetry = false;
-            String retryOn = (String)context.get( "isRetry" );
-
-            if( retryOn != null
-                && ( retryOn.equals( "true" )
-                     || retryOn.equalsIgnoreCase( "on" )
-                     || retryOn.equalsIgnoreCase( "yes" ) ) ) {
-
-                isRetry = true;
-            }
 
             NativeRecord record = null;
             String ncbi_nlmid = "";
         
             try {
-                ncbi_nlmid = ((NcbiGetJournal)context.get("ncbiGetJournal"))
-                    .esearch( ns, ac, timeout, threadRunMinutes, isRetry );
+                log.info( "before esearch with ac=" + ac );
+                ncbi_nlmid = ( (NcbiGetJournal)context.get("ncbiGetJournal") )
+                    .esearch( ns, ac, timeout, threadRunMinutes, 
+                              wsContext.isDbCacheOn( provider ) );
 
             } catch ( RuntimeException e ) { 
                 if( e.getMessage().equals( "NO_RECORD" ) ) {
@@ -103,8 +95,11 @@ public class NcbiServer implements NativeServer {
             }
 
             try {
-                record = ((NcbiGetJournal)context.get("ncbiGetJournal"))
-                    .efetch( ns, ac, timeout, threadRunMinutes, isRetry );
+                log.info( "before efetch with ac=" + ac );
+                record = ( (NcbiGetJournal)context.get("ncbiGetJournal") )
+                    .efetch( ns, ac, timeout, threadRunMinutes, 
+                             wsContext.isDbCacheOn( provider ) );
+
             } catch ( RuntimeException e ) {
                 if( e.getMessage().equals( "NO_RECORD" ) ) {
                     throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
