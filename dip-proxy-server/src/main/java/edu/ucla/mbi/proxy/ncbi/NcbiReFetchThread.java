@@ -99,9 +99,15 @@ public class NcbiReFetchThread extends Thread {
             startTime = System.currentTimeMillis();            
 
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
-                record = ncbiGetJournal.efetch( ns, nlmid, timeout,
-                                                threadRunMinutes, false );
-                log.info( "after efetch: record=" + record );
+                try{
+                    record = ncbiGetJournal._efetch( ns, nlmid, timeout );
+                    log.info( "after efetch: record=" + record );
+                } catch( ServerFault sf ){
+                    //
+                } catch( XPathExpressionException sf ){
+                    //
+                }
+
                 if( record != null ) {
                     break;
                 }
