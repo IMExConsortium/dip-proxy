@@ -261,12 +261,12 @@ public class RestServer implements ContextListener {
         
         String retVal = null;
         
-        String real_restUrl = getRealUrl( provider, service, ac );
+        String real_restUrl = this.getRealUrl( provider, service, ac );
         
         log.info( "getNative: real_restUrl=" + real_restUrl );
         
         try {
-            retVal = query( real_restUrl, timeout );
+            retVal = this.query( real_restUrl, timeout );
 
         } catch( ServerFault fault ) {
             throw fault;
