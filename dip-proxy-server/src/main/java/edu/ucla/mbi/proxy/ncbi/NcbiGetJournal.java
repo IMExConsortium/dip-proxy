@@ -56,6 +56,7 @@ public class NcbiGetJournal {
         Log log = LogFactory.getLog( NcbiGetJournal.class );
          
         try {
+            /*            
             Document docEsearch = restServer
                 .getNativeDom( provider, "nlmesearch", ac );
 
@@ -87,6 +88,9 @@ public class NcbiGetJournal {
                 throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
             }
             return nlmid;
+            */
+            
+            return _esearch( ns, ac);
 
         } catch ( RuntimeException re ) {
             throw re;
@@ -97,13 +101,83 @@ public class NcbiGetJournal {
                 NcbiReFetchThread thread =
                         new NcbiReFetchThread( ns, ac, "", timeout,
                                                threadRunMinutes, this,
-                                               wsContext);
+                                               wsContext );
 
                 thread.start();
             }
             throw new RuntimeException("REMOTE_FAULT");
         } 
     }
+
+
+    public String _esearch( String ns, String ac ) throws 
+        RuntimeException, 
+        ServerFault, XPathExpressionException {
+   
+        Log log = LogFactory.getLog( NcbiGetJournal.class );
+        
+        try {
+            Document docEsearch = restServer
+                .getNativeDom( provider, "nlmesearch", ac );
+
+            Element rootElemEsearch = docEsearch.getDocumentElement();
+            
+            if( rootElemEsearch == null 
+                || rootElemEsearch.getChildNodes().getLength() ==  0 ) {
+
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+            } 
+            
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xPath = xpf.newXPath();
+            
+            String ncbi_error = (String) xPath
+                .evaluate( "/eSearchResult/ErrorList/" +
+                           "PhraseNotFound/text()", rootElemEsearch );
+
+            if( !ncbi_error.equals("")){
+                log.warn("nlm esearch: No items found");
+                throw new RuntimeException( "NO_RECORD" );
+            }
+            
+            String nlmid = (String) xPath
+                .evaluate( "/eSearchResult/IdList/Id/text()", rootElemEsearch);
+            
+            log.info( "esearch nlmid=" + nlmid );    
+            if( nlmid == null || nlmid.equals("") ) {
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+            }
+            return nlmid;
+
+        } catch ( RuntimeException re ) {
+            throw re;
+        }
+        /*
+        } catch ( Exception e ) {
+            log.warn( "nlm esearch exception: " + e.toString() + ". ");
+            log.warn( "NcbiGetJournal TERMINATE. " );
+           
+            if( isRetry ) {
+                NcbiReFetchThread thread =
+                        new NcbiReFetchThread( ns, ac, "", timeout,
+                                               threadRunMinutes, this,
+                                               wsContext);
+
+                thread.start();
+            }
+            
+            throw new RuntimeException("REMOTE_FAULT");
+        }
+        */ 
+    }
+
+
+
+
+
+
+
+
 
     //--------------------------------------------------------------------------                
     // efetch real nlmid 
@@ -199,3 +273,17 @@ public class NcbiGetJournal {
         } 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

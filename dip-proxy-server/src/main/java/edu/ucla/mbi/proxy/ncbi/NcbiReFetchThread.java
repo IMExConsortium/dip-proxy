@@ -21,6 +21,10 @@ import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.cache.orm.*;
 import java.util.*;
 
+
+import javax.xml.xpath.*;
+
+
 public class NcbiReFetchThread extends Thread {
 
     private Log log = LogFactory.getLog( NcbiReFetchThread.class );
@@ -67,13 +71,19 @@ public class NcbiReFetchThread extends Thread {
         //----------------------------------------------------------------------
         // esearch ncbi internal id of the nlmid
         //----------------------------------------------------------------------
+
         if( nlmid.equals( "" ) ) {
             log.info( "NcbiReFetchThread: nlmid is empty. " );
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
-
-                nlmid = ncbiGetJournal.esearch( ns, ac, timeout,
-                                                threadRunMinutes, false );
-
+                
+                try{
+                    nlmid = ncbiGetJournal._esearch( ns, ac );
+                } catch( ServerFault sf ){
+                    //
+                } catch( XPathExpressionException sf ){
+                    //
+                }
+            
                 if( !nlmid.equals("") ){
                     break;
                 }
