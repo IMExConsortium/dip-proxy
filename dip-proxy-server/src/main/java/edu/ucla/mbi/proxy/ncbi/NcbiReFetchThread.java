@@ -55,7 +55,7 @@ public class NcbiReFetchThread extends Thread {
         this.wsContext = context;
     }
 
-    public void run() {
+    public void run(){
         log.info( "NcbiFetchThread running... " ); 
         String retVal = null;
         NativeRecord record = null;
@@ -116,29 +116,28 @@ public class NcbiReFetchThread extends Thread {
             if( record != null ) {
     
                 synchronized( nativeRecordDAO ) {
-                    try {
+                    //try {
                        
-                        NativeRecord cacheRecord = nativeRecordDAO
-                            .find( provider, service, ns, ac );
-                        
-                        log.info( "cachedRecord=" + cacheRecord );
-                        if( cacheRecord != null ) {
-                            record.setId( cacheRecord.getId() );
-                            record.setCreateTime( cacheRecord.getCreateTime() );
-                        }
-
-                        record.resetExpireTime( wsContext.getTtl( "NCBI" ) );
-
-                        nativeRecordDAO.create( record );
-                        
-                        log.info( "NcbiReFetchThread: getNative: native record " +
-                              "is create/updated.");
-
-                    } catch ( Exception ex ) {
-                        throw new RuntimeException( "TRANSACTION" ) ;
+                    NativeRecord cacheRecord = nativeRecordDAO
+                        .find( provider, service, ns, ac );
+                    
+                    log.info( "cachedRecord=" + cacheRecord );
+                    if( cacheRecord != null ) {
+                        record.setId( cacheRecord.getId() );
+                        record.setCreateTime( cacheRecord.getCreateTime() );
                     }
+                    
+                    record.resetExpireTime( wsContext.getTtl( "NCBI" ) );
+                    
+                    nativeRecordDAO.create( record );
+                    
+                    log.info( "NcbiReFetchThread: getNative: native record " +
+                              "is create/updated.");
+                    
+                    //} catch ( Exception ex ) {
+                    // throw new RuntimeException( "TRANSACTION" ) ;
+                    //}
                 }
-
             }
         }
 

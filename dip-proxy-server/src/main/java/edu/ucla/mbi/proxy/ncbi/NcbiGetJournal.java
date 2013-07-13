@@ -26,8 +26,8 @@ import java.net.URL;
 
 public class NcbiGetJournal {
 
-    private String provider = "NCBI";
-    private String service = "nlm";
+    private final String provider = "NCBI";
+    private final String service = "nlm";
 
     private RestServer restServer;
     private WSContext wsContext;
@@ -51,17 +51,16 @@ public class NcbiGetJournal {
 
     public String esearch ( String ns, String ac, int timeout, 
                             int threadRunMinutes, boolean isRetry 
-                            ) throws RuntimeException {
-   
+                            //) throws RuntimeException {
+                            ){
         Log log = LogFactory.getLog( NcbiGetJournal.class );
          
         try {
-            
             return _esearch( ns, ac );
-
-        } catch ( RuntimeException re ) {
-            throw re;
-        } catch ( Exception e ) {
+            //} catch ( RuntimeException re ) {
+            //throw re;
+            // } catch ( Exception e ) {
+        } catch ( ServerFault e ) {
             log.warn( "nlm esearch exception: " + e.toString() + ". ");
             log.warn( "NcbiGetJournal TERMINATE. " );
             if( isRetry ) {
@@ -69,59 +68,66 @@ public class NcbiGetJournal {
                         new NcbiReFetchThread( ns, ac, "", timeout,
                                                threadRunMinutes, this,
                                                wsContext );
-
                 thread.start();
             }
             throw new RuntimeException("REMOTE_FAULT");
         } 
     }
-
+    
     public String _esearch( String ns, String ac ) throws 
-        RuntimeException, ServerFault, XPathExpressionException {
-   
+    // RuntimeException, ServerFault, XPathExpressionException {
+        ServerFault {
+
+        String nlmid = null;
+        
         Log log = LogFactory.getLog( NcbiGetJournal.class );
         
+        Document docEsearch = restServer
+            .getNativeDom( provider, "nlmesearch", ac );
+        
+        Element rootElemEsearch = docEsearch.getDocumentElement();
+        
+        if( rootElemEsearch == null 
+            || rootElemEsearch.getChildNodes().getLength() ==  0 ) {
+            
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+        } 
+        
         try {
-            Document docEsearch = restServer
-                .getNativeDom( provider, "nlmesearch", ac );
-
-            Element rootElemEsearch = docEsearch.getDocumentElement();
-            
-            if( rootElemEsearch == null 
-                || rootElemEsearch.getChildNodes().getLength() ==  0 ) {
-
-                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
-            } 
-            
             XPathFactory xpf = XPathFactory.newInstance();
             XPath xPath = xpf.newXPath();
             
             String ncbi_error = (String) xPath
                 .evaluate( "/eSearchResult/ErrorList/" +
                            "PhraseNotFound/text()", rootElemEsearch );
-
+            
             if( !ncbi_error.equals("")){
                 log.warn("nlm esearch: No items found");
                 throw new RuntimeException( "NO_RECORD" );
             }
-            
-            String nlmid = (String) xPath
+        
+            nlmid = (String) xPath
                 .evaluate( "/eSearchResult/IdList/Id/text()", rootElemEsearch);
             
-            log.info( "esearch nlmid=" + nlmid );    
-            if( nlmid == null || nlmid.equals("") ) {
-                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
-            }
-            return nlmid;
-
-        } catch ( RuntimeException re ) {
-            throw re;
+        } catch ( XPathExpressionException xpf ){
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
+        
+        log.info( "esearch nlmid=" + nlmid );    
+        if( nlmid == null || nlmid.equals("") ) {
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+        }
+        return nlmid;
+        
+        //} catch ( RuntimeException re ) {
+        //throw re;
+        //}
     }
 
     //--------------------------------------------------------------------------                
     // efetch real nlmid 
     //--------------------------------------------------------------------------
+
     public NativeRecord efetch ( String ns, String nlmid, int timeout,
         int threadRunMinutes, boolean isRetry ) throws RuntimeException {
 
@@ -150,7 +156,7 @@ public class NcbiGetJournal {
         throws RuntimeException, ServerFault, XPathExpressionException {
 
         Log log = LogFactory.getLog( NcbiGetJournal.class );
-
+        
         if( nlmid.equals( "" ) ) {
             ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
@@ -189,34 +195,35 @@ public class NcbiGetJournal {
             if( !typeOfResource.equals("Serial") ) {
                 log.warn( "nlm: TypeOfResource is not Serial.");
                 throw new RuntimeException("NO_RECORD");
-            } else {
-                NativeRecord record = null;
+            } 
 
-                try {
-                    record = restServer.getNativeRecord(       
-                        provider, "nlmefetch", ns, nlmid, timeout );
-                } catch ( ServerFault fault ) {
-                    throw fault;
-                }
+            NativeRecord record = null;
+            
+            try {
+                record = restServer.
+                    getNativeRecord( provider, "nlmefetch", ns, nlmid, timeout );
 
-                if( record == null ) {
-                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
-                }
-
-                String retVal = record.getNativeXml();
-
-                if( retVal == null || retVal.equals("") 
-                    || retVal.trim().equals(
-                        "<?xml version=\"1.0\"?><NLMCatalogRecordSet>" +
-                        "</NLMCatalogRecordSet>" ) ) {
-
-                    log.info( "retVal is emptySet with= " + retVal );
-                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
-                }
-                    
-                return record;
+            } catch ( ServerFault fault ){
+                throw fault;
             }
+            
+            if( record == null ) {
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+            } 
+            
+            String retVal = record.getNativeXml();
+            
+            if( retVal == null || retVal.equals("") 
+                || retVal.trim().equals(
+                         "<?xml version=\"1.0\"?><NLMCatalogRecordSet>" +
+                         "</NLMCatalogRecordSet>" ) ) {
 
+                log.info( "retVal is emptySet with= " + retVal );
+                throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+            }
+            
+            return record;
+           
         } catch ( RuntimeException re ) {
             throw re;
         } 
