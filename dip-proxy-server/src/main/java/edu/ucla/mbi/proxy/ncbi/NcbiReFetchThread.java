@@ -77,7 +77,7 @@ public class NcbiReFetchThread extends Thread {
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
                 
                 try{
-                    nlmid = ncbiGetJournal._esearch( ac );
+                    nlmid = ncbiGetJournal.esearch( ac );
                 } catch( ServerFault sf ){
                     //
                 } 
@@ -98,12 +98,12 @@ public class NcbiReFetchThread extends Thread {
 
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
                 try{
-                    record = ncbiGetJournal._efetch( ns, nlmid, timeout );
+                    record = ncbiGetJournal.efetch( ns, nlmid, timeout );
                     log.info( "after efetch: record=" + record );
                 } catch( ServerFault sf ){
                     //
                 } 
-
+                
                 if( record != null ) {
                     break;
                 }
@@ -112,7 +112,7 @@ public class NcbiReFetchThread extends Thread {
             if( record != null ) {
 
                 synchronized( nativeRecordDAO ) {
-                       
+                    
                     NativeRecord cacheRecord = nativeRecordDAO
                         .find( provider, service, ns, ac );
                     

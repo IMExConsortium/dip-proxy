@@ -1,8 +1,8 @@
 package edu.ucla.mbi.proxy;
-
+ 
 /*==============================================================================
  * $HeadURL:: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/trunk/dip-proxy/src/main$
- * $Id:: RestServer.java 3316 2013-07-10 17:26:06Z wyu                   $
+ * $Id:: RestServer.java 3316 2013-07-10 17:26:06Z wyu                         $
  * Version: $Rev:: 3316                                                        $
  *==============================================================================
  *
@@ -135,45 +135,6 @@ public class RestServer implements ContextListener {
         restServerMap = (Map) jrs.get( contextTop );
     }
 
-    private String getRealUrl( String provider, String service, String ac ) 
-        throws ServerFault {
-
-        if( restServerMap.get(provider) == null ) {
-            log.warn( "getRealUrl: provider=" + provider + " does not exist. " );
-            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
-        
-        if( ( (Map<String, Map>)restServerMap.get(provider) ).get(service)
-                == null ) 
-        { 
-            log.warn( "getRealUrl: service=" + service + " does not exist. " );
-            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        }
-
-        String restAcTag =
-            ( (Map<String, String>) (
-                            (Map<String, Map>)restServerMap.get(provider) )
-                                             .get(service) ).get( "restAcTag" );
-
-        String restUrl =
-            ( (Map<String, String>) (
-                            (Map<String, Map>)restServerMap.get(provider) )
-                                            .get(service) ).get( "restUrl" );
-
-        if( restAcTag == null || restUrl == null ) {
-            log.warn( "getRealUrl: restAcTag or restUrl is not configured. " );
-            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
-        } 
-
-        restAcTag = restAcTag.replaceAll( "^\\s+", "" );
-        restAcTag = restAcTag.replaceAll( "\\s+$", "" );
-
-        restUrl = restUrl.replaceAll( "^\\s+", "" );
-        restUrl = restUrl.replaceAll( "\\s+$", "" );
-       
-        return restUrl.replaceAll( restAcTag, ac );
-    }
-    
 
     public NativeRecord getNativeRecord( String provider, String service,
                                          String ns, String ac, int timeout ) 
@@ -184,7 +145,7 @@ public class RestServer implements ContextListener {
     }
 
     /*
-    public NativeRecord getNativeRecord( String provider, String service, 
+o    public NativeRecord getNativeRecord( String provider, String service, 
         String ns, String ac, int timeout ) throws ServerFault {
 
         String retVal = getNativeString( provider,service, ns, ac, timeout ); 
@@ -261,7 +222,7 @@ public class RestServer implements ContextListener {
         
         String retVal = null;
         
-        String real_restUrl = this.getRealUrl( provider, service, ac );
+        String real_restUrl = this.getRealUrl( provider, service, ns, ac );
         
         log.info( "getNative: real_restUrl=" + real_restUrl );
         
@@ -277,11 +238,12 @@ public class RestServer implements ContextListener {
     
 
     public Document getNativeDom( String provider, String service,
-                                  String ac ) throws ServerFault {
+                                  String ns, String ac, int timeout 
+                                  ) throws ServerFault {
         
              
         String url_string =
-            this.getRealUrl( provider, service, ac );
+            this.getRealUrl( provider, service, ns, ac );
         
         log.info( "Dom: url_string=" + url_string );
 
@@ -306,7 +268,49 @@ public class RestServer implements ContextListener {
         } 
         
     }
-    
+
+    //--------------------------------------------------------------------------
+
+    private String getRealUrl( String provider, String service, 
+                               String ns, String ac ) 
+        throws ServerFault {
+
+        if( restServerMap.get(provider) == null ) {
+            log.warn( "getRealUrl: provider=" + provider + " does not exist. " );
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+        
+        if( ( (Map<String, Map>)restServerMap.get(provider) ).get(service)
+                == null ) 
+        { 
+            log.warn( "getRealUrl: service=" + service + " does not exist. " );
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        }
+
+        String restAcTag =
+            ( (Map<String, String>) (
+                            (Map<String, Map>)restServerMap.get(provider) )
+                                             .get(service) ).get( "restAcTag" );
+
+        String restUrl =
+            ( (Map<String, String>) (
+                            (Map<String, Map>)restServerMap.get(provider) )
+                                            .get(service) ).get( "restUrl" );
+
+        if( restAcTag == null || restUrl == null ) {
+            log.warn( "getRealUrl: restAcTag or restUrl is not configured. " );
+            throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
+        } 
+
+        restAcTag = restAcTag.replaceAll( "^\\s+", "" );
+        restAcTag = restAcTag.replaceAll( "\\s+$", "" );
+
+        restUrl = restUrl.replaceAll( "^\\s+", "" );
+        restUrl = restUrl.replaceAll( "\\s+$", "" );
+       
+        return restUrl.replaceAll( restAcTag, ac );
+    }
+        
     private String query( String url, int timeout ) throws ServerFault {
         String retVal = "";
 

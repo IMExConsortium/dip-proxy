@@ -28,6 +28,7 @@ public class NcbiGetJournal {
 
     private final String provider = "NCBI";
     private final String service = "nlm";
+    private final String NS = "nlmid";
 
     private RestServer restServer;
     private WSContext wsContext;
@@ -69,14 +70,14 @@ public class NcbiGetJournal {
         } 
     }*/
     
-    public String _esearch( String ac ) throws ServerFault {
+    public String esearch( String ac ) throws ServerFault {
 
         String nlmid = null;
         
         Log log = LogFactory.getLog( NcbiGetJournal.class );
         
         Document docEsearch = restServer
-            .getNativeDom( provider, "nlmesearch", ac );
+            .getNativeDom( provider, "nlmesearch", NS, ac );
         
         Element rootElemEsearch = docEsearch.getDocumentElement();
         
@@ -137,7 +138,7 @@ public class NcbiGetJournal {
         }        
     }*/
     
-    public NativeRecord _efetch ( String ns, String nlmid, int timeout ) 
+    public NativeRecord efetch ( String ns, String nlmid, int timeout ) 
         throws ServerFault {
 
         Log log = LogFactory.getLog( NcbiGetJournal.class );
@@ -149,7 +150,7 @@ public class NcbiGetJournal {
         log.info( "efetch: nlmid is " + nlmid );
             
         Document docEfetch = restServer
-            .getNativeDom( provider, "nlmefetch", nlmid );
+            .getNativeDom( provider, "nlmefetch", NS, nlmid );
 
         Element rootElementEfetch = docEfetch.getDocumentElement();
 

@@ -72,20 +72,19 @@ public class NcbiServer implements NativeServer {
         
             try {
                 log.info( "before esearch with ac=" + ac );
-                ncbi_nlmid = ((NcbiGetJournal)context.get("ncbiGetJournal"))
-                    ._esearch( ac );
+                ncbi_nlmid = ((NcbiGetJournal) context
+                              .get("ncbiGetJournal")).esearch( ac );
 
             } catch ( ServerFault sf ) {
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
                     && wsContext.isDbCacheOn( provider ) ) {
-
+                    
                     NcbiReFetchThread thread =
                         new NcbiReFetchThread( ns, ac, "", timeout,
                                                threadRunMinutes, 
                                                (NcbiGetJournal)context
-                                                    .get("ncbiGetJournal"),
-                                                wsContext );
-
+                                               .get("ncbiGetJournal"),
+                                               wsContext );
                     thread.start();
                 }
                 throw sf;
@@ -98,7 +97,7 @@ public class NcbiServer implements NativeServer {
             try {
                 log.info( "before efetch with ac=" + ac );
                 record = ( (NcbiGetJournal)context.get("ncbiGetJournal") )
-                    ._efetch( ns, ncbi_nlmid, timeout );
+                    .efetch( ns, ncbi_nlmid, timeout );
 
             } catch ( ServerFault sf ) {
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
@@ -110,12 +109,10 @@ public class NcbiServer implements NativeServer {
                                                (NcbiGetJournal)context
                                                     .get("ncbiGetJournal"),
                                                 wsContext );
-
                     thread.start();
                 }
                 throw sf;
             }
-
             return record;
         }
     }       

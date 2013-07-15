@@ -63,11 +63,11 @@ public class NativeRestServer implements NativeServer, ContextListener {
     }
     */
     
-    //RestServer restServer = null;
-    //
-    //public void setRestServer( RestServer server) {
-    //    restServer = server;
-    //}
+    RestServer myRestServer = null;
+    
+    public void setRestServer( RestServer server) {
+        myRetServer = server;
+    }
 
    
     //*** getter
@@ -175,10 +175,15 @@ public class NativeRestServer implements NativeServer, ContextListener {
         return restUrl.replaceAll( restAcTag, ac );
     }
 
+
+
+
     public NativeRecord getNativeRecord( String provider, String service, 
         String ns, String ac, int timeout ) throws ServerFault {
 
-        String retVal = this.getNativeString( provider,service, ns, ac, timeout ); 
+        //String retVal = this.getNativeString( provider,service, ns, ac, timeout ); 
+
+        String retVal = myRestServer.getNativeString( provider,service, ns, ac, timeout ); 
 
         
         log.info( "getNative: PROVIDER=" + provider + " and SERVICE=" + 
