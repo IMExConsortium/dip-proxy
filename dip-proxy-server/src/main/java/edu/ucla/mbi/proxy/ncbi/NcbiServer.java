@@ -27,8 +27,6 @@ public class NcbiServer implements NativeServer {
      
     private Map<String,Object> context = null;
 
-    //private NativeRestServer nativeRestServer = null;
-
     private NativeServer nativeRestServer = null;
 
     private int threadRunMinutes = 10 ;
@@ -45,8 +43,6 @@ public class NcbiServer implements NativeServer {
             throw ServerFaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
-        //nativeRestServer = (NativeRestServer) context.get( "nativeRestServer" );
-
         nativeRestServer = (NativeServer) context.get( "nativeRestServer" );
 
         threadRunMinutes = 
@@ -60,8 +56,8 @@ public class NcbiServer implements NativeServer {
         }
     }
 
-    public NativeRecord getNativeRecord( String provider, String service, String ns,
-                                   String ac, int timeout ) throws ServerFault {
+    public NativeRecord getNativeRecord( String provider, String service, 
+        String ns, String ac, int timeout ) throws ServerFault {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
 
@@ -76,18 +72,23 @@ public class NcbiServer implements NativeServer {
         
             try {
                 log.info( "before esearch with ac=" + ac );
-                ncbi_nlmid = ( (NcbiGetJournal)context.get("ncbiGetJournal") )
-                    .esearch( ns, ac, timeout, threadRunMinutes, 
-                              wsContext.isDbCacheOn( provider ) );
+                ncbi_nlmid = ((NcbiGetJournal)context.get("ncbiGetJournal"))
+                    ._esearch( ac );
 
-            } catch ( RuntimeException e ) { 
-                if( e.getMessage().equals( "NO_RECORD" ) ) {
-                    throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
-                } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
-                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
-                } else {
-                    throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
+            } catch ( ServerFault sf ) {
+                if( sf.getFaultCode() == Fault.REMOTE_FAULT 
+                    && wsContext.isDbCacheOn( provider ) ) {
+
+                    NcbiReFetchThread thread =
+                        new NcbiReFetchThread( ns, ac, "", timeout,
+                                               threadRunMinutes, 
+                                               (NcbiGetJournal)context
+                                                    .get("ncbiGetJournal"),
+                                                wsContext );
+
+                    thread.start();
                 }
+                throw sf;
             }
 
             if( ncbi_nlmid.equals( "" ) ) {
@@ -97,19 +98,24 @@ public class NcbiServer implements NativeServer {
             try {
                 log.info( "before efetch with ac=" + ac );
                 record = ( (NcbiGetJournal)context.get("ncbiGetJournal") )
-                    .efetch( ns, ac, timeout, threadRunMinutes, 
-                             wsContext.isDbCacheOn( provider ) );
+                    ._efetch( ns, ncbi_nlmid, timeout );
 
-            } catch ( RuntimeException e ) {
-                if( e.getMessage().equals( "NO_RECORD" ) ) {
-                    throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
-                } else if ( e.getMessage().equals( "REMOTE_FAULT" ) ) {
-                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
-                } else {
-                    throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
+            } catch ( ServerFault sf ) {
+                if( sf.getFaultCode() == Fault.REMOTE_FAULT 
+                    && wsContext.isDbCacheOn( provider ) ) {
+
+                    NcbiReFetchThread thread =
+                        new NcbiReFetchThread( ns, ac, ncbi_nlmid, timeout,
+                                               threadRunMinutes, 
+                                               (NcbiGetJournal)context
+                                                    .get("ncbiGetJournal"),
+                                                wsContext );
+
+                    thread.start();
                 }
+                throw sf;
             }
-            
+
             return record;
         }
     }       

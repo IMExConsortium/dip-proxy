@@ -77,12 +77,10 @@ public class NcbiReFetchThread extends Thread {
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
                 
                 try{
-                    nlmid = ncbiGetJournal._esearch( ns, ac );
+                    nlmid = ncbiGetJournal._esearch( ac );
                 } catch( ServerFault sf ){
                     //
-                } catch( XPathExpressionException sf ){
-                    //
-                }
+                } 
             
                 if( !nlmid.equals("") ){
                     break;
@@ -104,9 +102,7 @@ public class NcbiReFetchThread extends Thread {
                     log.info( "after efetch: record=" + record );
                 } catch( ServerFault sf ){
                     //
-                } catch( XPathExpressionException sf ){
-                    //
-                }
+                } 
 
                 if( record != null ) {
                     break;
@@ -114,9 +110,8 @@ public class NcbiReFetchThread extends Thread {
             }
 
             if( record != null ) {
-    
+
                 synchronized( nativeRecordDAO ) {
-                    //try {
                        
                     NativeRecord cacheRecord = nativeRecordDAO
                         .find( provider, service, ns, ac );
@@ -133,10 +128,6 @@ public class NcbiReFetchThread extends Thread {
                     
                     log.info( "NcbiReFetchThread: getNative: native record " +
                               "is create/updated.");
-                    
-                    //} catch ( Exception ex ) {
-                    // throw new RuntimeException( "TRANSACTION" ) ;
-                    //}
                 }
             }
         }
