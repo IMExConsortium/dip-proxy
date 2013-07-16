@@ -26,8 +26,8 @@ import java.net.URL;
 
 public class NcbiGetJournal {
 
-    private final String provider = "NCBI";
-    private final String service = "nlm";
+    private final String PROVIDER = "NCBI";
+    private final String SERVICE = "nlm";
     private final String NS = "nlmid";
 
     private RestServer restServer;
@@ -49,26 +49,6 @@ public class NcbiGetJournal {
     //--------------------------------------------------------------------------
     // esearch ncbi internal id of the nlmid
     //--------------------------------------------------------------------------
-    /*
-    public String esearch ( String ns, String ac, int timeout, 
-                            int threadRunMinutes, boolean isRetry 
-                            ) throws ServerFault {
-
-        Log log = LogFactory.getLog( NcbiGetJournal.class );
-         
-        try {
-            return _esearch( ac );
-        } catch ( ServerFault sf ) {
-            if( sf.getFaultCode() == Fault.REMOTE_FAULT && isRetry ) {
-                NcbiReFetchThread thread =
-                    new NcbiReFetchThread( ns, ac, "", timeout,
-                                           threadRunMinutes, this,
-                                           wsContext );
-                thread.start();
-            }
-            throw sf;
-        } 
-    }*/
     
     public String esearch( String ac ) throws ServerFault {
 
@@ -77,7 +57,7 @@ public class NcbiGetJournal {
         Log log = LogFactory.getLog( NcbiGetJournal.class );
         
         Document docEsearch = restServer
-            .getNativeDom( provider, "nlmesearch", NS, ac );
+            .getNativeDom( PROVIDER, "nlmesearch", NS, ac );
         
         Element rootElemEsearch = docEsearch.getDocumentElement();
         
@@ -117,26 +97,6 @@ public class NcbiGetJournal {
     //--------------------------------------------------------------------------                
     // efetch real nlmid 
     //--------------------------------------------------------------------------
-    /*
-    public NativeRecord efetch ( String ns, String nlmid, int timeout,
-        int threadRunMinutes, boolean isRetry ) throws ServerFault {
-
-        Log log = LogFactory.getLog( NcbiGetJournal.class );
-
-        try {
-            return _efetch( ns, nlmid, timeout );
-        } catch ( ServerFault sf ) {
-            if( sf.getFaultCode() == Fault.REMOTE_FAULT && isRetry ) {
-                NcbiReFetchThread thread =
-                        new NcbiReFetchThread( ns, nlmid, nlmid, timeout,
-                                               threadRunMinutes, this,
-                                               wsContext );
-
-                thread.start();
-            }
-            throw sf;
-        }        
-    }*/
     
     public NativeRecord efetch ( String ns, String nlmid, int timeout ) 
         throws ServerFault {
@@ -150,7 +110,7 @@ public class NcbiGetJournal {
         log.info( "efetch: nlmid is " + nlmid );
             
         Document docEfetch = restServer
-            .getNativeDom( provider, "nlmefetch", NS, nlmid );
+            .getNativeDom( PROVIDER, SERVICE, NS, nlmid );
 
         Element rootElementEfetch = docEfetch.getDocumentElement();
 
@@ -189,7 +149,7 @@ public class NcbiGetJournal {
         NativeRecord record = null;
             
         record = restServer.getNativeRecord( 
-            provider, "nlmefetch", ns, nlmid, timeout );
+            PROVIDER, SERVICE, ns, nlmid, timeout );
 
         if( record == null ) {
             throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
@@ -205,7 +165,6 @@ public class NcbiGetJournal {
             log.info( "retVal is emptySet with= " + retVal );
             throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
-            
         return record;
     }
 }

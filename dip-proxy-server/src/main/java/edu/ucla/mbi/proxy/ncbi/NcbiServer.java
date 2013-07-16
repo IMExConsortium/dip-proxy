@@ -61,10 +61,12 @@ public class NcbiServer implements NativeServer {
 
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
 
-        //----------------------------------------------------------------------
         if ( !service.equals( "nlm" ) ) {
-            return nativeRestServer.getNativeRecord( provider, service, 
-                                                     ns, ac, timeout );
+
+            return nativeRestServer.getNativeRecord( provider, service,
+                                                       ns, ac, timeout );
+            
+
         } else { 
 
             NativeRecord record = null;

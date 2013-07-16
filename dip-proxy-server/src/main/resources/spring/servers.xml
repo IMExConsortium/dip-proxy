@@ -29,19 +29,12 @@
  </bean>
 
 
- <!-- UNIVERSAL NATIVE REST SERVER -->
+ <!-- NATIVE REST SERVER -->
 
  <bean id="nativeRestServer" init-method="initialize" 
        class="edu.ucla.mbi.proxy.NativeRestServer">
 
-    <property name="context">
-        <map>
-            <entry key="restServerContext">
-                <ref bean="restServerContext"/>
-            </entry>
-            <entry key="contextTop" value="restServer"/>
-        </map>
-    </property>
+    <property name="restServer" ref="restServer"/>
   
  </bean>
 
@@ -58,9 +51,6 @@
             <entry key="contextTop" value="restServer"/>
         </map>
     </property>
-
-     <property name="nativeRestServer" ref="nativeRestServer"/>
-
  </bean>
 
  <!-- EBI proxy services -->
@@ -107,7 +97,7 @@
   <property name="context">
     <map>
        <entry key="nativeRestServer">
-         <ref bean="nativeRestServer"/>
+            <ref bean="nativeRestServer"/>
        </entry>
 
        <entry key="threadRunMinutes" value="10"/> <!-- mins -->
