@@ -1,9 +1,9 @@
 package edu.ucla.mbi.proxy;
 
 /*==============================================================================
- * $HeadURL:: https://wyu@imex.mbi.ucla.edu/svn/dip-ws/dip-proxy/trunk/dip-pro#$
- * $Id:: DomServer.java 3317 2013-07-11 00:07:20Z lukasz                       $
- * Version: $Rev:: 3317                                                        $
+ * $HeadURL::                                                                  $
+ * $Id::                                                                       $
+ * Version: $Rev::                                                             $
  *==============================================================================
  *
  * DomServer:
