@@ -115,7 +115,7 @@
        class="edu.ucla.mbi.proxy.ncbi.NcbiGetJournal">
 
     <property name="wsContext" ref="wsContext"/>
-    <property name="restServer" ref="restServer"/>
+    <property name="nativeRestServer" ref="nativeRestServer"/>
 
  </bean>
 

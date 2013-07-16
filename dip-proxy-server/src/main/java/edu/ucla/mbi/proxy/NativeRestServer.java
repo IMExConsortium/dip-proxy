@@ -31,7 +31,7 @@ import javax.xml.xpath.*;
 import javax.xml.parsers.*;
 import java.net.URL;
 
-public class NativeRestServer implements NativeServer { 
+public class NativeRestServer implements NativeServer, DomServer { 
     private Log log = LogFactory.getLog( NativeRestServer.class );
     
     private RestServer restServer = null;
@@ -45,6 +45,14 @@ public class NativeRestServer implements NativeServer {
         log.info( "initialize starting... " );
     }
 
+
+    public Document getNativeDom( String provider, String service,
+                                  String ns, String ac
+                                  ) throws ServerFault {
+        
+        return restServer.getNativeDom( provider, service, ns, ac);
+    }
+    
     public NativeRecord getNativeRecord( String provider, String service, 
         String ns, String ac, int timeout ) throws ServerFault {
 

@@ -80,14 +80,26 @@ public class NcbiServer implements NativeServer {
             } catch ( ServerFault sf ) {
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
                     && wsContext.isDbCacheOn( provider ) ) {
-                    
+
+                    /*                    
                     NcbiReFetchThread thread =
-                        new NcbiReFetchThread( ns, ac, "", timeout,
+                        new NcbiReFetchThread( ns, ac, true, timeout,
                                                threadRunMinutes, 
                                                (NcbiGetJournal)context
                                                .get("ncbiGetJournal"),
                                                wsContext );
-                    thread.start();
+
+                    */
+
+                    NcbiReFetchThread thread =
+                        new NcbiReFetchThread( ns, ac, timeout,
+                                               threadRunMinutes, 
+                                               (NcbiGetJournal)context
+                                               .get("ncbiGetJournal"),
+                                               wsContext );
+
+
+                    thread.start_verify();
                 }
                 throw sf;
             }
@@ -104,14 +116,23 @@ public class NcbiServer implements NativeServer {
             } catch ( ServerFault sf ) {
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
                     && wsContext.isDbCacheOn( provider ) ) {
-
-                    NcbiReFetchThread thread =
-                        new NcbiReFetchThread( ns, ac, ncbi_nlmid, timeout,
-                                               threadRunMinutes, 
-                                               (NcbiGetJournal)context
-                                                    .get("ncbiGetJournal"),
+                    /*
+                     NcbiReFetchThread thread =
+                         new NcbiReFetchThread( ns, ncbi_nlmid, false, timeout,
+                                                threadRunMinutes,
+                                                (NcbiGetJournal)context
+                                                .get("ncbiGetJournal"),
                                                 wsContext );
-                    thread.start();
+                    */
+                    NcbiReFetchThread thread =
+                         new NcbiReFetchThread( ns, ncbi_nlmid, timeout,
+                                                threadRunMinutes,
+                                                (NcbiGetJournal)context
+                                                .get("ncbiGetJournal"),
+                                                wsContext );
+                    thread.start_no_verify();
+                    
+
                 }
                 throw sf;
             }

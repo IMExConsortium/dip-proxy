@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.ucla.mbi.proxy.context.WSContext;
-import edu.ucla.mbi.proxy.RestServer;
+import edu.ucla.mbi.proxy.NativeRestServer;
 import edu.ucla.mbi.cache.NativeRecord;
 import edu.ucla.mbi.fault.*;
 
@@ -30,10 +30,11 @@ public class NcbiGetJournal {
     private final String SERVICE = "nlm";
     private final String NS = "nlmid";
 
-    private RestServer restServer;
+    //private RestServer restServer;      XXXXXXXXXXXXXXX
+    private NativeRestServer restServer;
     private WSContext wsContext;
 
-    public void setRestServer( RestServer server ) {
+    public void setNativeRestServer( NativeRestServer server ) {
         this.restServer = server;
     }
 
@@ -149,7 +150,7 @@ public class NcbiGetJournal {
         NativeRecord record = null;
             
         record = restServer.getNativeRecord( 
-            PROVIDER, SERVICE, ns, nlmid, timeout );
+            PROVIDER, SERVICE, NS, nlmid, timeout );
 
         if( record == null ) {
             throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );

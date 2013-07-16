@@ -126,6 +126,8 @@ public class RestServer implements ContextListener {
         restServerMap = (Map) jrs.get( contextTop );
     }
 
+ 
+    /*
     
     public NativeRecord getNativeRecord( String provider, String service, 
         String ns, String ac, int timeout ) throws ServerFault {
@@ -136,6 +138,7 @@ public class RestServer implements ContextListener {
         record.setNativeXml( retVal );
         return record;
     }
+    */
 
     public String getNativeString( String provider, String service,
                                    String ns, String ac, int timeout

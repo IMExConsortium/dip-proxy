@@ -40,7 +40,38 @@ public class NcbiReFetchThread extends Thread {
     private String service = "nlm";
     private WSContext wsContext = null;
     private NcbiGetJournal ncbiGetJournal = null;
-    
+
+    private boolean verify = false;
+
+
+    public NcbiReFetchThread( String ns, String ac,
+                              int timeout, int threadRunMinutes, 
+                              NcbiGetJournal ncbiGetJournal,
+                              WSContext context ) {
+        this.ns = ns;
+        this.ac = ac;
+        this.timeout = timeout;
+        this.threadRunMinutes = threadRunMinutes;
+        this.waitMillis = threadRunMinutes * 60 * 1000;
+        this.ncbiGetJournal = ncbiGetJournal;
+        this.wsContext = context;
+    }
+
+    public NcbiReFetchThread( String ns, String ac, boolean verify,
+                              int timeout, int threadRunMinutes, 
+                              NcbiGetJournal ncbiGetJournal,
+                              WSContext context ) {
+        this.ns = ns;
+        this.ac = ac;
+        this.verify = verify;
+        this.timeout = timeout;
+        this.threadRunMinutes = threadRunMinutes;
+        this.waitMillis = threadRunMinutes * 60 * 1000;
+        this.ncbiGetJournal = ncbiGetJournal;
+        this.wsContext = context;
+    }
+
+
     public NcbiReFetchThread( String ns, String ac, String nlmid,
                               int timeout, int threadRunMinutes, 
                               NcbiGetJournal ncbiGetJournal,
@@ -53,6 +84,17 @@ public class NcbiReFetchThread extends Thread {
         this.waitMillis = threadRunMinutes * 60 * 1000;
         this.ncbiGetJournal = ncbiGetJournal;
         this.wsContext = context;
+    }
+
+
+    public void start_verify(){
+        verify = true;
+        this.start();
+    }
+
+    public void start_no_verify(){
+        verify = false;
+        this.start();
     }
 
     public void run(){
@@ -72,7 +114,8 @@ public class NcbiReFetchThread extends Thread {
         // esearch ncbi internal id of the nlmid
         //----------------------------------------------------------------------
 
-        if( nlmid.equals( "" ) ) {
+        //        if( nlmid.equals( "" ) ) {
+        if( verify ) {
             log.info( "NcbiReFetchThread: nlmid is empty. " );
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
                 
@@ -86,8 +129,10 @@ public class NcbiReFetchThread extends Thread {
                     break;
                 }
             }
+        } else {
+            nlmid = ac;
         }
-                
+        
         //----------------------------------------------------------------------                
         // efetch real nlmid 
         //----------------------------------------------------------------------
