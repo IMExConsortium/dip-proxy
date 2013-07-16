@@ -11,16 +11,7 @@ package edu.ucla.mbi.proxy;
  *
  *=========================================================================== */
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.net.*;
-import java.io.*;
-import java.util.Map;
-
-import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
-
 import edu.ucla.mbi.fault.*;
 
 public interface NativeServer {
