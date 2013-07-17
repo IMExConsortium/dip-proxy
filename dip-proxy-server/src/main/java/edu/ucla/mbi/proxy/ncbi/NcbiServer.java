@@ -47,6 +47,7 @@ public class NcbiServer implements NativeServer {
 
         threadRunMinutes = 
             Integer.parseInt( (String)context.get( "threadRunMinutes" ) );        
+
         wsContext = (WSContext) context.get( "wsContext" );
 
         if( nativeRestServer == null && wsContext == null ) {
@@ -63,9 +64,8 @@ public class NcbiServer implements NativeServer {
 
         if ( !service.equals( "nlm" ) ) {
 
-            return nativeRestServer.getNativeRecord( provider, service,
-                                                       ns, ac, timeout );
-            
+            return nativeRestServer.getNativeRecord( 
+                provider, service, ns, ac, timeout );
 
         } else { 
 
@@ -80,16 +80,6 @@ public class NcbiServer implements NativeServer {
             } catch ( ServerFault sf ) {
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
                     && wsContext.isDbCacheOn( provider ) ) {
-
-                    /*                    
-                    NcbiReFetchThread thread =
-                        new NcbiReFetchThread( ns, ac, true, timeout,
-                                               threadRunMinutes, 
-                                               (NcbiGetJournal)context
-                                               .get("ncbiGetJournal"),
-                                               wsContext );
-
-                    */
 
                     NcbiReFetchThread thread =
                         new NcbiReFetchThread( ns, ac, timeout,
@@ -116,14 +106,7 @@ public class NcbiServer implements NativeServer {
             } catch ( ServerFault sf ) {
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
                     && wsContext.isDbCacheOn( provider ) ) {
-                    /*
-                     NcbiReFetchThread thread =
-                         new NcbiReFetchThread( ns, ncbi_nlmid, false, timeout,
-                                                threadRunMinutes,
-                                                (NcbiGetJournal)context
-                                                .get("ncbiGetJournal"),
-                                                wsContext );
-                    */
+
                     NcbiReFetchThread thread =
                          new NcbiReFetchThread( ns, ncbi_nlmid, timeout,
                                                 threadRunMinutes,
@@ -131,8 +114,6 @@ public class NcbiServer implements NativeServer {
                                                 .get("ncbiGetJournal"),
                                                 wsContext );
                     thread.start_no_verify();
-                    
-
                 }
                 throw sf;
             }

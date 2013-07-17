@@ -126,20 +126,6 @@ public class RestServer implements ContextListener {
         restServerMap = (Map) jrs.get( contextTop );
     }
 
- 
-    /*
-    
-    public NativeRecord getNativeRecord( String provider, String service, 
-        String ns, String ac, int timeout ) throws ServerFault {
-
-        String retVal = getNativeString( provider, service, ns, ac, timeout ); 
-
-        NativeRecord record = new NativeRecord( provider, service, ns, ac );
-        record.setNativeXml( retVal );
-        return record;
-    }
-    */
-
     public String getNativeString( String provider, String service,
                                    String ns, String ac, int timeout
                                    ) throws ServerFault {
@@ -160,12 +146,10 @@ public class RestServer implements ContextListener {
         return retVal;
     }
     
-
     public Document getNativeDom( String provider, String service,
                                   String ns, String ac  
                                   ) throws ServerFault {
         
-             
         String url_string =
             this.getRealUrl( provider, service, ns, ac );
         
@@ -192,8 +176,6 @@ public class RestServer implements ContextListener {
         } 
         
     }
-
-    //--------------------------------------------------------------------------
 
     private String getRealUrl( String provider, String service, 
                                String ns, String ac ) throws ServerFault {

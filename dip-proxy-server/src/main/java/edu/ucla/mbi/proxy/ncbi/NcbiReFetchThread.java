@@ -71,7 +71,6 @@ public class NcbiReFetchThread extends Thread {
         this.wsContext = context;
     }
 
-
     public NcbiReFetchThread( String ns, String ac, String nlmid,
                               int timeout, int threadRunMinutes, 
                               NcbiGetJournal ncbiGetJournal,
@@ -89,11 +88,13 @@ public class NcbiReFetchThread extends Thread {
 
     public void start_verify(){
         verify = true;
+        log.info( "start_verify start. " );
         this.start();
     }
 
     public void start_no_verify(){
         verify = false;
+        log.info( "start_no_verify start. " );
         this.start();
     }
 
@@ -108,13 +109,13 @@ public class NcbiReFetchThread extends Thread {
         long startTime = System.currentTimeMillis();
 
         if( ! wsContext.isDbCacheOn( "NCBI" ) ) return;     
+
         if( ns == null || ac == null ) return;
 
         //----------------------------------------------------------------------
         // esearch ncbi internal id of the nlmid
         //----------------------------------------------------------------------
 
-        //        if( nlmid.equals( "" ) ) {
         if( verify ) {
             log.info( "NcbiReFetchThread: nlmid is empty. " );
             while ( System.currentTimeMillis() - startTime < waitMillis ) {
