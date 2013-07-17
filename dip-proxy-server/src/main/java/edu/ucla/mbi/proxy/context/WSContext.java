@@ -38,6 +38,42 @@ public class WSContext{
     private McClient mcClient;
     private DipProxyDAO dipProxyDAO;
 
+
+    private int counter =0;
+    
+    public void threadCountUp(){
+
+        
+        if( state.get("thead-count") == null ){
+            state.put("thead-count",0);
+        } else {
+            state.put("thead-count", state.get("thead-count") + 1 );
+        }
+
+
+    }
+
+    public void threadCountDown(){
+        if( state.get("thead-count") == null ){
+            state.put("thead-count",0);
+        } else {
+            int cnt = (int) state.get("thead-count");
+            
+            if( cnt > 0 ){
+                state.put("thead-count", cnt - 1 );
+            }            
+        }
+    }
+
+    public int getThreadCount(){
+        
+        
+
+    }
+
+
+    private Map<String,Object> state  = new HashMap<String,Object>();
+    
     //*** setter
     public void setDipProxyDAO( DipProxyDAO dao ){
         this.dipProxyDAO = dao;

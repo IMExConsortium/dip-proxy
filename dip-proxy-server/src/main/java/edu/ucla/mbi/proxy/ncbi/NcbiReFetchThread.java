@@ -100,6 +100,9 @@ public class NcbiReFetchThread extends Thread {
 
     public void run(){
         log.info( "NcbiFetchThread running... " ); 
+        
+        context.theadCountUp();
+
         String retVal = null;
         NativeRecord record = null;
         NativeRecordDAO nativeRecordDAO = 
@@ -177,6 +180,8 @@ public class NcbiReFetchThread extends Thread {
                 }
             }
         }
+
+        context.theadCountDown();
 
         log.info( "NcbiReFetchThread: final DONE. " );
     }
