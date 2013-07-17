@@ -25,9 +25,9 @@ import edu.ucla.mbi.util.struts.action.*;
 
 public class WSContext{
     
-    private static final int DEFAULT_TTL     = 14;     // two weeks
+    private static final int DEFAULT_TTL     = 14;   // two weeks
     private static final int DEFAULT_TIMEOUT = 300;  // 300s
-    private static final int DEFAULT_DEBUG = 0;        // 
+    private static final int DEFAULT_DEBUG = 0;       
     
     private Map<String,Map> services;
 
@@ -38,42 +38,37 @@ public class WSContext{
     private McClient mcClient;
     private DipProxyDAO dipProxyDAO;
 
-
-    private int counter =0;
+    private Map<String,Object> state  = new HashMap<String,Object>();
+    private int counter = 0;
     
-    public void threadCountUp(){
-
-        
-        if( state.get("thead-count") == null ){
-            state.put("thead-count",0);
+    public synchronized void threadCountUp(){
+        if( state.get( "thread-count" ) == null ){
+            state.put( "thread-count", 0 );
         } else {
-            state.put("thead-count", state.get("thead-count") + 1 );
+            state.put( "thread-count", (Integer)state.get("thread-count") + 1 );
         }
-
-
     }
 
-    public void threadCountDown(){
-        if( state.get("thead-count") == null ){
-            state.put("thead-count",0);
+    public synchronized void threadCountDown(){
+        if( state.get( "thread-count" ) == null ){
+            state.put( "thread-count", 0 );
         } else {
-            int cnt = (int) state.get("thead-count");
-            
-            if( cnt > 0 ){
-                state.put("thead-count", cnt - 1 );
+            if( state.get( "thread-count" ) != null ) {
+                int cnt = (Integer) state.get( "thread-count" );
+                if( cnt > 0 ){
+                    state.put( "thread-count", cnt - 1 );
+                }
             }            
         }
     }
 
     public int getThreadCount(){
-        
-        
-
+        if( state.get( "thread-count" ) == null ) {
+            return 0;
+        }
+        return (Integer)state.get( "thread-count" );        
     }
 
-
-    private Map<String,Object> state  = new HashMap<String,Object>();
-    
     //*** setter
     public void setDipProxyDAO( DipProxyDAO dao ){
         this.dipProxyDAO = dao;

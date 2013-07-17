@@ -100,7 +100,8 @@
             <ref bean="nativeRestServer"/>
        </entry>
 
-       <entry key="threadRunMinutes" value="10"/> <!-- mins -->
+       <entry key="threadRunSec" value="10"/> <!-- second -->
+       <entry key="maxThreadNum" value="10"/>
        <entry key="wsContext">
             <ref bean="wsContext"/>
        </entry>

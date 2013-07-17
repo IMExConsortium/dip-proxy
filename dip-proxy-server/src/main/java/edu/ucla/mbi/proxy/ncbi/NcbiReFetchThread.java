@@ -52,7 +52,7 @@ public class NcbiReFetchThread extends Thread {
         this.ac = ac;
         this.timeout = timeout;
         this.threadRunMinutes = threadRunMinutes;
-        this.waitMillis = threadRunMinutes * 60 * 1000;
+        this.waitMillis = threadRunMinutes * 1000; //millisecond
         this.ncbiGetJournal = ncbiGetJournal;
         this.wsContext = context;
     }
@@ -66,25 +66,10 @@ public class NcbiReFetchThread extends Thread {
         this.verify = verify;
         this.timeout = timeout;
         this.threadRunMinutes = threadRunMinutes;
-        this.waitMillis = threadRunMinutes * 60 * 1000;
+        this.waitMillis = threadRunMinutes * 1000;
         this.ncbiGetJournal = ncbiGetJournal;
         this.wsContext = context;
     }
-
-    public NcbiReFetchThread( String ns, String ac, String nlmid,
-                              int timeout, int threadRunMinutes, 
-                              NcbiGetJournal ncbiGetJournal,
-                              WSContext context ) {
-        this.ns = ns;
-        this.ac = ac;
-        this.nlmid = nlmid;
-        this.timeout = timeout;
-        this.threadRunMinutes = threadRunMinutes;
-        this.waitMillis = threadRunMinutes * 60 * 1000;
-        this.ncbiGetJournal = ncbiGetJournal;
-        this.wsContext = context;
-    }
-
 
     public void start_verify(){
         verify = true;
@@ -101,7 +86,7 @@ public class NcbiReFetchThread extends Thread {
     public void run(){
         log.info( "NcbiFetchThread running... " ); 
         
-        context.theadCountUp();
+        wsContext.threadCountUp();
 
         String retVal = null;
         NativeRecord record = null;
@@ -181,7 +166,7 @@ public class NcbiReFetchThread extends Thread {
             }
         }
 
-        context.theadCountDown();
+        wsContext.threadCountDown();
 
         log.info( "NcbiReFetchThread: final DONE. " );
     }

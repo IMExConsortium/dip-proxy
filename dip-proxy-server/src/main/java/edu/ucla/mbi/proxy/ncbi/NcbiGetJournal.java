@@ -30,7 +30,6 @@ public class NcbiGetJournal {
     private final String SERVICE = "nlm";
     private final String NS = "nlmid";
 
-    //private RestServer restServer;      XXXXXXXXXXXXXXX
     private NativeRestServer restServer;
     private WSContext wsContext;
 

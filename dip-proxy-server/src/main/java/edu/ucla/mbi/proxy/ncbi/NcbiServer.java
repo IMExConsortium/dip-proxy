@@ -29,7 +29,8 @@ public class NcbiServer implements NativeServer {
 
     private NativeServer nativeRestServer = null;
 
-    private int threadRunMinutes = 10 ;
+    private int threadRunSec = 10 ;
+    private int maxThreadNum = 10;
     private WSContext wsContext = null;
 
     public void setContext( Map<String,Object> context ) {
@@ -45,8 +46,10 @@ public class NcbiServer implements NativeServer {
 
         nativeRestServer = (NativeServer) context.get( "nativeRestServer" );
 
-        threadRunMinutes = 
-            Integer.parseInt( (String)context.get( "threadRunMinutes" ) );        
+        threadRunSec = 
+            Integer.parseInt( (String)context.get( "threadRunSec" ) );        
+
+        maxThreadNum = Integer.parseInt((String)context.get( "maxThreadNum" ));
 
         wsContext = (WSContext) context.get( "wsContext" );
 
@@ -71,7 +74,8 @@ public class NcbiServer implements NativeServer {
 
             NativeRecord record = null;
             String ncbi_nlmid = "";
-        
+       
+            log.info( "threadCount=" + wsContext.getThreadCount() ); 
             try {
                 log.info( "before esearch with ac=" + ac );
                 ncbi_nlmid = ((NcbiGetJournal) context
@@ -79,20 +83,20 @@ public class NcbiServer implements NativeServer {
 
             } catch ( ServerFault sf ) {
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
-                    && wsContext.isDbCacheOn( provider ) ) {
+                    && wsContext.isDbCacheOn( provider )
+                    && wsContext.getThreadCount() < maxThreadNum ) {
 
                     NcbiReFetchThread thread =
                         new NcbiReFetchThread( ns, ac, timeout,
-                                               threadRunMinutes, 
+                                               threadRunSec, 
                                                (NcbiGetJournal)context
                                                .get("ncbiGetJournal"),
                                                wsContext );
 
-
                     thread.start_verify();
                 }
                 throw sf;
-            }
+            } 
 
             if( ncbi_nlmid.equals( "" ) ) {
                 throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
@@ -105,11 +109,12 @@ public class NcbiServer implements NativeServer {
 
             } catch ( ServerFault sf ) {
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
-                    && wsContext.isDbCacheOn( provider ) ) {
+                    && wsContext.isDbCacheOn( provider ) 
+                    && wsContext.getThreadCount() < maxThreadNum ) {
 
                     NcbiReFetchThread thread =
                          new NcbiReFetchThread( ns, ncbi_nlmid, timeout,
-                                                threadRunMinutes,
+                                                threadRunSec,
                                                 (NcbiGetJournal)context
                                                 .get("ncbiGetJournal"),
                                                 wsContext );

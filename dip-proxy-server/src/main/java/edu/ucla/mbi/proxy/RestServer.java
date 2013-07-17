@@ -134,7 +134,7 @@ public class RestServer implements ContextListener {
         
         String real_restUrl = this.getRealUrl( provider, service, ns, ac );
         
-        log.info( "getNative: real_restUrl=" + real_restUrl );
+        log.info( "getNativeString: real_restUrl=" + real_restUrl );
         
         try {
             retVal = this.query( real_restUrl, timeout );
@@ -153,28 +153,26 @@ public class RestServer implements ContextListener {
         String url_string =
             this.getRealUrl( provider, service, ns, ac );
         
-        log.info( "Dom: url_string=" + url_string );
+        log.info( "getNativeDom: url_string=" + url_string );
 
         DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();        
 
         try {
             DocumentBuilder builder = fct.newDocumentBuilder();
-        
             URL url_search = new URL( url_string );
-            
+            InputStream stream = url_search.openStream();
+
             InputSource xml_search =
                 new InputSource( url_search.openStream() );
-        
+
+
             Document docSearch = builder.parse( xml_search );
 
-            log.info( "Dom: docSearch=" + docSearch );
-
-            log.info( "Dom: rootElementSearch=" + docSearch.getDocumentElement() );         
             return docSearch;
+
         } catch ( Exception ex ) {
             throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );            
         } 
-        
     }
 
     private String getRealUrl( String provider, String service, 
@@ -185,9 +183,9 @@ public class RestServer implements ContextListener {
             throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
         
-        if( ( (Map<String, Map>)restServerMap.get(provider) ).get(service)
-                == null ) 
-        { 
+        if( ( (Map<String, Map>)restServerMap.get(provider) ).get(service) 
+               == null ) { 
+
             log.warn( "getRealUrl: service=" + service + " does not exist." );
             throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
         }
