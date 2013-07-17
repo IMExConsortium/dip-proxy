@@ -49,6 +49,11 @@ public class CacheStatus extends PortalSupport {
         this.wsContext = wsContext;
     }
     
+
+    public int getThreadCount(){
+        return wsContext.getThreadCount();
+    }
+
     //---------------------------------------------------------------------
 
     /*

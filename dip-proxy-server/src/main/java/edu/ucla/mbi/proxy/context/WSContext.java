@@ -38,27 +38,35 @@ public class WSContext{
     private McClient mcClient;
     private DipProxyDAO dipProxyDAO;
 
-    private Map<String,Object> state  = new HashMap<String,Object>();
+    private Map<String,Object> state  =
+        new HashMap<String,Object>();
+
     private int counter = 0;
     
-    public synchronized void threadCountUp(){
-        if( state.get( "thread-count" ) == null ){
-            state.put( "thread-count", 0 );
-        } else {
-            state.put( "thread-count", (Integer)state.get("thread-count") + 1 );
+    public void threadCountUp(){
+
+        synchronized( state ){
+            if( state.get( "thread-count" ) == null ){
+                state.put( "thread-count", 0 );
+            } else {
+                state.put( "thread-count", 
+                           (Integer)state.get("thread-count") + 1 );
+            }
         }
     }
 
-    public synchronized void threadCountDown(){
-        if( state.get( "thread-count" ) == null ){
-            state.put( "thread-count", 0 );
-        } else {
-            if( state.get( "thread-count" ) != null ) {
-                int cnt = (Integer) state.get( "thread-count" );
-                if( cnt > 0 ){
-                    state.put( "thread-count", cnt - 1 );
-                }
-            }            
+    public void threadCountDown(){
+        synchronized( state ){
+            if( state.get( "thread-count" ) == null ){
+                state.put( "thread-count", 0 );
+            } else {
+                if( state.get( "thread-count" ) != null ) {
+                    int cnt = (Integer) state.get( "thread-count" );
+                    if( cnt > 0 ){
+                        state.put( "thread-count", cnt - 1 );
+                    }
+                }            
+            }
         }
     }
 

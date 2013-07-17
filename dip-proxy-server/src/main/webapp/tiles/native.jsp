@@ -4,9 +4,13 @@
 <center>
 <table width="95%" cellspacing="3" cellpadding="3" border="1">
  <tr>
-  <th colspan="5" align="left">
+  <th colspan="4" align="left">
    Native Server Status
   </th>
+  <th colspan="1" align="left" width="10%" nowrap>
+    Thread Count: <s:property value="threadCount"/>
+  </th>
+
  </tr>
  <tr>
   <th>Provider</th>

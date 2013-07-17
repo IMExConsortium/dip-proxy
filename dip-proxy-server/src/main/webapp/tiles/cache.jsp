@@ -8,6 +8,7 @@
   <th colspan="7" align="left">
     Native Cache Status
   </th>
+
  </tr>
  <tr>
   <th>Provider</th>
