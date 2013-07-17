@@ -93,20 +93,21 @@ class RemoteNativeService {
                     this.addObserver( wsContext );
                 } 
 
-                nativeServer = wsContext.getNextProxyServer( provider, service, ns, ac );
+                nativeServer = wsContext.getNextProxyServer( 
+                    provider, service, ns, ac );
 
-                log.info( "getNativeFromRemote: nativeServer came from proxy. " );
+                log.info("getNativeFromRemote: nativeServer came from proxy.");
             } else {
                     
                 //*** last retry or no proxy 
                 nativeServer = wsContext.getNativeServer( provider );
-                log.info( "getNativeFromRemote: nativeServer came from native. " );
+                log.info("getNativeFromRemote: nativeServer came from native.");
             }
 
             try {                                                       
                 remoteRecord = nativeServer
-                    .getNativeRecord( provider, service,
-                                      ns, ac, wsContext.getTimeout( provider ) );
+                    .getNativeRecord( provider, service, ns,
+                                      ac, wsContext.getTimeout( provider ) );
 
             } catch( ServerFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
@@ -126,14 +127,16 @@ class RemoteNativeService {
             if( remoteRecord != null && !isRecordValid( remoteRecord ) ) {
 
                 deleteFlag = true;
-                retryFault = ServerFaultFactory.newInstance( Fault.VALIDATION_ERROR );
+                retryFault = ServerFaultFactory
+                    .newInstance( Fault.VALIDATION_ERROR );
                 remoteRecord = null;
             }
             
             if( deleteFlag && nativeServer instanceof RemoteProxyServer ) {
 
-                NativeRecord faultyRecord = new NativeRecord( provider, service, 
-                                                              ns, ac);
+                NativeRecord faultyRecord = 
+                    new NativeRecord( provider, service, ns, ac);
+
                 faultyRecord.resetExpireTime( wsContext.getTtl( provider ) );  
      
                 DhtRouterMessage message =
