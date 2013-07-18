@@ -4,7 +4,7 @@
   "option-def":{
       "node-config": {
          "legend":"Overlay Node Configuration",     
-         "options":[ "overlay-network-flag" ],
+         "options":[ "overlay-network-flag","max-drl-size","default-ttl" ],
          "option-def":{
              "overlay-network-flag": {
               "label": "Networked overlay",
@@ -14,10 +14,10 @@
               "opcode": "xxx"
              },
              "max-drl-size": {
-              "label": "max-drl-size",
+              "label": "Overlay record size",
               "type": "string",
               "value": "2",
-              "opp":"xxx", 
+              "opp":"max_drl_size", 
               "opcode": "xxx"
              },
              "routing-algorithm":{
@@ -42,10 +42,10 @@
               "opcode":"xxx"
              },
              "default-ttl":{
-              "label":"default-ttl",
+              "label":"Overlay record TTL",
               "type":"string",
               "value":"3",
-              "opp":"xxx",
+              "opp":"default_ttl",
               "opcode":"xxx"
              },
              "dht-port":{

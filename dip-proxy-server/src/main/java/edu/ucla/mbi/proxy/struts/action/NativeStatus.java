@@ -44,6 +44,10 @@ public class NativeStatus extends PortalSupport {
         return delays;
     }
     
+    public int getThreadCount(){
+        return wsContext.getThreadCount();
+    }
+
 
     public String execute() throws Exception {
 
