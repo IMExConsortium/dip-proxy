@@ -14,22 +14,10 @@ package edu.ucla.mbi.proxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
-
-import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.NativeRecord;
-
 import edu.ucla.mbi.fault.*;
-import edu.ucla.mbi.util.context.*;
 
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
-
-import javax.xml.xpath.*;
-import javax.xml.parsers.*;
-import java.net.URL;
 
 public class NativeRestServer implements NativeServer, DomServer { 
     private Log log = LogFactory.getLog( NativeRestServer.class );
@@ -41,7 +29,6 @@ public class NativeRestServer implements NativeServer, DomServer {
     }
 
     public void initialize() throws ServerFault {
-
         log.info( "initialize starting... " );
     }
 
