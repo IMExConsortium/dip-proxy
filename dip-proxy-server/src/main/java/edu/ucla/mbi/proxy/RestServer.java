@@ -18,18 +18,13 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-import edu.ucla.mbi.proxy.*;
-import edu.ucla.mbi.cache.NativeRecord;
-
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.context.*;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
-import javax.xml.xpath.*;
 import javax.xml.parsers.*;
-import java.net.URL;
 
 public class RestServer implements ContextListener {
 
