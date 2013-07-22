@@ -83,29 +83,44 @@
                         </xsl:element>
 	                </xsl:element>
                 </xsl:if>
-
             </xsl:element>	  
-
         </xsl:element>
-    
-        <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
-            <xsl:element name="ns1:attrList">
-	            <xsl:element name="ns1:attr">	      
-	                <xsl:attribute name="name">sequence</xsl:attribute>
-	                <xsl:attribute name="ac">dip:0008</xsl:attribute>
-	                <xsl:attribute name="ns">dip</xsl:attribute>
+      </xsl:if>
+ 
+      <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
+        <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
+        <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
-	                <xsl:element name="ns1:value">
-	                    <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
-	                    <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
-	                    <xsl:variable name="seq" select="INSDSeq/INSDSeq_sequence/text()"/>
+        <xsl:variable name="seq" select="INSDSeq/INSDSeq_sequence/text()"/>
+        <xsl:variable name="mat_pep" select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='mat_peptide']/INSDFeature_quals/INSDQualifier[INSDQualifier_name='peptide']/INSDQualifier_value/text()"/>
+
+        <xsl:if test="$seq != '' or $mat_pep != ''">
+            <xsl:element name="ns1:attrList">
+                <xsl:if test="$seq != ''">
+	                <xsl:element name="ns1:attr">	      
+	                    <xsl:attribute name="name">sequence</xsl:attribute>
+	                    <xsl:attribute name="ac">dip:0008</xsl:attribute>
+	                    <xsl:attribute name="ns">dip</xsl:attribute>
+
+	                    <xsl:element name="ns1:value">
 	                        <xsl:value-of select="translate($seq,$lcletters,$ucletters)" />
-						
-	                </xsl:element>
-                </xsl:element>
+	                    </xsl:element>
+                    </xsl:element>
+                </xsl:if>
+
+                <xsl:if test="$mat_pep != ''">
+                    <xsl:element name="ns1:attr">
+                        <xsl:attribute name="name">mature-sequence</xsl:attribute>
+                        <xsl:attribute name="ac">dip:0053</xsl:attribute>
+                        <xsl:attribute name="ns">dip</xsl:attribute>
+
+                        <xsl:element name="ns1:value">
+                            <xsl:value-of select="translate($mat_pep,$lcletters,$ucletters)" />
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:if>
             </xsl:element> 
         </xsl:if>
-
       </xsl:if>
     </xsl:element> 
   </xsl:template>
