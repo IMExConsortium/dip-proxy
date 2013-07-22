@@ -62,6 +62,11 @@ public class NativeRestServer implements NativeServer, DomServer {
         String retVal = 
             restServer.getNativeString( provider, service, ns, ac, timeout );
 
+        if( retVal == null || retVal.isEmpty() ) {
+            log.warn( "getNativeRecord: return retVal is null or empty. " );
+            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+        } 
+
         if( retVal.endsWith( "</cause></error></ResultSet>" ) ) {
             // *** this error for intermine server
             log.warn( "getNativeRecord: return error=" + retVal );
@@ -81,10 +86,11 @@ public class NativeRestServer implements NativeServer, DomServer {
         }
 
         if( retVal.contains("<INSDSet><Error>")
-                    || retVal.contains( "<TSeqSet/>" ) ) {
+            || retVal.contains( "<TSeqSet/>" ) ) {
 
             //*** this fault for NCBI refseq
-            log.warn( "getNativeRecord: refseq get wrong retVal for ac " + ac + "." );
+            log.warn( "getNativeRecord: refseq get wrong retVal for ac " + 
+                      ac + "." );
             throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
         }
 
