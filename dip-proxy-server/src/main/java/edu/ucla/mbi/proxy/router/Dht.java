@@ -252,7 +252,7 @@ public class Dht {
             // join overlay
             //-------------
 
-            log.info( " joining overlay" );
+            log.info( "try to start overlay" );
 
             MessagingAddress ma = null;
             InetAddress localAddress = null;
@@ -277,13 +277,18 @@ public class Dht {
                 
                     if ( !bootHost.equals( localAddress.getHostAddress() ) ) { 
 
-                        log.info( "  trying (non-self) boothost=" + 
+                        log.info( "trying (non-self) boothost=" + 
                                   bootHost + ":" + dhtPort );
-    
-                        ma = this.joinOverlay( 
-                            bootHost + ":" + dhtPort,  dhtPort  );
                         
+                        try { 
+                            ma = this.joinOverlay( 
+                                bootHost + ":" + dhtPort,  dhtPort  );
+                        } catch ( ServerFault fault ) {
+                            log.info( "join in networked overlay fault. " ); 
+                        }
+
                         if( ma != null ) {
+                            log.info( "join overlay successfully. " );
                             break;
                         }
                     }
@@ -291,25 +296,19 @@ public class Dht {
 
                 if( ma == null && bootServerList.contains( 
                     localAddress.getHostAddress() ) ) {
-    
+   
+                    log.info( "start self networked overlay. " ); 
                     proxyDht = DHTFactory.getDHT( networked_app_id,
                         networked_app_id, dhtc, proxyId );
 
-                    ma = this.joinOverlay( localAddress.getHostAddress()
-                                           + ":" + dhtPort, dhtPort );
-                    /*
                     try {
-                        ma = proxyDht
-                                .joinOverlay( localAddress.getHostAddress()
-                                              + ":" + dhtPort,
-                                              Integer.parseInt( dhtPort ) );
+                        ma = this.joinOverlay( localAddress.getHostAddress()
+                                               + ":" + dhtPort, dhtPort );
+                    } catch ( ServerFault fault ) {
+                        log.info( "start self networked overlay fault. " ); 
+                    }
 
-                        log.info( "overlay started (MessagingAddress=" +
-                                  ma + ")" );
-
-                    } catch ( ow.routing.RoutingException re ) {
-                        log.info( "   routing exception: " + re.toString() );
-                    }*/
+                    log.info( "start self networked overlay successfully. " );
                 }
 
                 if( ma == null ) {
@@ -329,10 +328,15 @@ public class Dht {
                 proxyDht = DHTFactory.getDHT( local_app_id, 
                     local_app_id, dhtc, proxyId );
                 
-                ma = this.joinOverlay( localAddress.getHostAddress()
-                                       + ":" + dhtPort, dhtPort ) ;
+                try {
+                    ma = this.joinOverlay( localAddress.getHostAddress()
+                                           + ":" + dhtPort, dhtPort ) ;
+                } catch ( ServerFault fault ) {
+                    log.info( "start local selef overlay fault. " );
+                    throw fault;
+                }
+                log.info( "start self local overlay successfully. " );
             }                 
-            
         } catch( Exception e ){
             e.printStackTrace();
             throw ServerFaultFactory.newInstance( Fault.OVERLAY );
@@ -474,6 +478,8 @@ public class Dht {
         if( vis == null || vis.size() == 0 ) return null;
 
         DhtRouterList newDrl = new DhtRouterList( rid );
+        DhtRouterItem firstQueryItem = null ; //first query item in new drl
+        long currentTime = Calendar.getInstance().getTime().getTime();
 
         for( Iterator<ValueInfo<DhtRouterList>> i = vis.iterator();
              i.hasNext(); ){
@@ -487,6 +493,7 @@ public class Dht {
             log.info( " DhtRouterList=" + drl );
 
             int count = 0;
+            
             for( Iterator<DhtRouterItem> pi = drl.iterator();
                  pi.hasNext(); ){
                 
@@ -496,21 +503,50 @@ public class Dht {
                 log.info( "item=" + item.toString() );
                 log.info( "item.ExpireTime=" + item.getExpireTime() );
                 log.info( "item.CreateTime=" + item.getCreateTime());
-                
-                // check if item is not expired. ignore expired itenms
-                
+
+                // check if item is not expired. ignore expired items
+                //*** new add
+                if( item.getExpireTime() <= currentTime ) {
+                    //*** delete expired item
+                    deleteItem( rid, item );
+                    continue;
+                } 
+
                 if( newDrl.contains( item ) ) {
                     log.info( "newDrl contains item. " );
                     int index = newDrl.indexOf( item );
                     DhtRouterItem oldItem = newDrl.getItem( index );
                     if( oldItem.getCreateTime() < item.getCreateTime() ) {
-                        log.info( "newDrl set the item. " ); 
+                        log.info( "newDrl update old one using the item. " ); 
                         //*** keep most recently item
                         newDrl.setItem ( index, item );
+                        //*** new add
+                        firstQueryItem = 
+                            updateFirstQueryItem ( firstQueryItem, item );
                     }
                 } else {
+                    /*
                     log.info( "newDrl add the item. " );
                     newDrl.addItem ( item );
+                    */
+
+                    //*** new change
+                    if( newDrl.size() < maxDrlSize ) {
+                        log.info( "newDrl add the item. " );
+                        newDrl.addItem ( item );
+
+                        firstQueryItem =
+                            updateFirstQueryItem ( firstQueryItem, item );
+
+                    } else {
+                        //*** replace the first query item
+                        int index = newDrl.indexOf( firstQueryItem );
+                        log.info( "newDrl replace old item using the item. " );
+                        newDrl.setItem ( index, item ); 
+                        
+                        firstQueryItem =
+                            updateFirstQueryItem ( firstQueryItem, item );
+                    }
                 }
             }
         }
@@ -518,7 +554,21 @@ public class Dht {
         log.info( "getDhtRouterList: newDrl=" + newDrl );
         return newDrl;
     }
-    
+
+    private DhtRouterItem updateFirstQueryItem ( DhtRouterItem firstQueryItem, 
+                                                 DhtRouterItem item ) {
+
+        if( firstQueryItem == null ) {
+            return item;
+        }
+        
+        long firstQueryTime = firstQueryItem.getCreateTime();
+        if( item.getCreateTime() < firstQueryTime ) {
+            return item;
+        }
+
+        return firstQueryItem;
+    }    
     public void updateItem( ID rid, DhtRouterItem newItem ) {
         
         Log log = LogFactory.getLog(Dht.class);
@@ -532,7 +582,7 @@ public class Dht {
             drl.addItem( newItem );
         } else {
 
-            long firstQuery = 0;
+            //long firstQuery = 0;
             DhtRouterItem firstQueryItem = null ;
 
             for( int i = 0; i < drl.size(); i++ ) {
@@ -547,20 +597,33 @@ public class Dht {
                     break;
                 }
 
+                firstQueryItem =
+                    updateFirstQueryItem ( firstQueryItem, proxyItem );
+                /*
                 if( firstQuery == 0  
                     || proxyItem.getCreateTime() < firstQuery ) {
                         
                     firstQuery = proxyItem.getCreateTime();
                     firstQueryItem = proxyItem;
-                }
+                }*/
             }
+            
 
             if( newFlag ) {
+                /*
                 DhtRouterItem dpi = newItem;
-                drl.addItem( dpi );
-                    
-                if ( drl.size() > maxDrlSize ){
+                if( drl.size() < maxDrlSize ) {
+                    drl.addItem( dpi );
+                } else {
                     drl.removeItem( firstQueryItem );
+                }*/
+
+                //*** new change
+                if( drl.size() < maxDrlSize ) {
+                    drl.addItem( newItem );
+                }else {
+                    int index = drl.indexOf( firstQueryItem );
+                    drl.setItem ( index, newItem );
                 }
             }
         } 
