@@ -47,7 +47,8 @@ public class ProxyPortImpl implements ProxyPort {
                            ) throws ProxyFault {
 
         try{
-
+            log.info( " provider=>" + provider + " service=>" + service +
+                      " ns=>" + ns + " ac=>" + ac );
             ProxyServerRecord prxRec = proxyServer.getRecord( provider, service,
                                                               ns, ac, match,
                                                               detail, format,
