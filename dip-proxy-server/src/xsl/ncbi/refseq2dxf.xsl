@@ -39,51 +39,53 @@
 
       <xsl:if test="$edu.ucla.mbi.services.detail != 'stub'">   
          
-        <xsl:variable name="taxon" select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='source']/INSDFeature_quals/INSDQualifier[INSDQualifier_name='db_xref']/INSDQualifier_value/text()"/>
-      
         <xsl:element name="ns1:xrefList">
-	        <xsl:element name="ns1:xref">
-	            <xsl:attribute name="type">encoded-by</xsl:attribute>
-	            <xsl:attribute name="typeAc">dxf:0022</xsl:attribute>
-	            <xsl:attribute name="typeNs">dxf</xsl:attribute>
-	  
-	            <xsl:for-each select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='CDS']/INSDFeature_quals/INSDQualifier">
+            <xsl:variable name="cds" select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='CDS']"/> 
+            <xsl:if test="$cds != ''">
+                <xsl:for-each select="$cds/INSDFeature_quals/INSDQualifier">
 	                <xsl:variable name="flag" select="INSDQualifier_value/text()"/>
 	                <xsl:if test="starts-with($flag, 'GeneID:')">
                         <xsl:variable name="geneid" select="substring-after($flag,'GeneID:')"/>
-	                    <xsl:attribute name="ac"><xsl:value-of select="$geneid"/></xsl:attribute>
+                        <xsl:element name="ns1:xref">
+                            <xsl:attribute name="type">encoded-by</xsl:attribute>
+                            <xsl:attribute name="typeAc">dxf:0022</xsl:attribute>
+                            <xsl:attribute name="typeNs">dxf</xsl:attribute>
+	                        <xsl:attribute name="ac"><xsl:value-of select="$geneid"/></xsl:attribute>
+                            <xsl:attribute name="ns">entrezgene</xsl:attribute>
+                        </xsl:element>
                     </xsl:if>
                 </xsl:for-each>
-							  
-	            <xsl:attribute name="ns">entrezgene</xsl:attribute>
-	        </xsl:element>
-	
-	        <xsl:element name="ns1:xref">
-	            <xsl:attribute name="type">produced-by</xsl:attribute>
-	            <xsl:attribute name="typeAc">dxf:0007</xsl:attribute>
-	            <xsl:attribute name="typeNs">dxf</xsl:attribute>
-	            <xsl:attribute name="ac"><xsl:value-of select="substring-after($taxon,'taxon:')"/></xsl:attribute>
-	            <xsl:attribute name="ns">ncbitaxid</xsl:attribute>
+		    </xsl:if>
+					 
+            <xsl:variable name="taxon" select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='source']/INSDFeature_quals/INSDQualifier[INSDQualifier_name='db_xref']/INSDQualifier_value/text()"/>
+            <xsl:variable name="taxonAc" select="substring-after($taxon,'taxon:')"/>
+            <xsl:if test="$taxonAc != '' "> 
+	            <xsl:element name="ns1:xref">
+	                <xsl:attribute name="type">produced-by</xsl:attribute>
+	                <xsl:attribute name="typeAc">dxf:0007</xsl:attribute>
+	                <xsl:attribute name="typeNs">dxf</xsl:attribute>
+	                <xsl:attribute name="ac"><xsl:value-of select="$taxonAc"/></xsl:attribute>
+	                <xsl:attribute name="ns">ncbitaxid</xsl:attribute>
 
-                <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
-	                <xsl:element name="ns1:node">
-	                    <xsl:attribute name="ac"><xsl:value-of select="substring-after($taxon,'taxon:')"/></xsl:attribute>
-	                    <xsl:attribute name="ns">ncbitaxid</xsl:attribute>
-	                    <xsl:attribute name="id">2</xsl:attribute>
+                    <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
+	                    <xsl:element name="ns1:node">
+	                        <xsl:attribute name="ac"><xsl:value-of select="substring-after($taxon,'taxon:')"/></xsl:attribute>
+	                        <xsl:attribute name="ns">ncbitaxid</xsl:attribute>
+	                        <xsl:attribute name="id">2</xsl:attribute>
           
-	    
-	                    <xsl:element name="ns1:type"> 
-	                        <xsl:attribute name="name">organism</xsl:attribute>
-	                        <xsl:attribute name="ac">dip:0301</xsl:attribute>
-	                        <xsl:attribute name="ns">dip</xsl:attribute>
-                        </xsl:element>
+	                        <xsl:element name="ns1:type"> 
+	                            <xsl:attribute name="name">organism</xsl:attribute>
+	                            <xsl:attribute name="ac">dip:0301</xsl:attribute>
+	                            <xsl:attribute name="ns">dip</xsl:attribute>
+                            </xsl:element>
       
-	                    <xsl:element name="ns1:label">
-	                        <xsl:value-of select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='source']/INSDFeature_quals/INSDQualifier[INSDQualifier_name='organism']/INSDQualifier_value/text()"/>
-                        </xsl:element>
-	                </xsl:element>
-                </xsl:if>
-            </xsl:element>	  
+	                        <xsl:element name="ns1:label">
+	                            <xsl:value-of select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='source']/INSDFeature_quals/INSDQualifier[INSDQualifier_name='organism']/INSDQualifier_value/text()"/>
+                            </xsl:element>
+	                    </xsl:element>
+                    </xsl:if>
+                </xsl:element>
+            </xsl:if>
         </xsl:element>
       </xsl:if>
  
