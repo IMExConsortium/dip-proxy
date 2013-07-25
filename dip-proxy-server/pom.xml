@@ -12,10 +12,10 @@
     <proxy.bld>$Rev$</proxy.bld>
 
     <dbid></dbid>
-    <!--<dht.mode>networked</dht.mode>-->      
-    <dht.mode>local</dht.mode>
+    <dht.mode>networked</dht.mode>      
+    <!--<dht.mode>local</dht.mode>-->
 
-    <dht.overlay.network.flag>false</dht.overlay.network.flag>
+    <dht.overlay.network.flag>true</dht.overlay.network.flag>
  
     <dht.routing>Chord</dht.routing>  
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
@@ -228,9 +228,29 @@
       <artifactId>cxf-rt-transports-http-jetty</artifactId>
       <version>${cxf.version}</version>
     </dependency>
-   
+
+    <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <version>2.7.1</version>
+    </dependency>
+    <!-- 
+    <dependency>
+      <groupId>apache-xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>j_2.7.0</version>
+    </dependency>
+     -->
   </dependencies>
-    
+  <!--
+  <distributionManagement>
+    <repository>
+        <id>thirdparty-releases</id>
+        <name>JBoss Thirdparty Releases</name>
+        <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+    </repository>
+  </distributionManagement> 
+  -->
   <build>
     <finalName>dip-proxy</finalName>
     <resources>
