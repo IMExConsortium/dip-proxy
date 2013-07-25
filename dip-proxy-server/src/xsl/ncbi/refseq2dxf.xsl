@@ -7,7 +7,7 @@
   
   <xsl:output method="xml" indent="yes" />
   <xsl:param name="edu.ucla.mbi.services.detail" select="stub"/>
-  
+
   <xsl:template match="/">
     <ns1:dataset>
 	    <xsl:apply-templates />
@@ -86,6 +86,61 @@
                     </xsl:if>
                 </xsl:element>
             </xsl:if>
+             
+            <xsl:variable name="contig" select="INSDSeq/INSDSeq_contig/text()"/>
+
+            <xsl:if test="starts-with($contig,'join') and contains($contig,':') and contains($contig,'P_')">
+                
+                <xsl:variable name="refseqAc" select="substring-before($contig,':')"/>
+                <xsl:variable name="prefix" select="substring-before($refseqAc,'_')"/>
+                
+                <xsl:variable name="prefixLen" select="number(string-length($prefix) - 1)"/>
+                <xsl:variable name="prefix" select="substring($prefix, $prefixLen, 2)"/> 
+                 
+                <xsl:variable name="suffix" select="substring-after($refseqAc, '_')"/>
+                <xsl:variable name="refseqAc" select="concat( $prefix, '_', $suffix )"/>
+                <xsl:variable name="refseqAc" select="substring-before($refseqAc, '.')"/>
+                 
+                <xsl:if test="contains($refseqAc,'P_')">
+                    <xsl:element name="ns1:xref">
+                        <xsl:attribute name="type">instance-of</xsl:attribute>
+                        <xsl:attribute name="typeAc">dxf:0006</xsl:attribute>
+                        <xsl:attribute name="typeNs">dxf</xsl:attribute>
+                        <xsl:attribute name="ac"><xsl:value-of select="$refseqAc"/></xsl:attribute>
+                        <xsl:attribute name="ns">refseq</xsl:attribute>             
+
+                        <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
+                            <xsl:element name="ns1:node">
+                                <xsl:attribute name="ac"><xsl:value-of select="$refseqAc"/></xsl:attribute>
+                                <xsl:attribute name="ns">refseq</xsl:attribute>
+                                <xsl:attribute name="id">3</xsl:attribute>
+
+                                <xsl:element name="ns1:type">
+                                    <xsl:attribute name="name">reference-protein</xsl:attribute>
+                                    <xsl:attribute name="ac">dxf:0061</xsl:attribute>
+                                    <xsl:attribute name="ns">dxf</xsl:attribute>
+                                </xsl:element>
+
+                                <xsl:element name="ns1:label">
+                                    <xsl:value-of select="$refseqAc"/>
+                                </xsl:element>
+                                <xsl:element name="ns1:attrList">
+                                    <xsl:element name="ns1:attr">
+                                        <xsl:attribute name="name">location</xsl:attribute>
+                                        <xsl:attribute name="ac">dxf:0062</xsl:attribute>
+                                        <xsl:attribute name="ns">dxf</xsl:attribute>
+
+                                        <xsl:element name="ns1:value">
+                                            <xsl:value-of select="$contig" />
+                                        </xsl:element>
+                                    </xsl:element>
+
+                                </xsl:element>
+                            </xsl:element>
+                        </xsl:if>
+                    </xsl:element>    
+                </xsl:if> 
+            </xsl:if> 
         </xsl:element>
       </xsl:if>
  
