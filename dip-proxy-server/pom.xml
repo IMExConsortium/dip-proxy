@@ -234,23 +234,9 @@
         <artifactId>xalan</artifactId>
         <version>2.7.1</version>
     </dependency>
-    <!-- 
-    <dependency>
-      <groupId>apache-xalan</groupId>
-      <artifactId>xalan</artifactId>
-      <version>j_2.7.0</version>
-    </dependency>
-     -->
+
   </dependencies>
-  <!--
-  <distributionManagement>
-    <repository>
-        <id>thirdparty-releases</id>
-        <name>JBoss Thirdparty Releases</name>
-        <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-    </repository>
-  </distributionManagement> 
-  -->
+
   <build>
     <finalName>dip-proxy</finalName>
     <resources>
