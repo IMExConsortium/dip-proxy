@@ -518,7 +518,7 @@ public class Dht {
                     DhtRouterItem oldItem = newDrl.getItem( index );
                     if( oldItem.getCreateTime() < item.getCreateTime() ) {
                         log.info( "newDrl update old one using the item. " ); 
-                        //*** keep most recently item
+                        //*** keep most recent item
                         newDrl.setItem ( index, item );
                         //*** new add
                         firstQueryItem = 
@@ -534,19 +534,17 @@ public class Dht {
                     if( newDrl.size() < maxDrlSize ) {
                         log.info( "newDrl add the item. " );
                         newDrl.addItem ( item );
-
-                        firstQueryItem =
-                            updateFirstQueryItem ( firstQueryItem, item );
-
+                        
                     } else {
                         //*** replace the first query item
                         int index = newDrl.indexOf( firstQueryItem );
                         log.info( "newDrl replace old item using the item. " );
                         newDrl.setItem ( index, item ); 
                         
-                        firstQueryItem =
-                            updateFirstQueryItem ( firstQueryItem, item );
-                    }
+                     }
+
+                    firstQueryItem =
+                        firstQueryItem ( firstQueryItem, item );                   
                 }
             }
         }
@@ -554,9 +552,9 @@ public class Dht {
         log.info( "getDhtRouterList: newDrl=" + newDrl );
         return newDrl;
     }
-
-    private DhtRouterItem updateFirstQueryItem ( DhtRouterItem firstQueryItem, 
-                                                 DhtRouterItem item ) {
+    
+    private DhtRouterItem firstQueryItem ( DhtRouterItem firstQueryItem, 
+                                           DhtRouterItem item ) {
 
         if( firstQueryItem == null ) {
             return item;
@@ -569,6 +567,7 @@ public class Dht {
 
         return firstQueryItem;
     }    
+
     public void updateItem( ID rid, DhtRouterItem newItem ) {
         
         Log log = LogFactory.getLog(Dht.class);
@@ -589,7 +588,7 @@ public class Dht {
             
                 DhtRouterItem proxyItem = drl.getItem(i);                   
 
-                if ( proxyItem.getAddress().equals(newItem.getAddress()) ){
+                if ( proxyItem.getAddress().equals( newItem.getAddress()) ){
                     newFlag = false;
                     proxyItem.setCreateTime( newItem.getCreateTime() );
                     proxyItem.setExpireTime( newItem.getExpireTime() );
@@ -598,7 +597,7 @@ public class Dht {
                 }
 
                 firstQueryItem =
-                    updateFirstQueryItem ( firstQueryItem, proxyItem );
+                    firstQueryItem ( firstQueryItem, proxyItem );
                 /*
                 if( firstQuery == 0  
                     || proxyItem.getCreateTime() < firstQuery ) {
