@@ -98,7 +98,7 @@
                     <xsl:variable name="prefix" select="substring-before($refseqAc, '_')"/>
                     <xsl:variable name="suffix" select="substring-after($refseqAc, '_')"/>
                     <xsl:variable name="prefixLen" select="string-length($prefix)"/>
-                    <xsl:variable name="prefixLen" select="string($prefixLen - 1 )"/>
+                    <xsl:variable name="prefixLen" select="number($prefixLen - 1 )"/>
                     <xsl:variable name="prefix" select="substring($prefix, $prefixLen, 2)"/>
                 
                     <xsl:variable name="refseqAc" select="concat( $prefix, '_', $suffix )"/>
