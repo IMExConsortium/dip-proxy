@@ -12,8 +12,8 @@
     <proxy.bld>$Rev$</proxy.bld>
 
     <dbid></dbid>
-    <dht.mode>networked</dht.mode>      
-    <!--<dht.mode>local</dht.mode>-->
+    <!--<dht.mode>networked</dht.mode>-->      
+    <dht.mode>local</dht.mode>
 
     <dht.overlay.network.flag>true</dht.overlay.network.flag>
  
