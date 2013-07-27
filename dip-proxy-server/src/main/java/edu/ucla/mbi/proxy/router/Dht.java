@@ -504,10 +504,8 @@ public class Dht {
                 log.info( "item.ExpireTime=" + item.getExpireTime() );
                 log.info( "item.CreateTime=" + item.getCreateTime());
 
-                // check if item is not expired. ignore expired items
-                //*** new add
+                // check if item is not expired, delete expired items
                 if( item.getExpireTime() <= currentTime ) {
-                    //*** delete expired item
                     deleteItem( rid, item );
                     continue;
                 } 
@@ -516,21 +514,16 @@ public class Dht {
                     log.info( "newDrl contains item. " );
                     int index = newDrl.indexOf( item );
                     DhtRouterItem oldItem = newDrl.getItem( index );
+
                     if( oldItem.getCreateTime() < item.getCreateTime() ) {
                         log.info( "newDrl update old one using the item. " ); 
                         //*** keep most recent item
                         newDrl.setItem ( index, item );
-                        //*** new add
+
                         firstQueryItem = 
-                            updateFirstQueryItem ( firstQueryItem, item );
+                            pickFirstQueryItem ( firstQueryItem, item );
                     }
                 } else {
-                    /*
-                    log.info( "newDrl add the item. " );
-                    newDrl.addItem ( item );
-                    */
-
-                    //*** new change
                     if( newDrl.size() < maxDrlSize ) {
                         log.info( "newDrl add the item. " );
                         newDrl.addItem ( item );
@@ -540,11 +533,10 @@ public class Dht {
                         int index = newDrl.indexOf( firstQueryItem );
                         log.info( "newDrl replace old item using the item. " );
                         newDrl.setItem ( index, item ); 
-                        
                      }
 
                     firstQueryItem =
-                        firstQueryItem ( firstQueryItem, item );                   
+                        pickFirstQueryItem ( firstQueryItem, item );                   
                 }
             }
         }
@@ -553,19 +545,19 @@ public class Dht {
         return newDrl;
     }
     
-    private DhtRouterItem firstQueryItem ( DhtRouterItem firstQueryItem, 
-                                           DhtRouterItem item ) {
+    private DhtRouterItem pickFirstQueryItem ( DhtRouterItem oldItem, 
+                                               DhtRouterItem newItem ) {
 
-        if( firstQueryItem == null ) {
-            return item;
+        if( oldItem == null ) {
+            return newItem;
         }
         
-        long firstQueryTime = firstQueryItem.getCreateTime();
-        if( item.getCreateTime() < firstQueryTime ) {
-            return item;
+        long firstQueryTime = oldItem.getCreateTime();
+        if( newItem.getCreateTime() < firstQueryTime ) {
+            return newItem;
         }
 
-        return firstQueryItem;
+        return oldItem;
     }    
 
     public void updateItem( ID rid, DhtRouterItem newItem ) {
@@ -581,7 +573,6 @@ public class Dht {
             drl.addItem( newItem );
         } else {
 
-            //long firstQuery = 0;
             DhtRouterItem firstQueryItem = null ;
 
             for( int i = 0; i < drl.size(); i++ ) {
@@ -597,27 +588,11 @@ public class Dht {
                 }
 
                 firstQueryItem =
-                    firstQueryItem ( firstQueryItem, proxyItem );
-                /*
-                if( firstQuery == 0  
-                    || proxyItem.getCreateTime() < firstQuery ) {
-                        
-                    firstQuery = proxyItem.getCreateTime();
-                    firstQueryItem = proxyItem;
-                }*/
+                    pickFirstQueryItem ( firstQueryItem, proxyItem );
             }
             
 
             if( newFlag ) {
-                /*
-                DhtRouterItem dpi = newItem;
-                if( drl.size() < maxDrlSize ) {
-                    drl.addItem( dpi );
-                } else {
-                    drl.removeItem( firstQueryItem );
-                }*/
-
-                //*** new change
                 if( drl.size() < maxDrlSize ) {
                     drl.addItem( newItem );
                 }else {
