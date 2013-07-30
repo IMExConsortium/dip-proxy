@@ -16,7 +16,8 @@
              "max-drl-size": {
               "label": "Overlay record size",
               "type": "string",
-              "value": "5",
+              "length":"3",
+              "value": "5",              
               "opp":"max_drl_size", 
               "opcode": "xxx"
              },
@@ -44,6 +45,7 @@
              "default-ttl":{
               "label":"Overlay record TTL",
               "type":"string",
+              "length":"5",
               "value":"3",
               "opp":"default_ttl",
               "opcode":"xxx"

@@ -15,7 +15,7 @@
     <!--<dht.mode>networked</dht.mode>-->      
     <dht.mode>local</dht.mode>
 
-    <dht.overlay.network.flag>true</dht.overlay.network.flag>
+    <dht.overlay.network.flag>false</dht.overlay.network.flag>
  
     <dht.routing>Chord</dht.routing>  
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>

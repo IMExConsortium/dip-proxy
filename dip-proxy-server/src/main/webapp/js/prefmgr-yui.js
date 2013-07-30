@@ -6,7 +6,8 @@ YAHOO.mbi.prefmgr = {
     viewUrl:'',
     updateUrl:'',
     defsetUrl:'',
-    toppref:'config', 
+    menuButton:'',
+    toppref:'config',
 
     /*************************************************************************
      * Takes an object and recursively travels down all the nodes.
@@ -67,9 +68,7 @@ YAHOO.mbi.prefmgr = {
         prefmgr.viewUrl = init.viewUrl;
         prefmgr.updateUrl = init.updateUrl;
         prefmgr.defsetUrl = init.defsetUrl;
-        if( init.defsetUrl !== undefined){
-            //prefmgr.toppref = init.pref;
-        }
+        
         var Success = function( response ){
 
             var process = function( key, value, options, opp, strong ){
@@ -86,22 +85,19 @@ YAHOO.mbi.prefmgr = {
                     return "<div class='cfg-key-val'>" 
                         + "<div class='" + keyClass + "'>" + value.label + "</div>" 
                         + "<div class='cfg-val' id='opp." + opp + "'>" 
-                        + upm.htmlBoolRadio( options[key], opp, value.value )
+                        + upm.htmlManager( options[key], opp, value  )
                         + "</div>"
                         + "</div>";
                 }
                 return "";
             };
             
-            console.log("sucess");
+            console.log("Success");
             
-           
             prefmgr.preferences 
                 = YAHOO.lang.JSON.parse( response.responseText );
-
-           
             prefmgr.preferences 
-                = YAHOO.lang.JSON.parse( prefmgr.preferences[YAHOO.mbi.prefmgr.toppref] );
+                = YAHOO.lang.JSON.parse( prefmgr.preferences[prefmgr.toppref] );
             console.log( prefmgr.preferences );     
             
             var form = document.getElementById(init["formid"]);
@@ -137,7 +133,7 @@ YAHOO.mbi.prefmgr = {
                 var valDiv = YAHOO.util.Dom.get( "opp." + opp );
                 if( valDiv !== undefined ){
                     valDiv.innerHTML 
-                        = upm.htmlBoolRadio( key, opp, value.value );
+                        = upm.htmlManager( options[key], opp, value);
                 }
             }
         };
@@ -147,7 +143,26 @@ YAHOO.mbi.prefmgr = {
             console.log("updateForm: Traverse Error:" + x );
         }
     },
-    
+
+    htmlManager: function( name, opp, value ){
+        var upm = YAHOO.mbi.prefmgr;
+        if( typeof value.type == "undefined"){
+            return upm.htmlBoolRadio( name, opp, value.value  );
+        }
+        switch( value.type.toLowerCase() )
+        {
+        case "boolean" :
+           return upm.htmlBoolRadio( name, opp, value.value  );
+           break;
+        case "string" :
+            return upm.htmlTextField( name, opp, value  );
+            break;
+        case "menu" :
+            return upm.htmlMenu( name, opp, value  );
+            break;
+        }               
+    },
+
     htmlBoolRadio: function( optName, optOpp, optValue ){
         
         if( optValue ==='true'){
@@ -168,6 +183,60 @@ YAHOO.mbi.prefmgr = {
         var html = "<div class='cfg-val'>" + checkboxT + " " +  checkboxF +"</div>";
         return html;
     },
+    htmlTextField: function( name, opp, value ){
+        //return  name + ':' +
+        return ' <input type="text" id="'
+                + name + '" maxlength="' + value.length  + '" '  
+                + 'name="opp.' + opp + '" size="'+ value.length + '" '
+                + 'value="' + value.value + '">';
+    },
+    
+    onMenuItemClick : function ( menuChange ) 
+    {
+        var menuItem = menuChange.newValue;
+        var newText = menuItem.cfg.getProperty("text");
+        var input = document.getElementById(this.my.inputId);
+        this.set("label", newText);
+        input.value = menuItem.value;
+    },
+    
+    htmlMenu: function( name, opp, value ){
+        
+        var menuItems = value["value-list"];
+        var div = document.createElement('div');
+        div.setAttribute("id", name + "MenuButton");
+        
+        var input = document.createElement('input')
+        input.setAttribute("name", "opp." + opp);
+        input.setAttribute("type", "hidden" );
+        input.setAttribute("value", value.value );
+        input.setAttribute("id",  name + "Input" );
+        div.appendChild(input);
+        
+        var menuList = value["value-list"];
+        for(var i = 0; i < menuList.length; i++)
+        {
+            if(menuList[i].value == value.value )
+            {
+                var menuLabel = menuList[i].text;
+                break;
+            }
+        }
+        var menuButton = new YAHOO.widget.Button({ 
+                        id: opp, 
+                        name: name,
+                        label: "<em class=\"yui-button-label\">" + menuLabel + "</em>",
+                        type: "menu",  
+                        menu: value["value-list"], 
+                        container: name + "MenuButton" });
+                        
+        menuButton.on( "selectedMenuItemChange", 
+                               YAHOO.mbi.prefmgr.onMenuItemClick );
+        menuButton.my = {"inputId" : name + "Input"};
+        return div.outerHTML;
+        
+    },
+    
 
     sendUpdatedPrefs: function( o  ){
         var prefmgr = YAHOO.mbi.prefmgr;
@@ -217,13 +286,10 @@ YAHOO.mbi.prefmgr = {
                          success: Success,
                          failure: Fail
                        };             
-
-        alert("submit to:" + prefmgr.updateUrl );
         try{
             var formObj = document.getElementById( formid );
             YAHOO.util.Connect.setForm(formObj);
-            alert("formObj");            
-
+            
             var cObj = YAHOO.util.Connect
                 .asyncRequest( 'POST', 
                                prefmgr.updateUrl, 
@@ -258,6 +324,7 @@ YAHOO.mbi.prefmgr = {
         };
         
         try{
+
             YAHOO.util
                 .Connect.asyncRequest( 'GET', prefmgr.defsetUrl, 
                                        callback );        
