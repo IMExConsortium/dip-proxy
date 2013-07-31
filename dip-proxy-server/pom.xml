@@ -8,6 +8,10 @@
   <url>http://dip.mbi.ucla.edu</url>
 
   <properties>
+
+    <ramcache>on</ramcache>
+
+
     <proxy.version>${project.version}</proxy.version>
     <proxy.bld>$Rev$</proxy.bld>
 
@@ -66,7 +70,7 @@
      <properties>
         <dip-proxy.css>dip-proxy.css</dip-proxy.css>      
         <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
-        <hibernate.connection.dbname>proxyws</hibernate.connection.dbname>
+        <hibernate.connection.dbname>proxyws_prod</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.211</hibernate.connection.servername>
         <hibernate.connection.portnum>5432</hibernate.connection.portnum>
      </properties>

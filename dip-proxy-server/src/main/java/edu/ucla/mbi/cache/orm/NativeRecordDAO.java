@@ -47,7 +47,9 @@ public class NativeRecordDAO extends AbstractDAO {
 
     public void saveOrUpdate( NativeRecord nativer )
         throws DAOException {
-    
+        
+        //log.warn( nativer );
+
         try {
             super.saveOrUpdate ( nativer );
 

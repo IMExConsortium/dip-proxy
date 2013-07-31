@@ -88,6 +88,10 @@ public class CachingService {
 
             if( memcachedRec != null ) {
                 nativeRecord = memcachedRec;
+
+                // reset id to treat memcached records as new
+                
+                nativeRecord.setId( -1 );
             }
         }
 
@@ -97,7 +101,7 @@ public class CachingService {
              && wsContext.isDbCacheOn( provider ) ) {
 
             NativeRecord cacheRecord = null;
-
+           
             cacheRecord = wsContext.getDipProxyDAO()
                 .findNativeRecord( provider, service, ns, ac );
 

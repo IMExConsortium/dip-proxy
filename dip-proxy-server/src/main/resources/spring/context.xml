@@ -78,7 +78,7 @@
         <!-- <ref bean="ebiSimpleRouter"/>  -->
        </entry>
         
-       <entry key="ramCache" value="on"/>
+       <entry key="ramCache" value="{$ramcache}"/>
        <entry key="dbCache" value="on"/>
        <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
@@ -117,7 +117,7 @@
         <ref bean="ncbiDhtRouter"/> 
        </entry>
        
-       <entry key="ramCache" value="on"/>
+       <entry key="ramCache" value="{$ramcache}"/>
        <entry key="dbCache" value="on"/>
        <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
@@ -158,7 +158,7 @@
         <ref bean="mbiDhtRouter"/> 
        </entry>
 
-       <entry key="ramCache" value="on"/>
+       <entry key="ramCache" value="{$ramcache}"/>
        <entry key="dbCache" value="on"/>
        <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
@@ -195,7 +195,7 @@
         <ref bean="dipDhtRouter"/> 
        </entry>
 
-       <entry key="ramCache" value="on"/>
+       <entry key="ramCache" value="{$ramcache}"/>
        <entry key="dbCache" value="on"/>
        <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
@@ -233,7 +233,7 @@
          <ref bean="yeastMineDhtRouter"/> 
        </entry>
 
-       <entry key="ramCache" value="on"/>
+       <entry key="ramCache" value="{$ramcache}"/>
        <entry key="dbCache" value="on"/>
        <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
