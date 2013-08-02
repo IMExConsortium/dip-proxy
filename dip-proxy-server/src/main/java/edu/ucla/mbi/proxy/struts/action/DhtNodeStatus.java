@@ -109,6 +109,32 @@ public class DhtNodeStatus extends PortalSupport {
                 return "json";
             }
 
+            if( getOp().get("show-config") != null ) {
+                return "show-config";
+            }
+
+            if( getOp().get("update-config") != null ) {
+                
+                log.info( "opp=" + getOpp() );
+                
+                if( getOpp() != null ){
+                    // use new key:value pairs in getOpp() 
+                    // to update dht.json configuration
+                    
+                    for ( String oppKey:getOpp().keySet() ) {
+                        String oppVal = (String)getOpp().get( oppKey );
+                        log.info( "oppkey=" + oppKey + ", and oppVal=" + oppVal );                 
+                        
+                        dht.setContextOptionValue ( oppKey, oppVal );
+                    }
+
+                    saveDhtContextToJsonFile();
+                    dht.reinitialize( true );
+                }
+                return "json";
+            }
+
+            /*
             if( getOp().get("updateDht") != null ) {
             
                 if( getOpp() == null ) {
@@ -132,6 +158,7 @@ public class DhtNodeStatus extends PortalSupport {
                 dht.reinitialize( true );
                 return "json";
             }
+            */
         }
 
         nodeStatus = new HashMap<String,String>(); 

@@ -123,7 +123,7 @@
        </param>
      </result>
 
-     <result name="update" type="tiles">node-update</result>
+     <result name="show-config" type="tiles">node-update</result>
 
    </action>
    <!-- rest server config new -->

@@ -93,13 +93,19 @@ public class CachingService {
                 nativer.setId( -1 );
                 */
 
+
+                
                 //*** new adding
+                
+
                 memcachedRec.resetExpireTime( memcachedRec.getQueryTime(),
                                               wsContext.getTtl( provider ) );
 
+                
                 if( isExpiredOfRecord( memcachedRec ) ) {
                     expiredRecord = memcachedRec;
                 } else {
+                    /*
                     if( wsContext.isDbCacheOn( provider ) ) {
 
                         log.info( "db create nativeR. " );
@@ -113,9 +119,10 @@ public class CachingService {
                         if( nr != null && isExpiredOfRecord( nr ) ) {
                             memcachedRec.setId( nr.getId() );
                             wsContext.getDipProxyDAO()
-                                .createNativeRecord( memcachedRec );
+                            .createNativeRecord( memcachedRec );
                         }
                     }
+                    */
                     return memcachedRec;
                 }
             }
@@ -335,13 +342,14 @@ public class CachingService {
             if( memcachedRec !=  null ) {
                 //dxfRecord = memcachedRec;
 
-                //*** new adding
+                //*** newly added
                 memcachedRec.resetExpireTime( memcachedRec.getQueryTime(),
                                               wsContext.getTtl( provider ) );
 
                 if( isExpiredOfRecord( memcachedRec ) ) {
                     expiredDxf = memcachedRec;
                 } else {
+                    /*
                     if( wsContext.isDbCacheOn( provider ) ) {
 
                         log.info( "db create nativeR. " );
@@ -359,6 +367,7 @@ public class CachingService {
                                 .createDxfRecord( memcachedRec );
                         }
                     }
+                    */
                     return memcachedRec;
                 }
 
@@ -426,7 +435,7 @@ public class CachingService {
                             dxfr.setId( expiredDxf.getId() );
                         }
    
-                        //*** new adding
+                        //*** new addition
                         if( isExpiredOfRecord( nativeRecord ) ) {                    
                             if( expiredDxf == null 
                                 || nativeRecord.getQueryTime()
