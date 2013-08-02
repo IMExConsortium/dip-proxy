@@ -109,12 +109,11 @@ public class DhtNodeStatus extends PortalSupport {
                 return "json";
             }
 
-            if( getOp().get("update") != null ){
-                return "update";
-            }
-
-            if( getOp().get("updateDht") != null 
-                && getOpp() != null ) {
+            if( getOp().get("updateDht") != null ) {
+            
+                if( getOpp() == null ) {
+                    return "update";
+                }
 
                 log.info( "opp=" + getOpp() );
 
@@ -131,8 +130,7 @@ public class DhtNodeStatus extends PortalSupport {
                 saveDhtContextToJsonFile();
                 
                 dht.reinitialize( true );
-                return "update";
-                //return "json";
+                return "json";
             }
         }
 

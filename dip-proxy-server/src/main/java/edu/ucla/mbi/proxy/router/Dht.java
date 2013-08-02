@@ -38,9 +38,7 @@ public class Dht {
  
     private Properties dhtProperties = null;
     
-    private String overlayMode = "networked";   
     private boolean overlayNetworkFlag = false;
-
 
     private String dhtPort = "55666";
     private String routingAlg = "Chord";
@@ -104,11 +102,6 @@ public class Dht {
         return this.overlayNetworkFlag;
     }
 
-
-    public String getOverlayMode() {
-        return this.overlayMode;
-    }
-
     public DHT getDHT(){
         return this.proxyDht;
     }
@@ -138,7 +131,6 @@ public class Dht {
 
         log.info( "reinitialize: after setDhtProperty. " );
         log.info( " boot servers=" + bootServerList);
-        log.info( " overlayMode=" + overlayMode );
         log.info( " overlayNetworkFlag=" + overlayNetworkFlag );
         log.info( " maxDrlSize=" + maxDrlSize );
         log.info( " routingAlg =" + routingAlg );
@@ -262,7 +254,7 @@ public class Dht {
                 log.info( " should not happen " );                
             }
             
-            if ( overlayMode.equalsIgnoreCase( "networked" ) ){
+            if ( overlayNetworkFlag ){
 
                 proxyDht = DHTFactory.getDHT( networked_app_id, 
                     networked_app_id, dhtc, proxyId );
@@ -380,21 +372,8 @@ public class Dht {
 
         Log log = LogFactory.getLog( Dht.class );
 
-        overlayMode = context.getString( "overlay-mode", overlayMode );
-
-
-        if( !overlayMode.equals( "networked" ) ) {
-            overlayMode = "local";
-        }
-
         overlayNetworkFlag = context.getBoolean( "overlay-network-flag", 
                                                  overlayNetworkFlag );
-
-        if( overlayNetworkFlag ) {
-            overlayMode = "networked";
-        } else {
-            overlayMode = "local";
-        }
 
         maxDrlSize = context.getInt ( "max-drl-size", maxDrlSize );
         routingAlg = context.getString( "routing-algorithm", routingAlg );

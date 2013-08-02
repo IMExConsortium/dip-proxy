@@ -6,7 +6,7 @@
 <form id="dht-config-form" name="dht-config-form" onsubmit="return false;" action="" method="post">
     <div>
       <div style="display:inline-block; padding: 0 0 0 2em;" >
-        <input type="submit" id="dht-config-form_op_update" name="op.update" value="Save" 
+        <input type="submit" id="dht-config-form_op_update" name="op.updateDht" value="Save" 
                onclick="YAHOO.mbi.prefmgr.submit('dht-config-form')"/>
 
       </div>
