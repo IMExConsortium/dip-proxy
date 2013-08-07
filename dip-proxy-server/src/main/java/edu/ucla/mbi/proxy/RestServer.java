@@ -224,7 +224,7 @@ public class RestServer implements ContextListener {
                 throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
             }
             
-            if( conn.getResponseCode() == 200 ) {
+            if( conn.getResponseCode() != 200 ) {
                 log.warn ( "query: connectin get response message: "
                            + conn.getResponseMessage() );
 
