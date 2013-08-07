@@ -25,7 +25,7 @@
     <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
     <hibernate.connection.servername>10.1.200.1</hibernate.connection.servername>
 
-    <cxf.version>2.7.4</cxf.version>
+    <cxf.version>2.7.6</cxf.version>
     <spring.version>3.2.2.RELEASE</spring.version>
 
   </properties>

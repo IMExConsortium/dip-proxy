@@ -21,6 +21,8 @@ import javax.xml.ws.BindingProvider;
 import com.sun.xml.ws.developer.JAXWSProperties;
 import javax.xml.namespace.QName;
 
+import javax.xml.ws.Service;
+
 import java.util.*;
 import java.io.StringWriter;
 
@@ -113,10 +115,12 @@ public class DipServer implements NativeServer {
         log.info( " dipEndpoint=" + dipEndpoint );
 
         try {
+
+            
             DipDxfService service =
                 new DipDxfService( new URL( dipEndpoint + "?wsdl" ),
                                    new QName( dipNsSrv, dipNmSrv ) );
-
+            
             dipPort = service.getDipDxfPort();
 
             if ( dipPort != null ) {
@@ -124,6 +128,10 @@ public class DipServer implements NativeServer {
                         .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                               dipEndpoint );
             }
+            
+
+            
+
         } catch ( Exception e ) {
             log.warn( "DipServer: DipDxfService initializing failed: "
                        + "reason=" +  e.toString() + ". ");
