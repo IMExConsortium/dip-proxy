@@ -141,7 +141,7 @@ public class CachingService {
         
         if( nativeRecord == null ){
 
-            remoteRecord = rns.getNativeFromRemote ( provider, service, ns, ac );
+            remoteRecord = rns.getNativeFromRemote( provider, service, ns, ac );
         }
         
         if( remoteRecord != null ) {
@@ -261,7 +261,7 @@ public class CachingService {
                 memcachedRec = 
                     (DxfRecord)wsContext.getMcClient().fetch( memcachedId );
             } catch ( Exception ex ) {
-                serverFault = ServerFaultFactory.newInstance( Fault.CACHE_FAULT );
+                serverFault = ServerFaultFactory.newInstance(Fault.CACHE_FAULT);
             }
 
             log.info( "getDxf: memcachedRec=" + memcachedRec );
@@ -430,7 +430,7 @@ public class CachingService {
         return isDxfDatasetValid( dxfResult );
     }
 
-    private boolean isDxfDatasetValid( DatasetType  dxfDataset ) { ;
+    private boolean isDxfDatasetValid( DatasetType  dxfDataset ) { 
                 
         if( dxfDataset != null 
             && !dxfDataset.getNode().isEmpty()
