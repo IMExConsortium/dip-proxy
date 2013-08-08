@@ -13,3 +13,10 @@ tomcat server running commands:
     mvn -P tomcat-server, dip-proxy-beta -Ddbid=id clean jetty:run-war
     mvn -P tomcat-server, dip-proxy-production -Ddbid=id clean jetty:run-war
 ---------------------------------------------------------------------
+To turn off overlayweaver logginng add:
+
+ow.java.logger.logging=WARNING
+
+to the conf/logging.properties file
+
+
