@@ -4,8 +4,15 @@
   "option-def":{
       "node-config": {
          "legend":"Local Node Configuration",     
-         "options":[ "networked-application-id", "local-application-id", "max-drl-size", "routing-algorithm", "directory-type", "working-directory", "default-ttl", "dht-port" ],
+         "options":[ "overlay-network-flag","networked-application-id", "local-application-id", "max-drl-size", "routing-algorithm", "directory-type", "working-directory", "default-ttl", "dht-port" ],
          "option-def":{
+             "overlay-network-flag": {
+              "label": "Networked overlay",
+              "type": "boolean",
+              "value": "${dht.overlay.network.flag}",
+              "opp":"overlay_network_flag",
+              "opcode": "xxx"
+             },
              "networked-application-id": {
               "label": "networked-application-id",
               "type": "string",
@@ -23,7 +30,8 @@
              "max-drl-size": {
               "label": "max-drl-size",
               "type": "string",
-              "value": "2",
+              "length":"3",
+              "value": "5",
               "opp":"max_drl_size", 
               "opcode": "xxx"
              },
@@ -51,6 +59,7 @@
              "default-ttl":{
               "label":"default-ttl",
               "type":"string",
+              "length":"5",
               "value":"3",
               "opp":"default_ttl",
               "opcode":"xxx"
@@ -73,6 +82,5 @@
         "opcode": "xxx"      
       }
   },
-  "opp": "foo",
-  "opcode": "foo"
+  "opcode": "update"
 }

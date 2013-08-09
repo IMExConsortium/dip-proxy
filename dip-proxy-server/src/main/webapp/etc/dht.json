@@ -1,10 +1,10 @@
 {
   "legend":"Dht Router Configuration", 
-  "options":["node-config"], 
+  "options":["node-config","boot-servers"], 
   "option-def":{
       "node-config": {
          "legend":"Overlay Node Configuration",     
-         "options":[ "overlay-network-flag","max-drl-size","default-ttl" ],
+         "options":[ "overlay-network-flag","max-drl-size","default-ttl"],
          "option-def":{
              "overlay-network-flag": {
               "label": "Networked overlay",
@@ -21,40 +21,54 @@
               "opp":"max_drl_size", 
               "opcode": "xxx"
              },
-             "routing-algorithm":{
-              "label":"routing-algorithm",
-              "type":"string",
-              "value":"${dht.routing}",
-              "opp":"xxx",
-              "opcode":"xxx"
-             },
-             "directory-type":{
-              "label":"directory-type",
-              "type":"string",
-              "value":"BerkeleyDB",
-              "opp":"xxx",
-              "opcode":"xxx"
-             },
-             "working-directory":{
-              "label":"working-directory",
-              "type":"string",
-              "value":"dht",
-              "opp":"xxx",
-              "opcode":"xxx"
-             },
              "default-ttl":{
-              "label":"Overlay record TTL",
+              "label":"Overlay record TTL ( Hour )",
               "type":"string",
               "length":"5",
               "value":"3",
               "opp":"default_ttl",
               "opcode":"xxx"
              },
+             "networked-application-id": {
+              "label": "networked-application-id",
+              "type": "string",
+              "value": "1",
+              "opp":"networked_application_id",
+              "opcode": "xxx"
+             },
+             "local-application-id": {
+              "label": "local-application-id",
+              "type": "string",
+              "value": "2",
+              "opp":"local_application_id",
+              "opcode": "xxx"
+             },
+             "routing-algorithm":{
+              "label":"routing-algorithm",
+              "type":"string",
+              "value":"${dht.routing}",
+              "opp":"routing_algorithm",
+              "opcode":"xxx"
+             },
+             "directory-type":{
+              "label":"directory-type",
+              "type":"string",
+              "value":"BerkeleyDB",
+              "opp":"directory_type",
+              "opcode":"xxx"
+             },
+             "working-directory":{
+              "label":"working-directory",
+              "type":"string",
+              "value":"dht",
+              "opp":"working_directory",
+              "opcode":"xxx"
+             },
              "dht-port":{
               "label":"dht-port",
               "type":"string",
               "value":"55666",
-              "opp":"xxx",
+              "opp":"dht_port",
               "opcode":"xxx"
              }
          }
@@ -62,10 +76,11 @@
       "boot-servers": {
          "legend":"Boot Servers",
          "label": "Boot Server List",
-         "type":"string-list", 
-         "value": ["10.1.200.201","10.1.200.208", "10.1.200.209", "10.1.200.210" ],
-         "opp": "xxx",
-        "opcode": "xxx"      
+         "type":"string", 
+         "length":"70",
+         "value": "10.1.200.201, 10.1.200.208, 10.1.200.209, 10.1.200.210",
+         "opp": "boot_servers",
+         "opcode": "xxx"      
       }
   },
   "opcode": "update"

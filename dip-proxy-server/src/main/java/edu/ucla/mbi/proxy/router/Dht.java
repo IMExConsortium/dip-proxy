@@ -31,9 +31,11 @@ import edu.ucla.mbi.fault.*;
 
 public class Dht {
     private final static int MAX_DRL_SIZE = 2;
-
     private final String propertiesFN = "/tmp/dhtrouter.properties";
-   
+
+    private short networked_app_id = 1;
+    private short local_app_id = 2;
+
     private Map<String, Object> jsonOptionDefMap = new HashMap();
  
     private Properties dhtProperties = null;
@@ -45,15 +47,12 @@ public class Dht {
     private String directoryType = "BerkeleyDB";
     private String workingDirectory = "dht"; 
     private int maxDrlSize = MAX_DRL_SIZE;
-    private long defaultTTL = 0;
+    private long defaultTTL = 0; // unit millisecond
     private List<String> bootServerList = null;
 
     private String proxyHost = null;
 
     private DHT proxyDht = null;
-
-    private short networked_app_id = 1;
-    private short local_app_id = 2;
 
     private DhtContext context;
 
@@ -388,15 +387,13 @@ public class Dht {
 
         dhtPort = context.getString( "dht-port", dhtPort );
 
-        bootServerList = 
-            context.getStringList( "boot-servers", bootServerList );
+        String bootServerString = context.getString( "boot-servers", "" );
+        
+        bootServerList = Arrays.asList( bootServerString.split( ",\\s*" ) ); 
 
-        log.info( "before get networked-app-id." );
         networked_app_id = 
             context.getShort ( "networked-application-id", networked_app_id );
  
-        log.info( "networked_app_id= " + networked_app_id );
-
         local_app_id = 
             context.getShort ( "local-application-id", local_app_id );
         
