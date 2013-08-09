@@ -4,7 +4,7 @@
 <Configure class="org.mortbay.jetty.webapp.WebAppContext">
 
  <New class="org.mortbay.jetty.plus.naming.Resource">
-  <Arg>java:/comp/env/jdbc/proxyws</Arg>
+  <Arg>${hibernate.connection.datasource}</Arg>
   <Arg>
    <New class="org.postgresql.ds.PGSimpleDataSource">
     <Set name="User">${hibernate.connection.username}</Set>
