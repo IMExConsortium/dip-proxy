@@ -1,178 +1,350 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions xmlns:impl="http://www.ebi.ac.uk/picr/AccessionMappingService" xmlns:tns1="http://model.picr.ebi.ac.uk" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ebi.ac.uk/picr/AccessionMappingService">
-	<wsdl:types>
+<?xml version="1.0" encoding="UTF-8"?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.3-b02-. --><wsdl:definitions xmlns:impl="http://www.ebi.ac.uk/picr/AccessionMappingService" xmlns:tns1="http://model.picr.ebi.ac.uk" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ebi.ac.uk/picr/AccessionMappingService">
+    <wsdl:types>
 
         <!-- model object schema must be defined before operations for max interop -->
         <schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://model.picr.ebi.ac.uk">
 
             <complexType name="CrossReference">
                 <sequence>
-                    <element name="accession" nillable="true" type="xsd:string"/>
-                    <element name="accessionVersion" nillable="true" type="xsd:string"/>
-                    <element name="databaseDescription" nillable="true" type="xsd:string"/>
-                    <element name="databaseName" nillable="true" type="xsd:string"/>
-                    <element name="dateAdded" nillable="true" type="xsd:dateTime"/>
-                    <element name="dateDeleted" nillable="true" type="xsd:dateTime"/>
-                    <element name="deleted" type="xsd:boolean"/>
-                    <element name="gi" nillable="true" type="xsd:string"/>
-                    <element name="taxonId" nillable="true" type="xsd:string"/>
+                    <element name="accession" nillable="true" type="xsd:string"></element>
+                    <element name="accessionVersion" nillable="true" type="xsd:string"></element>
+                    <element name="databaseDescription" nillable="true" type="xsd:string"></element>
+                    <element name="databaseName" nillable="true" type="xsd:string"></element>
+                    <element name="dateAdded" nillable="true" type="xsd:dateTime"></element>
+                    <element name="dateDeleted" nillable="true" type="xsd:dateTime"></element>
+                    <element name="deleted" type="xsd:boolean"></element>
+                    <element name="gi" nillable="true" type="xsd:string"></element>
+                    <element name="taxonId" nillable="true" type="xsd:string"></element>
                 </sequence>
+            </complexType>
+
+
+            <complexType name="BlastParameter">
+                <annotation>
+                    <documentation xml:lang="en">Input parameters for the tool</documentation>
+                </annotation>
+
+                <sequence>
+                    <element minOccurs="1" maxOccurs="1" name="program" nillable="true" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Program [The BLAST program to be used for the Sequence
+                                Similarity Search.]
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="matrix" nillable="true" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Matrix [The comparison matrix to be used to score
+                                alignments when searching the database]
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="alignments" nillable="true" type="xsd:int">
+                        <annotation>
+                            <documentation>Alignments [Maximum number of match alignments reported in the result
+                                output.]
+                            </documentation>
+                        </annotation>
+
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="scores" nillable="true" type="xsd:int">
+                        <annotation>
+                            <documentation>Scores [Maximum number of match score summaries reported in the result
+                                output.]
+                            </documentation>
+                        </annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="exp" nillable="true" type="xsd:string">
+                        <annotation>
+
+                            <documentation>Expectation value threshold [Limits the number of scores and alignments
+                                reported based on the expectation value. This is the maximum number of times the match
+                                is expected to occur by chance.]
+                            </documentation>
+                        </annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="dropoff" nillable="true" type="xsd:int">
+                        <annotation>
+                            <documentation>Dropoff [The amount a score can drop before extension of word hits is halted]
+                            </documentation>
+                        </annotation>
+                    </element>
+
+                    <element minOccurs="1" maxOccurs="1" name="match_scores" nillable="true" type="xsd:string">
+                        <annotation>
+                            <documentation>Match/mismatch scores [Many nucleotide searches use a simple scoring system
+                                that consists of a "reward" for a match and a "penalty" for a
+                                mismatch. The (absolute) reward/penalty ratio should be increased as one looks at more
+                                divergent sequences. A ratio of 0.33 (1/-3) is appropriate for sequences that are about
+                                99% conserved; a ratio of 0.5 (1/-2) is best for sequences that are 95% conserved; a
+                                ratio of about one (1/-1) is best for sequences that are 75% conserved.]
+                            </documentation>
+                        </annotation>
+                    </element>
+
+                    <element minOccurs="1" maxOccurs="1" name="gapopen" nillable="true" type="xsd:int">
+                        <annotation>
+                            <documentation>Gap open [Penalty taken away from the score when a gap is created in
+                                sequence. Increasing the gap openning penalty will decrease the number of gaps in the
+                                final alignment.]
+                            </documentation>
+                        </annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="gapext" nillable="true" type="xsd:int">
+                        <annotation>
+                            <documentation>Gap extend [Penalty taken away from the score for each base or residue in the
+                                gap. Increasing the gap extension penalty favors short gaps in the final alignment,
+                                conversly decreasing the gap extension penalty favors long gaps in the final alignment.]
+                            </documentation>
+
+                        </annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="filter" nillable="true" type="xsd:string">
+                        <annotation>
+                            <documentation>Filter [Filter regions of low sequence complexity. This can avoid issues with
+                                low complexity sequences where matches are found due to composition rather than
+                                meaningful sequence similarity. However in some cases filtering also masks regions of
+                                interest and so should be used with caution.]
+                            </documentation>
+                        </annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="seqrange" nillable="true" type="xsd:string">
+
+                        <annotation>
+                            <documentation>Sequence range [Specify a range or section of the input sequence to use in
+                                the search. Example: Specifying '34-89' in an input sequence of total length
+                                100, will tell BLAST to only use residues 34 to 89, inclusive.]
+                            </documentation>
+                        </annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="gapalign" nillable="true" type="xsd:boolean">
+                        <annotation>
+                            <documentation>Gapalign [This is a true/false setting that tells the program the perform
+                                optimised alignments within regions involving gaps. If set to true, the program will
+                                perform an alignment using gaps. Otherwise, if it is set to false, it will report only
+                                individual HSP where two sequence match each other, and thus will not produce alignments
+                                with gaps.]
+                            </documentation>
+
+                        </annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="align" nillable="true" type="xsd:int">
+                        <annotation>
+                            <documentation>Align views [Formating for the alignments]</documentation>
+                        </annotation>
+                    </element>
+                    <element minOccurs="1" maxOccurs="1" name="stype" nillable="false" type="xsd:string">
+
+                        <annotation>
+                            <documentation>Sequence type [Indicates if the sequence is protein or DNA/RNA.]
+                            </documentation>
+                        </annotation>
+                    </element>
+                </sequence>
+
             </complexType>
 
             <complexType name="UPEntry">
                 <sequence>
-                    <element name="CRC64" nillable="true" type="xsd:string"/>
-                    <element name="UPI" nillable="true" type="xsd:string"/>
-                    <element name="identicalCrossReferences" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns1:CrossReference"/>
-                    <element name="logicalCrossReferences" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns1:CrossReference"/>
-                    <element name="sequence" nillable="true" type="xsd:string"/>
-                    <element name="timestamp" nillable="true" type="xsd:dateTime"/>
+                    <element name="CRC64" nillable="true" type="xsd:string"></element>
+                    <element name="UPI" nillable="true" type="xsd:string"></element>
+                    <element name="identicalCrossReferences" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns1:CrossReference"></element>
+                    <element name="logicalCrossReferences" nillable="true" maxOccurs="unbounded" minOccurs="0" type="tns1:CrossReference"></element>
+                    <element name="sequence" nillable="true" type="xsd:string"></element>
+                    <element name="timestamp" nillable="true" type="xsd:dateTime"></element>
                 </sequence>
             </complexType>
 
         </schema>
 
-		<schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.ebi.ac.uk/picr/AccessionMappingService">
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.ebi.ac.uk/picr/AccessionMappingService">
 
             <!-- import model objects -->
-            <import namespace="http://model.picr.ebi.ac.uk"/>
-			
-			<element name="getUPIForSequence">
-				<complexType>
-					<sequence>
-						<element name="sequence" type="xsd:string"/>
-						<element maxOccurs="unbounded" name="searchDatabases" type="xsd:string"/>
-						<element name="taxonId" type="xsd:string"/>
-						<element name="onlyActive" type="xsd:boolean"/>
-					</sequence>
-				</complexType>
-			</element>
+            <import namespace="http://model.picr.ebi.ac.uk"></import>
+
+            <element name="getUPIForSequence">
+                <complexType>
+                    <sequence>
+                        <element name="sequence" type="xsd:string"></element>
+                        <element maxOccurs="unbounded" name="searchDatabases" type="xsd:string"></element>
+                        <element name="taxonId" type="xsd:string"></element>
+                        <element name="onlyActive" type="xsd:boolean"></element>
+                    </sequence>
+                </complexType>
+            </element>
 
             <element name="getUPIForSequenceResponse">
-				<complexType>
-					<sequence>
-						<element name="getUPIForSequenceReturn" type="tns1:UPEntry"/>
-					</sequence>
-				</complexType>
-			</element>
-			
-			<element name="getUPIForAccession">
-				<complexType>
-					<sequence>
-						<element name="accession" type="xsd:string"/>
-						<element name="ac_version" type="xsd:string"/>
-						<element maxOccurs="unbounded" name="searchDatabases" type="xsd:string"/>
-						<element name="taxonId" type="xsd:string"/>
-						<element name="onlyActive" type="xsd:boolean"/>
-					</sequence>
-				</complexType>
-			</element>
+                <complexType>
+                    <sequence>
+                        <element name="getUPIForSequenceReturn" type="tns1:UPEntry"></element>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="getUPIForBlastSequence">
+                <complexType>
+                    <sequence>
+                        <element name="sequence" type="xsd:string"></element>
+                        <element maxOccurs="unbounded" name="searchDatabases" type="xsd:string"></element>
+                        <element name="identityValue" type="xsd:string" nillable="true"></element>
+                        <element name="identityTaxon" type="xsd:string" nillable="true"></element>
+                        <element name="filterType" type="xsd:string"></element>
+                        <element name="blastDB" type="xsd:string"></element>
+                        <element name="taxonId" type="xsd:string"></element>
+                        <element name="onlyActive" type="xsd:boolean"></element>
+                        <element name="blastParameters" nillable="true" type="tns1:BlastParameter"></element>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="getUPIForBlastSequenceResponse">
+                <complexType>
+                    <sequence>
+                        <element maxOccurs="unbounded" name="getUPIForBlastSequenceReturn" type="tns1:UPEntry"></element>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="getUPIForAccession">
+                <complexType>
+                    <sequence>
+                        <element name="accession" type="xsd:string"></element>
+                        <element name="ac_version" type="xsd:string"></element>
+                        <element maxOccurs="unbounded" name="searchDatabases" type="xsd:string"></element>
+                        <element name="taxonId" type="xsd:string"></element>
+                        <element name="onlyActive" type="xsd:boolean"></element>
+                    </sequence>
+                </complexType>
+            </element>
 
             <element name="getUPIForAccessionResponse">
-				<complexType>
-					<sequence>
-						<element maxOccurs="unbounded" name="getUPIForAccessionReturn" type="tns1:UPEntry"/>
-					</sequence>
-				</complexType>
-			</element>
-			
-			<element name="getMappedDatabaseNames">
-				<complexType>
-					<sequence>
-					</sequence>
-				</complexType>
-			</element>
-            
+                <complexType>
+                    <sequence>
+                        <element maxOccurs="unbounded" name="getUPIForAccessionReturn" type="tns1:UPEntry"></element>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="getMappedDatabaseNames">
+                <complexType>
+                    <sequence>
+                    </sequence>
+                </complexType>
+            </element>
+
             <element name="getMappedDatabaseNamesResponse">
-				<complexType>
-					<sequence>
-						<element maxOccurs="unbounded" name="mappedDatabases" type="xsd:string"/>
-					</sequence>
-				</complexType>
-			</element>
-			
-		</schema>
-	</wsdl:types>
+                <complexType>
+                    <sequence>
+                        <element maxOccurs="unbounded" name="mappedDatabases" type="xsd:string"></element>
+                    </sequence>
+                </complexType>
+            </element>
 
-	<wsdl:message name="getUPIForAccessionRequest">
-		<wsdl:part name="parameters" element="impl:getUPIForAccession"/>
-	</wsdl:message>
-	<wsdl:message name="getUPIForAccessionResponse">
-		<wsdl:part name="parameters" element="impl:getUPIForAccessionResponse"/>
-	</wsdl:message>
+        </schema>
+    </wsdl:types>
 
-	<wsdl:message name="getUPIForSequenceRequest">
-		<wsdl:part name="parameters" element="impl:getUPIForSequence"/>
-	</wsdl:message>
-	<wsdl:message name="getUPIForSequenceResponse">
-		<wsdl:part name="parameters" element="impl:getUPIForSequenceResponse"/>
-	</wsdl:message>
-	
-	<wsdl:message name="getMappedDatabaseNamesRequest">
-		<wsdl:part name="parameters" element="impl:getMappedDatabaseNames"/>
-	</wsdl:message>
-	<wsdl:message name="getMappedDatabaseNamesResponse">
-		<wsdl:part name="parameters" element="impl:getMappedDatabaseNamesResponse"/>
-	</wsdl:message>
+    <wsdl:message name="getUPIForAccessionRequest">
+        <wsdl:part name="parameters" element="impl:getUPIForAccession"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getUPIForAccessionResponse">
+        <wsdl:part name="parameters" element="impl:getUPIForAccessionResponse"></wsdl:part>
+    </wsdl:message>
 
-	<wsdl:portType name="AccessionMapperInterface">
-		<wsdl:operation name="getUPIForSequence">
-			<wsdl:input name="getUPIForSequenceRequest" message="impl:getUPIForSequenceRequest"/>
-			<wsdl:output name="getUPIForSequenceResponse" message="impl:getUPIForSequenceResponse"/>
-		</wsdl:operation>
+    <wsdl:message name="getUPIForSequenceRequest">
+        <wsdl:part name="parameters" element="impl:getUPIForSequence"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getUPIForSequenceResponse">
+        <wsdl:part name="parameters" element="impl:getUPIForSequenceResponse"></wsdl:part>
+    </wsdl:message>
 
-		<wsdl:operation name="getUPIForAccession">
-			<wsdl:input name="getUPIForAccessionRequest" message="impl:getUPIForAccessionRequest"/>
-			<wsdl:output name="getUPIForAccessionResponse" message="impl:getUPIForAccessionResponse"/>
-		</wsdl:operation>
+    <wsdl:message name="getUPIForBlastSequenceRequest">
+        <wsdl:part name="parameters" element="impl:getUPIForBlastSequence"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getUPIForBlastSequenceResponse">
+        <wsdl:part name="parameters" element="impl:getUPIForBlastSequenceResponse"></wsdl:part>
+    </wsdl:message>
 
-		<wsdl:operation name="getMappedDatabaseNames">
-			<wsdl:input name="getMappedDatabaseNamesRequest" message="impl:getMappedDatabaseNamesRequest"/>
-			<wsdl:output name="getMappedDatabaseNamesResponse" message="impl:getMappedDatabaseNamesResponse"/>
-		</wsdl:operation>
-		
-	</wsdl:portType>
-	
-	<wsdl:binding name="AccessionMapperBinding" type="impl:AccessionMapperInterface">
-		
-		<wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:message name="getMappedDatabaseNamesRequest">
+        <wsdl:part name="parameters" element="impl:getMappedDatabaseNames"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getMappedDatabaseNamesResponse">
+        <wsdl:part name="parameters" element="impl:getMappedDatabaseNamesResponse"></wsdl:part>
+    </wsdl:message>
 
-		<wsdl:operation name="getUPIForSequence">
-			<wsdlsoap:operation soapAction="getUPIForSequence"/>
-			<wsdl:input name="getUPIForSequenceRequest">
-				<wsdlsoap:body use="literal"/>
-			</wsdl:input>
-			<wsdl:output name="getUPIForSequenceResponse">
-				<wsdlsoap:body use="literal"/>
-			</wsdl:output>
-		</wsdl:operation>
-		
-		<wsdl:operation name="getUPIForAccession">
-			<wsdlsoap:operation soapAction="getUPIForAccession"/>
-			<wsdl:input name="getUPIForAccessionRequest">
-				<wsdlsoap:body use="literal"/>
-			</wsdl:input>
-			<wsdl:output name="getUPIForAccessionResponse">
-				<wsdlsoap:body use="literal"/>
-			</wsdl:output>
-		</wsdl:operation>
+    <wsdl:portType name="AccessionMapperInterface">
+        <wsdl:operation name="getUPIForSequence">
+            <wsdl:input name="getUPIForSequenceRequest" message="impl:getUPIForSequenceRequest"></wsdl:input>
+            <wsdl:output name="getUPIForSequenceResponse" message="impl:getUPIForSequenceResponse"></wsdl:output>
+        </wsdl:operation>
 
-		<wsdl:operation name="getMappedDatabaseNames">
-			<wsdlsoap:operation soapAction="getMappedDatabaseNames"/>
-			<wsdl:input name="getMappedDatabaseNamesRequest">
-				<wsdlsoap:body use="literal"/>
-			</wsdl:input>
-			<wsdl:output name="getMappedDatabaseNamesResponse">
-				<wsdlsoap:body use="literal"/>
-			</wsdl:output>
-		</wsdl:operation>
-	
-	</wsdl:binding>
+        <wsdl:operation name="getUPIForBlastSequence">
+            <wsdl:input name="getUPIForBlastSequenceRequest" message="impl:getUPIForBlastSequenceRequest"></wsdl:input>
+            <wsdl:output name="getUPIForBlastSequenceResponse" message="impl:getUPIForBlastSequenceResponse"></wsdl:output>
+        </wsdl:operation>
 
-	<wsdl:service name="AccessionMapperService">
-		<wsdl:port name="AccessionMapperPort" binding="impl:AccessionMapperBinding">
-			<wsdlsoap:address location="http://www.ebi.ac.uk:80/Tools/picr/service"/>
-		</wsdl:port>
-	</wsdl:service>
+        <wsdl:operation name="getUPIForAccession">
+            <wsdl:input name="getUPIForAccessionRequest" message="impl:getUPIForAccessionRequest"></wsdl:input>
+            <wsdl:output name="getUPIForAccessionResponse" message="impl:getUPIForAccessionResponse"></wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMappedDatabaseNames">
+            <wsdl:input name="getMappedDatabaseNamesRequest" message="impl:getMappedDatabaseNamesRequest"></wsdl:input>
+            <wsdl:output name="getMappedDatabaseNamesResponse" message="impl:getMappedDatabaseNamesResponse"></wsdl:output>
+        </wsdl:operation>
+
+    </wsdl:portType>
+
+    <wsdl:binding name="AccessionMapperBinding" type="impl:AccessionMapperInterface">
+
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></wsdlsoap:binding>
+
+        <wsdl:operation name="getUPIForSequence">
+            <wsdlsoap:operation soapAction="getUPIForSequence"></wsdlsoap:operation>
+            <wsdl:input name="getUPIForSequenceRequest">
+                <wsdlsoap:body use="literal"></wsdlsoap:body>
+            </wsdl:input>
+            <wsdl:output name="getUPIForSequenceResponse">
+                <wsdlsoap:body use="literal"></wsdlsoap:body>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getUPIForBlastSequence">
+            <wsdlsoap:operation soapAction="getUPIForBlastSequence"></wsdlsoap:operation>
+            <wsdl:input name="getUPIForBlastSequenceRequest">
+                <wsdlsoap:body use="literal"></wsdlsoap:body>
+            </wsdl:input>
+            <wsdl:output name="getUPIForBlastSequenceResponse">
+                <wsdlsoap:body use="literal"></wsdlsoap:body>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getUPIForAccession">
+            <wsdlsoap:operation soapAction="getUPIForAccession"></wsdlsoap:operation>
+            <wsdl:input name="getUPIForAccessionRequest">
+                <wsdlsoap:body use="literal"></wsdlsoap:body>
+            </wsdl:input>
+            <wsdl:output name="getUPIForAccessionResponse">
+                <wsdlsoap:body use="literal"></wsdlsoap:body>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMappedDatabaseNames">
+            <wsdlsoap:operation soapAction="getMappedDatabaseNames"></wsdlsoap:operation>
+            <wsdl:input name="getMappedDatabaseNamesRequest">
+                <wsdlsoap:body use="literal"></wsdlsoap:body>
+            </wsdl:input>
+            <wsdl:output name="getMappedDatabaseNamesResponse">
+                <wsdlsoap:body use="literal"></wsdlsoap:body>
+            </wsdl:output>
+        </wsdl:operation>
+
+    </wsdl:binding>
+
+    <wsdl:service name="AccessionMapperService">
+        <wsdl:port name="AccessionMapperPort" binding="impl:AccessionMapperBinding">
+            <wsdlsoap:address location="http://www.ebi.ac.uk:80/Tools/picr/service"></wsdlsoap:address>
+            <!--<wsdlsoap:address location="http://tomcat-4.ebi.ac.uk:8128/Tools/picr/service"></wsdlsoap:address>-->
+        </wsdl:port>
+    </wsdl:service>
 
 </wsdl:definitions>
