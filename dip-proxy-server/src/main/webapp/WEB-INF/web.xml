@@ -194,7 +194,7 @@
     <url-pattern>/current/soap/*</url-pattern> 
   </servlet-mapping>
 -->
-
+ <!--
   <servlet-mapping>
     <servlet-name>cxf-service</servlet-name>
     <url-pattern>/current/*</url-pattern> 
@@ -220,7 +220,13 @@
     <servlet-name>cxf-service</servlet-name>
     <url-pattern>/current/*</url-pattern> 
   </servlet-mapping>
+  -->
 
+  <!-- new addition -->
+  <servlet-mapping>
+    <servlet-name>cxf-service</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
 
 
     <mime-mapping>
