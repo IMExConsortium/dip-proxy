@@ -94,10 +94,10 @@ public class DipServer implements NativeServer {
         log.info( " dipLegacyEndpoint=" + dipLegacyEndpoint );
             
         try {
-            DipLegacyService service =
-                new DipLegacyService( new URL( dipLegacyEndpoint + "?wsdl" ),
-                                      new QName( dipLegacyNsSrv, 
-                                                 dipLegacyNmSrv ) );
+            DipLegacyService service = new DipLegacyService();
+            //    new DipLegacyService( new URL( dipLegacyEndpoint + "?wsdl" ),
+            //                          new QName( dipLegacyNsSrv, 
+            //                                     dipLegacyNmSrv ) );
 
             dipLegacyPort = service.getLegacyPort();
 
@@ -117,9 +117,9 @@ public class DipServer implements NativeServer {
         try {
 
             
-            DipDxfService service =
-                new DipDxfService( new URL( dipEndpoint + "?wsdl" ),
-                                   new QName( dipNsSrv, dipNmSrv ) );
+            DipDxfService service = new DipDxfService();
+            //    new DipDxfService( new URL( dipEndpoint + "?wsdl" ),
+            //                       new QName( dipNsSrv, dipNmSrv ) );
             
             dipPort = service.getDipDxfPort();
 

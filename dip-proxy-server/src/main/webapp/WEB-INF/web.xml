@@ -128,6 +128,8 @@
 
     <!-- Spring Web Services  -->
 
+<!--
+
     <servlet>
         <servlet-name>dip-proxy</servlet-name>
         <servlet-class>
@@ -135,7 +137,7 @@
         </servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
+-->
  <!-- ================================================= Cxf Web service servlet -->
 
   <servlet>
@@ -151,7 +153,7 @@
     <!-- =================================================== =============== -->
     <!-- =================================================== Servlet mapping -->
     <!-- =================================================== =============== -->
-
+<!--
     <servlet-mapping>
         <servlet-name>dip-proxy</servlet-name>
         <url-pattern>/dht-service</url-pattern>
@@ -181,7 +183,7 @@
         <servlet-name>dip-proxy</servlet-name>
         <url-pattern>/prolinks-service</url-pattern>
     </servlet-mapping>
-
+-->
 
  <!-- ============================================= Cxf Web Service mappings -->
 
@@ -197,6 +199,29 @@
     <servlet-name>cxf-service</servlet-name>
     <url-pattern>/current/*</url-pattern> 
   </servlet-mapping>
+
+
+  <servlet-mapping>
+    <servlet-name>cxf-service</servlet-name>
+    <url-pattern>/prolinks-service</url-pattern> 
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>cxf-service</servlet-name>
+    <url-pattern>/current/*</url-pattern> 
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>cxf-service</servlet-name>
+    <url-pattern>/current/*</url-pattern> 
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>cxf-service</servlet-name>
+    <url-pattern>/current/*</url-pattern> 
+  </servlet-mapping>
+
+
 
     <mime-mapping>
         <extension>inc</extension>
