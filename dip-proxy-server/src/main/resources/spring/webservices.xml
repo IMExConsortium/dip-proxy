@@ -90,7 +90,7 @@
 
 
   <!-- SOAP -->
- <!--
+ 
  <jaxws:endpoint id="cxf-proxy-ws-current" address="/soap/proxy-service"
          implementor="#proxy-service-bean" />
  
@@ -108,10 +108,11 @@
 
  <jaxws:endpoint id="cxf-prolinks-ws-current" address="/soap/prolinks-service"
          implementor="#prolinks-service-bean" />
- -->
+ 
 
  <!-- new addition -->
- <jaxws:endpoint id="cxf-proxy-ws-current" address="/proxy-service"
+<!-- 
+<jaxws:endpoint id="cxf-proxy-ws-current" address="/proxy-service"
          implementor="#proxy-service-bean" />
  
  <jaxws:endpoint id="cxf-ncbi-ws-current" address="/ncbi-service"
@@ -129,7 +130,7 @@
  <jaxws:endpoint id="cxf-prolinks-ws-current" address="/prolinks-service"
          implementor="#prolinks-service-bean" />
 
- 
+--> 
  <!-- REST -->
 
  <jaxrs:server id="cxf-proxy-rs-current" address="/rest/proxy-service">

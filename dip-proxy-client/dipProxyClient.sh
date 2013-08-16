@@ -3,6 +3,9 @@
 if [ "$1" = "proxy-service" ]; then
 java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.$2:8080/dip-proxy/proxy-service $3 $4 $5 $6 $7 $8 $9 
 fi
+if [ "$1" = "proxy-service-new" ]; then
+java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://dip.mbi.ucla.edu/dip-proxy/ws/soap/proxy-service $3 $4 $5 $6 $7 $8 $9 
+fi
 
 if [ "$1" = "cxf-proxy-service" ]; then
 java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.$2:8080/dip-proxy/current/soap/proxy-service $3 $4 $5 $6 $7 $8 $9

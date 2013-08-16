@@ -217,6 +217,8 @@ public class RestServer implements ContextListener {
             java.net.URL xmlURL = new URL( url );
             java.net.HttpURLConnection conn
                     = (HttpURLConnection) xmlURL.openConnection();
+
+            conn.setRequestProperty("Accept-Charset", "UTF-8");
             
             if( conn.getResponseCode() == 404 ) {
                 //*** this fault for EBI uniprot
@@ -236,13 +238,15 @@ public class RestServer implements ContextListener {
                 }
             }
 
+            log.debug( "HttpURLConnection: encoding=" + conn.getContentEncoding() );
+
             // setting timeout ensure the client does not deadlock indefinitely
             // -----------------------------------------------------------------
             conn.setConnectTimeout( timeout ); // uTimeout is int as milliseconds
             conn.setReadTimeout( timeout );
 
             BufferedReader in =
-                new BufferedReader( new InputStreamReader( conn.getInputStream() ) );
+                new BufferedReader( new InputStreamReader( conn.getInputStream(), "UTF-8" ) );
 
             if ( in != null ){
                 String inputLine = new String();
@@ -252,6 +256,8 @@ public class RestServer implements ContextListener {
                 }
                 retVal = sb.toString();
             }
+
+            log.debug( "HttpURLConnection: result=\n" + retVal );
 
             in.close();
             conn.disconnect();

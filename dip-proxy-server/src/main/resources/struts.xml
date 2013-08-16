@@ -16,7 +16,7 @@
 
 <struts>
 
- <constant name="struts.action.excludePattern" value="/current.*,/*.-service.*"/>
+ <constant name="struts.action.excludePattern" value="/ws.*,/*-service.*"/>
 
  <constant name="struts.objectFactory" value="spring" />
  <constant name="struts.devMode" value="false" />
