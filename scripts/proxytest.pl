@@ -3,20 +3,13 @@ use SOAP::Lite;
 use XML::XPath;
 use XML::XPath::XMLParser;
 
-#my $URL= "http://dip.doe-mbi.ucla.edu/dip-proxy-server";
-#my $URL= "http://dip.doe-mbi.ucla.edu/dip-proxy";
-
 my $URL= "http://dip.mbi.ucla.edu/dip-proxy/ws/soap";
 my $PURL= "http://10.1.200.%%%:8080/dip-proxy/ws/soap";
 
-my ( $ip, $srv, $mth, $ns, $ac, $format, $prv ) = @ARGV;
+my ( $ip, $soapservice, $mth, $ns, $ac, $format, $det, $provider, $service );
 
-if ( $ip > 0 ) {
-    $URL=$PURL;
-    $URL=~s/%%%/$ip/;
-} else {
-    ( $srv, $mth, $ns, $ac, $format, $prv ) = @ARGV;
-}
+$format="native";
+$det="full";
 
 for( my $i = 0; $i<@ARGV; $i++ ) {
 
@@ -32,8 +25,15 @@ for( my $i = 0; $i<@ARGV; $i++ ) {
         $URL=~s/10.1.200.%%%/$ip/;
     }
     
-    if ( $ARGV[$i] =~ /SRV=(.+)/ ) {
-        $srv=$1;
+    if ( $ARGV[$i] =~ /SOAPSERVICE=(.+)/ ) {
+        $soapservice=$1;
+    }   
+
+    if ( $ARGV[$i] =~ /PROVIDER=(.+)/ ) {
+        $provider=$1;
+    }   
+    if ( $ARGV[$i] =~ /SERVICE=(.+)/ ) {
+        $service=$1;
     }   
 
     if ( $ARGV[$i] =~ /OP=(.+)/ ) {
@@ -53,27 +53,22 @@ for( my $i = 0; $i<@ARGV; $i++ ) {
     }   
 
     if ( $ARGV[$i] =~ /DET=(.+)/ ) {
-        $prv=$1;
+        $det=$1;
     }   
 }
-
-
-#print "URL: $URL\n";
-
-
-
 my $som="";
 my $rns ="";    
-if($srv eq "DHT"){
+
+if( $soapservice eq "DHT" ){
 
     $rns ="http://mbi.ucla.edu/proxy/dht";    
     my $url=$URL."/dht-service";
 
+    my $client = SOAP::Lite->new(proxy => $url);
+    $client->on_action(sub { "" });
+    
     if($mth eq "getDhtRecord"){
-
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+        
         $som=$client->uri($url)
             ->default_ns($rns)
             ->outputxml('true')
@@ -81,15 +76,18 @@ if($srv eq "DHT"){
                             SOAP::Data->name("service" => $format),
                             SOAP::Data->name("ns" => $ns),
                             SOAP::Data->name("ac" => $ac) );
-	print $som,"\n";
+	#print $som,"\n";
     }
 }
 
-if($srv eq "EBI"){
+if( $soapservice eq "EBI" ){
 
     $rns ="http://mbi.ucla.edu/proxy/ebi";    
     my $url=$URL."/ebi-service"; 
     
+    my $client = SOAP::Lite->new(proxy => $url);
+    $client->on_action(sub { "" });
+
     if($mth eq "getUniprot"){
 	
 	if($prv eq "" ){
@@ -97,17 +95,14 @@ if($srv eq "EBI"){
         }
         print "URL: $url\n";
         print "NS=".$ns." AC=".$ac."\n";
-        
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+  
         $som=$client->uri($url)
 	    ->default_ns($rns)
 	    ->outputxml('true')
 	    -> getUniprot(SOAP::Data->name("ns" => $ns),
 			  SOAP::Data->name("ac" => $ac),
                           SOAP::Data->name("format" => $format),
-			  SOAP::Data->name("detail" => $prv));
+			  SOAP::Data->name("detail" => $det));
     }
 
     if($mth eq "getPicrList"){
@@ -115,170 +110,142 @@ if($srv eq "EBI"){
 	if($prv eq "" ){
             $prv="full";
         }
-
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+        
         $som=$client->uri($url)
 	    ->default_ns($rns)
 	    ->outputxml('true')
 	    -> getPicrList(SOAP::Data->name("ns" => $ns),
 			   SOAP::Data->name("ac" => $ac),
                            SOAP::Data->name("format" => $format),
-			   SOAP::Data->name("detail" => $prv));
+			   SOAP::Data->name("detail" => $det));
     }
 }
 
-if($srv eq "NCBI"){
+if($soapservice eq "NCBI"){
     $rns ="http://mbi.ucla.edu/proxy/ncbi";    
     my $url=$URL."/ncbi-service"; 
     
-    if($prv eq "" ){
-        $prv="full";
-    }
+    my $client = SOAP::Lite->new(proxy => $url);
+    $client->on_action(sub { "" });
     
     if($mth eq "getPubmedArticle"){
-
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+        
         $som=$client->uri($url)
 	    ->default_ns($rns)
 	    ->outputxml('true')
 	    -> getPubmedArticle(SOAP::Data->name("ns" => $ns),
                                 SOAP::Data->name("ac" => $ac),
                                 SOAP::Data->name("format" => $format),
-                                SOAP::Data->name("detail" => $prv));
-
-       
-#       $som=SOAP::Lite->uri($url)
-#	    ->proxy($url)
-#	    ->default_ns($rns)
-#	    ->outputxml('true')
-#	    -> getRecord(SOAP::Data->name("provider" => 'NCBI'),
-#                         SOAP::Data->name("service" => 'pubmed'),
-#                         SOAP::Data->name("ns" => $ns),
-#                         SOAP::Data->name("ac" => $ac),
-#                         SOAP::Data->name("match" => ''),
-#                         SOAP::Data->name("detail" => $prv),
-#                         SOAP::Data->name("format" => $format),
-#                         SOAP::Data->name("client" => ''),
-#                         SOAP::Data->name("depth" => ''));
-
-      
-
-
+                                SOAP::Data->name("detail" => $det));
     }
-
+    
     if($mth eq "getJournal"){
-
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+        
         $som=$client->uri($url)
 	    ->default_ns($rns)
 	    ->outputxml('true')
 	    -> getJournal(SOAP::Data->name("ns" => $ns),
-                                SOAP::Data->name("ac" => $ac),
-                                SOAP::Data->name("format" => $format),
-                                SOAP::Data->name("detail" => $prv));
+                          SOAP::Data->name("ac" => $ac),
+                          SOAP::Data->name("format" => $format),
+                          SOAP::Data->name("detail" => $det));
     }
-
+    
     if($mth eq "getRefseq"){
-
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+        
         $som=$client->uri($url)
 	    ->default_ns($rns)
 	    ->outputxml('true')
 	    -> getRefseq(SOAP::Data->name("ns" => $ns),
 			 SOAP::Data->name("ac" => $ac),
                          SOAP::Data->name("format" => $format),
-			 SOAP::Data->name("detail" => $prv));
-
-        print "SOM: $url\n$rns\n $prv \n";
+			 SOAP::Data->name("detail" => $det));
     }
-
+    
     if($mth eq "getGene"){
-
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+        
         $som=$client->uri($url)
 	    ->default_ns($rns)
 	    ->outputxml('true')
 	    -> getGene(SOAP::Data->name("ns" => $ns),
 		       SOAP::Data->name("ac" => $ac),
                        SOAP::Data->name("format" => $format),
-		       SOAP::Data->name("detail" => $prv));
+		       SOAP::Data->name("detail" => $det));
     }
-
+    
     if($mth eq "getTaxon"){
-	
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+        
         $som=$client->uri($url)
 	    ->default_ns($rns)
 	    ->outputxml('true')
 	    -> getTaxon(SOAP::Data->name("ns" => $ns),
 			SOAP::Data->name("ac" => $ac),
                         SOAP::Data->name("format" => $format),
-			SOAP::Data->name("detail" => $prv));
+			SOAP::Data->name("detail" => $det));
     }
 }
 
-if($srv eq "PRL"){
+if($soapservice eq "PRL"){
 
     $rns ="http://mbi.ucla.edu/proxy/prolinks";    
     my $url=$URL."/prolinks-service"; 
     
-    if($prv eq "" ){
-        $prv="full";
-    }
+    my $client = SOAP::Lite->new(proxy => $url);
+    $client->on_action(sub { "" });
     
     if($mth eq "getProlinks"){
-	
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+        
         $som=$client->uri($url)
 	    ->default_ns($rns)
 	    ->outputxml('true')
 	    -> getProlinks(SOAP::Data->name("ns" => $ns),
                            SOAP::Data->name("ac" => $ac),
                            SOAP::Data->name("format" => $format),
-                           SOAP::Data->name("detail" => $prv));
+                           SOAP::Data->name("detail" => $det));
     }
 }
 
-if($srv eq "DIP"){
-
+if($soapservice eq "DIP"){
+    
     $rns ="http://mbi.ucla.edu/proxy/dip";    
     my $url=$URL."/dip-service"; 
     
-    if($prv eq "" ){
-        $prv="full";
-    }
+    my $client = SOAP::Lite->new(proxy => $url);
+    $client->on_action(sub { "" });
     
     if($mth eq "getDipRecord"){
-
-        my $client = SOAP::Lite->new(proxy => $url);
-        $client->on_action(sub { "" });
-                
+        
+        print "OP: $mth  NS: $ns AC: $ac format: $format detail: $det\n";
+        
         $som=$client->uri($url)
 	    ->default_ns($rns)
 	    ->outputxml('true')
 	    -> getDipRecord(SOAP::Data->name("ns" => $ns),
-                           SOAP::Data->name("ac" => $ac),
-                           SOAP::Data->name("format" => $format),
-                           SOAP::Data->name("detail" => $prv));
+                            SOAP::Data->name("ac" => $ac),
+                            SOAP::Data->name("format" => $format),
+                            SOAP::Data->name("detail" => $det));
     }
 }
 
+if( $soapservice eq "PROXY" ){
+    $rns ="http://mbi.ucla.edu/proxy";    
+    my $url=$URL."/proxy-service"; 
 
-print $som,"\n";
+    my $client = SOAP::Lite->new(proxy => $url);
+    $client->on_action(sub { "" });
+
+    print "OP: getRecord  PRV: $provider SRV: $service".
+        "NS: $ns AC: $ac format: $format detail: $det\n";
+    
+    $som=$client->uri($url)
+        ->default_ns($rns)
+        ->outputxml('true')
+        -> getRecord(SOAP::Data->name("provider" => $provider),
+                     SOAP::Data->name("service" => $service),
+                     SOAP::Data->name("ns" => $ns),
+                     SOAP::Data->name("ac" => $ac),
+                     SOAP::Data->name("format" => $format),
+                     SOAP::Data->name("detail" => $det));
+}
 
 my $xp_som = XML::XPath->new(xml=>$som);
 $xp_som->set_namespace("rns",$rns);
@@ -294,7 +261,7 @@ if( $format eq "native" ){
     }
 } else {
     $xp_som->set_namespace("rns","http://dip.doe-mbi.ucla.edu/services/dxf14");
-
+    
     $nodeset = $xp_som->find('//rns:dataset'); # find all paragraphs
     foreach my $node ($nodeset->get_nodelist) {
         print "FOUND DXF\n\n",

@@ -10,7 +10,6 @@
   <properties>
 
     <ramcache>on</ramcache>
-
     <proxy.version>${project.version}</proxy.version>
     <proxy.bld>$Rev$</proxy.bld>
 
@@ -51,7 +50,7 @@
         <finalName>dip-proxy</finalName>
       </build>
    </profile>
-
+    
    <profile>
      <id>dip-proxy-beta</id>
      <properties>
@@ -100,19 +99,20 @@
       <artifactId>dip-proxy-api</artifactId>
       <version>0.03</version>
     </dependency>
-
+<!--
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-database-api</artifactId>
       <version>0.02</version>
     </dependency>
-
+-->
+<!--
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-legacy-api</artifactId>
       <version>0.02</version>
     </dependency> 
-
+-->
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-util-ws</artifactId>
@@ -273,6 +273,25 @@
                 <include>DipService14.wsdl</include>
                 <include>DipWS.wsdl</include>
                 <include>DipLegacyService.wsdl</include>
+                <include>DXF1.4.xsd</include>
+                <include>Fault.xsd</include>
+              </includes>
+            </resource>
+
+            <resource>
+              <directory>${basedir}/../dip-proxy-api/src/wsdl</directory>
+              <targetPath>WEB-INF/classes/wsdl</targetPath>
+              <includes>   
+                <include>DhtService14.wsdl</include>
+                <include>ProxyService14.wsdl</include> 
+                <include>NcbiService14.wsdl</include>
+                <include>EbiService14.wsdl</include>
+                <include>ProlinksService14.wsdl</include>
+                <include>DipService14.wsdl</include>
+                <include>DipWS.wsdl</include>
+                <include>DipLegacyService.wsdl</include>
+                <include>DXF1.4.xsd</include>
+                <include>Fault.xsd</include>
               </includes>
             </resource>
 
@@ -323,13 +342,14 @@
             </resource>
 
             <resource>
-              <directory>${basedir}/src/main/webapp/META-INF</directory>
+              <directory>${basedir}/src/main/config</directory>
               <targetPath>META-INF</targetPath>
               <filtering>true</filtering>
               <includes>
                 <include>context.xml</include>
               </includes>
             </resource>
+
           </webResources>
         </configuration>
       </plugin>

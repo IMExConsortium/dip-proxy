@@ -90,54 +90,40 @@ public class DipServer implements NativeServer {
             //return;
             throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
-
         log.info( " dipLegacyEndpoint=" + dipLegacyEndpoint );
             
         try {
             DipLegacyService service = new DipLegacyService();
-            //    new DipLegacyService( new URL( dipLegacyEndpoint + "?wsdl" ),
-            //                          new QName( dipLegacyNsSrv, 
-            //                                     dipLegacyNmSrv ) );
-
             dipLegacyPort = service.getLegacyPort();
 
             if ( dipLegacyPort != null ) {
-                    ((BindingProvider) dipLegacyPort).getRequestContext()
-                        .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                              dipLegacyEndpoint );
+                ((BindingProvider) dipLegacyPort).getRequestContext()
+                    .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                          dipLegacyEndpoint );
             } 
         } catch ( Exception e ) {
             log.warn( "DipServer: DipLegacyService initializing failed: "   
-                       + "reason=" +  e.toString() + ". ");
+                      + "reason=" +  e.toString() + ". ");
             dipLegacyPort = null;
         }
-
+        
         log.info( " dipEndpoint=" + dipEndpoint );
-
+        
         try {
-
             
             DipDxfService service = new DipDxfService();
-            //    new DipDxfService( new URL( dipEndpoint + "?wsdl" ),
-            //                       new QName( dipNsSrv, dipNmSrv ) );
-            
             dipPort = service.getDipDxfPort();
-
+            
             if ( dipPort != null ) {
-                    ((BindingProvider) dipPort).getRequestContext()
-                        .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                              dipEndpoint );
+                ((BindingProvider) dipPort).getRequestContext()
+                    .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                          dipEndpoint );
             }
-            
-
-            
-
         } catch ( Exception e ) {
             log.warn( "DipServer: DipDxfService initializing failed: "
                        + "reason=" +  e.toString() + ". ");
             dipPort = null;
         }
-
     }
 
     // ---------------------------------------------------------------------

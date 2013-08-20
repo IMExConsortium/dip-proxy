@@ -14,7 +14,6 @@
    <version>0.03</version>
   </parent>
   
-
   <dependencies>
 
    <dependency>
@@ -206,32 +205,40 @@
         <keep>true</keep>
        </configuration>
       </execution>
-
-      <execution>
-       <id>dip-legacy</id>
-       <goals>
-        <goal>wsimport</goal>
-       </goals>
-       <configuration>
-        <verbose>false</verbose>
-        <bindingFiles>
-         <bindingFile>DXF1.4.jxb</bindingFile>
-         <bindingFile>diplegacy.jxb</bindingFile>
-        </bindingFiles>
-        <wsdlFiles>
-          <wsdlFile>DipLegacyService.wsdl</wsdlFile>
-        </wsdlFiles>
-        <staleFile>${basedir}/target/.dip-legacy.staleFlag</staleFile>
-        <keep>true</keep>
-       </configuration>
-      </execution>
-
+      
      </executions>
     </plugin>
 
-   </plugins>
+  <plugin>
+    <groupId>org.apache.cxf</groupId>
+    <artifactId>cxf-codegen-plugin</artifactId>
+    <version>2.7.6</version>
+    <executions>
+      <execution>
+        <id>generate-sources</id>
+        <phase>generate-sources</phase>
+        <configuration> 
+          <wsdlOptions>
+            <wsdlOption>
+              <wsdl>${project.basedir}/src/wsdl/DipLegacyService.wsdl</wsdl>
+              <wsdlLocation>classpath:wsdl/DipLegacyService.wsdl</wsdlLocation> 
+              <bindingFiles>
+                <bindingFile>src/jaxws/DXF1.4.jxb</bindingFile>
+                <bindingFile>src/jaxws/diplegacy.jxb</bindingFile>
+              </bindingFiles>  
+            </wsdlOption>
+          </wsdlOptions>
+        </configuration>
+        <goals>
+          <goal>wsdl2java</goal>
+        </goals>
+      </execution>
+    </executions>
+  </plugin>
 
-  </build>
+ </plugins>
+
+ </build>
 
 </project>
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- #==================================================================
+     # $HeadURL:: https://lukasz@imex.mbi.ucla.edu/svn/dip-ws/dip-util#$
+     # $Id:: Fault.xsd 2414 2012-06-20 23:40:03Z wyu                   $
+     # Version: $Rev:: 2414                                            $
+     #==================================================================
+     #
+     # Dip Web Services: services.xsd
+     #
+     #================================================================== -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:dipfault="http://dip.doe-mbi.ucla.edu/fault"
+           targetNamespace="http://dip.doe-mbi.ucla.edu/fault"
+           elementFormDefault="qualified" attributeFormDefault="unqualified"> 
+
+  <xs:element name="serviceFault"> 
+   <xs:annotation>
+    <xs:documentation>service fault</xs:documentation>
+   </xs:annotation>
+
+   <xs:complexType>
+    <xs:sequence>
+     <xs:element name="faultCode"  type="xs:int"/>
+     <xs:element name="message"  type="xs:string"/>
+    </xs:sequence>
+   </xs:complexType>
+
+  </xs:element>
+
+</xs:schema>
