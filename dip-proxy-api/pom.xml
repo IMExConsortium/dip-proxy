@@ -186,6 +186,7 @@
        </configuration>
       </execution>
 
+      <!--
       <execution>
        <id>dipws</id>
        <goals>
@@ -205,7 +206,7 @@
         <keep>true</keep>
        </configuration>
       </execution>
-      
+      -->
      </executions>
     </plugin>
 
@@ -215,7 +216,8 @@
     <version>2.7.6</version>
     <executions>
       <execution>
-        <id>generate-sources</id>
+        <!--<id>generate-sources</id>-->
+        <id>dip-legacy</id>
         <phase>generate-sources</phase>
         <configuration> 
           <wsdlOptions>
@@ -226,6 +228,27 @@
                 <bindingFile>src/jaxws/DXF1.4.jxb</bindingFile>
                 <bindingFile>src/jaxws/diplegacy.jxb</bindingFile>
               </bindingFiles>  
+            </wsdlOption>
+          </wsdlOptions>
+        </configuration>
+        <goals>
+          <goal>wsdl2java</goal>
+        </goals>
+      </execution>
+      
+      <execution>
+        <id>dip-ws</id>
+        <phase>generate-sources</phase>
+        <configuration>
+          <wsdlOptions>
+            <wsdlOption>
+              <wsdl>${project.basedir}/src/wsdl/DipWS.wsdl</wsdl>
+              <wsdlLocation>classpath:wsdl/DipWS.wsdl</wsdlLocation>
+              <bindingFiles>
+                <bindingFile>src/jaxws/DXF1.4.jxb</bindingFile>
+                <bindingFile>src/jaxws/Fault.jxb</bindingFile>
+                <bindingFile>src/jaxws/DipWS.jxb</bindingFile>
+              </bindingFiles>
             </wsdlOption>
           </wsdlOptions>
         </configuration>

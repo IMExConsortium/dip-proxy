@@ -27,10 +27,12 @@ format like this ./dipProxyClient.sh service-name dbid provider service AC= NS= 
 exmaples:
 -----------------------NEW VERSION--------------------------------------
 ./dipProxyClient.sh proxy-service dbid EBI picr AC=NP_500606 NS=refseq FORMAT=dxf DETAIL=base
+
 ./dipProxyClient.sh cxf-proxy-service dbid EBI picr AC=NP_500606 NS=refseq FORMAT=dxf DETAIL=base
 
 ./dipProxyClient.sh cxf-proxy-service dbid NCBI nlm AC=101526034 FORMAT=dxf DETAIL=base
 
+./dipProxyClient.sh cxf-proxy-service dbid DIP dip AC=DIP-222384NP NS=dip FORMAT=dxf DETAIL=base
 
 -----------------------------------------------------------------------------
 ./dipProxyClient.sh dbid EBI picr AC=NP_500606 NS=refseq FORMAT=native
