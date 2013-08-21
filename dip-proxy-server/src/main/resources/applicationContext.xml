@@ -79,7 +79,8 @@
 
  <!-- ============================================================ MEMCACHED -->
 
- <bean id="mcClient" class="edu.ucla.mbi.util.cache.McClient">
+ <bean id="mcClient" destroy-method="shutdown" 
+       class="edu.ucla.mbi.util.cache.McClient">
   <property name="mcf">
     <ref bean="memcachedClient"/>
   </property>

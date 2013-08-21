@@ -260,7 +260,7 @@
         <version>2.2</version>
         <configuration>
           <webResources>
-
+            <!--
             <resource>
               <directory>${basedir}/../dip-proxy-api/src/wsdl</directory>
               <targetPath>WEB-INF/wsdl</targetPath>
@@ -277,7 +277,7 @@
                 <include>Fault.xsd</include>
               </includes>
             </resource>
-
+            -->
             <resource>
               <directory>${basedir}/../dip-proxy-api/src/wsdl</directory>
               <targetPath>WEB-INF/classes/wsdl</targetPath>
