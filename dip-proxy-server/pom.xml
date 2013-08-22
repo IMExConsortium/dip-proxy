@@ -56,7 +56,9 @@
      <properties>
         <dip-proxy.css>dip-proxy-beta.css</dip-proxy.css> 
         <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
+        <hibernate.connection.dbname>proxyws_prod</hibernate.connection.dbname>
         <hibernate.connection.servername>10.1.1.211</hibernate.connection.servername>
+        <hibernate.connection.portnum>5432</hibernate.connection.portnum>
         <log.directory>/opt/tomcat/logs</log.directory>
      </properties>
      <build>

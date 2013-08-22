@@ -134,7 +134,7 @@ public class RestServer implements ContextListener {
         try {
             retVal = this.query( real_restUrl, timeout );
 
-            log.info( "NativeString:\n" + retVal+"\n");
+            //log.info( "NativeString:\n" + retVal+"\n");
         } catch( ServerFault fault ) {
             throw fault;
         }
