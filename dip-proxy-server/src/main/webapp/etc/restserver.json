@@ -48,7 +48,7 @@
         },
         "SGD":{
             "yeastmine":{
-                "restUrl":"http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=<query+name=\"\"+model=\"genomic\"+view=\"Gene.name+Gene.symbol+Gene.secondaryIdentifier\r\n+Gene.organism.name+Gene.organism.taxonId+Gene.organism.species\"><constraint+path=\"Gene.secondaryIdentifier\"+op=\"=\"+value=\"%%ACTAG%%\"/></query>&format=xml",
+                "restUrl":"http://yeastmine.yeastgenome.org/yeastmine/service/query/results?query=<query+name=\"\"+model=\"genomic\"+view=\"Gene.name+Gene.symbol+Gene.secondaryIdentifier+Gene.organism.name+Gene.organism.taxonId+Gene.organism.species\"><constraint+path=\"Gene.secondaryIdentifier\"+op=\"=\"+value=\"%%ACTAG%%\"/></query>&format=xml",
                 "restAcTag":"%%ACTAG%%"
             }
         }
