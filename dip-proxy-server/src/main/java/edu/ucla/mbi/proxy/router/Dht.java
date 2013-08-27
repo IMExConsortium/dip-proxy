@@ -422,6 +422,9 @@ public class Dht {
         log.info( "Dht.cleanup(proxyDht=" + proxyDht +")" );
         
         if( proxyDht != null ){
+
+            proxyDht.clearRoutingTable();
+            proxyDht.clearDHTState();
             proxyDht.stop();
         }
     }

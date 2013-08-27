@@ -4,6 +4,7 @@ use XML::XPath;
 use XML::XPath::XMLParser;
 
 my $URL= "http://dip.mbi.ucla.edu/dip-proxy/ws/soap";
+#my $URL= "http://dip.doe-mbi.ucla.edu/dip-proxy";
 my $PURL= "http://10.1.200.%%%:8080/dip-proxy/ws/soap";
 
 my ( $ip, $soapservice, $mth, $ns, $ac, $format, $det, $provider, $service );

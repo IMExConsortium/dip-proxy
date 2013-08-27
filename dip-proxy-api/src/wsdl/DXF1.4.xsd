@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2006 sp1 U (http://www.altova.com) by Lukasz Salwinski (UCLA-DOE IG&P) -->
 
-<!-- #==================================================================
-     # $HeadURL:: https://lukasz@imex.mbi.ucla.edu/svn/dip-ws/dip-util#$
-     # $Id:: DXF1.4.xsd 2376 2012-06-14 22:27:57Z wyu                  $
-     # Version: $Rev:: 2376                                            $
-     #==================================================================
+<!-- #==========================================================================
+     # $HeadURL::                                                              $
+     # $Id::                                                                   $
+     # Version: $Rev::                                                         $
+     #==========================================================================
      #
      # Dip Web Services: DXF1.4 format
      #
-     #================================================================== -->
+     #====================================================================== -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14"
