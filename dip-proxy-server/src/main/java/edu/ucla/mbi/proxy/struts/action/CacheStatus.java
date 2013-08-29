@@ -31,10 +31,8 @@ public class CacheStatus extends PortalSupport {
 
     private WSContext wsContext = null;
 
-    //private Map<String,Map> nativeCounts = null;
-    //private Map<String,Map> dxfCounts = null;
-    private Map<String, Long> nativeCounts = null;
-    private Map<String, Long> dxfCounts = null;     
+    private Map<String,Map> nativeCounts = null;
+    private Map<String,Map> dxfCounts = null;
     private Map<String,String> op  = null;
 
     public void setOp( Map<String, String> op ) {
@@ -51,128 +49,114 @@ public class CacheStatus extends PortalSupport {
     
     //---------------------------------------------------------------------
 
-    /*
-    public Map<String,Map> getCounts() {
-        return nativeCounts;
-    }*/
-
-    //public Map<String,Map> getNativeCounts() {
-    public Map<String, Long> getNativeCounts() {
+    public Map<String,Map> getNativeCounts() {
         return nativeCounts;
     }
 
-    //public Map<String,Map> getDxfCounts() {
-    public Map<String, Long> getDxfCounts() {
+    public Map<String,Map> getDxfCounts() {
         return dxfCounts;
     }
 
-    //---------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     public String execute() throws Exception {
 
         Log log = LogFactory.getLog( CacheStatus.class );
         log.info("CacheStatus execute ...");
         
-        //nativeCounts = new TreeMap<String,Map>();
-        //dxfCounts = new TreeMap<String,Map>();
-        nativeCounts = new TreeMap<String, Long>();
-        dxfCounts = new TreeMap<String, Long>();        
+        nativeCounts = new HashMap<String,Map>();
+        dxfCounts = new HashMap<String,Map>();
 
         Set<String> providers = wsContext.getProviderSet();
 
         log.info( "getOp()=" + getOp() );
 
-        try {
+        for (Iterator<String> i = providers.iterator();
+             i.hasNext(); ) {
+        
+            String prv = i.next();     
+            log.info( "prv=" + prv );
+        
+            // go over providers
+            //------------------
 
-            NativeRecordDAO ndo = wsContext.getDipProxyDAO().getNativeRecordDAO();
+            Set<String> services = wsContext.getServiceSet( prv );
 
+            NativeRecordDAO ndo = 
+                wsContext.getDipProxyDAO().getNativeRecordDAO();
+            
             if ( ndo != null ){
 
-                // go over providers
-                //------------------
-                
-                for (Iterator<String> ii = providers.iterator();
-                     ii.hasNext(); ) {
-                    
-                    String prv = ii.next();
+                if( getOp() != null ) {
+                    log.info( "op is not null. " );
+                        
+                    for( String opKey:getOp().keySet() ) {
+                        if( opKey.equals( "nativeremove" + prv  ) ) {
+                            //call removeAll
+                            log.info( "call nativeDAO removeAll." );
+                            ndo.removeAll( prv );
+                        }
 
-                    log.info( "prv=" + prv );
-
-                    if( getOp() != null ) {
-                        log.info( "op is not null. " );
-                        for( String opKey:getOp().keySet() ) {
-                            if( opKey.equals( "nativeremove" + prv  ) ) {
-                                //call removeAll
-                                log.info( "call nativeDAO removeAll." );
-                                ndo.removeAll( prv );
-                            }
-
-                            if ( opKey.equals( "nativeexpire" + prv ) ) {
-                                //call expireAll
-                                log.info( "cal nativeDAO expireAll. " );
-                                ndo.expireAll( prv );
-                            }
+                        if ( opKey.equals( "nativeexpire" + prv ) ) {
+                            //call expireAll
+                            log.info( "cal nativeDAO expireAll. " );
+                            ndo.expireAll( prv );
                         }
                     }
-                    
-                    Long prvCounts = ndo.countAll( prv ) ;
-                    if( prvCounts != null ) {
-                        nativeCounts.put( prv, prvCounts );
-                    }
                 }
+                    
+                Map<String, Long> nativeMap = new HashMap<String, Long>();
+                    
+                for (Iterator<String> ii = services.iterator();
+                     ii.hasNext(); ) {
+
+                    String service = ii.next();
+
+                    Long serviceCounts = ndo.countAll( prv, service ) ;
+                    nativeMap.put( service, serviceCounts );
+                }
+
+                nativeCounts.put( prv, nativeMap );
             }
 
-        } catch ( DAOException de ) {
-            log.warn( "DXOException: " + de.toString() );    
-        }
+            DxfRecordDAO ddo = wsContext.getDipProxyDAO().getDxfRecordDAO();
 
-        try {
-
-            DxfRecordDAO ddo = wsContext.getDipProxyDAO()
-                .getDxfRecordDAO();
             if ( ddo != null ){
                 
-                // go over providers
-                //------------------
+                if( getOp() != null ) {
 
-                //Set<String> providers = wsContext.getServices().keySet();
+                    for( String opKey:getOp().keySet() ) {
+                        if( opKey.equals( "dxfremove" + prv  ) ) {
+                            //call removeAll
+                            log.info( "ddo call removeAll. " );
+                            ddo.removeAll( prv );
+                        }
 
-                for (Iterator<String> ii = providers.iterator();
-                     ii.hasNext(); ) {
-
-                    String prv = ii.next();
-
-                    log.info( "prv=" + prv );
-
-                    if( getOp() != null ) {
-
-                        for( String opKey:getOp().keySet() ) {
-                            if( opKey.equals( "dxfremove" + prv  ) ) {
-                                //call removeAll
-                                log.info( "ddo call removeAll. " );
-                                ddo.removeAll( prv );
-                            }
-
-                            if ( opKey.equals( "dxfexpire" + prv ) ) {
-                                //call expireAll
-                                log.info( "ddo call expireAll. " );
-                                ddo.expireAll( prv );
-                            }
+                        if ( opKey.equals( "dxfexpire" + prv ) ) {
+                            //call expireAll
+                            log.info( "ddo call expireAll. " );
+                            ddo.expireAll( prv );
                         }
                     }
+                }
+                    
+                Map<String, Long> dxfMap = new HashMap<String, Long>();
+                    
+                for (Iterator<String> ii = services.iterator();
+                     ii.hasNext(); ) {
 
-                    Long prvCounts = ddo.countAll( prv ) ;
-                    if( prvCounts != null ) {
-                        dxfCounts.put( prv, prvCounts );
+                    String service = ii.next();
+
+                    Long serviceCounts = ddo.countAll( prv, service ) ;
+                    if( serviceCounts != null ) {
+                        dxfMap.put( service, serviceCounts );
                     }
                 }
-            }
-           
-        }catch( DAOException de ) {
-            log.warn( "DAOException: " + de.toString() );
-        }
-        
+                    
+                dxfCounts.put( prv, dxfMap );
 
+            }
+        }
         return "success";
     }
 
