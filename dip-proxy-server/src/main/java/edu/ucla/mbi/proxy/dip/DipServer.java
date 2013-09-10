@@ -38,10 +38,10 @@ import edu.ucla.mbi.dip.dbservice.*;
 
 public class DipServer implements NativeServer {       
 
-    private DipLegacyPort dipLegacyPort;
+    private DipLegacyPort dipLegacyPort = null;
     private String dipLegacyEndpoint = null;
      
-    private DipDxfPort dipPort;
+    private DipDxfPort dipPort = null;
     private String dipEndpoint = null;
 
     private final String detail = "full";
@@ -74,55 +74,51 @@ public class DipServer implements NativeServer {
         if( dipEndpoint != null &&  dipEndpoint.length() > 0 ) {
             dipEndpoint = dipEndpoint.replaceAll( "^\\s+", "" );
             dipEndpoint = dipEndpoint.replaceAll( "\\s+$", "" );
+
+            try {
+                DipDxfService service = new DipDxfService();
+                dipPort = service.getDipDxfPort();
+            
+                if ( dipPort != null ) {
+                    ((BindingProvider) dipPort).getRequestContext()
+                        .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                              dipEndpoint );
+                }
+            } catch ( Exception e ) {
+                log.warn( "DipServer: DipDxfService initializing failed: "
+                       + "reason=" +  e.toString() + ". ");
+                dipPort = null;
+            }
         } else {
             log.warn( "DipServer: DipDxfService initializing failed " +
                       "because of dipEndpoint is not set. " );
-            return;
-            //throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+
+            dipPort = null;
         }
 
         if( dipLegacyEndpoint != null && dipLegacyEndpoint.length() > 0 ) {
             dipLegacyEndpoint = dipLegacyEndpoint.replaceAll( "^\\s+", "" );
             dipLegacyEndpoint = dipLegacyEndpoint.replaceAll( "\\s+$", "" );
+
+            try {
+                DipLegacyService service = new DipLegacyService();
+                dipLegacyPort = service.getLegacyPort();
+
+                if ( dipLegacyPort != null ) {
+                    ((BindingProvider) dipLegacyPort).getRequestContext()
+                        .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                              dipLegacyEndpoint );
+                } 
+            } catch ( Exception e ) {
+                log.warn( "DipServer: DipLegacyService initializing failed: "   
+                           + "reason=" +  e.toString() + ". ");
+                dipLegacyPort = null;
+            }
         } else {
             log.warn( "DipServer: DipLegacyService initializing failed " +
                       "because of dipLegacyEndpoint is not set. " );
-            return;
-            //throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
-        }
-        log.info( " dipLegacyEndpoint=" + dipLegacyEndpoint );
-            
-        try {
-            DipLegacyService service = new DipLegacyService();
-            dipLegacyPort = service.getLegacyPort();
 
-            if ( dipLegacyPort != null ) {
-                ((BindingProvider) dipLegacyPort).getRequestContext()
-                    .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                          dipLegacyEndpoint );
-            } 
-        } catch ( Exception e ) {
-            log.warn( "DipServer: DipLegacyService initializing failed: "   
-                      + "reason=" +  e.toString() + ". ");
             dipLegacyPort = null;
-        }
-        
-        log.info( " dipEndpoint=" + dipEndpoint );
-        
-        try {
-            
-            DipDxfService service = new DipDxfService();
-            dipPort = service.getDipDxfPort();
-            
-            if ( dipPort != null ) {
-                ((BindingProvider) dipPort).getRequestContext()
-                    .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                          dipEndpoint );
-            }
-        } catch ( Exception e ) {
-            log.warn( "DipServer: DipDxfService initializing failed: "
-                       + "reason=" +  e.toString() + ". ");
-            dipPort = null;
         }
     }
 
