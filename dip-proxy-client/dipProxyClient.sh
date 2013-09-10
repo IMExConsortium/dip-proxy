@@ -22,8 +22,14 @@ fi
 #java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.210:8080/dip-proxy/proxy-service $2 $3 $4 $5 $6 $7 $8 $9 $10
 #fi
 
-if [ "$1" = "ncbi-service" ]; then
-java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.NcbiServiceClient http://10.1.200.201:8080/dip-proxy/ncbi-service $2 $3 $4 $5 $6 $7 $8 $9 $10
+if [ "$1" = "ncbi-service-new" ]; then
+java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.NcbiServiceClient http://dip.mbi.ucla.edu/dip-proxy/ws/soap/ncbi-service $2 $3 $4 $5 $6 $7 $8 $9
+
+http://10.1.200.201:8080/dip-proxy/ncbi-service $2 $3 $4 $5 $6 $7 $8 $9 $10
+
+#if [ "$1" = "ncbi-service" ]; then
+#java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.NcbiServiceClient http://10.1.200.201:8080/dip-proxy/ncbi-service $2 $3 $4 $5 $6 $7 $8 $9 $10
+
 #java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://dip.doe-mbi.ucla.edu:80/dip-proxy/ncbi-service $2 $3 $4 $5 $6 $7 $8 $9 $10
 fi
 
