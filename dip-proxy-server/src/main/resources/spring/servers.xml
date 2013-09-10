@@ -144,7 +144,7 @@
       </entry>
 
       <entry key="dipEndpoint">
-        <value>http://10.1.200.203:8080/dip-database-server/dxf-service</value>
+        <value>${dip.endpoint}</value>
       </entry>
     </map>
   </property>

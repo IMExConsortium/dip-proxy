@@ -9,9 +9,9 @@ jetty server running commands:
     mvn -Pdip-proxy-production -Ddbid=id clean jetty:run-war
 ---------------------------------------------------------------------
 tomcat server running commands:
-    mvn -P dip-proxy-dev -Ddbid=id clean jetty:run-war
-    mvn -P dip-proxy-beta clean jetty:run-war
-    mvn -P dip-proxy-production clean jetty:run-war
+    mvn -P dip-proxy-dev -Ddbid=id clean install
+    mvn -P dip-proxy-beta clean install
+    mvn -P dip-proxy-production clean install
 ---------------------------------------------------------------------
 To turn off overlayweaver logginng add:
 

@@ -44,8 +44,8 @@ dev server:
 ./dipProxyClient.sh dbid SGD yeastmine AC=YFL039C NS=sgd FORMAT=native 
 
 ------------FOR OLD VERSION services ---------------------------------
-./dipProxyClient.sh ncbi-service getJournal AC=101526034 DETAIL=full
-
+./dipProxyClient.sh ncbi-service-cxf getJournal AC=101526034 DETAIL=full
+./dipProxyClient.sh ncbi-service-production getJournal AC=101526034 DETAIL=full
 
 ################################################################################
 

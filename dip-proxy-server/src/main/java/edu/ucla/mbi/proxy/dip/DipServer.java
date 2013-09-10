@@ -77,8 +77,8 @@ public class DipServer implements NativeServer {
         } else {
             log.warn( "DipServer: DipDxfService initializing failed " +
                       "because of dipEndpoint is not set. " );
-            //return;
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            return;
+            //throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
 
         if( dipLegacyEndpoint != null && dipLegacyEndpoint.length() > 0 ) {
@@ -87,8 +87,8 @@ public class DipServer implements NativeServer {
         } else {
             log.warn( "DipServer: DipLegacyService initializing failed " +
                       "because of dipLegacyEndpoint is not set. " );
-            //return;
-            throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
+            return;
+            //throw FaultFactory.newInstance( Fault.JSON_CONFIGURATION );
         }
         log.info( " dipLegacyEndpoint=" + dipLegacyEndpoint );
             
