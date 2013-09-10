@@ -95,19 +95,34 @@
          implementor="#proxy-service-bean" />
  
  <jaxws:endpoint id="cxf-ncbi-ws-current" address="/soap/ncbi-service"
+    endpointName="e:proxyPort" serviceName="s:NcbiProxyService"
+    xmlns:e="http://mbi.ucla.edu/proxy/ncbi"
+    xmlns:s="http://mbi.ucla.edu/proxy/ncbi"
          implementor="#ncbi-service-bean" />
 
  <jaxws:endpoint id="cxf-ebi-ws-current" address="/soap/ebi-service"
+    endpointName="e:proxyPort" serviceName="s:EbiProxyService"
+    xmlns:e="http://mbi.ucla.edu/proxy/ebi"
+    xmlns:s="http://mbi.ucla.edu/proxy/ebi"
          implementor="#ebi-service-bean" />
 
  <jaxws:endpoint id="cxf-dht-ws-current" address="/soap/dht-service"
-         implementor="#dht-service-bean" />
+    endpointName="e:proxyPort" serviceName="s:DhtProxyService"
+    xmlns:e="http://mbi.ucla.edu/proxy/dht"
+    xmlns:s="http://mbi.ucla.edu/proxy/dht"
+    implementor="#dht-service-bean" />
 
  <jaxws:endpoint id="cxf-dip-ws-current" address="/soap/dip-service"
-         implementor="#dip-service-bean" />
+    endpointName="e:proxyPort" serviceName="s:DipProxyService"
+    xmlns:e="http://mbi.ucla.edu/proxy/dip"
+    xmlns:s="http://mbi.ucla.edu/proxy/dip"
+    implementor="#dip-service-bean" />
 
  <jaxws:endpoint id="cxf-prolinks-ws-current" address="/soap/prolinks-service"
-         implementor="#prolinks-service-bean" />
+   endpointName="e:proxyPort" serviceName="s:ProlinksProxyService"
+   xmlns:e="http://mbi.ucla.edu/proxy/prolinks"
+   xmlns:s="http://mbi.ucla.edu/proxy/prolinks"
+   implementor="#prolinks-service-bean" />
  
 
  <!-- new addition -->
