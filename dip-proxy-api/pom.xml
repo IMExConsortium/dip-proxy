@@ -15,13 +15,13 @@
   </parent>
   
   <dependencies>
-
+   <!--
    <dependency>
      <groupId>edu.ucla.mbi.dip</groupId>
      <artifactId>dip-util-ws</artifactId>
      <version>0.03</version>
    </dependency>
-
+   -->
    <dependency>
     <groupId>com.sun.xml.ws</groupId>
     <artifactId>jaxws-rt</artifactId>
@@ -35,6 +35,7 @@
 
    <plugins>
     <!-- unpack DXF14.xsd and services.xsd from dip-util-ws.jar -->
+    <!--
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-dependency-plugin</artifactId>
@@ -59,7 +60,7 @@
         </execution>
       </executions>
     </plugin>
-
+    -->
     <plugin>
      <groupId>org.codehaus.mojo</groupId>
      <artifactId>jaxws-maven-plugin</artifactId>
