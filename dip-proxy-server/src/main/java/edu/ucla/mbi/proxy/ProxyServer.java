@@ -196,7 +196,11 @@ public class ProxyServer extends ConfigurableServer {
                 if( detail.equalsIgnoreCase( "stub" ) ) {
                     detail = "base"; // picr cann't support detail with stub
                 }
-                
+            
+                if( ns.equalsIgnoreCase( "uniprotkb" ) ) {
+                    ns = "uniprot";
+                }    
+
                 if( ns == null || ns.equals( "" ) ) {
                     log.info( " ns is missed. " );
                     throw ServerFaultFactory.newInstance( Fault.UNSUPPORTED_OP );
