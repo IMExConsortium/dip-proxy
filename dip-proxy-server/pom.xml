@@ -9,7 +9,8 @@
 
   <properties>
 
-    <ramcache>on</ramcache>
+    <!--<ramcache>on</ramcache>-->
+    <ramcache>off</ramcache>
     <proxy.version>${project.version}</proxy.version>
     <proxy.bld>$Rev$</proxy.bld>
     <!--<dip.endpoint>http://10.1.200.203:8080/dip-database-server/dxf-service</dip.endpoint>-->
@@ -21,8 +22,9 @@
  
     <dht.routing>Chord</dht.routing>  
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
-    <hibernate.connection.portnum>5432</hibernate.connection.portnum>
+    <hibernate.connection.url>jdbc:postgresql://10.1.200.1:5432/proxyws${dbid}</hibernate.connection.url>
 
+    <hibernate.connection.portnum>5432</hibernate.connection.portnum>
     <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
     <hibernate.connection.servername>10.1.200.1</hibernate.connection.servername>
 
@@ -40,7 +42,7 @@
       </activation>
       <properties>
         <dip-proxy.css>icentral-test.css</dip-proxy.css>
-        <dbid>201</dbid>
+        <dbid>203</dbid>
         <!--- using JNDI -->
         <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
         <hibernate.connection.servername>10.1.200.1</hibernate.connection.servername>
