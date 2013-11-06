@@ -185,7 +185,8 @@ public class EbiServer implements NativeServer {
             try {
 
                 List<UPEntry> entries =
-                        picrPort.getUPIForAccession( ac, "", searchDB, "", true );
+                //picrPort.getUPIForAccession( ac, "", searchDB, "", true );
+                    picrPort.getUPIForAccession( ac, "", searchDB, "", false );
 
                 log.info( "EbiServer: got entries: " + entries );
                 
