@@ -317,7 +317,7 @@ public class CachingService {
             try { 
                 nativeRecord  = getNative( provider, service, ns, ac );
             } catch ( ServerFault fault ) {
-                log.warn( "getDxf: getNative fault. " ); 
+                log.warn( "getDxf: getNative fault for ac=" + ac + ". " ); 
                 serverFault = fault;
             } 
             
@@ -371,7 +371,7 @@ public class CachingService {
             return expiredDxf;
 
         } else if ( serverFault != null ) {
-            log.warn( "getDxf: throw a serverFault. " );
+            log.warn( "getDxf: throw a serverFault for ac=" + ac + ". " );
             throw serverFault;
         } else {
             log.info( "getDxf: return a null. " );

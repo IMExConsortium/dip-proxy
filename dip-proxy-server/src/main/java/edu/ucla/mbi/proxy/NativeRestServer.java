@@ -50,8 +50,9 @@ public class NativeRestServer implements NativeServer, DomServer {
             restServer.getNativeString( provider, service, ns, ac, timeout );
 
         if( retVal == null || retVal.isEmpty() ) {
-            log.warn( "getNativeRecord: return retVal is null or empty. " );
-            throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+            log.warn( "getNativeRecord: return retVal is null or empty" +
+                      "for query ac=" + ac + ". " );
+            throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
         } 
 
         if( retVal.endsWith( "</cause></error></ResultSet>" ) ) {

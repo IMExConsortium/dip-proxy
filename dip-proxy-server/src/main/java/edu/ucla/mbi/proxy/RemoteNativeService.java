@@ -111,7 +111,7 @@ class RemoteNativeService {
 
             } catch( ServerFault fault ) {
                 log.warn( "getNativeFromRemote: RemoteServer getNative() " + 
-                          "fault: " + fault.getMessage()); 
+                          "fault for ac=" + ac + ": " + fault.getMessage()); 
                 retryFault = fault;
                 deleteFlag = true;
                 

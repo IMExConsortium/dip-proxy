@@ -189,7 +189,8 @@ public class ProxyTransformer implements ContextListener {
             if ( dxfResult.getNode().isEmpty()
                  || dxfResult.getNode().get(0).getAc().equals("") ) {
 
-                throw ServerFaultFactory.newInstance( Fault.TRANSFORM );
+                //throw ServerFaultFactory.newInstance( Fault.TRANSFORM );
+                throw ServerFaultFactory.newInstance( Fault.INVALID_ID );
             }
 
             return dxfResult;
