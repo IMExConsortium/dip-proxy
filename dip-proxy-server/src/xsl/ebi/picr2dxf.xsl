@@ -24,7 +24,10 @@
     <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
     <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
-    <xsl:key name="unique_ac_list" match="getUPIForAccessionResponse/getUPIForAccessionReturn/identicalCrossReferences" use="accession"/>
+    <xsl:key name="unique_ac_list" 
+             match="//identicalCrossReferences[../identicalCrossReferences[accession/text() = $edu.ucla.mbi.services.ac 
+                    or starts-with( accession/text(), concat( $edu.ucla.mbi.services.ac, '-' ) )]]" 
+             use="accession"/> 
 
     <xsl:template match="/">
         <ns1:dataset>
@@ -33,10 +36,6 @@
     </xsl:template>
     
     <xsl:template match="getUPIForAccessionResponse">
-      <!-- comment: test if active record exists -->
-      <!-- <xsl:if test="getUPIForAccessionReturn/identicalCrossReferences[
-                        starts-with(accession/text(), $edu.ucla.mbi.services.ac)
-                            and deleted/text()='false']"> -->
         <xsl:element name="ns1:node">
             <xsl:attribute name="ac">
                 <xsl:value-of select="$edu.ucla.mbi.services.ac"/>
@@ -60,7 +59,9 @@
                             or $edu.ucla.mbi.services.detail = 'full'">
                 <xsl:element name="ns1:xrefList">
                     <xsl:for-each select="getUPIForAccessionReturn">
-                        <xsl:if test="identicalCrossReferences[starts-with(accession/text(), $edu.ucla.mbi.services.ac)]">
+                        <!-- comment: ac is the same as the queried one or ac is the isoform of the queried one-->
+                        <xsl:if test="identicalCrossReferences[ accession/text() = $edu.ucla.mbi.services.ac ] 
+                                     or identicalCrossReferences[ starts-with( accession/text(), concat( $edu.ucla.mbi.services.ac, '-' ) ) ]">
                             <xsl:call-template name="accessionReturn"/>
                         </xsl:if>       
                     </xsl:for-each>
@@ -71,7 +72,6 @@
 
     <xsl:template name="accessionReturn">
         <xsl:variable name="seq" select="sequence"/>
-        <!--    <xsl:for-each select="identicalCrossReferences[deleted/text()='false']"> -->
         <xsl:for-each select="identicalCrossReferences">
             <xsl:variable name="ac" select="accession/text()"/>
 	        <xsl:variable name="flag" select="deleted/text()"/> 
@@ -79,21 +79,21 @@
             <xsl:variable name="dbdescription" select="databaseDescription/text()"/>
             <xsl:variable name="dbname" select="databaseName/text()"/>
                                 
-            <xsl:if test="$edu.ucla.mbi.services.detail ='base' 
-                          and generate-id(.) = generate-id(key('unique_ac_list', $ac )[1]) ">
-
-                <xsl:call-template name="xref">
-                    <xsl:with-param name="type">related-to</xsl:with-param>
-                    <xsl:with-param name="ac">
-                        <xsl:value-of select="$ac"/>
-                    </xsl:with-param>
-                    <xsl:with-param name="dbname">
-                        <xsl:value-of select="$dbname"/>
-                    </xsl:with-param>
-                    <xsl:with-param name="dbdescription">
-                        <xsl:value-of select="$dbdescription"/>
-                    </xsl:with-param>
-                </xsl:call-template>
+            <xsl:if test="$edu.ucla.mbi.services.detail ='base'">
+                <xsl:if test="generate-id(.) = generate-id(key('unique_ac_list', $ac )[1]) "> 
+                    <xsl:call-template name="xref">
+                        <xsl:with-param name="type">related-to</xsl:with-param>
+                        <xsl:with-param name="ac">
+                            <xsl:value-of select="$ac"/>
+                        </xsl:with-param>
+                        <xsl:with-param name="dbname">
+                            <xsl:value-of select="$dbname"/>
+                        </xsl:with-param>
+                        <xsl:with-param name="dbdescription">
+                            <xsl:value-of select="$dbdescription"/>
+                        </xsl:with-param>
+                    </xsl:call-template>
+                </xsl:if>
             </xsl:if>
                             
             <xsl:if test="$edu.ucla.mbi.services.detail='full'">

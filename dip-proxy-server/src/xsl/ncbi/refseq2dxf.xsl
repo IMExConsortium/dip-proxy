@@ -31,13 +31,20 @@
 	    <xsl:value-of select="INSDSeq/INSDSeq_locus/text()"/>
       </xsl:element>
 
+      <!-- addition on 01/28/14 -->
+      <xsl:element name="ns1:name">
+        <xsl:value-of select="INSDSeq/INSDSeq_definition/text()"/>  
+      </xsl:element>
+
+      <!-- delete on 01/28/14 -->
+      <!--
       <xsl:variable name="nodename" select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='Protein']/INSDFeature_quals/INSDQualifier[INSDQualifier_name='note']/INSDQualifier_value/text()"/>
       <xsl:if test="$nodename != ''">
         <xsl:element name="ns1:name">
 	        <xsl:value-of select="$nodename"/>  
         </xsl:element>
       </xsl:if>
-
+      -->  
       <xsl:if test="$edu.ucla.mbi.services.detail != 'stub'">   
          
         <xsl:element name="ns1:xrefList">
@@ -126,16 +133,58 @@
             </xsl:if>
         </xsl:element>
       </xsl:if>
- 
-      <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
-        <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
-        <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
-        <xsl:variable name="seq" select="INSDSeq/INSDSeq_sequence/text()"/>
-        <xsl:variable name="mat_pep" select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='mat_peptide']/INSDFeature_quals/INSDQualifier[INSDQualifier_name='peptide']/INSDQualifier_value/text()"/>
+      <xsl:element name="ns1:attrList">
+        <!-- addition on 01/28/14 -->
+        <xsl:for-each select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='CDS']/INSDFeature_quals/INSDQualifier">
+            <xsl:choose>
+                <xsl:when test="INSDQualifier_name='gene'">
+                    <xsl:element name="ns1:attr">
+                        <xsl:attribute name="name">gene-name-primary</xsl:attribute>
+                        <xsl:attribute name="ac">dip:0055</xsl:attribute>
+                        <xsl:call-template name="attr-value"/>
+                    </xsl:element>
+                </xsl:when>
+                    
+                <xsl:when test="INSDQualifier_name='gene_synonym'">
+                    <xsl:variable name="gene_synonym_list" select="INSDQualifier_value"/>
+                    <xsl:choose>
+                        <xsl:when test="not(contains($gene_synonym_list, ';'))">
+                            <xsl:element name="ns1:attr">
+                                <xsl:attribute name="name">gene-name-synonym</xsl:attribute>
+                                <xsl:attribute name="ac">dip:0056</xsl:attribute>
+                                <xsl:attribute name="ns">dip</xsl:attribute>
+                                <xsl:element name="value">
+                                    <xsl:value-of select="normalize-space($gene_synonym_list)" />
+                                </xsl:element>  
+                            </xsl:element>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:call-template name="parseString">
+                                <xsl:with-param name="list" select="$gene_synonym_list"/>
+                            </xsl:call-template>         
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+                  
+                <xsl:when test="INSDQualifier_name='locus_tag'">
+                    <xsl:element name="ns1:attr">
+                        <xsl:attribute name="name">gene-ordered-locus</xsl:attribute>
+                        <xsl:attribute name="ac">dip:0057</xsl:attribute>
+                        <xsl:call-template name="attr-value"/>
+                    </xsl:element>
+                </xsl:when>
+            </xsl:choose>
+        </xsl:for-each>
 
-        <xsl:if test="$seq != '' or $mat_pep != ''">
-            <xsl:element name="ns1:attrList">
+        <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
+            <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
+            <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
+
+            <xsl:variable name="seq" select="INSDSeq/INSDSeq_sequence/text()"/>
+            <xsl:variable name="mat_pep" select="INSDSeq/INSDSeq_feature-table/INSDFeature[INSDFeature_key='mat_peptide']/INSDFeature_quals/INSDQualifier[INSDQualifier_name='peptide']/INSDQualifier_value/text()"/>
+
+            <xsl:if test="$seq != '' or $mat_pep != ''">
                 <xsl:if test="$seq != ''">
 	                <xsl:element name="ns1:attr">	      
 	                    <xsl:attribute name="name">sequence</xsl:attribute>
@@ -159,10 +208,48 @@
                         </xsl:element>
                     </xsl:element>
                 </xsl:if>
-            </xsl:element> 
+            </xsl:if>
         </xsl:if>
-      </xsl:if>
+      </xsl:element>
     </xsl:element> 
+  </xsl:template>
+
+  <!-- addition on 01/28/14 -->
+  <xsl:template name="attr-value">
+    <xsl:attribute name="ns">dip</xsl:attribute>
+    <xsl:element name="value">
+        <xsl:value-of select="INSDQualifier_value" />
+    </xsl:element>
+  </xsl:template>
+
+  <!-- addition on 01/28/14 -->
+  <xsl:template name="parseString">
+    <xsl:param name="list"/>
+    <xsl:choose>
+      <xsl:when test="contains($list, ';')">
+        <xsl:element name="ns1:attr">
+            <xsl:attribute name="name">gene-name-synonym</xsl:attribute>
+            <xsl:attribute name="ac">dip:0056</xsl:attribute>
+            <xsl:attribute name="ns">dip</xsl:attribute>
+            <xsl:element name="value">
+                <xsl:value-of select="normalize-space(substring-before($list, ';'))" />
+            </xsl:element>
+        </xsl:element>
+        <xsl:call-template name="parseString">
+            <xsl:with-param name="list" select="substring-after($list,';')"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:element name="ns1:attr">
+            <xsl:attribute name="name">gene-name-synonym</xsl:attribute>
+            <xsl:attribute name="ac">dip:0056</xsl:attribute>
+            <xsl:attribute name="ns">dip</xsl:attribute>
+            <xsl:element name="value">
+                <xsl:value-of select="normalize-space($list)" />
+            </xsl:element>
+        </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="instance-of">

@@ -31,11 +31,36 @@
       </xsl:element>
 
       <xsl:element name="ns1:name">
-	      <xsl:value-of select="ebi:entry/ebi:protein/ebi:name"/>
+        <!-- modify on 01/27/14 -->
+        <xsl:choose>
+            <xsl:when test="ebi:entry/ebi:protein/ebi:name != ''">
+	            <xsl:value-of select="ebi:entry/ebi:protein/ebi:name"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:if  test="ebi:entry/ebi:protein/ebi:recommendedName/ebi:fullName != '' ">
+                    <xsl:value-of select="ebi:entry/ebi:protein/ebi:recommendedName/ebi:fullName"/>
+                </xsl:if>
+            </xsl:otherwise>
+        </xsl:choose>
       </xsl:element>
 
       <xsl:if test="$edu.ucla.mbi.services.detail != 'stub'">
         <xsl:element name="ns1:xrefList">
+
+            <!-- addition on 01/27/14 -->
+            <xsl:for-each select="ebi:entry/ebi:accession">
+                <xsl:if test="position() != 1 ">
+                    <xsl:element name="ns1:xref">
+                        <xsl:attribute name="type">related-to</xsl:attribute>
+                        <xsl:attribute name="typeAc">dxf:0018</xsl:attribute>
+                        <xsl:attribute name="typeNs">dxf</xsl:attribute>
+                        <xsl:attribute name="ac">
+                            <xsl:value-of select="."/>
+                        </xsl:attribute>
+                        <xsl:attribute name="ns">uniprot</xsl:attribute>
+                    </xsl:element>
+                </xsl:if>
+            </xsl:for-each>
 
             <xsl:element name="ns1:xref">
 	            <xsl:attribute name="type">produced-by</xsl:attribute>
@@ -84,8 +109,35 @@
 
         </xsl:element>
 
-        <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
-            <xsl:element name="ns1:attrList">
+        <!-- addition on 01/27/14 -->
+        <xsl:element name="ns1:attrList">
+            <xsl:for-each select="ebi:entry/ebi:gene/ebi:name">
+                <xsl:choose>
+                    <xsl:when test="@type='primary'">
+                        <xsl:element name="ns1:attr">         
+                            <xsl:attribute name="name">gene-name-primary</xsl:attribute>
+                            <xsl:attribute name="ac">dip:0055</xsl:attribute>
+                            <xsl:call-template name="attr-value"/>
+                        </xsl:element>
+                    </xsl:when>
+                    <xsl:when test="@type='synonym'">
+                        <xsl:element name="ns1:attr"> 
+                            <xsl:attribute name="name">gene-name-synonym</xsl:attribute>
+                            <xsl:attribute name="ac">dip:0056</xsl:attribute>
+                            <xsl:call-template name="attr-value"/>
+                        </xsl:element>
+                    </xsl:when>
+                    <xsl:when test="@type='ordered locus'">
+                        <xsl:element name="ns1:attr"> 
+                            <xsl:attribute name="name">gene-ordered-locus</xsl:attribute>
+                            <xsl:attribute name="ac">dip:0057</xsl:attribute>
+                            <xsl:call-template name="attr-value"/>
+                        </xsl:element>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:for-each>
+
+            <xsl:if test="$edu.ucla.mbi.services.detail = 'full'">
                 <xsl:element name="ns1:attr">	      
 	                <xsl:attribute name="ns">dip</xsl:attribute>
 	                <xsl:attribute name="ac">dip:0008</xsl:attribute>
@@ -99,10 +151,17 @@
 	    
                     </xsl:element> 
                 </xsl:element>
-            </xsl:element> 
-        </xsl:if>
+            </xsl:if>
+        </xsl:element>
 
       </xsl:if>
     </xsl:element> 
+  </xsl:template>
+
+  <xsl:template name="attr-value">
+    <xsl:attribute name="ns">dip</xsl:attribute>
+    <xsl:element name="ns1:value">
+        <xsl:value-of select="text()" />
+    </xsl:element>
   </xsl:template>
 </xsl:stylesheet>
