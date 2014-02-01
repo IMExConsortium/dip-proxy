@@ -53,7 +53,9 @@
       <xs:sequence>
        <xs:element name="dataset" type="dxf:datasetType" minOccurs="1" />
        <xs:element name="create" type="xs:string" default="top"/>
+       <!-- create="force|top|none|all" -->
        <xs:element name="update" type="xs:string" default="top"/>
+       <!-- update="top|none|all" -->
       </xs:sequence>
      </xs:complexType>
     </xs:element>   

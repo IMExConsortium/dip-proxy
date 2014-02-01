@@ -20,6 +20,12 @@
       <artifactId>dip-proxy-api</artifactId>
       <version>0.03</version>
     </dependency>
+
+    <dependency>
+      <groupId>edu.ucla.mbi.dip</groupId>
+      <artifactId>dip-util-ws</artifactId>
+      <version>0.03</version>
+    </dependency>
   </dependencies>
 
   <build>

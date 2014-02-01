@@ -133,7 +133,7 @@
  </bean>
  
  <!-- DIP proxy services -->
-
+ 
  <bean id="dipReferenceServer" init-method="initialize"
        class="edu.ucla.mbi.proxy.dip.DipServer">
 
@@ -148,5 +148,5 @@
       </entry>
     </map>
   </property>
- </bean>
+ </bean> 
  </beans>

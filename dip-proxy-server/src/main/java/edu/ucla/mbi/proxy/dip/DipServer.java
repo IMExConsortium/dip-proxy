@@ -150,9 +150,10 @@ public class DipServer implements NativeServer {
                                   timeout );
             } 
 
+            log.info( "getNative: service is dip. ");
             if( ac.substring( ac.length()-2, ac.length()-1 )
-                                                            .equals( "L" ) ) 
-            {
+                    .equals( "L" ) ) {
+
                 //*** link ac with format DIP-\d+LP
                 log.info( "ac=" + ac + " for getLink. " );
                 try {
@@ -162,7 +163,7 @@ public class DipServer implements NativeServer {
                     if( fault.getFaultInfo().getFaultCode() == 5 ) { 
                         throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
-                        log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
+                        log.warn( "getNative ac=" + ac + ": fault=" + fault.getFaultInfo().getMessage() );
                         throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT ); 
                     }
                 }
@@ -176,7 +177,8 @@ public class DipServer implements NativeServer {
                     if( fault.getFaultInfo().getFaultCode() == 5 ) {
                         throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
-                        log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
+                        log.warn( "getNative ac=" + ac + ": fault=" + 
+                                  fault.getFaultInfo().getMessage() );
                         throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                     }
                 }
@@ -190,7 +192,8 @@ public class DipServer implements NativeServer {
                     if( fault.getFaultInfo().getFaultCode() == 5 ) {
                         throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
-                        log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
+                        log.warn( "getNative ac=" + ac + ": fault=" + 
+                                  fault.getFaultInfo().getMessage() );
                         throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                     }
                 }
@@ -199,13 +202,17 @@ public class DipServer implements NativeServer {
             {
                 //*** dipnode (protein, gene, message) ac with 
                 //*** format (DIP-\\d+NP) | (DIP-\\d+NG) | (DIP-\\d+NM)
+                log.info( "getNative: ac ends with N. ac=" + ac + 
+                          " and detail=" + detail +". " );
                 try {
                     retList = dipPort.getNode( "dip", ac, "", detail, "dxf" );
                 } catch ( DipDbFault fault ) {
                     if( fault.getFaultInfo().getFaultCode() == 5 ) {
+                        log.info( "getNative: no record fault. " );
                         throw ServerFaultFactory.newInstance( Fault.NO_RECORD );
                     } else {
-                        log.warn( "getNative: fault=" + fault.getFaultInfo().getMessage() );
+                        log.warn( "getNative ac=" + ac + ": fault=" + 
+                                   fault.getFaultInfo().getMessage() );
                         throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
                     }
                 }

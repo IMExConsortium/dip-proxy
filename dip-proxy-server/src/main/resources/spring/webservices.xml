@@ -50,11 +50,12 @@
    <property name="wsContext" ref="wsContext"/> 
  </bean>
 
+  
  <bean id="dip-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.dip.DipCachingImpl" >
    <property name="cachingService" ref="caching-service"/>
    <property name="wsContext" ref="wsContext"/>
- </bean>
+ </bean>  
 
  <bean id="prolinks-service-bean" init-method="initialize"
        class="edu.ucla.mbi.proxy.prolinks.ProlinksCachingImpl" >

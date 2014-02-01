@@ -13,8 +13,8 @@
     <ramcache>off</ramcache>
     <proxy.version>${project.version}</proxy.version>
     <proxy.bld>$Rev$</proxy.bld>
-    <!--<dip.endpoint>http://10.1.200.203:8080/dip-database-server/dxf-service</dip.endpoint>-->
-    <dip.endpoint></dip.endpoint>
+    <!--<dip.endpoint>http://10.1.200.201:8080/dip-database/dxf-service</dip.endpoint> -->
+    <dip.endpoint>http://dip.mbi.ucla.edu/dip-database/dxf-service</dip.endpoint> 
 
     <dbid></dbid>
 
@@ -226,11 +226,23 @@
     </dependency>
    
     <dependency>
-        <groupId>xalan</groupId>
-        <artifactId>xalan</artifactId>
-        <version>2.7.1</version>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.1</version>
     </dependency>
-
+    <!-- 
+    <dependency> 
+      <groupId>edu.ucla.mbi.dip</groupId> 
+      <artifactId>dip-database-api</artifactId> 
+      <version>0.02</version> 
+    </dependency> 
+    
+    <dependency> 
+      <groupId>edu.ucla.mbi.dip</groupId> 
+      <artifactId>dip-legacy-api</artifactId> 
+      <version>0.02</version> 
+   </dependency>  
+   -->
   </dependencies>
 
   <build>
