@@ -49,24 +49,26 @@ dev server:
 
 ################################################################################
 
-curl command test RESTful service:
+curl command test RESTful service 
+ dev server: http://dip.mbi.ucla.edu:55601
+ beta server: http://dip.mbi.ucla.edu
 
 GET:
-curl http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/native-record/EBI/picr/refseq/NP_500606
+curl http://dip.mbi.ucla.edu:55601/dip-proxy/ws/rest/proxy-service/native-record/EBI/picr/refseq/NP_500606
 
-curl --get --data "detail=base" http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/dxf-record/EBI/picr/refseq/NP_500606
+curl --get --data "detail=base" http://dip.mbi.ucla.edu:55601/dip-proxy/ws/rest/proxy-service/dxf-record/EBI/picr/refseq/NP_500606
 
 POST:
-curl --data "{provider:'EBI', service:'picr', ns:'refseq', ac:'NP_500606'}" http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/query-native --header "Content-Type:application/json"
+curl --data "{provider:'EBI', service:'picr', ns:'refseq', ac:'NP_500606'}" http://dip.mbi.ucla.edu:55601/dip-proxy/ws/rest/proxy-service/query-native --header "Content-Type:application/json"
 
 /* using test json file */
-curl --data @test http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/query-dxf --header "Content-Type:application/json"
+curl --data @test http://dip.mbi.ucla.edu:55601/dip-proxy/ws/rest/proxy-service/query-dxf --header "Content-Type:application/json"
 
-curl --data "{provider:'EBI', service:'picr', ns:'refseq', ac:'NP_500606', detail:'base'}" http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/query-dxf --header "Content-Type:application/json"
+curl --data "{provider:'EBI', service:'picr', ns:'refseq', ac:'NP_500606', detail:'base'}" http://dip.mbi.ucla.edu:55601/dip-proxy/ws/rest/proxy-service/query-dxf --header "Content-Type:application/json"
 
 RETRIEVE GET RESPONSE HEADER( including fault info )
 curl --head **** or curl -I ***
-curl -I http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/native-record/EBI/picr/refseq/NP_500606
+curl -I http://dip.mbi.ucla.edu:55601/dip-proxy/ws/rest/proxy-service/native-record/EBI/picr/refseq/NP_500606
 HTTP/1.1 200 OK
 Date: Wed, 15 May 2013 23:41:47 GMT
 Server: Jetty(6.1.25)
@@ -75,7 +77,7 @@ Content-Type: text/plain
 
 
 RETRIEVE POST RESPONSE HEADER using -D-
-curl --data "{provider:'EBI', service:'pic', ns:'refseq', ac:'NP_500606'}" http://dip.mbi.ucla.edu:55601/dip-proxy/current/rest/proxy-service/query-native --header "Content-Type:application/json" -D-
+curl --data "{provider:'EBI', service:'pic', ns:'refseq', ac:'NP_500606'}" http://dip.mbi.ucla.edu:55601/dip-proxy/ws/rest/proxy-service/query-native --header "Content-Type:application/json" -D-
 
 HTTP/1.1 500 Internal Server Error
 Date: Wed, 15 May 2013 23:53:25 GMT
