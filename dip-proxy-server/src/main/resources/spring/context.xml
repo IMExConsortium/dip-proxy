@@ -5,11 +5,9 @@
     xmlns:tx="http://www.springframework.org/schema/tx"
     xsi:schemaLocation="
       http://www.springframework.org/schema/beans 
-      http://www.springframework.org/schema/beans/spring-beans.xsd
-    
+      http://www.springframework.org/schema/beans/spring-beans.xsd     
       http://www.springframework.org/schema/tx 
-      http://www.springframework.org/schema/tx/spring-tx.xsd
-      
+      http://www.springframework.org/schema/tx/spring-tx.xsd 
       http://www.springframework.org/schema/aop 
       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
@@ -48,41 +46,40 @@
  <bean id="wsContext" init-method="initialize" destroy-method="cleanup"
        class="edu.ucla.mbi.proxy.context.WSContext">
 
+  <!-- proxy database access -->
+
   <property name="dipProxyDAO" ref="dipProxyDAO" />   
 
-  <property name="dht" ref="dht" />
-  <property name="mcClient" ref="mcClient" />
+  <!-- memcached access -->
 
+  <property name="mcClient" ref="mcClient" />
+  
   <property name="services">
    <map>
      <entry key="EBI">  
       <map>
-       <entry key="timeout" value="600"/> <!-- NOTE: default unit seconds -->
-       <entry key="ttl" value="17"/>  <!-- NOTE: default unit days --> 
+       <entry key="timeout" value="600"/>  <!-- NOTE: default unit seconds -->
+       <entry key="ttl" value="17"/>       <!-- NOTE: default unit days --> 
        <entry key="maxRetry" value="3"/>
+
+       <!-- native record server - original data provider --> 
 
        <entry key="nativeServer"> 
             <ref bean="ebiReferenceServer"/>
        </entry>      
-      
-       <entry key="proxyProto"> 
-        <ref bean="referenceProxy"/>
-       </entry>      
-    
+          
+       <!-- record transformations -->
+
        <entry key="transformer">
          <ref bean="proxyTransformer" /> 
        </entry>
-
-       <entry key="router">
-        <ref bean="ebiDhtRouter"/> 
-        <!-- <ref bean="ebiSimpleRouter"/>  -->
-       </entry>
-        
+       
        <entry key="ramCache" value="${ramcache}"/>
        <entry key="dbCache" value="on"/>
-       <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
+
+       <!-- services offered -->
 
        <entry key="serviceSet">
          <set>
@@ -99,27 +96,18 @@
       <map> 
        <entry key="timeout" value="600"/>
        <entry key="ttl" value="30"/>
-       <entry key="maxRetry" value="3"/>
+       <entry key="maxRetry" value="1"/>
 
        <entry key="nativeServer">
         <ref bean="ncbiReferenceServer"/>
-       </entry>      
-              
-       <entry key="proxyProto"> 
-        <ref bean="referenceProxy"/>
        </entry>      
 
        <entry key="transformer">
          <ref bean="proxyTransformer" />
        </entry>
-
-       <entry key="router">
-        <ref bean="ncbiDhtRouter"/> 
-       </entry>
        
        <entry key="ramCache" value="${ramcache}"/>
        <entry key="dbCache" value="on"/>
-       <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/> 
 
@@ -130,43 +118,6 @@
            <value>nlm</value>
            <value>entrezgene</value>
            <value>taxon</value>
-         </set>
-       </entry>
-
-      </map>
-     </entry>
-
-     <entry key="MBI"> 
-      <map>
-       <entry key="timeout" value="600"/>
-       <entry key="ttl"     value="14"/>
-       <entry key="maxRetry" value="3"/> 
-
-       <entry key="nativeServer">  
-        <ref bean="prlReferenceServer"/>
-       </entry>      
-
-       <entry key="proxyProto"> 
-        <ref bean="referenceProxy"/>
-       </entry>      
-
-       <entry key="transformer">
-         <ref bean="prolinksTransformer" />
-       </entry>
-        
-       <entry key="router">
-        <ref bean="mbiDhtRouter"/> 
-       </entry>
-
-       <entry key="ramCache" value="${ramcache}"/>
-       <entry key="dbCache" value="on"/>
-       <entry key="remoteProxy" value="off"/>
-       <entry key="monitor" value="off"/>
-       <entry key="debug" value="0"/>
-
-       <entry key="serviceSet">
-         <set>
-           <value>prolinks</value>
          </set>
        </entry>
 
@@ -183,21 +134,12 @@
         <ref bean="dipReferenceServer"/>
        </entry>      
 
-       <entry key="proxyProto">
-        <ref bean="referenceProxy"/>
-       </entry>
-       
        <entry key="transformer">
          <ref bean="proxyTransformer" />
        </entry>
-
-       <entry key="router">
-        <ref bean="dipDhtRouter"/> 
-       </entry>
-
+       
        <entry key="ramCache" value="${ramcache}"/>
        <entry key="dbCache" value="on"/>
-       <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
   
@@ -221,21 +163,12 @@
          <ref bean="nativeRestServer"/>
        </entry>
 
-       <entry key="proxyProto">
-        <ref bean="referenceProxy"/>
-       </entry>
-
        <entry key="transformer">
          <ref bean="proxyTransformer" />
        </entry>
 
-       <entry key="router">
-         <ref bean="yeastMineDhtRouter"/> 
-       </entry>
-
        <entry key="ramCache" value="${ramcache}"/>
        <entry key="dbCache" value="on"/>
-       <entry key="remoteProxy" value="off"/>
        <entry key="monitor" value="off"/>
        <entry key="debug" value="0"/>
 

@@ -11,20 +11,20 @@
         <tr><td colspan="2"/><br></td></tr>
 
         <ul>
-            <s:set name="contextTopMap" value="contextMap.get(contextTop)"/>  
+            <s:set var="contextTopMap" value="contextMap.get(contextTop)"/>  
 
            <s:if test='#contextTopMap.size > 0'> 
              <s:iterator value="#contextTopMap" status="serverMap">
-                <s:set name="provider" value="key"/>
+                <s:set var="provider" value="key"/>
                 <tr><td colspan="2" align="left"/><li>provider:<s:property value="#provider"/></li>
                 </td></tr> 
                
                 <s:if test='value.size > 0'>    
 
-                    <s:set name="providerSize" value="value.size"/> 
+                    <s:set var="providerSize" value="value.size"/> 
 
                     <s:iterator value="value" status="serviceMap">
-                        <s:set name="service" value="key"/>
+                        <s:set var="service" value="key"/>
                         
                         <tr><td colspan="2" align="left"/>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service:<s:property value="#service"/>
@@ -33,15 +33,15 @@
                         <s:if test='value.size > 0'>
                           <s:iterator value="value" status="restMap">
 
-                            <s:set name="oppKey" value=" #provider + '_' + #service + '_' +  key"/>
+                            <s:set var="oppKey" value=" #provider + '_' + #service + '_' +  key"/>
 
-                            <s:set name="oppPropName" value="'opp.' + #oppKey"/>
+                            <s:set var="oppPropName" value="'opp.' + #oppKey"/>
                             <tr>
                                 <td align="right"/><s:property value="key"/>:</td>
                                  
                                 <td align="left"/>
                                 <s:if test="value.length() > 110 ">
-                                    <s:set name="colNum" value="value.length() / 100 + 1 "/>
+                                    <s:set var="colNum" value="value.length() / 100 + 1 "/>
                                     <s:textarea theme="simple"
                                                 name="%{#oppPropName}"
                                                 value="%{value}"

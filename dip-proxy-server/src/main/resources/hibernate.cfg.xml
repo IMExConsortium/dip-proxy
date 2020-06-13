@@ -3,10 +3,6 @@
 	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 
 <!-- ===========================================================================
- ! $HeadURL::                                                                  $
- ! $Id::                                                                       $
- ! Version: $Rev::                                                             $
- !==============================================================================
  !
  ! Hibernate ORM configuration
  !

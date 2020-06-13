@@ -9,7 +9,7 @@ java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.P
 fi
 
 if [ "$1" = "cxf-proxy-service" ]; then
-java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.$2:8080/dip-proxy/ws/soap/proxy-service $3 $4 $5 $6 $7 $8 $9
+java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.$2:8080/ws/soap/proxy-service $3 $4 $5 $6 $7 $8 $9
 fi
 
 if [ "$1" = "ncbi-service-production" ]; then
@@ -17,7 +17,8 @@ java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.N
 fi
 
 if [ "$1" = "ncbi-service-cxf" ]; then
-java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.NcbiServiceClient http://10.1.200.201:8080/dip-proxy/ws/soap/ncbi-service $2 $3 $4 $5 $6 $7 $8 $9
+echo "ncbi-service-cxf"
+java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.NcbiServiceClient http://10.1.3.111:8080/dip-proxy/ws/soap/ncbi-service getPubmedArticle $1 $2 $3 $4 $5 $6 $7 $8 $9
 fi
 
 
@@ -36,7 +37,7 @@ fi
 #java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://dip.doe-mbi.ucla.edu:80/dip-proxy/ncbi-service $2 $3 $4 $5 $6 $7 $8 $9 $10
 #fi
 
-#if [ "$1" = "ebi-service" ]; then
-#java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.201:8080/dip-proxy-server/ebi-service $2 $3 $4 $5 $6 $7 $8 $9 $10
-#fi
+if [ "$1" = "ebi-service" ]; then
+java -cp target/dip-proxy-client-jar-with-dependencies.jar edu.ucla.mbi.client.ProxyCommandClient http://10.1.200.$2:8080/ws/soap/ebi-service $3 $4 $5 $6 $7 $8 $9 $10
+fi
 

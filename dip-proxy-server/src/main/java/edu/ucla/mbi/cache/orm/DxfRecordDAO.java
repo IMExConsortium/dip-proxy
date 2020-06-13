@@ -25,9 +25,9 @@ public class DxfRecordDAO extends AbstractDAO {
 
     private Log log = LogFactory.getLog( DxfRecordDAO.class );
   
-    public DxfRecordDAO ( HibernateOrmUtil util ) {
-        super( util );
-    }
+    //public DxfRecordDAO ( HibernateOrmUtil util ) {
+    //    super( util );
+    //}
  
     public void create( DxfRecord dxfr ) throws DAOException {
         this.saveOrUpdate( dxfr );
@@ -71,7 +71,8 @@ public class DxfRecordDAO extends AbstractDAO {
         
         DxfRecord dxfr = null; 
         
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
         
         try {
@@ -104,7 +105,8 @@ public class DxfRecordDAO extends AbstractDAO {
     public Long countAll( String provider, String service
                           ) throws DAOException {
 
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         Long count = null;
@@ -134,7 +136,8 @@ public class DxfRecordDAO extends AbstractDAO {
     public Long countAll( String provider
                           ) throws DAOException {
 
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
         
         Long count = null;
@@ -166,7 +169,8 @@ public class DxfRecordDAO extends AbstractDAO {
     public void removeAll( String provider, String service 
                            ) throws DAOException {
 
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         try {
@@ -187,7 +191,9 @@ public class DxfRecordDAO extends AbstractDAO {
 
     //--------------------------------------------------------------------------
     public void removeAll( String provider ) throws DAOException {
-        Session session = hibernateOrmUtil.getCurrentSession();
+        
+	//Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         try {
@@ -207,7 +213,9 @@ public class DxfRecordDAO extends AbstractDAO {
     //--------------------------------------------------------------------------
 
     public void expireAll( String provider, String service ) throws DAOException {
-        Session session = hibernateOrmUtil.getCurrentSession();
+
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
         Date now = Calendar.getInstance().getTime();
 
@@ -234,7 +242,9 @@ public class DxfRecordDAO extends AbstractDAO {
     //--------------------------------------------------------------------------
 
     public void expireAll( String provider ) throws DAOException {
-        Session session = hibernateOrmUtil.getCurrentSession();
+        
+	//Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
         Date now = Calendar.getInstance().getTime();
 

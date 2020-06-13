@@ -1,14 +1,8 @@
 package edu.ucla.mbi.proxy.dip;
 
 /*==============================================================================
- * $HeadURL::                                                                  $
- * $Id::                                                                       $
- * Version: $Rev::                                                             $
- *==============================================================================
  *
- * DipCachingImpl - Dip Database access implemented 
- * through SOAP service
- *
+ * DipCachingImpl - Dip Database access implemented through SOAP service
  *
  *=========================================================================== */
 
@@ -18,7 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.proxy.*;
 import edu.ucla.mbi.cache.*;
-import edu.ucla.mbi.proxy.router.Router;
+
+
 import edu.ucla.mbi.proxy.context.*;
 
 import edu.ucla.mbi.fault.*;
@@ -39,55 +34,56 @@ public class DipCachingImpl extends ConfigurableServer
         this.cachingSrv = service;
     }
 
-    /*
-     * Fetch record from Dip
-     */
-
-    public void getDipRecord( String ns, String ac, String match,
-                              String detail, String format, 
-                              String client, Integer depth,
-                              Holder<XMLGregorianCalendar> timestamp,
-                              Holder<DatasetType> dataset, 
-                              Holder<String> nativerecord )
+    // Fetch record from Dip
+    
+    public Result getDipRecord( GetDipRecord request )
         throws ProxyFault {
         
         String provider = "DIP";
         String service = "dip";
 
+        ObjectFactory of = new ObjectFactory();
+        Result result = of.createResult();
+        
         Log log = LogFactory.getLog( DipCachingImpl.class );
-        log.info( "getPubmedArticle " + " NS=" + ns + " AC=" + ac + " DT="
-                + detail );
+        log.info( "getPubmedArticle " +
+                  " NS=" + request.getNs() +
+                  " AC=" + request.getAc() +
+                  " DT=" + request.getDetail() );
 
-        if ( !ns.equalsIgnoreCase( "dip" ) ) {
+        if( !request.getNs().equalsIgnoreCase( "dip" ) ){
             log.info( " forcing pubmed as ns" );
-            ns = "dip";
+            request.setNs( "dip" );
         }
 
-        if ( ac == null || ac.equals( "" ) ) {
+        if( request.getAc() == null || request.getAc().equals( "" ) ){
             log.info( "DipCaching: missing accession" );
             throw FaultFactory.newInstance( Fault.MISSING_ID );            
         }
 
-        if ( detail == null ) {
-            detail = "stub";
-        } else if ( detail.equalsIgnoreCase( "short" )
-                || detail.equalsIgnoreCase( "stub" ) ) {
-            detail = "stub";
+        if( request.getDetail() == null ){
+            request.setDetail( "stub" );
+        }else if( request.getDetail().equalsIgnoreCase( "short" )
+                  || request.getDetail().equalsIgnoreCase( "stub" ) ){
+            request.setDetail( "stub" );
         } else {
-            detail = "full";
+            request.setDetail( "full" );
         }
-
+        
         try {
 
-            if ( format == null || format.equals( "" )
-                 || format.equalsIgnoreCase( "dxf" )
-                 || format.equalsIgnoreCase( "both" ) ) {
+            if ( request.getFormat() == null
+                 || request.getFormat().equals( "" )
+                 || request.getFormat().equalsIgnoreCase( "dxf" )
+                 || request.getFormat().equalsIgnoreCase( "both" ) ) {
                 
-                DatasetType result
+                DatasetType dstresult
                     = cachingSrv.getDatasetType( provider, service,
-                                                 ns, ac, detail ); 
-                if ( result != null ) {
-                    dataset.value = result;
+                                                 request.getNs(),
+                                                 request.getAc(),
+                                                 request.getDetail() ); 
+                if ( dstresult != null ) {
+                    result.setDataset( dstresult );
 
                 } else {
                     log.info( "return dataset is null " );
@@ -95,22 +91,22 @@ public class DipCachingImpl extends ConfigurableServer
                 }
             }
 
-            if ( format != null
-                 && ( format.equalsIgnoreCase( "native" ) 
-                      || format.equalsIgnoreCase( "both" ) ) ) {
+            if ( request.getFormat() != null
+                 && ( request.getFormat().equalsIgnoreCase( "native" ) 
+                      || request.getFormat().equalsIgnoreCase( "both" ) ) ) {
                 
                 NativeRecord natRec = 
                     cachingSrv.getNative( provider, service,
-                                          ns, ac );
+                                          request.getNs(),
+                                          request.getAc() );
                 
                 if ( natRec != null && natRec.getNativeXml() != null
                      && natRec.getNativeXml().length() > 0 ) {
 
-                    nativerecord.value = natRec.getNativeXml();
+                    result.setNativerecord( natRec.getNativeXml() );
 
-                    timestamp.value = 
-                        TimeStamp.toXmlDate( natRec.getQueryTime() );
-
+                    result.setTimestamp( TimeStamp.toXmlDate( natRec.getQueryTime() ) );
+                    
                 } else {
                     log.info( "return dataset is null " );
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -124,5 +120,7 @@ public class DipCachingImpl extends ConfigurableServer
             log.info( "DipCachingImpl: " + e.toString() );
             throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
+
+        return result;
     }
 }

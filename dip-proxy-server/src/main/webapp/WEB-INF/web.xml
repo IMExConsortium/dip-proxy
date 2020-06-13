@@ -1,161 +1,137 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!--
- !==========================================================================
- ! $HeadURL::                                                              $
- ! $Id::                                                                   $
- ! Version: $Rev::                                                         $
- !==========================================================================
- !                                                                        
- ! dip-proxy: Web Application configuration file
- !                                                                        
- !====================================================================== -->
-
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
                          http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd"
-    version="2.5">
+    version="2.5" metadata-complete="false">
 
-    <display-name>ProxyWS: Proxy Web Services</display-name>
+  <display-name>ProxyWS: Proxy Web Services</display-name>
 
-    <!-- ===================================================== CONTEXT setup -->
-    <!-- ===================================================== ============= -->
-
-    <!-- ==================================================== TILES context  -->
-    <context-param>
-        <param-name>
-            org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG
-        </param-name>
-        <param-value>/WEB-INF/classes/tiles.xml</param-value>
-    </context-param>
-
-    <!-- =================================================== SPRING context  -->
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/classes/applicationContext.xml</param-value>    
-    </context-param>
-
-    <!-- ===================================================== ============= -->
-    <!-- ===================================================== FILTERS setup -->
-    <!-- ===================================================== ============= -->
-
-    <!-- ============================================ CONFIGURATION filter -->
-    <filter>
-        <filter-name>config-filter</filter-name>
-        <filter-class>
-            edu.ucla.mbi.proxy.ProxyConfigFilter  
-        </filter-class>
-    </filter> 
-
-    <!-- ================================================== STRUTS2 filter -->
-
-    <filter>
-        <filter-name>action2</filter-name>
-        <filter-class>
-            <!--org.apache.struts2.dispatcher.FilterDispatcher -->
-            org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter 
-        </filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>action2</filter-name>
-        <url-pattern>*.do</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>action2</filter-name>
-        <url-pattern>*.action</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>action2</filter-name>
-        <url-pattern>*.jsp</url-pattern>
-    </filter-mapping>
+  <!-- ======================================================= ============= --> 
+  <!-- ======================================================= CONTEXT setup -->
+  <!-- ======================================================= ============= -->
   
-    <filter-mapping>
-        <filter-name>action2</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+  <!-- ====================================================== TILES context  -->
+  <!-- default location: WEB-INF/tiles.xml -->
+  <!--     
+  <context-param>
+    <param-name>
+      org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG
+    </param-name>
+    <param-value>/WEB-INF/classes/tiles.xml</param-value>
+  </context-param>
+  -->
+  <!-- ===================================================== SPRING context  -->
 
-    <!-- =================================================== =============== -->
-    <!-- =================================================== LISTENERS setup -->
-    <!-- =================================================== =============== -->
-
-    <!-- ============================================ STRUTS2/TILES listener -->
-
-    <listener>
-        <listener-class>
-            org.apache.struts2.tiles.StrutsTilesListener
-        </listener-class>
-    </listener>
-
-    <!-- =================================================== SPRING listener -->
-    <listener>
-        <listener-class>
-            org.springframework.web.context.ContextLoaderListener
-        </listener-class>
-    </listener>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/classes/applicationContext.xml</param-value>    
+  </context-param>
   
-    <!-- =================================================== JAX-WS listener -->
-<!--
-    <listener>
-        <listener-class>
-            com.sun.xml.ws.transport.http.servlet.WSServletContextListener
-        </listener-class>
-    </listener>
--->
-    <!-- ========================================= WSContextManager listener -->
-    <listener>
-        <listener-class>
-            edu.ucla.mbi.proxy.context.WSContextManager
-        </listener-class>
-    </listener>
+  <!-- ===================================================== ============= -->
+  <!-- ===================================================== FILTERS setup -->
+  <!-- ===================================================== ============= -->
+  
+  <!-- ============================================ CONFIGURATION filter -->
+  
+  <filter>
+    <filter-name>config-filter</filter-name>
+    <filter-class>
+      edu.ucla.mbi.proxy.ProxyConfigFilter  
+    </filter-class>
+  </filter> 
 
-    <!-- =================================================== =============== -->
-    <!-- =================================================== Servlet startup -->
-    <!-- =================================================== =============== -->
+  <!-- ================================================== STRUTS2 filter -->
+
+  <filter>
+    <filter-name>action2</filter-name>
+        
+    <filter-class>
+      org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter
+    </filter-class>
+  </filter>
+ 
+  <filter-mapping>
+    <filter-name>action2</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- =================================================== =============== -->
+  <!-- =================================================== LISTENERS setup -->
+  <!-- =================================================== =============== -->
+
+  <!-- ========================================= WSContextManager listener -->
+  
+   <listener>
+     <listener-class>
+       edu.ucla.mbi.proxy.context.WSContextManager
+     </listener-class>
+   </listener>
+  
+  <!-- ============================================ STRUTS2/TILES listener -->
+
+  <listener>
+    <listener-class>
+      org.apache.struts2.tiles.StrutsTilesListener
+    </listener-class>
+  </listener>
+
+  <!-- =================================================== SPRING listener -->
+ 
+  <listener>
+    <listener-class>
+      org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+  </listener>
 
 
-      <!-- ========================================= Cxf Web service servlet -->
+  <!-- ================================================== LOG4J listener -->
 
-      <servlet>
-       <servlet-name>cxf-service</servlet-name>
-       <display-name>cxf-service</display-name>
-       <description>Apache CXF Endpoint</description>
-       <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-       <load-on-startup>2</load-on-startup>
-      </servlet>
+  <listener>
+    <listener-class>
+      org.apache.logging.log4j.web.Log4jServletContextListener
+    </listener-class>
+  </listener>
+    
+   <!-- =================================================== =============== -->
+   <!-- =================================================== Servlet startup -->
+   <!-- =================================================== =============== -->
+   
 
+   <!-- ========================================= Cxf Web service servlet -->
 
+   <servlet>
+     <servlet-name>cxf-service</servlet-name>
+     <display-name>cxf-service</display-name>
+     <description>Apache CXF Endpoint</description>
+     <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+     <load-on-startup>2</load-on-startup>
+   </servlet>
+
+   
     <!-- =================================================== =============== -->
     <!-- =================================================== Servlet mapping -->
     <!-- =================================================== =============== -->
 
-      <!-- ======================================== Cxf Web Service mappings -->
+    <!-- ======================================== Cxf Web Service mappings -->
 
-  <servlet-mapping>
-    <servlet-name>cxf-service</servlet-name>
-    <url-pattern>/ws/*</url-pattern> 
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>cxf-service</servlet-name>
-    <url-pattern>/ws-v20/*</url-pattern> 
-  </servlet-mapping>
-
+    <servlet-mapping>
+      <servlet-name>cxf-service</servlet-name>
+      <url-pattern>/service/*</url-pattern> 
+    </servlet-mapping>
 
     <mime-mapping>
-        <extension>inc</extension>
-        <mime-type>text/plain</mime-type>
+      <extension>inc</extension>
+      <mime-type>text/plain</mime-type>
     </mime-mapping>
-
+    
     <!-- ===================================================== ============= -->
     <!-- ===================================================== Welcome pages -->
     <!-- ===================================================== ============= -->
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+      <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
   
-</web-app>
+  </web-app>

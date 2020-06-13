@@ -14,38 +14,21 @@
              xmlns:xs="http://www.w3.org/2001/XMLSchema"
              targetNamespace="http://mbi.ucla.edu/proxy/ebi" 
              xmlns:ebi="http://mbi.ucla.edu/proxy/ebi"
-	         xmlns:dipfault="http://dip.doe-mbi.ucla.edu/fault"
+	     xmlns:dipfault="http://dip.doe-mbi.ucla.edu/fault"
              xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" >
  <types>
   <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
              targetNamespace="http://mbi.ucla.edu/proxy/ebi">
 
    <xs:import namespace="http://dip.doe-mbi.ucla.edu/services/dxf14"
-              schemaLocation="DXF1.4.xsd"/>
+              schemaLocation="DXF1.4.xsd" />
 
    <xs:import namespace="http://dip.doe-mbi.ucla.edu/fault"
-              schemaLocation="Fault.xsd"/>
+              schemaLocation="Fault.xsd" />
  
    <xs:element name="getUniprot">
     <xs:annotation>
      <xs:documentation>Get Uniprot record</xs:documentation>
-    </xs:annotation>
-    <xs:complexType>
-     <xs:sequence>
-      <xs:element name="ns" type="xs:string" default="uniprot" />
-      <xs:element name="ac" type="xs:string" />
-      <xs:element name="match" type="xs:string" default="exact" />
-      <xs:element name="detail" type="xs:string" default="stub" />
-      <xs:element name="format" type="xs:string" default="dxf" />
-      <xs:element name="client" type="xs:string" default="" minOccurs="0" />
-      <xs:element name="depth" type="xs:int" default="0" minOccurs="0" />
-     </xs:sequence>
-    </xs:complexType>
-   </xs:element>
-
-   <xs:element name="getPicrList">
-    <xs:annotation>
-     <xs:documentation>Get PICR mapping</xs:documentation>
     </xs:annotation>
     <xs:complexType>
      <xs:sequence>
@@ -84,14 +67,6 @@
   <part element="ebi:result" name="response"/>
  </message>
 
- <message name="getPicrListReq">
-  <part element="ebi:getPicrList" name="request"/>
- </message>
-
- <message name="getPicrListRes">
-  <part element="ebi:result" name="response"/>
- </message>
-
  <message name="ebiFault">
   <part element="dipfault:serviceFault" name="fault"/>
  </message>
@@ -103,12 +78,6 @@
    <input  message="ebi:getUniprotReq"/>
    <output message="ebi:getUniprotRes"/>
    <fault name="getUniprotFault" message="ebi:ebiFault"/>
-  </operation>
-
-  <operation name="getPicrList">
-   <input  message="ebi:getPicrListReq"/>
-   <output message="ebi:getPicrListRes"/>
-   <fault name="getPicrListFault" message="ebi:ebiFault"/>
   </operation>
 
  </portType>
@@ -125,16 +94,6 @@
    <fault name="getUniprotFault">
     <soap:fault name="getUniprotFault" use="literal"/>
    </fault>
-  </operation>
-
-  <operation name="getPicrList">
-   <soap:operation 
-	   soapAction="http://dip.doe-mbi.ucla.edu/services/dxf14/getPicrList"/>
-   <input><soap:body use="literal"/></input>
-   <output><soap:body use="literal"/></output>
-   <fault name="getPicrListFault">
-    <soap:fault name="getPicrListFault" use="literal"/>
-   </fault>			  
   </operation>
 
  </binding>

@@ -10,21 +10,20 @@
   <parent>
     <groupId>edu.ucla.mbi.dip</groupId>
     <artifactId>dip-proxy</artifactId>
-    <version>0.03</version>
+    <version>2.0.0</version>
   </parent>
-
 
   <dependencies>
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-proxy-api</artifactId>
-      <version>0.03</version>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-util-ws</artifactId>
-      <version>0.03</version>
+      <version>${dip-util.version}</version>
     </dependency>
   </dependencies>
 

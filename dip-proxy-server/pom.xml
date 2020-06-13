@@ -7,29 +7,26 @@
   <name>dip-proxy-server</name>
   <url>http://dip.mbi.ucla.edu</url>
 
+  <parent>
+    <groupId>edu.ucla.mbi.dip</groupId>
+    <artifactId>dip-proxy</artifactId>
+    <version>2.0.0</version>
+  </parent>
+  
   <properties>
-
-    <!--<ramcache>on</ramcache>-->
+    
     <ramcache>off</ramcache>
-    <proxy.version>${project.version}</proxy.version>
-    <proxy.bld>$Rev$</proxy.bld>
     <!--<dip.endpoint>http://10.1.200.201:8080/dip-database/dxf-service</dip.endpoint> -->
     <dip.endpoint>http://dip.mbi.ucla.edu/dip-database/dxf-service</dip.endpoint> 
 
     <dbid></dbid>
 
-    <dht.overlay.network.flag>false</dht.overlay.network.flag>
- 
-    <dht.routing>Chord</dht.routing>  
     <hibernate.connection.dbname>proxyws${dbid}</hibernate.connection.dbname>
     <hibernate.connection.url>jdbc:postgresql://10.1.200.1:5432/proxyws${dbid}</hibernate.connection.url>
 
     <hibernate.connection.portnum>5432</hibernate.connection.portnum>
     <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
     <hibernate.connection.servername>10.1.200.1</hibernate.connection.servername>
-
-    <cxf.version>2.7.6</cxf.version>
-    <spring.version>3.2.2.RELEASE</spring.version>
 
   </properties>
 
@@ -41,15 +38,11 @@
         <activeByDefault>true</activeByDefault>        
       </activation>
       <properties>
-        <dip-proxy.css>icentral-test.css</dip-proxy.css>
-        <dbid>203</dbid>
-        <!--- using JNDI -->
+        <dip-proxy.css>icentral-test.css</dip-proxy.css>              
         <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
-        <hibernate.connection.servername>10.1.200.1</hibernate.connection.servername>
-        <hibernate.connection.portnum>5432</hibernate.connection.portnum>
       </properties>
       <build>
-        <finalName>dip-proxy</finalName>
+        <finalName>dip-proxy-dev</finalName>
       </build>
    </profile>
     
@@ -58,23 +51,17 @@
      <properties>
         <dip-proxy.css>dip-proxy-beta.css</dip-proxy.css> 
         <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
-        <hibernate.connection.dbname>proxyws_prod</hibernate.connection.dbname>
-        <hibernate.connection.servername>10.1.1.211</hibernate.connection.servername>
-        <hibernate.connection.portnum>5432</hibernate.connection.portnum>
      </properties>
      <build>
-       <finalName>dip-proxy</finalName>
+       <finalName>dip-proxy-beta</finalName>
      </build>
    </profile>
 
    <profile>
-     <id>dip-proxy-production</id>
+     <id>dip-proxy-prod</id>
      <properties>
         <dip-proxy.css>dip-proxy.css</dip-proxy.css>      
         <hibernate.connection.datasource>java:/comp/env/jdbc/proxyws</hibernate.connection.datasource>
-        <hibernate.connection.dbname>proxyws_prod</hibernate.connection.dbname>
-        <hibernate.connection.servername>10.1.1.211</hibernate.connection.servername>
-        <hibernate.connection.portnum>5432</hibernate.connection.portnum>
      </properties>
      <build>
        <finalName>dip-proxy</finalName>
@@ -82,54 +69,36 @@
    </profile>
   </profiles>
 
-  <parent>
-    <groupId>edu.ucla.mbi.dip</groupId>
-    <artifactId>dip-proxy</artifactId>
-    <version>0.03</version>
-  </parent>
-
   <dependencies>
 
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
-      <artifactId>dip-picr-client</artifactId>
-      <version>0.03</version>
-    </dependency>
-
-    <dependency>
-      <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-proxy-api</artifactId>
-      <version>0.03</version>
+      <version>2.0.0</version>
     </dependency>
     
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-util-ws</artifactId>
-      <version>0.04</version>
+      <version>${dip-util.version}</version>
     </dependency>
    
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-util-struts</artifactId>
-      <version>0.03</version>
-    </dependency>
-
-    <dependency>
-      <groupId>edu.ucla.mbi.dip</groupId>
-      <artifactId>ovr-weaver</artifactId>
-      <version>0.10.3</version>
+      <version>${dip-util.version}</version>
     </dependency>
    
     <dependency>
-      <groupId>com.sleepycat</groupId>
-      <artifactId>je</artifactId>
-      <version>4.0.92</version>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${postgresql.version}</version>
     </dependency>
 
     <dependency>
       <groupId>edu.ucla.mbi.dip</groupId>
       <artifactId>dip-util-orm</artifactId>
-      <version>0.03</version>
+      <version>${dip-util.version}</version>
     </dependency>
    
     <dependency>
@@ -142,12 +111,18 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20090211</version>
+      <version>${json.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
       <version>${spring.version}</version>
     </dependency>
 
@@ -162,43 +137,23 @@
       <artifactId>spring-orm</artifactId>
       <version>${spring.version}</version>
     </dependency>
-   
-    <dependency>
-      <groupId>com.sun.xml.ws</groupId>
-      <artifactId>jaxws-rt</artifactId>
-      <version>2.1.3</version>
-    </dependency>
-
-    
-    <dependency>
-      <groupId>org.apache.xbean</groupId>
-      <artifactId>xbean-spring</artifactId>
-      <version>2.7</version>
-      <exclusions>
-        <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    
 
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
-      <version>1.6.1</version>
+      <version>${aspectj.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
-      <version>1.6.1</version>
+      <version>${aspectj.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>spy</groupId>
+      <groupId>net.spy</groupId>
       <artifactId>spymemcached</artifactId>
-      <version>2.8.9</version>
+      <version>${spymemcached.version}</version>
     </dependency>
     
     <dependency>
@@ -223,30 +178,18 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-jetty</artifactId>
       <version>${cxf.version}</version>
-    </dependency>
+      </dependency>
    
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
-      <version>2.7.1</version>
+      <version>2.7.2</version>
     </dependency>
-    <!-- 
-    <dependency> 
-      <groupId>edu.ucla.mbi.dip</groupId> 
-      <artifactId>dip-database-api</artifactId> 
-      <version>0.02</version> 
-    </dependency> 
     
-    <dependency> 
-      <groupId>edu.ucla.mbi.dip</groupId> 
-      <artifactId>dip-legacy-api</artifactId> 
-      <version>0.02</version> 
-   </dependency>  
-   -->
   </dependencies>
 
   <build>
-    <finalName>dip-proxy</finalName>
+    <finalName>dps</finalName>
     <resources>
       <resource>
         <directory>${basedir}/src/main/resources</directory>
@@ -260,25 +203,9 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>2.2</version>
         <configuration>
+          
           <webResources>
-            <!--
-            <resource>
-              <directory>${basedir}/../dip-proxy-api/src/wsdl</directory>
-              <targetPath>WEB-INF/wsdl</targetPath>
-              <includes>   
-                <include>DhtService14.wsdl</include>
-                <include>ProxyService14.wsdl</include> 
-                <include>NcbiService14.wsdl</include>
-                <include>EbiService14.wsdl</include>
-                <include>ProlinksService14.wsdl</include>
-                <include>DipService14.wsdl</include>
-                <include>DipWS.wsdl</include>
-                <include>DipLegacyService.wsdl</include>
-                <include>DXF1.4.xsd</include>
-                <include>Fault.xsd</include>
-              </includes>
-            </resource>
-            -->
+            
             <resource>
               <directory>${basedir}/../dip-proxy-api/src/wsdl</directory>
               <targetPath>WEB-INF/classes/wsdl</targetPath>
@@ -295,7 +222,7 @@
                 <include>Fault.xsd</include>
               </includes>
             </resource>
-
+            
             <resource>
               <directory>${basedir}/src/xsl</directory>
               <targetPath>xsl</targetPath>
@@ -304,16 +231,7 @@
                 <include>*.xsl</include>
               </includes>
             </resource>
-
-            <resource>
-              <directory>${basedir}/../etc</directory>
-              <targetPath>WEB-INF</targetPath>
-              <filtering>true</filtering>
-              <includes>
-                <include>sun-jaxws.xml</include>
-              </includes>
-            </resource>
-
+                       
             <resource>
               <directory>${basedir}/../etc/jetty</directory>
               <targetPath>WEB-INF</targetPath>
@@ -333,16 +251,6 @@
             </resource>
 
             <resource>
-              <directory>${basedir}/src/main/webapp/etc</directory>
-              <targetPath>etc</targetPath>
-              <filtering>true</filtering>
-              <includes>
-                <include>dht.json</include>
-                <!--<include>dht-test.json</include> -->
-              </includes>
-            </resource>
-
-            <resource>
               <directory>${basedir}/src/main/config</directory>
               <targetPath>META-INF</targetPath>
               <filtering>true</filtering>
@@ -351,85 +259,45 @@
               </includes>
             </resource>
 
+            <resource>
+              <directory>${basedir}/src/main/resources</directory>
+              <targetPath>WEB-INF</targetPath>
+              <filtering>true</filtering>
+              <includes>
+                <!-- <include>jetty-web.xml</include> -->
+                <include>tiles.xml</include>
+              </includes>
+            </resource>
+            
           </webResources>
+          
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>maven-jetty-plugin</artifactId>
-        <version>6.1.25</version>
-        <configuration>
-          <!-- configure the container -->
+     <plugin>
+         <groupId>org.eclipse.jetty</groupId>
+	     <artifactId>jetty-maven-plugin</artifactId>
+         <version>9.4.26.v20200117</version>
+         <configuration>
+           <webApp>
+             <contextPath>/dip-proxy-dev</contextPath>
+           </webApp>
 
-          <contextPath>/dip-proxy</contextPath>
-
-          <connectors>
-            <connector 
-                implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-
-              <port>8080</port>
-              <!-- maxIdleTime unit is millisecond -->
-              <maxIdleTime>3600000</maxIdleTime>
-            </connector>
-          </connectors>
-          
-          <webDefaultXml>${basedir}/../etc/jetty/webdefault.xml</webDefaultXml> 
-
-          <systemProperties>
-            <systemProperty>
-              <name>com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace</name>
-              <value>false</value>
-            </systemProperty>
-
+           <systemProperties>
             <systemProperty>
               <name>log4j.configuration</name>
               <value>file:${basedir}/../etc/jetty/jetty-log4j.properties</value>
             </systemProperty>
-            <!--            
-            <systemProperty>
-              <name>com.sun.management.jmxremote</name>
-              <value>true</value>
-            </systemProperty>
-
-            <systemProperty>
-              <name>com.sun.management.jmxremote.ssl</name>
-              <value>false</value>
-            </systemProperty>
-            
-            <systemProperty>
-              <name>com.sun.management.jmxremote.authenticate</name>
-              <value>false</value>
-            </systemProperty>
-
-            <systemProperty>
-              <name>com.sun.management.jmxremote.port</name>
-              <value>33333</value>
-            </systemProperty>
-            
-            <systemProperty>
-              <name>com.sun.management.jmxremote.local.only</name>
-              <value>false</value>
-            </systemProperty>
-            -->
-            <!-- 
-            <systemProperty>
-              <name>java.rmi.server.hostname</name>
-              <value>10.1.200.201</value>
-            </systemProperty>            
-            -->
           </systemProperties>
-        </configuration>
+         
+         </configuration>
+     </plugin>
 
-      </plugin>
     </plugins>
 
   </build>
 
 </project>
-
-
-
 
 
 

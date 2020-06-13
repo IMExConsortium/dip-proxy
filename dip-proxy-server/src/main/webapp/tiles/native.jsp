@@ -22,7 +22,7 @@
  <%--<s:iterator value="counts" var="prvd" status="ps"> --%>
  <s:iterator value="delays" var="prvd" status="ps">
   <s:if test='value.size >0'>
-   <s:set name="prv" value="key" /> 
+   <s:set var="prv" value="key" /> 
     <tr>
      <th width="10%" rowspan="<s:property value='value.size'/>">
        <s:property value="key"/>

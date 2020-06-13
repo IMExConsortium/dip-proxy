@@ -17,5 +17,6 @@ import org.apache.commons.logging.LogFactory;
 import edu.ucla.mbi.util.struts.action.PageSupport;
 
 public class PageAction extends PageSupport {
+
 }
 

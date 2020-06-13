@@ -7,7 +7,7 @@
     <table width="100%" class="footer" cellpadding="0" cellspacing="0">     
      <tr>
       <td class="copyright2" nowrap>
-       Copyright 2008-2013 UCLA
+       ${proxy.copyright}
       </td>
       <td width="5%" class="copyright3" align="center" nowrap>
        <A HREF=".">DIP Proxy</A>.
@@ -21,7 +21,7 @@
     <table width="98%" cellspacing="0">
      <tr>
       <td align="left" nowrap>
-       <font size="-5">Ver: ${proxy.version} (${proxy.bld})</font>
+       <font size="-5">Ver: ${proxy.version} ($Build: ${project.timestamp}$)</font>
       </td>
       <td align="right" nowrap>
        <font size="-5">

@@ -26,6 +26,10 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.*;
 
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
+
 public class RestServer implements ContextListener {
 
     private Log log = LogFactory.getLog( RestServer.class );
@@ -66,6 +70,16 @@ public class RestServer implements ContextListener {
         return contextTop;
     }
 
+    int throttle = 0;
+    
+    public void setThrottle(int throttle){
+        this.throttle = throttle;
+    }
+
+    public int  getThrottle(){
+        return this.throttle;
+    }
+    
     public void initialize() throws ServerFault {
 
         log.info( "RestServer initialize starting... " );
@@ -108,7 +122,7 @@ public class RestServer implements ContextListener {
         restServerMap = (Map) jrs.get( contextTop );
 
         //*** add context listener
-        restServerContext.addContextUpdateListener( this );
+        //restServerContext.addContextUpdateListener( this );
 
     }
     
@@ -149,24 +163,60 @@ public class RestServer implements ContextListener {
         String url_string =
             this.getRealUrl( provider, service, ns, ac );
         
-        log.info( "getNativeDom: url_string=" + url_string );
-
+        log.debug( "RestServer.getNativeDom: called" );
+        log.debug( "getNativeDom: url_string=" + url_string );
+        
         DocumentBuilderFactory fct = DocumentBuilderFactory.newInstance();        
 
+        InputStream stream = null;
+        HttpURLConnection url_connection = null; 
         try {
+            
             DocumentBuilder builder = fct.newDocumentBuilder();
+            
             URL url_search = new URL( url_string );
-            InputStream stream = url_search.openStream();
+            log.info( "RestServer.getNativeDom:  url_search OK" );
 
+            url_connection = (HttpURLConnection) url_search.openConnection();
+            
+            log.debug( "RestServer.getNativeDom:  connection OK" );
+            log.debug( "RestServer.getNativeDom:  connecion timeout: " + url_connection.getConnectTimeout() );
+            log.debug( "RestServer.getNativeDom:  read timeout: " + url_connection.getReadTimeout() );
+
+            //url_connection.connect();
+            log.info( "RestServer.getNativeDom:  connected..." );
+            
+            stream = url_connection.getInputStream();
+            
+            log.debug( "RestServer.getNativeDom:  stream OK" );
+            
             InputSource xml_search =
                 new InputSource( url_search.openStream() );
-
-
+            
             Document docSearch = builder.parse( xml_search );
 
+            log.debug( " NativeDom:" +  getStringFromDocument(docSearch) );
+
+            stream.close();
+            Thread.sleep( throttle );
             return docSearch;
 
         } catch ( Exception ex ) {
+            if( stream != null ){
+
+                log.info( "RestServer.getNativeDom closing stream" );
+                
+                try{
+                    stream.close();
+                    //url_connection.disconnect();
+                } catch( IOException iox ){
+                    log.info( "RestServer.getNativeDom fault(1)" );
+                    throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
+                }
+            }
+            
+            log.debug( "RestServer.getNativeDom fault(2)" );
+            log.debug( "RestServer.getNativeDom: " +  ex.getClass().getName());
             throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );            
         } 
     }
@@ -286,4 +336,23 @@ public class RestServer implements ContextListener {
             return retVal;
         }
     }
+
+
+    // Document to String conversion
+
+    public String getStringFromDocument( Document doc ){
+        try{
+            DOMSource domSource = new DOMSource(doc);
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.transform(domSource, result);
+            return writer.toString();
+        } catch( TransformerException ex ) {
+            ex.printStackTrace();
+            return null;
+        }
+    } 
+    
 }

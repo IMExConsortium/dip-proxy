@@ -19,8 +19,8 @@
     <tr>
      <s:if test='menuContext.jsonConfig.menu[0].menu.size > 0'>
       <td class="menu1first">&nbsp;</td>
-       <s:iterator value="menuContext.jsonConfig.menu[0].menu" id="exp" status="mpos">
-        <s:set name="itemon" value="#exp.roles.{? #this in #session['USER_ROLE'].keySet()}.size > 0"/>
+       <s:iterator value="menuContext.jsonConfig.menu[0].menu" var="exp" status="mpos">
+        <s:set var="itemon" value="#exp.roles.{? #this in #session['USER_ROLE'].keySet()}.size > 0"/>
         <s:if test="#exp.roles==null || #exp.roles.size==0 || #itemon ">
          <s:if test='#mpos.count==menuSel[0]'>
           <td class="menu1select" nowrap>
@@ -86,8 +86,8 @@
      <s:if test='menuContext.jsonConfig.menu[0].menu[menuSel[0]-1].menu.size > 0'>
        <tr>
         <td class="menu2first">&nbsp;</td>
-         <s:iterator value="menuContext.jsonConfig.menu[0].menu[menuSel[0]-1].menu" id="exp" status="mpos" >
-          <s:set name="itemon" value="#exp.roles.{? #this in #session['USER_ROLE'].keySet()}.size > 0"/>
+         <s:iterator value="menuContext.jsonConfig.menu[0].menu[menuSel[0]-1].menu" var="exp" status="mpos" >
+          <s:set var="itemon" value="#exp.roles.{? #this in #session['USER_ROLE'].keySet()}.size > 0"/>
           <s:if test="#exp.roles==null || #exp.roles.size==0 || #itemon ">
            <s:if test='#mpos.count == menuSel[1]'>
             <td class="menu2select" nowrap>
@@ -142,8 +142,8 @@
           <tr>
            <s:if test='menuContext.jsonConfig.menu[0].menu[menuSel[0]-1].menu[menuSel[1]-1].menu.size > 0'>
             <td class="menu3first">&nbsp;</td>
-            <s:iterator value="menuContext.jsonConfig.menu[0].menu[menuSel[0]-1].menu[menuSel[1]-1].menu" id="exp" status="mpos" >
-             <s:set name="itemon" value="#exp.roles.{? #this in #session['USER_ROLE'].keySet()}.size > 0"/>
+            <s:iterator value="menuContext.jsonConfig.menu[0].menu[menuSel[0]-1].menu[menuSel[1]-1].menu" var="exp" status="mpos" >
+             <s:set var="itemon" value="#exp.roles.{? #this in #session['USER_ROLE'].keySet()}.size > 0"/>
              <s:if test="#exp.roles==null || #exp.roles.size==0 || #itemon ">
               <s:if test='#mpos.count == menuSel[2]'>
                <td class="menu3select" nowrap>

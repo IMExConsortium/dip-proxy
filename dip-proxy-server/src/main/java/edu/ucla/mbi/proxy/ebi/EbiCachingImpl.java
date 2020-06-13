@@ -1,16 +1,8 @@
 package edu.ucla.mbi.proxy.ebi;
 
 /*==============================================================================
- * $HeadURL::                                                                  $
- * $Id::                                                                       $
- * Version: $Rev::                                                             $
- *==============================================================================
  *
- * EbiCachingImpl - EBI Database access implemented 
- * through efetch SOAP
- *
- *  NOTE: Modify gen-src/axis2/ebi/resources/services.xml to use
- *  this instead of default EbiPublicSkeleton.
+ * EbiCachingImpl - EBI Database access implemented through efetch SOAP
  *
  *=========================================================================== */
 
@@ -28,93 +20,98 @@ import javax.jws.WebService;
 import javax.xml.ws.Holder;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import edu.ucla.mbi.proxy.router.Router;
 import edu.ucla.mbi.proxy.context.*;
 
 @WebService(endpointInterface = "edu.ucla.mbi.proxy.EbiProxyPort")
 public class EbiCachingImpl extends ConfigurableServer 
     implements EbiProxyPort {
-
+    
     private CachingService cachingSrv;
 
     public void setCachingService ( CachingService service ) {
         this.cachingSrv = service;
+        
+        Log log = LogFactory.getLog( EbiCachingImpl.class );
+        log.info( "EbiCachingImpl: CachingService set");	
     }
 
-    /*
-     * Fetch uniprot from ebi dbfetch
-     */
-        
-    public void getUniprot( String ns, String ac, String match, 
-                            String detail, String format, 
-                            String client, Integer depth,
-                            Holder<XMLGregorianCalendar> timestamp,
-                            Holder<DatasetType> dataset, 
-                            Holder<String> nativerecord 
-                            ) throws ProxyFault {
+    // Fetch uniprot from ebi dbfetch
+    
+    public Result getUniprot( GetUniprot request )
+        throws ProxyFault{
         
         String provider = "EBI";
         String service = "uniprot";
+
+        ObjectFactory of =  new ObjectFactory();
+        Result result =of.createResult();
         
         Log log = LogFactory.getLog( EbiCachingImpl.class );
-        log.info( "EbiCaching: getUniprot " + " NS=" + ns + " AC=" + ac
-                  + " DT=" + detail );
+        log.info( "EbiCaching: getUniprot " +
+                  " NS=" + request.getNs() +
+                  " AC=" + request.getAc() +
+                  " DT=" + request.getDetail() );
         
-        if ( !ns.equalsIgnoreCase( "uniprot" ) ) {
+        if( !request.getNs().equalsIgnoreCase( "uniprot" ) ){
             log.info( "EbiCaching: forcing uniprot as ns" );
-            ns = "uniprot";
+            request.setNs( "uniprot" );
         }
         
-        if ( ac == null || ac.equals( "" ) ) {
-            
+        if( request.getAc() == null || request.getAc().equals( "" ) ){            
             log.info( "missing accession" );
             throw FaultFactory.newInstance( Fault.MISSING_ID );
         }
         
-        if ( detail == null ) {
-            detail = "stub";
-        } else if ( detail.equalsIgnoreCase( "short" ) ||
-                    detail.equalsIgnoreCase( "stub" ) ) {
-
-            detail = "stub";
-
-        } else if ( detail.equalsIgnoreCase( "base" ) ){
-            detail = "base";
-
-        } else {
-            detail = "full";
+        if( request.getDetail() == null ){
+            request.setDetail( "stub" );
+        }else if( request.getDetail().equalsIgnoreCase( "short" ) ||
+                  request.getDetail().equalsIgnoreCase( "stub" ) ){
+            
+            request.setDetail( "stub" );
+            
+        }else if( request.getDetail().equalsIgnoreCase( "base" ) ){
+            request.setDetail( "base" );
+            
+        }else{
+            request.setDetail( "full" );
         }
 
         try {
             
-            if ( format == null || format.equals( "" )
-                 || format.equalsIgnoreCase( "dxf" )
-                 || format.equalsIgnoreCase( "both" ) ) {
-               
-                DatasetType result
+            if( request.getFormat() == null
+                || request.getFormat().equals( "" )
+                || request.getFormat().equalsIgnoreCase( "dxf" )
+                || request.getFormat().equalsIgnoreCase( "both" )
+                ){
+                
+                DatasetType dstresult
                     = cachingSrv.getDatasetType( provider, service,
-                                                 ns, ac, detail );
- 
-                if ( result != null ) {
-                    dataset.value = result;
-                } else {
+                                                 request.getNs(),
+                                                 request.getAc(),
+                                                 request.getDetail() );
+                
+                if( dstresult != null ){
+                    result.setDataset( dstresult );
+                }else{
                     log.info( "return dataset is null" );
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
                 }
             }
 
-            if ( format != null
-                 && ( format.equalsIgnoreCase( "native" ) 
-                      || format.equalsIgnoreCase( "both" ) ) ) {
+            if( request.getFormat() != null
+                && ( request.getFormat().equalsIgnoreCase( "native" ) 
+                     || request.getFormat().equalsIgnoreCase( "both" ) )
+                ){
                 
                 NativeRecord natRec = 
-                    cachingSrv.getNative( provider, service, ns, ac );
-
+                    cachingSrv.getNative( provider, service,
+                                          request.getNs(),
+                                          request.getAc() );
+                
                 if ( natRec != null && natRec.getNativeXml() != null
                      && natRec.getNativeXml().length() > 0 ) {
-                    nativerecord.value = natRec.getNativeXml();
-                    timestamp.value = 
-                        TimeStamp.toXmlDate( natRec.getQueryTime() );
+                    result.setNativerecord( natRec.getNativeXml() );
+                    result.setTimestamp( TimeStamp.toXmlDate( natRec.getQueryTime() ));
                 } else {
                     log.info( "return dataset is null " );
                     throw FaultFactory.newInstance( Fault.NO_RECORD );
@@ -131,83 +128,7 @@ public class EbiCachingImpl extends ConfigurableServer
             log.warn( "EbiCachingImpl: " + e.toString() );
             throw FaultFactory.newInstance( Fault.UNKNOWN );
         }
-    }
 
-    public void getPicrList( String ns, String ac, String match, 
-                             String detail, String format, 
-                             String client, Integer depth,
-                             Holder<XMLGregorianCalendar> timestamp,
-                             Holder<DatasetType> dataset, 
-                             Holder<String> nativerecord 
-                             ) throws ProxyFault {
-
-        String provider = "EBI";
-        String service = "picr";
-
-        Log log = LogFactory.getLog( EbiCachingImpl.class );
-        log.info( "getPicrList " + "NS=" + ns + " AC=" + ac + " DT=" + detail );
-        
-        if ( ac == null || ac.equals( "" ) ) {
-
-            log.info( "missing accession" );
-            throw FaultFactory.newInstance( Fault.MISSING_ID );
-        }
-
-        if( detail == null ) {
-            detail = "base";
-        } else if( detail.equalsIgnoreCase("short") ||
-                   detail.equalsIgnoreCase("stub") ||
-                   detail.equalsIgnoreCase("base") ) {
-
-            detail = "base";
-
-        } else {
-            detail = "full";
-        }
-
-        try {
-
-            if ( format == null || format.equals( "" )
-                 || format.equalsIgnoreCase( "dxf" )
-                 || format.equalsIgnoreCase( "both" ) ) {
-                
-                DatasetType result
-                    = cachingSrv.getDatasetType( provider, service,
-                                                 ns, ac, detail );
-
-                if ( result != null ) {
-                    dataset.value = result;
-                } else {
-                    log.info( "return dataset is null " );
-                    throw FaultFactory.newInstance( Fault.NO_RECORD );
-                }
-            }
-            
-            if ( format != null 
-                 && (format.equalsIgnoreCase( "native" ) 
-                     || format.equalsIgnoreCase( "both" ) ) ) {
-                
-                NativeRecord natRec = 
-                    cachingSrv.getNative( provider, service, ns, ac );
-                
-                if ( natRec != null && natRec.getNativeXml() != null 
-                        && natRec.getNativeXml().length() > 0 ) 
-                {
-                    nativerecord.value = natRec.getNativeXml();
-                    timestamp.value = 
-                        TimeStamp.toXmlDate( natRec.getQueryTime() );
-                } else {
-                    log.info( "return dataset is null " );
-                    throw FaultFactory.newInstance( Fault.NO_RECORD );
-                }
-            }
-        } catch ( ProxyFault fault ) { // pass exception
-            String message = fault.getFaultInfo().getMessage();
-            throw fault; 
-
-        } catch ( Exception e ) {
-            log.warn( "EbiCachingImpl: " + e.toString() );
-            throw FaultFactory.newInstance( Fault.UNKNOWN );
-        }
+        return result; 
     }
 }

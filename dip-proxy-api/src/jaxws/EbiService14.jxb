@@ -27,12 +27,6 @@
    </class>
   </bindings>
 
-  <bindings node="wsdl:definitions/wsdl:portType[@name='EbiProxyPortType']/wsdl:operation[@name='getPicrList']/wsdl:fault">
-   <class name="ProxyFault">
-    <javadoc>Proxy exception</javadoc>
-   </class>
-  </bindings>
-
  <bindings node="wsdl:definitions/wsdl:service[@name='EbiProxyService']">
   <class name="EbiProxyService"/>
  </bindings>

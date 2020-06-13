@@ -21,7 +21,7 @@
                targetNamespace="http://mbi.ucla.edu/services/legacy/dip">
 
       <xs:import namespace="http://dip.doe-mbi.ucla.edu/services/dxf14"
-                 schemaLocation="DXF1.4.xsd"/>
+                 schemaLocation="DXF1.4.xsd" />
 
       <xs:element name="query">
        <xs:annotation>

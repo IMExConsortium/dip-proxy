@@ -1,10 +1,6 @@
 package edu.ucla.mbi.proxy.dip;
 
 /*==============================================================================
- * $HeadURL::                                                                  $
- * $Id::                                                                       $
- * Version: $Rev::                                                             $
- *==============================================================================
  *
  * DipServer:
  *    services provided by Dip web services
@@ -18,7 +14,7 @@ import java.net.URL;
 
 import javax.xml.bind.*;
 import javax.xml.ws.BindingProvider;
-import com.sun.xml.ws.developer.JAXWSProperties;
+//import com.sun.xml.ws.developer.JAXWSProperties;
 import javax.xml.namespace.QName;
 
 import javax.xml.ws.Service;
@@ -146,7 +142,7 @@ public class DipServer implements NativeServer {
                 throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
             } else {
                 ((BindingProvider) dipPort).getRequestContext()
-                            .put( JAXWSProperties.CONNECT_TIMEOUT,
+                    .put( "javax.xml.ws.client.connectionTimeout", //JAXWSProperties.CONNECT_TIMEOUT,
                                   timeout );
             } 
 
@@ -226,8 +222,8 @@ public class DipServer implements NativeServer {
                 throw ServerFaultFactory.newInstance( Fault.REMOTE_FAULT );
             } else {
                 ((BindingProvider) dipLegacyPort).getRequestContext()
-                            .put( JAXWSProperties.CONNECT_TIMEOUT,
-                                  timeout );
+                    .put( "javax.xml.ws.client.connectionTimeout",  //JAXWSProperties.CONNECT_TIMEOUT,
+                          timeout );
             }
 
             if( ac.matches( "DIP-\\d+E" ) ) {

@@ -13,7 +13,7 @@ package edu.ucla.mbi.cache.orm;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import edu.ucla.mbi.orm.HibernateOrmUtil;
+//import edu.ucla.mbi.orm.HibernateOrmUtil;
 import edu.ucla.mbi.proxy.context.WSContext;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.orm.*;
@@ -21,7 +21,7 @@ import edu.ucla.mbi.fault.*;
 
 public class DipProxyDAO {
 
-    private HibernateOrmUtil hibernateOrmUtil;
+    //    private HibernateOrmUtil hibernateOrmUtil;
  
     private NativeRecordDAO nativeRecordDAO; 
     private DxfRecordDAO dxfRecordDAO; 

@@ -5,11 +5,9 @@
     xmlns:tx="http://www.springframework.org/schema/tx"
     xsi:schemaLocation="
       http://www.springframework.org/schema/beans 
-      http://www.springframework.org/schema/beans/spring-beans.xsd
-    
+      http://www.springframework.org/schema/beans/spring-beans.xsd 
       http://www.springframework.org/schema/tx 
-      http://www.springframework.org/schema/tx/spring-tx.xsd
-      
+      http://www.springframework.org/schema/tx/spring-tx.xsd 
       http://www.springframework.org/schema/aop 
       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
@@ -81,17 +79,7 @@
    <ref bean="nativeSparkline"/>
   </property>
  </bean>
-
- <bean id="dhtStatusAction" scope="prototype"
-       class="edu.ucla.mbi.proxy.struts.action.DhtNodeStatus">
-
-  <property name="dht" ref="dht"/>
-
-  <property name="menuContext" ref="menuContext"/>
-  <property name="mst" value="1:1:3"/>
-
- </bean>
-
+ 
  <bean id="nativeStatusAction" scope="prototype"
        class="edu.ucla.mbi.proxy.struts.action.NativeStatus">
 

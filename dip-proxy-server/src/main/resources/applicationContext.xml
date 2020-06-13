@@ -17,40 +17,36 @@
 
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans 
-        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/beans/spring-beans.xsd 
         http://www.springframework.org/schema/tx 
-        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/tx/spring-tx.xsd 
         http://www.springframework.org/schema/aop 
-        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/aop/spring-aop.xsd 
 
-        http://jax-ws.dev.java.net/spring/core
-        http://jax-ws.dev.java.net/spring/core.xsd
-        http://jax-ws.dev.java.net/spring/servlet
+        http://jax-ws.dev.java.net/spring/core 
+        http://jax-ws.dev.java.net/spring/core.xsd 
+        http://jax-ws.dev.java.net/spring/servlet 
         http://jax-ws.dev.java.net/spring/servlet.xsd">
-
- <!-- ============================================================== ROUTERS -->
-
- <import resource="spring/routers.xml" />
 
  <!-- ============================================================== CONTEXT -->
 
- <import resource="spring/context.xml" />
+ <import resource="spring/context.xml" /> 
 
  <!-- ======================================================= REMOTE SERVERS -->
 
- <import resource="spring/servers.xml" />
+  <import resource="spring/servers.xml" />
 
  <!-- ================================================================== DAO -->
 
- <import resource="spring/dao.xml"/>
+  <import resource="spring/dao.xml"/>
 
  <!-- ============================================================ SCHEDULER -->
 
- <import resource="spring/scheduler.xml" /> 
+  <import resource="spring/scheduler.xml" /> 
 
  <!-- ======================================================= STRUTS ACTIONS -->
 
- <import resource="spring/struts.xml" /> 
+  <import resource="spring/struts.xml" /> 
 
  <!-- ========================================================= WEB SERVICES -->
 
@@ -62,6 +58,7 @@
 
  <!-- ========================================================= PROXY SERVER -->
 
+ 
   <bean id="remote-native-service" class="edu.ucla.mbi.proxy.RemoteNativeService">
     <property name="wsContext" ref="wsContext"/>
   </bean>
@@ -78,6 +75,7 @@
   </bean>
 
  <!-- ============================================================ MEMCACHED -->
+
 
  <bean id="mcClient" destroy-method="shutdown" 
        class="edu.ucla.mbi.util.cache.McClient">

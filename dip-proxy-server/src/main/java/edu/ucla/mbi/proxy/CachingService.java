@@ -23,7 +23,6 @@ import edu.ucla.mbi.dxf14.*;
 import edu.ucla.mbi.orm.*;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
-import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.proxy.context.*;
 import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.util.cache.*;
@@ -71,6 +70,8 @@ public class CachingService {
         // try to retrieve from memcached
         //-------------------------------        
 
+	log.info( " RamCacheOn: " + wsContext.isRamCacheOn( provider ));
+	
         if( wsContext.isRamCacheOn( provider ) ) {
             NativeRecord memcachedRec = null;
             try {
@@ -96,6 +97,8 @@ public class CachingService {
             }
         }
 
+	log.info( " DbCacheOn: " + wsContext.isDbCacheOn( provider ));
+
         // try retrieve from local database
         //----------------------------------
         if ( nativeRecord == null 
@@ -105,6 +108,8 @@ public class CachingService {
            
             cacheRecord = wsContext.getDipProxyDAO()
                 .findNativeRecord( provider, service, ns, ac );
+
+	    log.info( "Cached Native Record: " + cacheRecord);
 
             if ( cacheRecord != null ) { 
                 // local record present
@@ -119,7 +124,7 @@ public class CachingService {
  
                     cacheRecord = null;
                 } else {
-
+		    
                     if( isExpiredOfRecord ( cacheRecord ) ) {
                         if( expiredRecord == null
                             || cacheRecord.getQueryTime()
@@ -137,14 +142,18 @@ public class CachingService {
         // valid native record not available here ( null or expired ) 
         // retrieve from remote proxy server or native server  
         //--------------------------------------------------------------
-        log.info( "getNative: before getNativeFromRemote. " );
+
+        log.info( "Cached Native Record: " + nativeRecord);
         
         if( nativeRecord == null ){
 
             remoteRecord = rns.getNativeFromRemote( provider, service, ns, ac );
         }
         
+	log.info( "Remote Native Record: " + remoteRecord);
+
         if( remoteRecord != null ) {
+	   
             if( expiredRecord != null ){
                 remoteRecord.setId( expiredRecord.getId() );
                 remoteRecord.setCreateTime( expiredRecord.getCreateTime() );
@@ -167,6 +176,10 @@ public class CachingService {
         }
 
         if( nativeRecord != null ){
+	    
+	    nativeRecord.setAc( ac );  // LS: make sure record ac is the same as used in query
+	   
+
             //*** dbCache update                           
             if( wsContext.isDbCacheOn( provider ) ) {               
                 log.info( "db create nativeR. " );
@@ -244,6 +257,10 @@ public class CachingService {
                                    String detail
                                    ) throws ServerFault {
         
+
+	log.info( "getDxfRecord(provider,service,ns,ac,detail) " + 
+		  provider + " " + service + " " + ns + " " + ac + " " + detail );
+
         DxfRecord dxfRecord = null;
         DxfRecord expiredDxf = null;
 
@@ -254,6 +271,8 @@ public class CachingService {
 
         // try retrieve from memcached
         //-----------------------------------
+
+	log.info("RamCacheOn: " + wsContext.isRamCacheOn( provider));
 
         if( wsContext.isRamCacheOn( provider ) ){
             DxfRecord memcachedRec = null;
@@ -283,6 +302,8 @@ public class CachingService {
         // try to retrieve from local database 
         //-------------------------------------
 
+	log.info("DbCacheOn: " + wsContext.isDbCacheOn( provider));
+
         if( dxfRecord == null 
             && wsContext.isDbCacheOn( provider ) ){
             
@@ -290,6 +311,8 @@ public class CachingService {
 
             cacheDxfRecord = wsContext.getDipProxyDAO()
                 .findDxfRecord ( provider, service, ns, ac, detail );
+
+	    log.info("Cached Dxf Record: " + cacheDxfRecord);
 
             if( cacheDxfRecord != null ) {
                 

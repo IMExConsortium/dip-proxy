@@ -22,11 +22,6 @@
                  link:"cache-status",
                  "disabled":"false",
                  menu:[]
-                },
-                {label:"DHT node",
-                 link:"node-status",
-                 "disabled":"false",
-                 menu:[]
                 }]
             },
             {label:"Configure",

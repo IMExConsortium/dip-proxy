@@ -26,15 +26,22 @@ public class NativeRecordDAO extends AbstractDAO {
     private Log log = LogFactory.getLog( NativeRecordDAO.class );
     private WSContext wsContext;
 
-    public NativeRecordDAO ( HibernateOrmUtil util){
-        super( util );
+    //public NativeRecordDAO ( HibernateOrmUtil util){
+    //    super( util );
+    //}
+
+    //public NativeRecordDAO ( HibernateOrmUtil util, WSContext context ) {
+    //    super( util );
+    //    this.wsContext = context;
+    //} 
+
+
+    public NativeRecordDAO(){
+        System.out.println("NativeRecordDAO:starting");
     }
 
-    public NativeRecordDAO ( HibernateOrmUtil util, WSContext context ) {
-        super( util );
-        this.wsContext = context;
-    } 
     
+
     public void setWsContext( WSContext context){
         wsContext = context;
     }
@@ -91,7 +98,8 @@ public class NativeRecordDAO extends AbstractDAO {
         
         NativeRecord nativer = null;
 
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         try {
@@ -114,13 +122,14 @@ public class NativeRecordDAO extends AbstractDAO {
             session.close();
         } 
         
-	    return nativer;
+	return nativer;
     }
 
     public long count( String provider, String service 
                        ) throws DAOException {
         
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
         
         Long count = null;
@@ -197,7 +206,8 @@ public class NativeRecordDAO extends AbstractDAO {
     public Long countAll( String provider, String service
                           ) throws DAOException {
 
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         Long count = null;
@@ -227,7 +237,8 @@ public class NativeRecordDAO extends AbstractDAO {
     public Long countAll( String provider
                           ) throws DAOException {
 
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         Long count = null;
@@ -255,7 +266,8 @@ public class NativeRecordDAO extends AbstractDAO {
     public void removeAll( String provider, String service 
                            ) throws DAOException {
 
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         try {
@@ -277,7 +289,9 @@ public class NativeRecordDAO extends AbstractDAO {
 
     //--------------------------------------------------------------------------
     public void removeAll( String provider ) throws DAOException {
-        Session session = hibernateOrmUtil.getCurrentSession();
+
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         try {
@@ -298,8 +312,11 @@ public class NativeRecordDAO extends AbstractDAO {
     //--------------------------------------------------------------------------
 
     public void expireAll( String provider, String service ) throws DAOException {
-        Session session = hibernateOrmUtil.getCurrentSession();
+
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
+
         java.util.Date now = Calendar.getInstance().getTime();
         
         log.info( "before try expire all. " );
@@ -330,8 +347,11 @@ public class NativeRecordDAO extends AbstractDAO {
     //--------------------------------------------------------------------------
 
     public void expireAll( String provider ) throws DAOException {
-        Session session = hibernateOrmUtil.getCurrentSession();
+
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
+
         java.util.Date now = Calendar.getInstance().getTime();
         
         log.info( "before try expire all. " );
@@ -362,7 +382,8 @@ public class NativeRecordDAO extends AbstractDAO {
     public List<NativeRecord>
         getExpireLast( String provider ) throws DAOException {
 
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         //List<String[]> result = new ArrayList<String[]>();
@@ -427,7 +448,8 @@ public class NativeRecordDAO extends AbstractDAO {
     public List<NativeRecord>
         getQueryFirst( String provider ) throws DAOException {
         
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         //List<String[]> result = new ArrayList<String[]>();
@@ -490,7 +512,8 @@ public class NativeRecordDAO extends AbstractDAO {
     public List<NativeRecord>
         getExpireFirst( String provider ) throws DAOException {
         
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         //List<String[]> result = new ArrayList<String[]>();

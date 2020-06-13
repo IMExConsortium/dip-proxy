@@ -2,7 +2,7 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="t" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:set name="spath" value="%{skn}"/>
+<s:set var="spath" value="%{skn}"/>
 <html lang="en">
  <t:insertDefinition name="htmlhead"/>
  <body class="yui-skin-sam" onLoad="var nos = document.getElementById('noscript'); if ( nos !== null ) { nos.innerHTML='';}">

@@ -16,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 import java.util.*;
 
 import edu.ucla.mbi.proxy.*;
-import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.proxy.ProxyTransformer;
 
 public class RemoteServerContext {
@@ -37,8 +36,6 @@ public class RemoteServerContext {
     private int debug = 0;
     private Map properties = new HashMap();
     private NativeServer nativeServer = null;
-    private RemoteProxyServer proxyServer = null;
-    private Router router = null;
     private Set serviceSet = new HashSet();
     private ProxyTransformer transformer = null;
 
@@ -54,7 +51,6 @@ public class RemoteServerContext {
         _init( provider );
     }  
 
-    //*** getter
     public int getTimeout() {
 	    return timeout;
     }
@@ -98,15 +94,7 @@ public class RemoteServerContext {
     public NativeServer getNativeServer() {
         return nativeServer;
     }
-
-    public RemoteProxyServer getProxyProto() {
-        return proxyServer;
-    }
     
-    public Router getRouter() {
-        return router;
-    }
-
     public ProxyTransformer getTransformer() {
         return transformer;
     }
@@ -151,9 +139,6 @@ public class RemoteServerContext {
         dbCacheOn = (Boolean) context.get( "dbCacheOn" );
         log.info( "  dbCacheOn=" + dbCacheOn );
         
-        remoteProxyOn = (Boolean) context.get( "remoteProxyOn" );
-        log.info( "  remoteProxyOn=" + remoteProxyOn );
-        
         monitorOn = (Boolean) context.get( "monitorOn" );
         log.info( "  monitorOn=" + monitorOn );
         
@@ -168,16 +153,6 @@ public class RemoteServerContext {
 
         serviceSet = (Set) context.get( "serviceSet" );
         
-        proxyServer = (RemoteProxyServer) context.get( "proxyProto" );
-        log.info( "   proxyProto=" + proxyServer );
-        
-        router = (Router) context.get( "router" );
-        log.info( "   router=" + router );
-        
-        if( router != null ){
-            router.setRemoteServerContext( this );
-        }
-
         initialized=true;
         log.info("configure(" +  provider+ "): DONE");    
     }

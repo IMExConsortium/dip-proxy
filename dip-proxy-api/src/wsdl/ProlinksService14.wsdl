@@ -22,10 +22,10 @@
         targetNamespace="http://mbi.ucla.edu/proxy/prolinks">
 
    <xs:import namespace="http://dip.doe-mbi.ucla.edu/fault"
-              schemaLocation="Fault.xsd"/>
+              schemaLocation="Fault.xsd" />
 
    <xs:import namespace="http://dip.doe-mbi.ucla.edu/services/dxf14"
-              schemaLocation="DXF1.4.xsd"/>
+              schemaLocation="DXF1.4.xsd" />
  
    <xs:element name="getProlinks">
     <xs:annotation>

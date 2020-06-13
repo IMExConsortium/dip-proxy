@@ -5,13 +5,40 @@
     xmlns:tx="http://www.springframework.org/schema/tx"
     xsi:schemaLocation="
       http://www.springframework.org/schema/beans 
-      http://www.springframework.org/schema/beans/spring-beans.xsd
-    
+      http://www.springframework.org/schema/beans/spring-beans.xsd 
       http://www.springframework.org/schema/tx 
-      http://www.springframework.org/schema/tx/spring-tx.xsd
-      
+      http://www.springframework.org/schema/tx/spring-tx.xsd 
       http://www.springframework.org/schema/aop 
       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+   <bean id="icSource" scope="singleton"
+        class="org.springframework.jndi.JndiObjectFactoryBean" >
+
+      <property name="jndiName" value="java:comp/env/jdbc/diproxy" />
+      <property name="resourceRef" value="true"/>
+   </bean>
+
+   <bean id="icSessionFactory"
+         class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+
+      <property name="dataSource" ref="icSource"/>
+
+      <property name="mappingResources">
+         <list>
+            <value>hibernate-mapping/DxfRecord.hbm.xml</value>
+            <value>hibernate-mapping/NativeAudit.hbm.xml</value>
+            <value>hibernate-mapping/NativeRecord.hbm.xml</value>
+         </list>
+      </property>
+
+      <property name="hibernateProperties">
+         <props>
+            <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+            <prop key="hibernate.current_session_context_class">thread</prop>
+            <prop key="show_sql">false</prop>
+         </props>
+      </property>
+   </bean>
 
     <bean id="dipProxyDAO" class="edu.ucla.mbi.cache.orm.DipProxyDAO" >
       <property name="nativeRecordDAO" ref="nativeRecordDAO"/>
@@ -19,25 +46,17 @@
       <property name="dxfRecordDAO" ref="dxfRecordDAO"/>
     </bean>
 
-    <bean id="hibernateOrmUtil" class="edu.ucla.mbi.orm.HibernateUtil"/>
-
     <bean id="nativeRecordDAO" class="edu.ucla.mbi.cache.orm.NativeRecordDAO" >
-        <constructor-arg index="0">
-            <ref bean="hibernateOrmUtil"/>
-        </constructor-arg>
+        <property name="sessionFactory" ref="icSessionFactory"/>
         <property name="wsContext" ref="wsContext" />
     </bean>
 
     <bean id="dxfRecordDAO" class="edu.ucla.mbi.cache.orm.DxfRecordDAO" >
-        <constructor-arg index="0">
-            <ref bean="hibernateOrmUtil"/>
-        </constructor-arg>
+       <property name="sessionFactory" ref="icSessionFactory"/>
     </bean>
 
     <bean id="nativeAuditDAO" class="edu.ucla.mbi.cache.orm.NativeAuditDAO" >
-        <constructor-arg index="0">
-            <ref bean="hibernateOrmUtil"/>
-        </constructor-arg>
+        <property name="sessionFactory" ref="icSessionFactory"/>
         <property name="wsContext" ref="wsContext"/>
     </bean>
 

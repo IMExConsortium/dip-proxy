@@ -1,10 +1,6 @@
 package edu.ucla.mbi.proxy;
 
 /*==============================================================================
- * $HeadURL::                                                                  $
- * $Id::                                                                       $
- * Version: $Rev::                                                             $
- *==============================================================================
  *
  * ProxyPortImpl - dip-proxy services implemented 
  *                                  
@@ -37,32 +33,52 @@ public class ProxyPortImpl implements ProxyPort {
         log.info( "initializing... " ) ;
     }
     
-    public void getRecord( String provider, String service,
-                           String ns, String ac, String match,
-                           String detail, String format,
-                           String client, Integer depth,
-                           Holder<XMLGregorianCalendar> timestamp,
-                           Holder<DatasetType> dataset,
-                           Holder<String> nativerecord
-                           ) throws ProxyFault {
+    public Result getRecord(
+                          //String provider, String service,
+                          //String ns, String ac, String match,
+                          //String detail, String format,
+                          //String client, Integer depth,
+                          //Holder<XMLGregorianCalendar> timestamp,
+                          //Holder<DatasetType> dataset,
+                          //Holder<String> nativerecord
+
+                          GetRecord request
+                          ) throws ProxyFault {
+
+        ObjectFactory of = new ObjectFactory();
+        Result result = of.createResult();
 
         try{
-            log.info( " provider=>" + provider + " service=>" + service +
-                      " ns=>" + ns + " ac=>" + ac );
-            ProxyServerRecord prxRec = proxyServer.getRecord( provider, service,
-                                                              ns, ac, match,
-                                                              detail, format,
-                                                              client, depth );
 
-            nativerecord.value = prxRec.getNativeRecord();     
-            dataset.value = prxRec.getDataset();
-            timestamp.value = prxRec.getTimestamp();
+            
+
+            
+            log.info( " provider=>" + request.getProvider() +
+                      " service=>" + request.getService() +
+                      " ns=>" + request.getNs() +
+                      " ac=>" + request.getAc() );
+            
+            ProxyServerRecord prxRec =
+                proxyServer.getRecord( request.getProvider(),
+                                       request.getService(),
+                                       request.getNs(),
+                                       request.getAc(),
+                                       request.getMatch(),
+                                       request.getDetail(),
+                                       request.getFormat(),
+                                       request.getClient(),
+                                       request.getDepth() );
+            
+            result.setNativerecord( prxRec.getNativeRecord() );
+            result.setDataset( prxRec.getDataset() );
+            result.setTimestamp( prxRec.getTimestamp() );
+            
 
         } catch ( ServerFault fault ) {
             throw FaultFactory.newInstance( fault.getFaultCode() );
         }
             
-        return;
+        return result ;
     }
     
 }

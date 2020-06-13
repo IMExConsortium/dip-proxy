@@ -20,28 +20,11 @@ import edu.ucla.mbi.fault.*;
 import edu.ucla.mbi.cache.*;
 import edu.ucla.mbi.cache.orm.*;
 import edu.ucla.mbi.proxy.context.*;
-import edu.ucla.mbi.proxy.router.*;
 
 public class NativeAgent implements Agent {
 
     private WSContext wsContext = null;
     private String order = "expiration-first";
-    
-    private List observerList = new ArrayList();
-
-    public void addObserver( WSContext wsContext ) {
-        observerList.add( wsContext );
-    }
-
-    public void notifyObserver ( String provider, Object arg ) {
-
-        Log log = LogFactory.getLog( NativeAgent.class );
-        for( Iterator io = observerList.iterator(); io.hasNext(); ){
-            WSContext ctx = (WSContext) io.next();
-            log.info("updating context="+ ctx + " provider=" + provider );
-            ctx.routerUpdate( this, provider, arg );
-        }
-    }
     
     public void setWsContext( WSContext context ) {
 
@@ -58,9 +41,6 @@ public class NativeAgent implements Agent {
     public void initialize() {
         Log log = LogFactory.getLog( NativeAgent.class );
         log.info( "initializing... " );
-        if( !observerList.contains( wsContext ) ) {
-            this.addObserver( wsContext );
-        }
     }
 
     public void run() {
@@ -141,18 +121,6 @@ public class NativeAgent implements Agent {
 
                             // store native record locally
                             ndo.create( oldRecord );
-
-                            // notify dht to update
-                            if( wsContext.isDbCacheOn( curProv ) ) {
-
-                                DhtRouterMessage message =
-                                    new DhtRouterMessage( DhtRouterMessage.UPDATE,
-                                                          oldRecord, null );
-
-                                log.info( "DhtRouterMessage: " + message );
-
-                                this.notifyObserver( curProv, message );
-                            }
 
                         } catch ( ServerFault fault ) {
                             log.info( "remote service (" + curProv + ") " + fault );

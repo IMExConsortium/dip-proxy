@@ -115,6 +115,7 @@ public class ProxyServer extends ConfigurableServer {
         log.debug( "ProxyServer: wsContext=" + wsContext);
         
         //*** validation of provider and service
+
         if ( provider == null || provider.equals( "" )
                 || service == null || service.equals( "" ) ) {
             log.info( "provider or server is missed" );
@@ -140,6 +141,7 @@ public class ProxyServer extends ConfigurableServer {
         log.info( "provider=" + provider + " and service=" + service + ". " );        
 
         //*** validation of ac 
+
         if ( ac == null || ac.equals( "" ) ) {
             log.info( "missing accession" );
             throw ServerFaultFactory.newInstance( Fault.MISSING_ID );

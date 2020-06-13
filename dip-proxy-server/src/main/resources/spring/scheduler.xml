@@ -16,24 +16,22 @@
     xmlns:tx="http://www.springframework.org/schema/tx"
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans 
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-
+        http://www.springframework.org/schema/beans/spring-beans.xsd 
         http://www.springframework.org/schema/tx 
-        http://www.springframework.org/schema/tx/spring-tx.xsd
-
+        http://www.springframework.org/schema/tx/spring-tx.xsd 
         http://www.springframework.org/schema/aop 
         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
  <bean id="scheduler" init-method="start" destroy-method="shutdown"
        class="edu.ucla.mbi.monitor.Scheduler" >
 
-  <property name="threadCount" value="1" />
+  <property name="threadCount" value="0" />
 
   <property name="agents">
    <map>
     <entry key="native-agent">
      <map>
-      <entry key="interval" value="60" />   <!-- 60 sec -->
+      <entry key="interval" value="0" />   <!-- 60 sec -->
       <!--<entry key="interval" value="3600" /> --> <!-- test 60 mins -->
       <entry key="agent-instance">
         <ref bean="nativeAgent"/>

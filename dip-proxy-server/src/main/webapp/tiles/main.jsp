@@ -8,7 +8,6 @@
         DIP Proxy Status
         <ul>
          <li><s:a action="cache-status">Local cache</s:a></li>
-         <li><s:a action="node-status">DHT node</s:a></li>
          <li><s:a action="native-status">Native servers</s:a></li>
         </ul>         
        </li>

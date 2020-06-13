@@ -34,9 +34,6 @@
             <entry key="contextTop" value="restServer"/>
         </map>
     </property>
-
-    <property name="throttle" value="500"/>
-    
  </bean>
 
  <!-- EBI proxy services -->

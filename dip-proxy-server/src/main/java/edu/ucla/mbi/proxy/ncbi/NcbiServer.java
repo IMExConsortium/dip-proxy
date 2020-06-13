@@ -61,15 +61,17 @@ public class NcbiServer implements NativeServer {
     }
 
     public NativeRecord getNativeRecord( String provider, String service, 
-        String ns, String ac, int timeout ) throws ServerFault {
-
+                                         String ns, String ac, int timeout )
+        throws ServerFault {
+        
+        log.info( "NcbiServer.getNativeRecord called" );
         log.info( "NcbiServer: NS=" + ns + " AC=" + ac + " OP=" + service );
-
+        
         if ( !service.equals( "nlm" ) ) {
-
-            return nativeRestServer.getNativeRecord( 
-                provider, service, ns, ac, timeout );
-
+            
+            return nativeRestServer.getNativeRecord( provider, service,
+                                                     ns, ac, timeout );
+            
         } else { 
 
             NativeRecord record = null;
@@ -77,11 +79,16 @@ public class NcbiServer implements NativeServer {
        
             log.info( "threadCount=" + wsContext.getThreadCount() ); 
             try {
-                log.info( "before esearch with ac=" + ac );
+                log.info( "NcbiGetJournal.easarch  ac=" + ac );
                 ncbi_nlmid = ((NcbiGetJournal) context
                               .get("ncbiGetJournal")).esearch( ac );
 
+		log.info( "ncbi_nlmid=" + ncbi_nlmid );
+               
             } catch ( ServerFault sf ) {
+		log.info( " NcbiServer: NcbiGetJournal.getNativeRecord: esearch faulted " + ac );
+                
+                /*
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
                     && wsContext.isDbCacheOn( provider )
                     && wsContext.getThreadCount() < maxThreadNum ) {
@@ -94,20 +101,26 @@ public class NcbiServer implements NativeServer {
                                                wsContext );
 
                     thread.start_verify();
+		    log.info( "NcbiReFetchThread started"); 
                 }
+                */
+                log.info( "NcbiServer.getNativeRecord fault(1)");
                 throw sf;
             } 
 
             if( ncbi_nlmid.equals( "" ) ) {
+                log.info( "NcbiServer.getNativeRecord fault(2)");
                 throw ServerFaultFactory.newInstance( Fault.UNKNOWN );
             }
 
             try {
-                log.info( "before efetch with ac=" + ac );
+                log.info( "before efetch with ac=" + ncbi_nlmid );
                 record = ( (NcbiGetJournal)context.get("ncbiGetJournal") )
                     .efetch( ns, ncbi_nlmid, timeout );
 
             } catch ( ServerFault sf ) {
+
+                /* 
                 if( sf.getFaultCode() == Fault.REMOTE_FAULT 
                     && wsContext.isDbCacheOn( provider ) 
                     && wsContext.getThreadCount() < maxThreadNum ) {
@@ -120,8 +133,11 @@ public class NcbiServer implements NativeServer {
                                                 wsContext );
                     thread.start_no_verify();
                 }
+                */
+                log.info( "NcbiServer.getNativeRecord fault(3)");
                 throw sf;
             }
+            log.info( "NcbiServer.getNativeRecord:DONE" );
             return record;
         }
     }       

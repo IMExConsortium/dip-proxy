@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
-        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-	        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+        "-//Hibernate/Hibernate Mapping DTD 5.0//EN"
+	        "http://www.hibernate.org/dtd/hibernate-mapping-5.0.dtd">
 
 <hibernate-mapping>
   <class name="edu.ucla.mbi.cache.NativeRecord" table="native_record" lazy="false">
     <id name="id" column="pk">
 	    <generator class="sequence">
-		    <param name="sequence">native_record_pk_seq</param>
+		    <param name="sequence_name">native_record_pk_seq</param>
 	    </generator>
     </id>
     

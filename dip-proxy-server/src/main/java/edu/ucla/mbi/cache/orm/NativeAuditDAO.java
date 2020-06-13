@@ -25,14 +25,14 @@ public class NativeAuditDAO extends AbstractDAO {
 
     private WSContext wsContext;
 
-    public NativeAuditDAO ( HibernateOrmUtil util ) {
-        super( util );
-    }
+    //public NativeAuditDAO ( HibernateOrmUtil util ) {
+    //    super( util );
+    //}
     
-    public NativeAuditDAO ( HibernateOrmUtil util, WSContext context ) {
-        super( util );
-        this.wsContext = context;
-    }
+    //public NativeAuditDAO ( HibernateOrmUtil util, WSContext context ) {
+    //    super( util );
+    //    this.wsContext = context;
+    //}
 
     public void setWsContext( WSContext context){
         this.wsContext = context;
@@ -53,7 +53,8 @@ public class NativeAuditDAO extends AbstractDAO {
                              ) throws DAOException {
         
         NativeAudit nativer = null;
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         try {
@@ -88,7 +89,8 @@ public class NativeAuditDAO extends AbstractDAO {
 
         NativeAudit lastAudit = new NativeAudit();
 
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         try {
@@ -121,7 +123,8 @@ public class NativeAuditDAO extends AbstractDAO {
 
         List<long[]> result = new ArrayList();
         
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         try {
@@ -170,7 +173,8 @@ public class NativeAuditDAO extends AbstractDAO {
         
         Map<String,Double> result = new HashMap<String,Double>();
         
-        Session session = hibernateOrmUtil.getCurrentSession();
+        //Session session = hibernateOrmUtil.getCurrentSession();
+	Session session = getCurrentSession();
         Transaction tx = session.beginTransaction();
 
         try {

@@ -1,15 +1,10 @@
 package edu.ucla.mbi.proxy.context;
                                                                            
 /*==============================================================================
- * $HeadURL::                                                                  $ 
- * $Id::                                                                       $
- * Version: $Rev::                                                             $
- *==============================================================================
- *
- * WSContext - global configuration of the dip-proxy server
- *
- *==============================================================================
- */
+ *                                                                             $
+ * WSContext - global configuration of the dip-proxy server                    $ 
+ *                                                                             $
+ *=========================================================================== */
 
 import java.util.*;
 
@@ -17,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.ucla.mbi.proxy.*;
-import edu.ucla.mbi.proxy.router.*;
 import edu.ucla.mbi.monitor.Scheduler;
 import edu.ucla.mbi.cache.orm.*;
 import edu.ucla.mbi.util.cache.*;
@@ -34,7 +28,6 @@ public class WSContext{
     private Map<String, RemoteServerContext> serverContexts 
         = new HashMap<String, RemoteServerContext>();
 
-    private static Dht dht;
     private McClient mcClient;
     private DipProxyDAO dipProxyDAO;
 
@@ -76,14 +69,9 @@ public class WSContext{
         }
         return (Integer)state.get( "thread-count" );        
     }
-
-    //*** setter
+   
     public void setDipProxyDAO( DipProxyDAO dao ){
         this.dipProxyDAO = dao;
-    }
-
-    public void setDht ( Dht dht ) {
-        this.dht = dht;
     }
  
     public void setServices( Map<String,Map> services ) {
@@ -93,14 +81,9 @@ public class WSContext{
     public void setMcClient ( McClient client ) {
         this.mcClient = client;
     }
-
-    //*** getter
+   
     public DipProxyDAO getDipProxyDAO(){
         return dipProxyDAO;
-    }
-
-    public static Dht getDht() {
-        return dht;
     }
 
     public Map<String,Map> getServices() {
@@ -110,7 +93,6 @@ public class WSContext{
     public Set<String> getProviderSet(){
         return services.keySet();
     }
-
   
     public Map getProvider( String provider ) {
         return (Map) services.get( provider );
@@ -158,13 +140,6 @@ public class WSContext{
 
     public int getMaxRetry( String provider ) {
         return this.getServerContext( provider ).getMaxRetry();
-    }
-
-    public NativeServer getNextProxyServer( String provider, String service,
-        String ns, String ac ) {
-
-        return this.getServerContext( provider ).getRouter()
-                    .getNextProxyServer( provider, service, ns, ac );
     }
 
     //---------------------------------------------------------------------
@@ -390,14 +365,6 @@ public class WSContext{
             ( (Map) services.get( service ) ).put( "proxyProto", proxyProto );
 
             
-            // router
-            //-------
-                
-            Router router = 
-                (Router) ( (Map) services.get( service ) ).get( "router" );
-                
-            ( (Map) services.get( service ) ).put( "router", router );
-                
             // debug level
             //------------
                 
@@ -422,8 +389,7 @@ public class WSContext{
             }
                 
             ( (Map) services.get( service ) ).put( "debug", intDebug );
-                
-            //*** initialize RemoteServerContext for individual provider
+            
             RemoteServerContext rsc = getServerContext( service );
         }
             
@@ -437,10 +403,6 @@ public class WSContext{
 
     public static String info() {
 	    return "WSContext: info";
-    }
-
-    public void routerUpdate( Object rns, String provider, Object arg ) {
-        this.getServerContext( provider ).getRouter().update( rns, arg );
     }
 
 }

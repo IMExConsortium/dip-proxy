@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration>
+      <Appenders>
+        <Console name="A1" target="SYSTEM_OUT">
+          <PatternLayout pattern="%d{DEFAULT} [%level] %c{1.} :   %m%n"/>
+        </Console>
+
+        <Console name="A2" target="SYSTEM_OUT">
+          <PatternLayout pattern="%d{DEFAULT} [%level] %c{1.} ::  %m%n"/>
+        </Console>
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+          <PatternLayout pattern="%d{DEFAULT} [%level] -- %m%n"/>
+        </Console>
+      </Appenders>
+      <Loggers>
+        <Logger name="org.apache.log4j.xml" level="info">
+          <AppenderRef ref="A1"/>
+        </Logger>
+        <Logger name="edu.ucla.mbi.imex.proxy" level="info">  
+          <AppenderRef ref="A2"/> 
+        </Logger>
+
+
+        <Logger name="edu.ucla.mbi.proxy.ncbi" level="debug">  
+          <AppenderRef ref="A2"/> 
+        </Logger>
+        <Root level="info">
+          <AppenderRef ref="STDOUT"/>
+        </Root>
+      </Loggers>
+ </Configuration>

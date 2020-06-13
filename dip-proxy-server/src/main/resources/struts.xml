@@ -1,25 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 
 <!DOCTYPE struts PUBLIC
-          "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
-          "http://struts.apache.org/dtds/struts-2.0.dtd">
-
-<!-- =======================================================================
- ! $HeadURL::                                                              $
- ! $Id::                                                                   $
- ! Version: $Rev::                                                         $
- !==========================================================================
- !
- ! struts2: proxy site
- !
- !====================================================================== -->
-
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
 <struts>
 
- <constant name="struts.action.excludePattern" value="/ws.*,/*-service.*"/>
+  <constant name="struts.action.excludePattern" value="/service.*, /ws.*,/*-service.*"/> 
 
- <constant name="struts.objectFactory" value="spring" />
- <constant name="struts.devMode" value="false" />
+  <constant name="struts.objectFactory" value="spring" />
+  <constant name="struts.devMode" value="true" />
 
   <package name="dip-proxy" extends="json-default" namespace="">
 
@@ -28,6 +17,10 @@
     <result-types>
       <result-type name="tiles"
                    class="org.apache.struts2.views.tiles.TilesResult"/>
+
+      <result-type name="redirect-action"
+        class="org.apache.struts2.result.ServletActionRedirectResult" />
+
     </result-types>
 
 <!-- ====================================================== Interceptors -->
@@ -85,6 +78,8 @@
      <interceptor-ref name="menu"/>
 
      <result name="success" type="tiles">cachestatus</result>
+     <result name="json" type="json"></result> 
+
    </action>
    <!-- native server status -->
 
@@ -108,41 +103,6 @@
 
    </action>
 
-   <!-- dht node status -->
-
-   <action name="node-status" class="dhtStatusAction" >
-     <interceptor-ref name="defaultStack"/>
-     <interceptor-ref name="timer"/>
-     <interceptor-ref name="menu"/>
-
-     <result name="success" type="tiles">node-status</result>
-     <result name="json" type="json">
-       <param name="ignoreHierarchy">false</param>
-       <param name="includeProperties">
-         op.*,config.*
-       </param>
-     </result>
-
-     <result name="show-config" type="tiles">node-update</result>
-
-   </action>
-   <!-- rest server config new -->
-   <action name="rest-server-config" class="restServerConfigAction" >
-     <interceptor-ref name="defaultStack"/>
-     <interceptor-ref name="timer"/>
-     <interceptor-ref name="menu"/>
-
-     <result name="error" type="tiles">page</result>
-     <result name="success" type="tiles">json-context-config</result>
-
-     <result name="json"  type="json">
-       <param name="ignoreHierarchy">false</param>
-       <param name="includeProperties">
-            contextMap.*
-       </param>
-       <param name="noCache">true</param>
-     </result>
-   </action>
 
   <!-- transformer config new -->
   <action name="transformer-config" class="transformerConfigAction" >

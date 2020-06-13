@@ -1,27 +1,28 @@
 {"restServer":{
         "NCBI":{ 
             "pubmed":{
-                "restUrl":"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id=%%ACTAG%%",
+                "restUrl":"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id=%%ACTAG%%",
                 "restAcTag":"%%ACTAG%%"
             },
             "refseq":{
-                "restUrl":"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&id=%%ACTAG%%&rettype=gpc&retmode=xml",
+                "restUrl":"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&id=%%ACTAG%%&rettype=gpc&retmode=xml",
                 "restAcTag":"%%ACTAG%%"
             },
             "entrezgene":{
-               "restUrl":"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene&id=%%ACTAG%%&retmode=xml",
+               "restUrl":"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene&id=%%ACTAG%%&retmode=xml",
                "restAcTag":"%%ACTAG%%"
             },
             "taxon":{
-                "restUrl":"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&id=%%ACTAG%%&retmode=xml",
+                "restUrl":"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&id=%%ACTAG%%&retmode=xml",
                 "restAcTag":"%%ACTAG%%"
             },
             "nlmesearch":{
-                "restUrl":"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nlmcatalog&retmode=xml&term=%%ACTAG%%",
+                "restUrl":"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nlmcatalog&retmode=xml&term=%%ACTAG%%",
+
                 "restAcTag":"%%ACTAG%%"
             },
             "nlm":{
-                "restUrl":"http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nlmcatalog&retmode=xml&id=%%ACTAG%%",
+                "restUrl":"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nlmcatalog&retmode=xml&id=%%ACTAG%%",
                 "restAcTag":"%%ACTAG%%"
             }
         },

@@ -15,17 +15,17 @@
              targetNamespace="http://mbi.ucla.edu/proxy" 
     	     xmlns:proxy="http://mbi.ucla.edu/proxy" 
              xmlns:dipfault="http://dip.doe-mbi.ucla.edu/fault"
-	         xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" > 
+	     xmlns:dxf="http://dip.doe-mbi.ucla.edu/services/dxf14" > 
  <types>
 
   <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
        targetNamespace="http://mbi.ucla.edu/proxy"> 
 
    <xs:import namespace="http://dip.doe-mbi.ucla.edu/fault"
-       schemaLocation="Fault.xsd"/> 
+       schemaLocation="Fault.xsd" /> 
 
    <xs:import namespace="http://dip.doe-mbi.ucla.edu/services/dxf14"
-       schemaLocation="DXF1.4.xsd"/> 
+       schemaLocation="DXF1.4.xsd" /> 
  
    <xs:element name="getRecord">
     <xs:annotation>

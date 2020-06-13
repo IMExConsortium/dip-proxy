@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+<!--
+ <New class="org.mortbay.jetty.plus.naming.EnvEntry">
+  <Arg></Arg>
+  <Arg>solr/home</Arg>
+  <Arg type="java.lang.String">target/work/webapp/solr</Arg>
+  <Arg type="boolean">true</Arg>
+ </New>
+-->
+
+<!--
+ <New class="org.eclipse.jetty.plus.naming.Resource">
+  <Arg>java:/comp/env/jdbc/diproxy</Arg>
+  <Arg>
+   
+  <New class="org.postgresql.ds.PGPoolingDataSource">   
+    <Set name="dataSourceName">diproxy</Set>
+    <Set name="User">proxyws</Set>
+    <Set name="Password">444proxyws444</Set>
+    <Set name="DatabaseName">proxyws_prod</Set>
+    <Set name="ServerName">10.1.1.211e</Set>
+    <Set name="PortNumber">5432</Set>
+    <Set name="maxConnections">10</Set>
+   </New>
+  </Arg>
+ </New>
+-->
+
+<New class="org.eclipse.jetty.plus.naming.Resource">
+  <Arg>java:/comp/env/jdbc/diproxy</Arg>
+  <Arg>
+   <!-- <New class="org.postgresql.ds.PGSimpleDataSource"> -->
+  <New class="org.postgresql.ds.PGPoolingDataSource">   
+    <Set name="dataSourceName">diproxy</Set>
+    <Set name="User">proxyws</Set>
+    <Set name="Password">444proxyws444</Set>
+    <Set name="DatabaseName">proxyws_v21</Set>
+    <Set name="ServerName">10.1.3.1</Set>
+    <Set name="PortNumber">5432</Set>
+    <Set name="maxConnections">10</Set>
+   </New>
+  </Arg>
+ </New>
+
+    <Call name="setAttribute">
+      <Arg>org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</Arg>
+      <Arg>.*/spring-[^/]*\.jar$</Arg>
+    </Call>
+
+
+</Configure>

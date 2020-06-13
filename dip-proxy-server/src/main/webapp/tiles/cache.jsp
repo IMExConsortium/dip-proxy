@@ -23,14 +23,14 @@
 
  
  <s:iterator value="nativeCounts" >
-   <s:set name="prv" value="key" />
-   <s:set name="serviceMap" value="value"/>
-   <s:set name="rowNum" value="value.size()" />
+   <s:set var="prv" value="key" />
+   <s:set var="serviceMap" value="value"/>
+   <s:set var="rowNum" value="value.size()" />
 
-   <s:set name="nativeRemove" value="'op.nativeremove' + #prv"/>
-   <s:set name="nativeExpire" value="'op.nativeexpire' + #prv"/>
-   <s:set name="dxfRemove" value="'op.dxfremove' + #prv"/>
-   <s:set name="dxfExpire" value="'op.dxfexpire' + #prv"/>
+   <s:set var="nativeRemove" value="'op.nativeremove' + #prv"/>
+   <s:set var="nativeExpire" value="'op.nativeexpire' + #prv"/>
+   <s:set var="dxfRemove" value="'op.dxfremove' + #prv"/>
+   <s:set var="dxfExpire" value="'op.dxfexpire' + #prv"/>
     
    <tr>
      <th width="10%" rowspan="<s:property value='#rowNum'/>"> 
@@ -38,8 +38,8 @@
      </th>
 
     <s:iterator value="serviceMap" status="ss">
-       <s:set name="service" value="key"/>
-       <s:set name="nativeCount" value="value"/>
+       <s:set var="service" value="key"/>
+       <s:set var="nativeCount" value="value"/>
        
        <s:if test='#ss.index == 0'>
          <td><s:property value="#service"/></td>

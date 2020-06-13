@@ -7,7 +7,7 @@
  ! Version: $Rev::                                                             $
  !========================================================================= --%>
 
-<s:set name="spath" value="%{skn}"/>
+<s:set var="spath" value="%{skn}"/>
 
 <html lang="en">
  <head>
@@ -30,7 +30,7 @@
       <div  class="upage" id="errorDiv">
        <span class="pgerror">
         <s:iterator value="actionErrors">
-         <span class="errorMessage"><s:property escape="false" /></span>
+         <span class="errorMessage"><s:property escapeHtml="false" /></span>
         </s:iterator>
        </span>
       </div>
@@ -67,7 +67,7 @@
      </tr>
      <tr>
       <td colspan="3" class="page">
-       <s:property value="source" escape="false" />
+       <s:property value="source" escapeHtml="false" />
        <br/><br/><br/><br/><br/><br/><br/><br/><br/>
       </td>
      </tr> 
@@ -83,7 +83,7 @@
   <s:if test="page.showindex">
    <script>
      YAHOO.util.Event.addListener( window, "load",
-       YAHOO.mbi.view.panel.index("<s:property value="page.urlindex" escape="false" />", 
+       YAHOO.mbi.view.panel.index("<s:property value="page.urlindex" escapeHtml="false" />", 
                                    document.getElementById("index-panel")));     
    </script>
   </s:if>

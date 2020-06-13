@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <New id="psql" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg>java:comp/env/jdbc/diproxy</Arg>
+        <Arg>
+            <New class="com.mchange.v2.c3p0.ComboPooledDataSource">
+                <Set name="JdbcUrl">jdbc:postgresql://10.1.1.211w/proxyws_prod</Set>
+                <Set name="User">proxyws</Set>
+                <Set name="Password">444proxyws444</Set>
+            </New>
+        </Arg>
+    </New>
+
+    <Call name="setAttribute">
+      <Arg>org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</Arg>
+      <Arg>.*/spring-[^/]*\.jar$</Arg>
+   </Call>
+
+</Configure>

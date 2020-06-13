@@ -7,7 +7,7 @@
  ! Version: $Rev::                                                             $
  !========================================================================= --%>
 
-<s:set name="spath" value="%{skn}"/>
+<s:set var="spath" value="%{skn}"/>
 <html lang="en">
  <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">

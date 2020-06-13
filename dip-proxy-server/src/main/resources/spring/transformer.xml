@@ -5,11 +5,9 @@
     xmlns:tx="http://www.springframework.org/schema/tx"
     xsi:schemaLocation="
       http://www.springframework.org/schema/beans 
-      http://www.springframework.org/schema/beans/spring-beans.xsd
-    
+      http://www.springframework.org/schema/beans/spring-beans.xsd 
       http://www.springframework.org/schema/tx 
-      http://www.springframework.org/schema/tx/spring-tx.xsd
-      
+      http://www.springframework.org/schema/tx/spring-tx.xsd 
       http://www.springframework.org/schema/aop 
       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
@@ -19,16 +17,6 @@
 
   <property name="transformerContext" ref="transformerContext"/>
   <property name="contextTop" value="transformer"/>
-
- </bean>
-
- <!-- prolinks transformer -->
- <bean id="prolinksTransformer" init-method="initialize" 
-       parent="proxyTransformer" 
-       class="edu.ucla.mbi.proxy.prolinks.ProlinksTransformer">
-
-  <property name="cachingService" ref="caching-service"/>
-  <property name="wsContext" ref="wsContext"/>
 
  </bean>
 
